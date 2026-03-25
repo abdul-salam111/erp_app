@@ -1,0 +1,10 @@
+name: export_generator
+description: A Mason brick that generates or updates app_exports.dart with library exports
+version: 0.1.0
+
+vars:
+  directory:
+    type: string
+    description: Directory to scan for Dart files
+    default: lib
+    prompt: Which directory should I scan for files?
