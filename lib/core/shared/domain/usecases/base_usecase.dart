@@ -8,12 +8,12 @@ mixin UsecaseExecuterMixin<Event, State> on Bloc<Event, State> {
     required State Function(ApiStatus status, {T? data, String? error})
     stateBuilder,
   }) async {
-    emit(stateBuilder(ApiStatus.loading));
+    emit(stateBuilder(ApiStatus.LOADING));
     final result = await usecase();
     result.fold(
       (failure) =>
-          emit(stateBuilder(ApiStatus.failure, error: failure.toString())),
-      (data) => emit(stateBuilder(ApiStatus.success, data: data)),
+          emit(stateBuilder(ApiStatus.FAILURE, error: failure.toString())),
+      (data) => emit(stateBuilder(ApiStatus.SUCCESS, data: data)),
     );
   }
 }

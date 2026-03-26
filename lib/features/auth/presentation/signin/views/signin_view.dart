@@ -20,14 +20,14 @@ class _SignInViewState extends State<SignInView> {
           appBar: AppBar(title: const Text('Sign In')),
           body: BlocConsumer<SignInBloc, SignInState>(
             listener: (context, state) {
-              if (state.apiStatus == ApiStatus.success) {
+              if (state.apiStatus == ApiStatus.SUCCESS) {
                 AppToastsUtils.showSuccessTop(
                   context,
                   "You have loggedin successfully!",
                 );
               }
 
-              if (state.apiStatus == ApiStatus.failure) {
+              if (state.apiStatus == ApiStatus.FAILURE) {
                 AppToastsUtils.showErrorTop(context, state.message.toString());
               }
             },
@@ -78,7 +78,7 @@ class _SignInViewState extends State<SignInView> {
                         buildWhen: (p, n) => p.apiStatus != n.apiStatus,
                         builder: (context, state) {
                           return CustomButton(
-                            isLoading: state.apiStatus == ApiStatus.loading,
+                            isLoading: state.apiStatus == ApiStatus.LOADING,
                             text: "SignIn",
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {

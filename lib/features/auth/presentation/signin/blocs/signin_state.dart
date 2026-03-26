@@ -10,7 +10,7 @@ class SignInState extends Equatable {
   const SignInState({
     this.userToken,
     this.message,
-    this.apiStatus = ApiStatus.initial,
+    this.apiStatus = ApiStatus.INITIAL,
     this.email = "",
     this.password = "",
   });
