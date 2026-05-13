@@ -11,13 +11,13 @@ class AppColors {
   // ============================================
 
   /// Primary brand color - Main actions, CTAs
-  static const Color primary = Color(0xff1E64DD);
-  static const Color primaryDark = Color(0xFFE67A1A);
+  static const Color primary = Color(0xff1B84FF);
+  static const Color primaryDark = Color(0xFF074DBF);
   static const Color primaryLight = Color(0xFFFFA558);
 
   /// Secondary brand color - Accents, highlights
-  static const Color secondary = Color(0xffDED2FA);
-  static const Color secondaryDark = Color(0xFFC5B5E8);
+  static const Color secondary = Color(0xff0036F8);
+  static const Color secondaryDark = Color(0xFF031BB9);
   static const Color secondaryLight = Color(0xFFEDE7FC);
 
   /// Tertiary brand color - Alternative accents
