@@ -16,7 +16,7 @@ class AppLogo extends StatelessWidget {
       height: height,
       width: width,
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage(AppIcons.logo)),
+        image: DecorationImage(image: AssetImage(AppImages.manticLogo)),
       ),
     );
   }

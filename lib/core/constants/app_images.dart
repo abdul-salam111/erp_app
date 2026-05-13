@@ -12,7 +12,7 @@ class AppImages {
   AppImages._();
 
   
-  static const String image = 'assets/images/image.png';
+  static const String manticLogo = 'assets/images/mantic-logo.png';
 
 
 }
