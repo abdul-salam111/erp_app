@@ -4,7 +4,6 @@ import 'core/app_dependencies.dart';
 import 'core/theme/theme_exports.dart';
 import 'routes/route_exports.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupLocator();
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget {
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           return MaterialApp.router(
-            title: 'ERP App',
+            title: 'Mantic ERP',
             theme: AppThemes.lightTheme,
             darkTheme: AppThemes.darkTheme,
             themeMode: state.themeMode,

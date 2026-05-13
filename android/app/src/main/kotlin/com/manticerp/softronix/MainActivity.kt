@@ -1,4 +1,4 @@
-package com.erpapp.softronix
+package com.manticerp.softronix
 
 import io.flutter.embedding.android.FlutterActivity
 
