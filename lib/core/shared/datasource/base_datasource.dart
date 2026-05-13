@@ -2,7 +2,8 @@
 /*                         Base Remote Datasource                              */
 /* -------------------------------------------------------------------------- */
 
-import '../../../app_exports.dart';
+
+import '../../networks/network_exports.dart';
 
 abstract class BaseRemoteDatasource {
   final DioHelper dioHelper;

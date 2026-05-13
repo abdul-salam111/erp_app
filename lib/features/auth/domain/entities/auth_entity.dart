@@ -1,4 +1,4 @@
-import '../../../../app_exports.dart';
+import 'package:equatable/equatable.dart';
 
 class SigninEntity extends Equatable {
   final String id;

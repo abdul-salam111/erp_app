@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
-import '../app_exports.dart';
+import 'package:get_it/get_it.dart';
+
+import '../features/auth/auth_export.dart';
+import 'networks/network_exports.dart';
+
 
 final sl = GetIt.instance;
 

@@ -4,7 +4,9 @@
 /*                             Base Repository                                 */
 /* -------------------------------------------------------------------------- */
 
-import '../../../../app_exports.dart';
+import 'package:fpdart/fpdart.dart';
+
+import '../../../networks/network_exports.dart';
 
 abstract class BaseRepository {
   /// Execute repository call with automatic error handling

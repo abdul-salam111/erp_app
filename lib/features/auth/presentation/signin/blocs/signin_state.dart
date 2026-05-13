@@ -1,4 +1,9 @@
-import '../../../../../app_exports.dart';
+
+
+import 'package:equatable/equatable.dart';
+
+import '../../../../../core/constants/const_exports.dart';
+import '../../../auth_export.dart';
 
 class SignInState extends Equatable {
   final UserToken? userToken;

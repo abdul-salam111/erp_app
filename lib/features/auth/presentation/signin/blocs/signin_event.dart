@@ -1,4 +1,6 @@
-import '../../../../../app_exports.dart';
+
+
+import 'package:equatable/equatable.dart';
 
 abstract class SignInEvent extends Equatable {
   const SignInEvent();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../app_exports.dart';
+import 'theme_exports.dart';
+
 
 /// Extension to provide quick access to theme properties
 extension ThemeExtension on BuildContext {

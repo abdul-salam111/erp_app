@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../app_exports.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'theme_exports.dart';
 
 class AppThemes {
   AppThemes._(); // Private constructor

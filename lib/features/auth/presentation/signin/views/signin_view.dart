@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_utils/get_utils.dart';
-import '../../../../../app_exports.dart';
+import 'package:iconsax/iconsax.dart';
+
+import '../../../../../core/app_dependencies.dart';
+import '../../../../../core/constants/const_exports.dart';
+import '../../../../../core/utils/utils_exports.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../../../auth_export.dart';
+
 
 class SignInView extends StatefulWidget {
   const SignInView({super.key});
