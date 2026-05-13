@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/theme/colors.dart';
+
 import 'package:google_fonts/google_fonts.dart';
+import '../theme/colors.dart';
 import 'loading_indicator.dart';
 
 class CustomButton extends StatelessWidget {

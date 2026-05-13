@@ -1,5 +1,4 @@
-// Generated file - exports all library files
-// Run: mason make export_generator to update
+
 
 // External packages
 export 'package:equatable/equatable.dart';

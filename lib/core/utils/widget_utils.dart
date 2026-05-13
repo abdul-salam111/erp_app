@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_template/core/widgets/loading_indicator.dart';
+
+import '../../app_exports.dart';
+
 
 /////////////////////////////////////  WIDGETS EXTENSIONS ////////////////////////////////////////
 extension WidgetExtensions on Widget {

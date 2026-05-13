@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/app_exports.dart';
+
+import '../../app_exports.dart';
+
 
 class AppLogo extends StatelessWidget {
   final double height;
