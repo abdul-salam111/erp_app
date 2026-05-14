@@ -1,10 +1,10 @@
 name: export_generator
-description: A Mason brick that generates or updates app_exports.dart with library exports
+description: Regenerates per-feature export barrels ({feature}_exports.dart). Leave feature_name empty to update all features.
 version: 0.1.0
 
 vars:
-  directory:
+  feature_name:
     type: string
-    description: Directory to scan for Dart files
-    default: lib
-    prompt: Which directory should I scan for files?
+    description: Feature to regenerate exports for (leave empty to update all features)
+    default: ""
+    prompt: "Feature name to update (leave empty for all features):"

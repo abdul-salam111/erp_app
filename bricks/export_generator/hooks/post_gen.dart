@@ -2,134 +2,133 @@ import 'dart:io';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as path;
 
-void run(HookContext context) async {
-  final directory = context.vars['directory'] as String;
-  final exportFilePath = 'lib/app_exports.dart';
+// ---------------------------------------------------------------------------
+// export_generator
+//
+// Regenerates per-feature export barrels ({feature}_exports.dart).
+//
+// What it does:
+//   - If feature_name is given  → updates only that feature's barrel
+//   - If feature_name is empty  → scans lib/features/ and updates all features
+//
+// Each barrel gets:
+//   1. export '../../../../app_exports.dart'  (core re-export)
+//   2. export for every .dart file inside the feature EXCEPT:
+//        - the barrel file itself  ({feature}_exports.dart)
+//        - generated files         (*.g.dart, *.freezed.dart)
+//        - view files              (presentation/*/views/*.dart)
+//          └─ views import the barrel, so exporting them would be circular
+// ---------------------------------------------------------------------------
 
-  final progress = context.logger.progress('Scanning for Dart files');
+Future<void> run(HookContext context) async {
+  final logger = context.logger;
+  final featureNameInput = (context.vars['feature_name'] as String).trim();
 
-  try {
-    // Get all dart files in the specified directory
-    final libDir = Directory(directory);
-    if (!libDir.existsSync()) {
-      progress.fail('Directory $directory does not exist');
-      return;
-    }
-
-    final dartFiles = <String>[];
-    await for (final entity in libDir.list(recursive: true)) {
-      if (entity is File &&
-          entity.path.endsWith('.dart') &&
-          !entity.path.endsWith('app_exports.dart') &&
-          !entity.path.contains('.g.dart') &&
-          !entity.path.contains('.freezed.dart')) {
-        // Get relative path from lib directory
-        var relativePath = path.relative(entity.path, from: directory);
-        // Convert Windows backslashes to forward slashes for Dart imports
-        relativePath = relativePath.replaceAll(r'\', '/');
-        dartFiles.add(relativePath);
-      }
-    }
-
-    // Sort files for consistent ordering
-    dartFiles.sort();
-
-    // Read existing exports if file exists
-    final exportFile = File(exportFilePath);
-    final existingPackageExports = <String>[]; // External packages (full line)
-    final existingFileExports = <String>[]; // Project files
-
-    if (exportFile.existsSync()) {
-      final content = exportFile.readAsStringSync();
-      // Updated regex to capture entire export statement including hide/show
-      final exportPattern = RegExp(r"export\s+'([^']+)'[^;]*;");
-      final lines = content.split('\n');
-
-      for (final line in lines) {
-        final trimmedLine = line.trim();
-        if (trimmedLine.startsWith('export ')) {
-          final match = exportPattern.firstMatch(trimmedLine);
-          if (match != null) {
-            final exportPath = match.group(1)!;
-            if (exportPath.startsWith('package:')) {
-              // Store the entire export line for packages (preserve hide/show)
-              existingPackageExports.add(trimmedLine);
-            } else {
-              // Store just the path for project files
-              existingFileExports.add(exportPath);
-            }
-          }
-        }
-      }
-    }
-
-    // Find changes
-    final currentFiles = dartFiles.toSet();
-    final existingFiles = existingFileExports.toSet();
-    final newExports = currentFiles.difference(existingFiles).toList();
-    final removedExports = existingFiles.difference(currentFiles).toList();
-
-    if (newExports.isEmpty &&
-        removedExports.isEmpty &&
-        exportFile.existsSync()) {
-      progress.complete('No changes detected');
-      context.logger.info('✓ app_exports.dart is up to date');
-      return;
-    }
-
-    // Generate export statements
-    final buffer = StringBuffer();
-    buffer.writeln('// Generated file - exports all library files');
-    buffer.writeln('// Run: mason make export_generator to update');
-    buffer.writeln();
-
-    // First add package exports (preserve entire line with hide/show)
-    if (existingPackageExports.isNotEmpty) {
-      buffer.writeln('// External packages');
-      for (final pkgLine in existingPackageExports) {
-        buffer.writeln(pkgLine);
-      }
-      buffer.writeln();
-    }
-
-    // Then add project file exports
-    if (dartFiles.isNotEmpty) {
-      buffer.writeln('// Project files');
-      for (final file in dartFiles) {
-        buffer.writeln("export '$file';");
-      }
-    }
-
-    // Write to file
-    exportFile.writeAsStringSync(buffer.toString());
-
-    progress.complete('Export file updated');
-
-    // Show added files
-    if (newExports.isNotEmpty) {
-      context.logger.info('✓ Added ${newExports.length} new export(s):');
-      for (final file in newExports) {
-        context.logger.info('  + $file');
-      }
-    }
-
-    // Show removed files
-    if (removedExports.isNotEmpty) {
-      context.logger
-          .info('✓ Removed ${removedExports.length} deleted file(s):');
-      for (final file in removedExports) {
-        context.logger.info('  - $file');
-      }
-    }
-
-    context.logger.info(
-        '✓ Total exports: ${existingPackageExports.length + dartFiles.length}');
-    context.logger
-        .info('  - Package exports: ${existingPackageExports.length}');
-    context.logger.info('  - File exports: ${dartFiles.length}');
-    context.logger.success('app_exports.dart updated successfully');
-  } catch (e) {
-    progress.fail('Error generating exports');
-    context.logger.err(e.toString());
+  final featuresDir = Directory('lib/features');
+  if (!featuresDir.existsSync()) {
+    logger.err('lib/features/ not found. Run from your Flutter project root.');
+    return;
   }
+
+  // Determine which features to process
+  final featuresToProcess = <String>[];
+
+  if (featureNameInput.isEmpty) {
+    for (final entity in featuresDir.listSync()) {
+      if (entity is Directory) {
+        featuresToProcess.add(path.basename(entity.path));
+      }
+    }
+    logger.info(
+      '\n📦 Updating exports for ${featuresToProcess.length} feature(s)...\n',
+    );
+  } else {
+    featuresToProcess.add(_toSnakeCase(featureNameInput));
+  }
+
+  for (final featureFile in featuresToProcess) {
+    _updateFeatureBarrel(featuresDir, featureFile, logger);
+  }
+
+  logger.success('\n✅ Feature export barrels updated!');
+}
+
+// ---------------------------------------------------------------------------
+// Regenerate {feature}_exports.dart for a single feature
+// ---------------------------------------------------------------------------
+void _updateFeatureBarrel(
+  Directory featuresDir,
+  String featureFile,
+  Logger logger,
+) {
+  final featureDir = Directory('${featuresDir.path}/$featureFile');
+  if (!featureDir.existsSync()) {
+    logger.warn('⚠️  Feature "$featureFile" not found. Skipping.');
+    return;
+  }
+
+  final barrelFileName = '${featureFile}_exports.dart';
+  final barrelFile = File('${featureDir.path}/$barrelFileName');
+
+  // ── Collect files to export ───────────────────────────────────────────────
+  final toExport = <String>[];
+  final viewPattern = RegExp(r'presentation/[^/]+/views/');
+
+  for (final entity in featureDir.listSync(recursive: true)) {
+    if (entity is! File) continue;
+
+    final normalised = entity.path.replaceAll(r'\', '/');
+    if (!normalised.endsWith('.dart')) continue;
+
+    final relative = path
+        .relative(normalised, from: featureDir.path.replaceAll(r'\', '/'))
+        .replaceAll(r'\', '/');
+
+    if (relative == barrelFileName) continue;           // barrel itself
+    if (relative.endsWith('.g.dart')) continue;         // generated
+    if (relative.endsWith('.freezed.dart')) continue;   // generated
+    if (viewPattern.hasMatch(relative)) continue;       // views (circular risk)
+
+    toExport.add(relative);
+  }
+
+  toExport.sort();
+
+  // ── Write barrel ──────────────────────────────────────────────────────────
+  final buffer = StringBuffer()
+    ..writeln('// ${_toPascalCase(featureFile)} Feature Exports')
+    ..writeln('// Generated by export_generator — do not edit manually')
+    ..writeln()
+    ..writeln('// Core exports')
+    ..writeln("export '../../../../app_exports.dart';")
+    ..writeln()
+    ..writeln('// Feature files');
+
+  for (final file in toExport) {
+    buffer.writeln("export './$file';");
+  }
+
+  barrelFile.writeAsStringSync(buffer.toString());
+
+  logger.success(
+    '📦 Updated: lib/features/$featureFile/$barrelFileName '
+    '(${toExport.length} file export(s))',
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+String _toSnakeCase(String text) {
+  return text
+      .replaceAllMapped(RegExp(r'[A-Z]'), (match) => '_${match.group(0)}')
+      .toLowerCase()
+      .replaceAll(RegExp(r'^_'), '');
+}
+
+String _toPascalCase(String text) {
+  return text.split('_').map((word) {
+    if (word.isEmpty) return '';
+    return word[0].toUpperCase() + word.substring(1).toLowerCase();
+  }).join('');
 }
