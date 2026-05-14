@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:mantic_erp_app/core/widgets/custom_appbar.dart';
-import '../bloc/dashboard_bloc.dart';
+import '../../dashboard_exports.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -21,9 +20,6 @@ class _DashboardBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Dashboard'),
-      body: const Center(child: Text('Dashboard')),
-    );
+    return AdminDashboard();
   }
 }
