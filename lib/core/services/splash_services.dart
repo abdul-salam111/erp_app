@@ -21,7 +21,7 @@ class SplashServices {
       if (SessionController().islogin == true) {
         context.pushNamed(RouteNames.signin);
       } else {
-        context.pushNamed(RouteNames.signin);
+        context.pushNamed(RouteNames.dashboard);
       }
     } catch (e) {
       debugPrint('Error in checkLoginStatus: $e');

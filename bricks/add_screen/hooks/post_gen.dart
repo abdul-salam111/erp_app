@@ -35,7 +35,7 @@ Future<void> run(HookContext context) async {
   logger.info('\n🚀 Adding screen "$screenName" to feature "$featureName"');
   logger.info('   State management: $stateManagement');
   logger.info(
-    '   Classes: ${screenClass}View · ${screenClass}${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}\n',
+    '   Classes: ${screenClass}View · $screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}\n',
   );
 
   // ── Guard: feature must already exist ─────────────────────────────────────
@@ -97,7 +97,7 @@ Future<void> run(HookContext context) async {
   logger.success('\n✅ $screenClass screen added to $featureClass!');
   logger.info('\n📦 Next steps:');
   logger.info('1. Wire any required usecases into the '
-      '${screenClass}${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'} '
+      '$screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'} '
       'constructor inside core/di/register_$featureFile.dart');
   logger.info('2. Build your UI in '
       'presentation/$screenFile/views/${screenFile}_view.dart');
@@ -557,8 +557,8 @@ void _updateDiRegistration(
     logger.warn(
       '⚠️  core/di/register_$featureFile.dart not found.\n'
       '   Add the registration manually:\n'
-      '   sl.registerFactory<${screenClass}${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}>(\n'
-      '     () => ${screenClass}${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}(),\n'
+      '   sl.registerFactory<$screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}>(\n'
+      '     () => $screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}(),\n'
       '   );',
     );
     return;
@@ -567,9 +567,9 @@ void _updateDiRegistration(
   String content = registerFile.readAsStringSync();
 
   final controllerType =
-      '${screenClass}${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}';
+      '$screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}';
   final importPath =
-      "../../features/$featureFile/presentation/$screenFile/${stateManagement == 'bloc' ? 'blocs' : 'cubit'}/${screenFile}_${stateManagement}.dart";
+      "../../features/$featureFile/presentation/$screenFile/${stateManagement == 'bloc' ? 'blocs' : 'cubit'}/${screenFile}_$stateManagement.dart";
 
   // Guard: already registered?
   if (content.contains('registerFactory<$controllerType>')) {
