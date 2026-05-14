@@ -7,3 +7,5 @@ bricks:
     path: "bricks\\asset_generator"
   export_generator:
     path: "bricks\\export_generator"
+  add_screen:
+    path: "bricks/add_screen"
