@@ -90,11 +90,51 @@ void _createCleanFeature(
   _createUseCaseFiles(featureDir, className, fileName, logger);
   _createEntityFiles(featureDir, className, fileName, logger);
 
+  // ✅ Create feature exports file
+  _createFeatureExportsFile(featureDir, className, fileName, logger);
+
   // ✅ Update routes
   _updateRoutes(libDir, className, fileName, logger);
 
   // ✅ Update dependency injection
   _updateDependencyInjection(libDir, className, fileName, logger);
+}
+
+// ------------------------------------------------------------------
+// 🧩 Create Feature Exports File
+// ------------------------------------------------------------------
+void _createFeatureExportsFile(
+  Directory featureDir,
+  String className,
+  String fileName,
+  Logger logger,
+) {
+  File('${featureDir.path}/${fileName}_exports.dart')
+    ..createSync(recursive: true)
+    ..writeAsStringSync('''// $className Feature Exports
+
+// Core exports
+export '../../../../app_exports.dart';
+
+// Data layer
+export './data/datasources/remote_${fileName}_datasource.dart';
+export './data/repository_impl/${fileName}_repository_impl.dart';
+
+// Domain layer
+export './domain/entities/${fileName}_entity.dart';
+export './domain/repositories/${fileName}_repository.dart';
+export './domain/usecases/${fileName}_usecase.dart';
+
+// Presentation layer - blocs
+export './presentation/blocs/${fileName}_bloc.dart';
+export './presentation/blocs/${fileName}_event.dart';
+export './presentation/blocs/${fileName}_state.dart';
+
+// Note: view is NOT exported here to avoid circular imports.
+// Import the view directly where needed (e.g. routes.dart).
+''');
+  logger.success(
+      '📦 Created: lib/features/$fileName/${fileName}_exports.dart');
 }
 
 // ------------------------------------------------------------------
@@ -110,7 +150,7 @@ void _createBlocFiles(
   File('${featureDir.path}/presentation/views/${fileName}_view.dart')
     ..createSync(recursive: true)
     ..writeAsStringSync('''import 'package:flutter/material.dart';
-import '../../../../app_exports.dart';
+import '../../${fileName}_exports.dart';
 
 class ${className}View extends StatefulWidget {
   const ${className}View({super.key});
@@ -121,7 +161,7 @@ class ${className}View extends StatefulWidget {
 
 class _${className}ViewState extends State<${className}View> {
   final _formKey = GlobalKey<FormState>();
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -189,7 +229,7 @@ class _${className}ViewState extends State<${className}View> {
   // ✅ Bloc
   File('${featureDir.path}/presentation/blocs/${fileName}_bloc.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../app_exports.dart';
+    ..writeAsStringSync('''import '../../${fileName}_exports.dart';
 
 class ${className}Bloc extends Bloc<${className}Event, ${className}State>
     with UsecaseExecuterMixin {
@@ -222,7 +262,7 @@ class ${className}Bloc extends Bloc<${className}Event, ${className}State>
   // ✅ Bloc Events
   File('${featureDir.path}/presentation/blocs/${fileName}_event.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../app_exports.dart';
+    ..writeAsStringSync('''import '../../${fileName}_exports.dart';
 
 abstract class ${className}Event extends Equatable {
   const ${className}Event();
@@ -239,7 +279,7 @@ class ${className}Submitted extends ${className}Event {}
   // ✅ Bloc States
   File('${featureDir.path}/presentation/blocs/${fileName}_state.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../app_exports.dart';
+    ..writeAsStringSync('''import '../../${fileName}_exports.dart';
 
 class ${className}State extends Equatable {
   final dynamic data;
@@ -283,7 +323,7 @@ void _createDataSourceFiles(
 ) {
   File('${featureDir.path}/data/datasources/remote_${fileName}_datasource.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../app_exports.dart';
+    ..writeAsStringSync('''import '../../${fileName}_exports.dart';
 
 abstract interface class IRemote${className}DataSource {
   // TODO: Define your datasource methods here
@@ -320,7 +360,7 @@ void _createRepositoryFiles(
   // Repository Interface
   File('${featureDir.path}/domain/repositories/${fileName}_repository.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../app_exports.dart';
+    ..writeAsStringSync('''import '../../${fileName}_exports.dart';
 
 abstract interface class I${className}Repository {
   // TODO: Define your repository methods here
@@ -334,7 +374,7 @@ abstract interface class I${className}Repository {
   File(
       '${featureDir.path}/data/repository_impl/${fileName}_repository_impl.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../app_exports.dart';
+    ..writeAsStringSync('''import '../../${fileName}_exports.dart';
 
 class ${className}RepositoryImpl extends BaseRepository implements I${className}Repository {
   final IRemote${className}DataSource dataSource;
@@ -364,7 +404,7 @@ void _createUseCaseFiles(
 ) {
   File('${featureDir.path}/domain/usecases/${fileName}_usecase.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../app_exports.dart';
+    ..writeAsStringSync('''import '../../${fileName}_exports.dart';
 
 class ${className}Usecase implements Usecase<dynamic, NoParams> {
   final I${className}Repository repository;
@@ -392,7 +432,7 @@ void _createEntityFiles(
 ) {
   File('${featureDir.path}/domain/entities/${fileName}_entity.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../app_exports.dart';
+    ..writeAsStringSync('''import '../../${fileName}_exports.dart';
 
 class ${className}Entity extends Equatable {
   final String id;
@@ -594,6 +634,18 @@ void _updateDependencyInjection(
     logger.warn(
         '⚠️  $className dependencies already registered in app_dependencies.dart');
     return;
+  }
+
+  // Add feature exports import
+  final featureImport =
+      "import '../features/$fileName/${fileName}_exports.dart';";
+  if (!content.contains(featureImport)) {
+    final lastImportIndex = content.lastIndexOf("import '");
+    if (lastImportIndex != -1) {
+      final endOfLastImport = content.indexOf(';', lastImportIndex) + 1;
+      content =
+          '${content.substring(0, endOfLastImport)}\n$featureImport${content.substring(endOfLastImport)}';
+    }
   }
 
   // Find setupLocator function and add call

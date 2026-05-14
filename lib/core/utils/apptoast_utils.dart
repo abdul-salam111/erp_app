@@ -486,9 +486,14 @@ class _PositionConfig {
 // USAGE EXAMPLES 📝
 // ============================================================================
 
-class ToastExamplesScreen extends StatelessWidget {
+class ToastExamplesScreen extends StatefulWidget {
   const ToastExamplesScreen({super.key});
 
+  @override
+  State<ToastExamplesScreen> createState() => _ToastExamplesScreenState();
+}
+
+class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
