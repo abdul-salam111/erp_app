@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/theme_utils.dart';
+import '../../../../core/utils/currency_utils.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../core/widgets/widgets.dart';
 
@@ -15,7 +16,11 @@ class AdminDashboard extends StatelessWidget {
         padding: context.pagePadding,
         child: Column(
           crossAxisAlignment: .start,
-          children: [_TodayOverviewSection()],
+          children: [
+            _TodayOverviewSection(),
+            const SizedBox(height: 20),
+            const _NewOrdersSection(),
+          ],
         ),
       ),
     );
@@ -84,19 +89,51 @@ class _TodayOverviewSectionState extends State<_TodayOverviewSection> {
     return Column(
       crossAxisAlignment: .start,
       children: [
+        // Header — toggle lives here on phones, saving a full button row below
         Padding(
           padding: const EdgeInsets.only(left: 2, bottom: 10),
-          child: Text(
-            "Today's Overview",
-            style: context.titleSmall.copyWith(
-              fontWeight: .w700,
-              color: context.textPrimary,
-              letterSpacing: 0.2,
-            ),
+          child: Row(
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              Text(
+                "Today's Overview",
+                style: context.titleSmall.copyWith(
+                  fontWeight: .w700,
+                  color: context.textPrimary,
+                  letterSpacing: 0.2,
+                ),
+              ),
+              if (context.isPhone)
+                GestureDetector(
+                  onTap: _toggle,
+                  child: Row(
+                    mainAxisSize: .min,
+                    children: [
+                      Text(
+                        _expanded ? 'Show less' : 'Show more',
+                        style: context.labelMedium.copyWith(
+                          color: context.primary,
+                          fontWeight: .w600,
+                        ),
+                      ),
+                      AnimatedRotation(
+                        turns: _expanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 380),
+                        curve: Curves.easeInOutCubic,
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: context.primary,
+                          size: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
           ),
         ),
 
-        // Tablet/iPad always shows all cards; phone collapses to 4 with animation.
+        // Tablet/iPad shows all; phone collapses to 4 cards.
         AnimatedSize(
           duration: const Duration(milliseconds: 420),
           curve: Curves.easeInOutCubic,
@@ -116,45 +153,6 @@ class _TodayOverviewSectionState extends State<_TodayOverviewSection> {
             itemBuilder: (context, index) => _OverviewCard(item: _items[index]),
           ),
         ),
-
-        // Show more / less only needed on phones
-        if (context.isPhone) ...[
-          const SizedBox(height: 10),
-          GestureDetector(
-            onTap: _toggle,
-            child: Container(
-              width: .infinity,
-              padding: .symmetric(vertical: 9),
-              decoration: BoxDecoration(
-                color: context.primary.withValues(alpha: 0.06),
-                borderRadius: .circular(8),
-              ),
-              child: Row(
-                mainAxisAlignment: .center,
-                children: [
-                  Text(
-                    _expanded ? 'Show less' : 'Show more',
-                    style: context.labelMedium.copyWith(
-                      color: context.primary,
-                      fontWeight: .w600,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  AnimatedRotation(
-                    turns: _expanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 380),
-                    curve: Curves.easeInOutCubic,
-                    child: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: context.primary,
-                      size: 18,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ],
     );
   }
@@ -239,6 +237,194 @@ class _OverviewCard extends StatelessWidget {
       ),
     );
   }
+}
+
+// ─── New Orders Section ───────────────────────────────────────────────────────
+
+class _NewOrdersSection extends StatelessWidget {
+  const _NewOrdersSection();
+
+  static const _orders = <_OrderItem>[
+    _OrderItem(
+      customer: 'Abbas Labour Contractor',
+      items: [],
+      amount: 101487.12,
+    ),
+    _OrderItem(
+      customer: 'Abdullah ENG Okara M. Sarwar',
+      items: ['Corn Flour'],
+      amount: 5000,
+    ),
+   
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        // Header row
+        Row(
+          mainAxisAlignment: .spaceBetween,
+          children: [
+            Text(
+              'New Orders',
+              style: context.titleSmall.copyWith(
+                fontWeight: .w700,
+                color: context.textPrimary,
+                letterSpacing: 0.2,
+              ),
+            ),
+            TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                padding: .symmetric(horizontal: 10, vertical: 4),
+                minimumSize: .zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text(
+                'View all',
+                style: context.labelMedium.copyWith(
+                  color: context.primary,
+                  fontWeight: .w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+
+        // Order list
+        Container(
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: .circular(12),
+            border: Border.all(color: context.border),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _orders.length,
+            separatorBuilder: (_, __) =>
+                Divider(height: 1, thickness: 1, color: context.border),
+            itemBuilder: (context, index) => _OrderTile(order: _orders[index]),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Order Tile ───────────────────────────────────────────────────────────────
+
+class _OrderTile extends StatelessWidget {
+  final _OrderItem order;
+
+  const _OrderTile({required this.order});
+
+  @override
+  Widget build(BuildContext context) {
+    final initials = order.customer
+        .trim()
+        .split(' ')
+        .take(2)
+        .map((w) => w[0].toUpperCase())
+        .join();
+
+    // Show item name only when exactly one item in the order
+    final subtitle = order.items.length == 1 ? order.items.first : null;
+
+    return Padding(
+      padding: .symmetric(horizontal: 14, vertical: 12),
+      child: Row(
+        children: [
+          // Avatar
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: context.primary.withValues(alpha: 0.10),
+              borderRadius: .circular(10),
+            ),
+            alignment: .center,
+            child: Text(
+              initials,
+              style: context.labelMedium.copyWith(
+                color: context.primary,
+                fontWeight: .w700,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+
+          // Name + item (only if exactly one)
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              mainAxisAlignment: .center,
+              children: [
+                Text(
+                  order.customer,
+                  style: context.bodySmall.copyWith(
+                    fontWeight: .w600,
+                    color: context.textPrimary,
+                    height: 1.2,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: context.labelSmall.copyWith(
+                      color: context.textSecondary,
+                      height: 1.2,
+                    ),
+                    maxLines: 1,
+                    overflow: .ellipsis,
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+
+          // Amount
+          Text(
+            'Rs ${order.amount.asPrice}',
+            style: context.bodySmall.copyWith(
+              fontWeight: .w700,
+              color: context.textPrimary,
+              height: 1.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Data models ──────────────────────────────────────────────────────────────
+
+class _OrderItem {
+  final String customer;
+  final List<String> items;
+  final double amount;
+
+  const _OrderItem({
+    required this.customer,
+    required this.items,
+    required this.amount,
+  });
 }
 
 // ─── Data model ───────────────────────────────────────────────────────────────
