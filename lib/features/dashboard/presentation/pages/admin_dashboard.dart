@@ -4,6 +4,7 @@ import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/currency_utils.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../core/widgets/widgets.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -12,7 +13,7 @@ class AdminDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Admin Dashboard',
+        title: AppConstants.adminDashboardTitle,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 14),
@@ -34,7 +35,7 @@ class AdminDashboard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 const Text(
-                  'Admin',
+                  AppConstants.admin,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -76,42 +77,42 @@ class _TodayOverviewSectionState extends State<_TodayOverviewSection> {
 
   static const _items = <_OverviewItem>[
     _OverviewItem(
-      label: 'Recovery due today',
+      label: AppConstants.recoveryDueTodayLabel,
       icon: Icons.monetization_on_outlined,
       color: Color(0xFFFF9800),
     ),
     _OverviewItem(
-      label: 'Received today',
+      label: AppConstants.receivedTodayLabel,
       icon: Icons.attach_money_rounded,
       color: Color(0xFF4CAF50),
     ),
     _OverviewItem(
-      label: 'Expenses today',
+      label: AppConstants.expensesTodayLabel,
       icon: Icons.credit_card_outlined,
       color: Color(0xFFE53935),
     ),
     _OverviewItem(
-      label: 'Purchases today',
+      label: AppConstants.purchasesTodayLabel,
       icon: Icons.shopping_bag_outlined,
       color: Color(0xFF9C27B0),
     ),
     _OverviewItem(
-      label: 'Payments to make',
+      label: AppConstants.paymentsToMakeLabel,
       icon: Icons.payment_outlined,
       color: Color(0xFFFF9800),
     ),
     _OverviewItem(
-      label: 'Payments made',
+      label: AppConstants.paymentsMadeLabel,
       icon: Icons.task_alt_outlined,
       color: Color(0xFF00ACC1),
     ),
     _OverviewItem(
-      label: 'Sales today',
+      label: AppConstants.salesTodayLabel,
       icon: Icons.shopping_cart_outlined,
       color: Color(0xFF1B84FF),
     ),
     _OverviewItem(
-      label: 'New orders',
+      label: AppConstants.newOrdersLabel,
       icon: Icons.inventory_2_outlined,
       color: Color(0xFF7B61FF),
     ),
@@ -131,7 +132,7 @@ class _TodayOverviewSectionState extends State<_TodayOverviewSection> {
             mainAxisAlignment: .spaceBetween,
             children: [
               Text(
-                "Today's Overview",
+                AppConstants.todaySOverview,
                 style: context.titleSmall.copyWith(
                   fontWeight: .w700,
                   color: context.textPrimary,
@@ -145,7 +146,7 @@ class _TodayOverviewSectionState extends State<_TodayOverviewSection> {
                     mainAxisSize: .min,
                     children: [
                       Text(
-                        _expanded ? 'Show less' : 'Show more',
+                        _expanded ? AppConstants.showLess : AppConstants.showMore,
                         style: context.labelMedium.copyWith(
                           color: context.primary,
                           fontWeight: .w600,
@@ -242,7 +243,7 @@ class _OverviewCard extends StatelessWidget {
                       mainAxisAlignment: .center,
                       children: [
                         Text(
-                          'Rs 0',
+                          AppConstants.rs0,
                           style: context.bodyMedium.copyWith(
                             fontWeight: .w700,
                             color: context.textPrimary,
@@ -281,13 +282,13 @@ class _NewOrdersSection extends StatelessWidget {
 
   static const _orders = <_OrderItem>[
     _OrderItem(
-      customer: 'Abbas Labour Contractor',
+      customer: AppConstants.abbasLabourContractor,
       items: [],
       amount: 101487.12,
     ),
     _OrderItem(
-      customer: 'Abdullah ENG Okara M. Sarwar',
-      items: ['Corn Flour'],
+      customer: AppConstants.abdullahENGOkara,
+      items: [AppConstants.cornFlour],
       amount: 5000,
     ),
    
@@ -303,7 +304,7 @@ class _NewOrdersSection extends StatelessWidget {
           mainAxisAlignment: .spaceBetween,
           children: [
             Text(
-              'New Orders',
+              AppConstants.newOrders,
               style: context.titleSmall.copyWith(
                 fontWeight: .w700,
                 color: context.textPrimary,
@@ -318,7 +319,7 @@ class _NewOrdersSection extends StatelessWidget {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
-                'View all',
+                AppConstants.viewAll,
                 style: context.labelMedium.copyWith(
                   color: context.primary,
                   fontWeight: .w600,

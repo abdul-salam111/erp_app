@@ -7,6 +7,7 @@ import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../auth_exports.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 
 class SignInView extends StatefulWidget {
@@ -24,13 +25,13 @@ class _SignInViewState extends State<SignInView> {
       create: (_) => sl<SignInBloc>(),
       child: UnfocusWrapper(
         child: Scaffold(
-          appBar: AppBar(title: const Text('Sign In')),
+          appBar: AppBar(title: const Text(AppConstants.signInTitle)),
           body: BlocConsumer<SignInBloc, SignInState>(
             listener: (context, state) {
               if (state.apiStatus == ApiStatus.SUCCESS) {
                 AppToastsUtils.showSuccessTop(
                   context,
-                  "You have loggedin successfully!",
+                  AppConstants.youHaveLoggedinSuccessfully,
                 );
               }
 
@@ -51,9 +52,9 @@ class _SignInViewState extends State<SignInView> {
                         builder: (context, state) {
                           return CustomTextFormField(
                             prefixIcon: Iconsax.sms,
-                            label: "Email",
+                            label: AppConstants.emailLabel,
                             keyboardType: TextInputType.emailAddress,
-                            hintText: "Enter your email",
+                            hintText: AppConstants.enterYourEmailHint,
                             onChanged: (email) {
                               context.read<SignInBloc>().add(
                                 EmailChangedEvent(email),
@@ -74,8 +75,8 @@ class _SignInViewState extends State<SignInView> {
                             },
                             obscureText: true,
                             prefixIcon: Iconsax.lock,
-                            label: 'Password',
-                            hintText: "Enter your password",
+                            label: AppConstants.passwordLabel,
+                            hintText: AppConstants.enterYourPasswordHint,
                             keyboardType: TextInputType.visiblePassword,
                           );
                         },
@@ -86,7 +87,7 @@ class _SignInViewState extends State<SignInView> {
                         builder: (context, state) {
                           return CustomButton(
                             isLoading: state.apiStatus == ApiStatus.LOADING,
-                            text: "SignIn",
+                            text: AppConstants.signInBtn,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 context.read<SignInBloc>().add(
