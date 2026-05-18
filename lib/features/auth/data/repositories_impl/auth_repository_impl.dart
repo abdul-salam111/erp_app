@@ -18,10 +18,4 @@ class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
     );
   }
 
-  @override
-  Future<Either<AppException, dynamic>> forgetPassword() {
-    return execute(
-      call: () => dataSource.forgetPassword(),
-    );
-  }
 }

@@ -4,7 +4,7 @@ import '../../../auth_exports.dart';
 
 abstract interface class IAuthRemoteDatasource {
   Future<UserToken> loginUserById({required LoginUserById loginUserById});
-  Future<dynamic> forgetPassword();
+
 }
 
 class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
@@ -22,9 +22,5 @@ class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
     );
   }
 
-  @override
-  Future<dynamic> forgetPassword() async {
-    // TODO: implement forgetPassword API call
-    throw UnimplementedError('forgetPassword not implemented');
-  }
+
 }

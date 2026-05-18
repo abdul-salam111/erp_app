@@ -6,5 +6,5 @@ abstract interface class IAuthRepostiory {
   Future<Either<AppException, UserToken>> signinUserById({
     required LoginUserById loginUserById,
   });
-  Future<Either<AppException, dynamic>> forgetPassword();
+
 }
