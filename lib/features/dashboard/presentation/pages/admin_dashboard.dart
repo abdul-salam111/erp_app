@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
+import 'package:mantic_erp_app/core/utils/utils_exports.dart';
+import 'package:mantic_erp_app/routes/route_exports.dart';
+import '../../../../core/constants/const_exports.dart';
 import '../../../../core/theme/theme_utils.dart';
-import '../../../../core/utils/currency_utils.dart';
-import '../../../../core/utils/responsive.dart';
 import '../../../../core/widgets/widgets.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
+
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -32,7 +33,9 @@ class AdminDashboard extends StatelessWidget {
                     color: Colors.white,
                     size: 18,
                   ),
-                ),
+                ).onTap(() {
+                  context.pushNamed(RouteNames.profile);
+                }),
                 const SizedBox(height: 2),
                 const Text(
                   AppConstants.admin,
@@ -146,7 +149,9 @@ class _TodayOverviewSectionState extends State<_TodayOverviewSection> {
                     mainAxisSize: .min,
                     children: [
                       Text(
-                        _expanded ? AppConstants.showLess : AppConstants.showMore,
+                        _expanded
+                            ? AppConstants.showLess
+                            : AppConstants.showMore,
                         style: context.labelMedium.copyWith(
                           color: context.primary,
                           fontWeight: .w600,
@@ -291,7 +296,6 @@ class _NewOrdersSection extends StatelessWidget {
       items: [AppConstants.cornFlour],
       amount: 5000,
     ),
-   
   ];
 
   @override

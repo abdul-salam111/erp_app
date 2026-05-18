@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
             routerConfig: AppRoutes.router,
           );
         },
+        
       ),
     );
   }

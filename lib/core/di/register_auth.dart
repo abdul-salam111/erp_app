@@ -16,4 +16,9 @@ Future<void> registerAuth() async {
   sl.registerLazySingleton<SignInUsecase>(
     () => SignInUsecase(repository: sl()),
   );
+
+  // Bloc
+  sl.registerFactory<SignInBloc>(
+    () => SignInBloc(signinUsecase: sl()),
+  );
 }
