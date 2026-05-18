@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import '../networks/network_manager/prints.dart';
+import '../utils/app_logger.dart';
 import '../networks/network_manager/dio_helper.dart';
 import 'app_dependencies.dart';
 
@@ -32,22 +32,26 @@ Dio _createDio() {
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) {
-        printValue(tag: 'API URL:', '${options.uri}');
-        printValue(tag: 'HEADER:', options.headers);
+        appLogger.d('[→] ${options.method} ${options.uri}');
+        appLogger.d('[→] Headers: ${options.headers}');
         try {
-          printValue(tag: 'REQUEST BODY:', jsonEncode(options.data));
-        } catch (e) {
-          printValue(tag: 'REQUEST BODY:', e.toString());
-        }
+          appLogger.d('[→] Body: ${jsonEncode(options.data)}');
+        } catch (_) {}
         return handler.next(options);
       },
       onResponse: (response, handler) {
-        printValue(tag: 'API RESPONSE:', response.data);
+        appLogger.i(
+          '[←] ${response.statusCode} ${response.requestOptions.uri}',
+        );
+        appLogger.d('[←] Body: ${response.data}');
         return handler.next(response);
       },
       onError: (e, handler) {
-        printValue(tag: 'STATUS CODE:', '${e.response?.statusCode ?? ""}');
-        printValue(tag: 'ERROR DATA:', '${e.response?.data ?? ""}');
+        appLogger.e(
+          '[✗] ${e.response?.statusCode} ${e.requestOptions.method} ${e.requestOptions.uri}',
+          error: e,
+          stackTrace: e.stackTrace,
+        );
         return handler.next(e);
       },
     ),

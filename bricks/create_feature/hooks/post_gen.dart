@@ -114,11 +114,13 @@ void _createBlocFiles(
   File('$viewDir/${screenFile}_view.dart')
     ..createSync(recursive: true)
     ..writeAsStringSync('''import 'package:flutter/material.dart';
-import '../../../../../core/shared/shared_exports.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
-import '../../../../../core/widgets/widgets_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../core/widgets/custom_button.dart';
+import '../../../${featureFile}_exports.dart';
 
 class ${screenClass}View extends StatelessWidget {
   const ${screenClass}View({super.key});
@@ -146,10 +148,10 @@ class _${screenClass}BodyState extends State<_${screenClass}Body> {
   Widget build(BuildContext context) {
     return BlocConsumer<${screenClass}Bloc, ${screenClass}State>(
       listener: (context, state) {
-        if (state.apiStatus == ApiStatus.success) {
+        if (state.apiStatus == ApiStatus.SUCCESS) {
           AppToastsUtils.showSuccessTop(context, 'Success!');
         }
-        if (state.apiStatus == ApiStatus.failure) {
+        if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
       },
@@ -171,7 +173,7 @@ class _${screenClass}BodyState extends State<_${screenClass}Body> {
                         buildWhen: (p, n) => p.apiStatus != n.apiStatus,
                         builder: (context, state) {
                           return CustomButton(
-                            isLoading: state.apiStatus == ApiStatus.loading,
+                            isLoading: state.apiStatus == ApiStatus.LOADING,
                             text: 'Submit',
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
@@ -203,8 +205,8 @@ class _${screenClass}BodyState extends State<_${screenClass}Body> {
   // ── BLoC ─────────────────────────────────────────────────────────────────
   File('$blocDir/${screenFile}_bloc.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../../core/shared/shared_exports.dart';
-import '../../../../../core/constants/const_exports.dart';
+    ..writeAsStringSync('''import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/shared/shared_exports.dart';
 import '${screenFile}_event.dart';
 import '${screenFile}_state.dart';
 
@@ -241,7 +243,7 @@ class ${screenClass}Bloc extends Bloc<${screenClass}Event, ${screenClass}State>
   // ── Event ─────────────────────────────────────────────────────────────────
   File('$blocDir/${screenFile}_event.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../../core/shared/shared_exports.dart';
+    ..writeAsStringSync('''import 'package:equatable/equatable.dart';
 
 abstract class ${screenClass}Event extends Equatable {
   const ${screenClass}Event();
@@ -259,7 +261,7 @@ class ${screenClass}Submitted extends ${screenClass}Event {}
   // ── State ─────────────────────────────────────────────────────────────────
   File('$blocDir/${screenFile}_state.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../../core/shared/shared_exports.dart';
+    ..writeAsStringSync('''import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/const_exports.dart';
 
 class ${screenClass}State extends Equatable {
@@ -270,7 +272,7 @@ class ${screenClass}State extends Equatable {
   const ${screenClass}State({
     this.data,
     this.message,
-    this.apiStatus = ApiStatus.initial,
+    this.apiStatus = ApiStatus.INITIAL,
   });
 
   ${screenClass}State copyWith({
@@ -345,7 +347,8 @@ void _createRepositoryFiles(
   // Abstract interface (Dart convention: no I-prefix)
   File('${featureDir.path}/domain/repositories/${featureFile}_repository.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../core/shared/shared_exports.dart';
+    ..writeAsStringSync('''import 'package:fpdart/fpdart.dart';
+import '../../../../core/shared/shared_exports.dart';
 
 abstract interface class ${featureClass}Repository {
   // TODO: Define your repository methods here
@@ -360,7 +363,8 @@ abstract interface class ${featureClass}Repository {
   File(
       '${featureDir.path}/data/repositories_impl/${featureFile}_repository_impl.dart',)
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../core/shared/shared_exports.dart';
+    ..writeAsStringSync('''import 'package:fpdart/fpdart.dart';
+import '../../../../core/shared/shared_exports.dart';
 import '../../domain/repositories/${featureFile}_repository.dart';
 import '../datasources/remote_${featureFile}_datasource.dart';
 
@@ -396,7 +400,8 @@ void _createUseCaseFiles(
 ) {
   File('${featureDir.path}/domain/usecases/${screenFile}_usecase.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../../core/shared/shared_exports.dart';
+    ..writeAsStringSync('''import 'package:fpdart/fpdart.dart';
+import '../../../../core/shared/shared_exports.dart';
 import '../repositories/${featureFile}_repository.dart';
 
 class ${screenClass}Usecase implements Usecase<dynamic, NoParams> {

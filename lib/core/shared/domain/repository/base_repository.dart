@@ -1,26 +1,25 @@
-// ignore_for_file: unintended_html_in_doc_comment
-
 /* -------------------------------------------------------------------------- */
 /*                             Base Repository                                 */
 /* -------------------------------------------------------------------------- */
 
 import 'package:fpdart/fpdart.dart';
 
+import '../../../errors/failures.dart';
 import '../../../networks/network_exports.dart';
 
 abstract class BaseRepository {
-  /// Execute repository call with automatic error handling
-  /// Wraps result in Either <AppException, T>
-  Future<Either<AppException, T>> execute<T>({
+  /// Executes a data-layer [call] and maps the result into [Either<Failure, T>].
+  /// [AppException] subtypes are translated to [Failure] subtypes here —
+  /// nothing above this layer ever sees a raw [AppException].
+  Future<Either<Failure, T>> execute<T>({
     required Future<T> Function() call,
   }) async {
     try {
-      final result = await call();
-      return Right(result);
+      return Right(await call());
     } on AppException catch (e) {
-      return Left(e);
+      return Left(Failure.fromException(e));
     } catch (e) {
-      return Left(AppException(e.toString()));
+      return Left(UnknownFailure(e.toString()));
     }
   }
 }

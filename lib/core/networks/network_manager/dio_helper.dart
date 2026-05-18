@@ -40,7 +40,6 @@ class DioHelper {
       return response.data;
     } on DioException catch (error) {
       _handleDioError(error);
-      rethrow;
     } catch (error) {
       throw FetchDataException(error.toString());
     }
@@ -70,7 +69,6 @@ class DioHelper {
       return response.data;
     } on DioException catch (error) {
       _handleDioError(error);
-      rethrow;
     } catch (error) {
       throw FetchDataException(error.toString());
     }
@@ -100,7 +98,6 @@ class DioHelper {
       return response.data;
     } on DioException catch (error) {
       _handleDioError(error);
-      rethrow;
     } catch (error) {
       throw FetchDataException(error.toString());
     }
@@ -130,7 +127,6 @@ class DioHelper {
       return response.data;
     } on DioException catch (error) {
       _handleDioError(error);
-      rethrow;
     } catch (error) {
       throw FetchDataException(error.toString());
     }
@@ -161,11 +157,11 @@ class DioHelper {
     } on DioException catch (error) {
       _handleDioError(error);
     } catch (error) {
-      return null;
+      throw FetchDataException(error.toString());
     }
   }
 
-  void _handleDioError(DioException error) {
+  Never _handleDioError(DioException error) {
     // Handle HTTP status codes first
     final statusCode = error.response?.statusCode;
 
@@ -194,7 +190,7 @@ class DioHelper {
             errorMessage ?? 'Internal server error',
           );
         case 502:
-          throw BadRequestException(errorMessage ?? 'Bad gateway');
+          throw InternalServerErrorException(errorMessage ?? 'Bad gateway');
         case 503:
           throw ServiceUnavailableException(
             errorMessage ?? 'Service unavailable',
@@ -399,7 +395,6 @@ class DioHelper {
       return response.data;
     } on DioException catch (error) {
       _handleDioError(error);
-      rethrow;
     } catch (error) {
       throw FetchDataException(error.toString());
     }
