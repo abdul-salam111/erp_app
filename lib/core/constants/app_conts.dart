@@ -1,3 +1,5 @@
+import 'dart:core';
+
 class AppConstants {
 
   // ─── Auth ──────────────────────────────────────────────
@@ -27,6 +29,93 @@ class AppConstants {
   static const String abbasLabourContractor = 'Abbas Labour Contractor';
   static const String abdullahENGOkara = 'Abdullah ENG Okara M. Sarwar';
   static const String cornFlour = 'Corn Flour';
-  static const String newOrders = 'New Orders';
+  static const String newOrders = 'New \nOrders';
   static const String viewAll = 'View all';
+  static const String administrator = 'Administrator';
+  static const String dashboardLabel = 'Dashboard';
+  static const String scanDocumentLabel = 'Scan Document';
+  static const String modules = 'Modules';
+  static const String accountsLabel = 'Accounts';
+  static const String inventoryLabel = 'Inventory';
+  static const String purchaseLabel = 'Purchase';
+  static const String salesLabel = 'Sales';
+  static const String productionLabel = 'Production';
+  static const String analyticsLabel = 'Analytics';
+  static const String securityLabel = 'Security';
+  static const String systemLabel = 'System';
+  static const String assetsLabel = 'Assets';
+  static const String logout = 'Logout';
+  static const String goodMorning = 'Good Morning';
+  static const String goodAfternoon = 'Good Afternoon';
+  static const String goodEveningMsg = 'Good Evening';
+  static const String jan = 'Jan';
+  static const String feb = 'Feb';
+  static const String mar = 'Mar';
+  static const String apr = 'Apr';
+  static const String may = 'May';
+  static const String jun = 'Jun';
+  static const String jul = 'Jul';
+  static const String aug = 'Aug';
+  static const String sep = 'Sep';
+  static const String oct = 'Oct';
+  static const String nov = 'Nov';
+  static const String dec = 'Dec';
+  static const String mon = 'Mon';
+  static const String tue = 'Tue';
+  static const String wed = 'Wed';
+  static const String thu = 'Thu';
+  static const String fri = 'Fri';
+  static const String sat = 'Sat';
+  static const String sun = 'Sun';
+  static const String eRPDashboard = 'ERP Dashboard';
+  static const String expensesLabel = 'Expenses';
+  static const String rs6110 = 'Rs 6,110';
+  static const String change84Percent = '84 %';
+  static const String changeMinus250Percent = '-250 %';
+  static const String newClientsLabel = 'New Clients';
+  static const String changeMinus100Percent = '-100 %';
+  static const String totalRevenueLabel = 'Total Revenue';
+  static const String rs503100Label = 'Rs 503,100';
+  static const String totalPurchasesLabel = 'Total Purchases';
+  static const String rs6300Label = 'Rs 6,300';
+  static const String recoveriesLabel = 'Recoveries';
+  static const String monthOverview = 'Month Overview';
+  static const String may2026 = 'May 2026';
+  static const String quickActionsTitle = 'Quick Actions';
+  // ─── AlertPanel ────────────────────────────────────────
+  static const String pendingQCTitle = 'Pending QC';
+  static const String itemsReceivedButNotYetTitle = 'Items received but not yet quality-checked.';
+  static const String lowStockTitle = 'Low Stock';
+  static const String itemsBelowMinimumThresholdTitle = 'Items below minimum threshold.';
+  static const String overdueMaintenanceTitle = 'Overdue Maintenance';
+  static const String scheduledMaintenanceIsPastDueTitle = 'Scheduled maintenance is past due.';
+  static const String pendingAssetRegistrationTitle = 'Pending Asset Registration';
+  static const String gRNItemsAwaitingTitle = 'GRN items awaiting asset tag assignment.';
+  static const String delayedRepairTitle = 'Delayed Repair';
+  static const String twoAssetsOverdueFromRepairTitle = '2 assets overdue from repair center by 2+ days.';
+  static const String resolvedSuccessfullySuccessMsg = 'Resolved successfully!';
+  static const String alert = 'Alert';
+  static const String anomaliesThatCanBlockWork = 'Anomalies that can block work today';
+  static const String resolve = 'Resolve';
+
+  // ─── General ───────────────────────────────────────────
+  static const String alertsTitle = 'Alerts';
+  static const String profileLabel = 'Profile';
+  static const String successSuccessMsg = 'Success!';
+  static const String submitBtn = 'Submit';
+
+  // ─── Profile ───────────────────────────────────────────
+  static const String profileView = 'Profile View';
+
+  // ─── PurchaseOrder ─────────────────────────────────────
+  static const String purchaseOrderTitle = 'PurchaseOrder';
+  static const String purchaseOrderView = 'PurchaseOrder View';
+
+  // ─── SaleOrder ─────────────────────────────────────────
+  static const String saleOrderTitle = 'SaleOrder';
+  static const String saleOrderView = 'SaleOrder View';
+
+  // ─── ScanDocument ──────────────────────────────────────
+  static const String scanDocumentTitle = 'ScanDocument';
+  static const String scanDocumentView = 'ScanDocument View';
 }

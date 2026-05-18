@@ -44,7 +44,7 @@ mainAxisAlignment: .start / .center / .end / .spaceBetween / .spaceAround / .spa
 mainAxisSize: .min / .max,
 textAlign: .start / .center / .end / .justify,
 alignment: .center / .topLeft / .bottomRight,  // on Align/Container
-
+padding:.zero / .all() / .syemetric
 // Text & Typography
 fontWeight: .w400 / .w500 / .w600 / .w700 / .bold / .normal,
 overflow: .ellipsis / .fade / .clip / .visible,

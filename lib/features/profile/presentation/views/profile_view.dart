@@ -6,6 +6,7 @@ import '../../../../core/constants/const_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../profile_exports.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -34,7 +35,7 @@ class _ProfileBodyState extends State<_ProfileBody> {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(context, 'Success!');
+          AppToastsUtils.showSuccessTop(context, AppConstants.successSuccessMsg);
         }
         if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
@@ -43,11 +44,11 @@ class _ProfileBodyState extends State<_ProfileBody> {
       builder: (context, state) {
         return UnfocusWrapper(
           child: Scaffold(
-            appBar: CustomAppBar(title: 'Profile'),
+            appBar: CustomAppBar(title: AppConstants.profileLabel),
             body: Form(
               key: _formKey,
               child: const Center(
-                child: Text('Profile View'),
+                child: Text(AppConstants.profileView),
               ),
             ),
           ),

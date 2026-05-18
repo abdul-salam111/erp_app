@@ -5,6 +5,7 @@ import 'package:mantic_erp_app/core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/routes/route_exports.dart';
 import '../../../../core/constants/const_exports.dart';
 import '../widgets/dashboard_widgets.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -23,35 +24,23 @@ class AdminDashboard extends StatelessWidget {
       ),
       drawer: const AppDrawer(
         userName: AppConstants.admin,
-        userRole: 'Administrator',
+        userRole: AppConstants.administrator,
         items: [
-          DrawerItem.tile(label: 'Dashboard', icon: Iconsax.home_2),
-          DrawerItem.tile(
-            label: 'Alerts',
-            icon: Iconsax.notification,
-            routeName: RouteNames.alert_panel,
-          ),
-          DrawerItem.tile(
-            label: 'Profile',
-            icon: Iconsax.profile_circle,
-            routeName: RouteNames.profile,
-          ),
-          DrawerItem.tile(
-            label: 'Scan Document',
-            icon: Iconsax.scan,
-            routeName: RouteNames.scan_document,
-          ),
+          DrawerItem.tile(label: AppConstants.dashboardLabel,     icon: Iconsax.home_2,          color: Color(0xFF1B84FF)),
+          DrawerItem.tile(label: AppConstants.alertsTitle,        icon: Iconsax.notification,    color: Color(0xFFE53935), routeName: RouteNames.alert_panel),
+          DrawerItem.tile(label: AppConstants.profileLabel,       icon: Iconsax.profile_circle,  color: Color(0xFF00897B), routeName: RouteNames.profile),
+          DrawerItem.tile(label: AppConstants.scanDocumentLabel, icon: Iconsax.scan,            color: Color(0xFF546E7A), routeName: RouteNames.scan_document),
           DrawerItem.divider(),
-          DrawerItem.category('Modules'),
-          DrawerItem.tile(label: 'Accounts',   icon: Iconsax.dollar_circle),
-          DrawerItem.tile(label: 'Inventory',  icon: Iconsax.element_3),
-          DrawerItem.tile(label: 'Purchase',   icon: Iconsax.shopping_bag,  routeName: RouteNames.purchase_order),
-          DrawerItem.tile(label: 'Sales',      icon: Iconsax.truck,         routeName: RouteNames.sale_order),
-          DrawerItem.tile(label: 'Production', icon: Iconsax.buildings_2),
-          DrawerItem.tile(label: 'Analytics',  icon: Iconsax.chart_2),
-          DrawerItem.tile(label: 'Security',   icon: Iconsax.security_user),
-          DrawerItem.tile(label: 'System',     icon: Iconsax.setting_2),
-          DrawerItem.tile(label: 'Assets',     icon: Iconsax.convert_3d_cube),
+          DrawerItem.category(AppConstants.modules),
+          DrawerItem.tile(label: AppConstants.accountsLabel,   icon: Iconsax.dollar_circle,   color: Color(0xFF1B84FF)),
+          DrawerItem.tile(label: AppConstants.inventoryLabel,  icon: Iconsax.element_3,        color: Color(0xFF009688)),
+          DrawerItem.tile(label: AppConstants.purchaseLabel,   icon: Iconsax.shopping_bag,    color: Color(0xFF9C27B0), routeName: RouteNames.purchase_order),
+          DrawerItem.tile(label: AppConstants.salesLabel,      icon: Iconsax.truck,            color: Color(0xFF4CAF50), routeName: RouteNames.sale_order),
+          DrawerItem.tile(label: AppConstants.productionLabel, icon: Iconsax.buildings_2,      color: Color(0xFFFF9800)),
+          DrawerItem.tile(label: AppConstants.analyticsLabel,  icon: Iconsax.chart_2,          color: Color(0xFF7B1FA2)),
+          DrawerItem.tile(label: AppConstants.securityLabel,   icon: Iconsax.security_user,    color: Color(0xFF546E7A)),
+          DrawerItem.tile(label: AppConstants.systemLabel,     icon: Iconsax.setting_2,        color: Color(0xFF6D4C41)),
+          DrawerItem.tile(label: AppConstants.assetsLabel,     icon: Iconsax.convert_3d_cube,  color: Color(0xFF00897B)),
         ],
       ),
 
@@ -61,7 +50,7 @@ class AdminDashboard extends StatelessWidget {
           // ── Merged greeting + app-bar header ──
           const DashboardHeader(
             userName: AppConstants.admin,
-            userRole: 'Administrator',
+            userRole: AppConstants.administrator,
           ),
           // ── Scrollable content ──
           Expanded(
@@ -75,6 +64,8 @@ class AdminDashboard extends StatelessWidget {
                   const QuickActionsSection(),
                   const SizedBox(height: 20),
                   const NewOrdersSection(),
+                  const SizedBox(height: 20),
+                  const MonthOverviewSection(),
                   const SizedBox(height: 12),
                 ],
               ),

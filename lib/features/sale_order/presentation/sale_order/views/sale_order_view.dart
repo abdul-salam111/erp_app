@@ -6,6 +6,7 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../sale_order_exports.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class SaleOrderView extends StatelessWidget {
   const SaleOrderView({super.key});
@@ -34,7 +35,7 @@ class _SaleOrderBodyState extends State<_SaleOrderBody> {
     return BlocConsumer<SaleOrderBloc, SaleOrderState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(context, 'Success!');
+          AppToastsUtils.showSuccessTop(context, AppConstants.successSuccessMsg);
         }
         if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
@@ -43,7 +44,7 @@ class _SaleOrderBodyState extends State<_SaleOrderBody> {
       builder: (context, state) {
         return UnfocusWrapper(
           child: Scaffold(
-            appBar: CustomAppBar(title: 'SaleOrder'),
+            appBar: CustomAppBar(title: AppConstants.saleOrderTitle),
             body: Center(
               child: Padding(
                 padding: const EdgeInsets.all(12),
@@ -52,14 +53,14 @@ class _SaleOrderBodyState extends State<_SaleOrderBody> {
                   child: ListView(
                     children: [
                       // TODO: Add your UI widgets here
-                      const Text('SaleOrder View'),
+                      const Text(AppConstants.saleOrderView),
                       heightBox(context.screenHeight * 0.05),
                       BlocBuilder<SaleOrderBloc, SaleOrderState>(
                         buildWhen: (p, n) => p.apiStatus != n.apiStatus,
                         builder: (context, state) {
                           return CustomButton(
                             isLoading: state.apiStatus == ApiStatus.LOADING,
-                            text: 'Submit',
+                            text: AppConstants.submitBtn,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 context

@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../routes/route_exports.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class DashboardHeader extends StatelessWidget {
   final String userName;
@@ -17,18 +18,18 @@ class DashboardHeader extends StatelessWidget {
 
   String get _greeting {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 12) return AppConstants.goodMorning;
+    if (hour < 17) return AppConstants.goodAfternoon;
+    return AppConstants.goodEveningMsg;
   }
 
   String get _formattedDate {
     final now = DateTime.now();
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      AppConstants.jan, AppConstants.feb, AppConstants.mar, AppConstants.apr, AppConstants.may, AppConstants.jun,
+      AppConstants.jul, AppConstants.aug, AppConstants.sep, AppConstants.oct, AppConstants.nov, AppConstants.dec,
     ];
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const days = [AppConstants.mon, AppConstants.tue, AppConstants.wed, AppConstants.thu, AppConstants.fri, AppConstants.sat, AppConstants.sun];
     return '${days[now.weekday - 1]}, ${months[now.month - 1]} ${now.day}';
   }
 
@@ -90,7 +91,7 @@ class DashboardHeader extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'ERP Dashboard',
+                        AppConstants.eRPDashboard,
                         style: context.titleSmall.copyWith(
                           color: Colors.white,
                           fontWeight: .w600,
