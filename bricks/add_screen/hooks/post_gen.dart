@@ -4,20 +4,20 @@ import 'package:mason/mason.dart';
 // ---------------------------------------------------------------------------
 // add_screen
 //
-// Adds a new screen (presentation layer only) to an existing feature.
+// TWO MODES — determined automatically by whether the feature already exists:
 //
-// What it does:
-//   1. Creates  lib/features/{feature}/presentation/{screen}/blocs/  (or cubit/)
-//   2. Creates  lib/features/{feature}/presentation/{screen}/views/
-//   3. Generates BLoC (event + state + bloc) OR Cubit (cubit + state) files
-//   4. Generates the view file (StatelessWidget shell + StatefulWidget body)
-//   5. Appends presentation exports to  features/{feature}/{feature}_exports.dart
-//   6. Adds route entries to route_names.dart, route_paths.dart, routes.dart
-//   7. Adds a BLoC/Cubit factory to  core/di/register_{feature}.dart
+// ① New feature (no data/ or domain/ folder):
+//     → Presentation only (views + bloc/cubit).
+//     → Import depth: feature barrel = '../../', core = '../../../../'
 //
-// Import depth from nested presentation files to feature root:
-//   lib/features/{f}/presentation/{s}/blocs/{file}.dart → '../../../{f}_exports.dart'
-//   lib/features/{f}/presentation/{s}/views/{file}.dart → '../../../{f}_exports.dart'
+// ② Existing feature (has data/ or domain/ folder):
+//     → Full clean-arch: adds datasource method, repository method,
+//       creates usecase, wires usecase into bloc, registers in DI.
+//     → Import depth depends on whether featureName == screenName (flat)
+//       or featureName != screenName (per-screen subfolder).
+//
+// Flat  (featureName == screenName): presentation/blocs/   presentation/views/
+// Nested (featureName != screenName): presentation/{s}/blocs/  presentation/{s}/views/
 // ---------------------------------------------------------------------------
 
 Future<void> run(HookContext context) async {
@@ -31,76 +31,126 @@ Future<void> run(HookContext context) async {
   final featureFile = _toSnakeCase(featureName);
   final screenClass = _toPascalCase(screenName);
   final screenFile = _toSnakeCase(screenName);
+  final methodName = _toCamelCase(screenFile);
 
   logger.info('\n🚀 Adding screen "$screenName" to feature "$featureName"');
   logger.info('   State management: $stateManagement');
-  logger.info(
-    '   Classes: ${screenClass}View · $screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}\n',
-  );
 
-  // ── Guard: feature must already exist ─────────────────────────────────────
+  // ── Guard: lib/ must exist ────────────────────────────────────────────────
   final libDir = Directory('lib');
   if (!libDir.existsSync()) {
     logger.err('lib/ directory not found. Run this from your Flutter project root.');
     return;
   }
 
-  final featureDir = Directory('${libDir.path}/features/$featureFile');
-  if (!featureDir.existsSync()) {
+  // ── Guard: reject reserved folder names ──────────────────────────────────
+  const reservedNames = [
+    'features', 'lib', 'core', 'routes', 'presentation', 'blocs', 'cubit', 'views',
+  ];
+  if (reservedNames.contains(featureFile)) {
     logger.err(
-      'Feature "$featureFile" not found at lib/features/$featureFile/.\n'
-      'Run "mason make create_feature" first.',
+      '❌ "$featureName" is not a valid feature name.\n'
+      '   Enter the name of your new feature, e.g. profile, orders, inventory.\n'
+      '   The brick places it inside lib/features/ automatically.',
     );
     return;
   }
 
+  // ── Feature: create scaffold if it doesn't exist ─────────────────────────
+  final featureDir = Directory('${libDir.path}/features/$featureFile');
+  final bool isNewFeature = !featureDir.existsSync();
+
+  if (isNewFeature) {
+    featureDir.createSync(recursive: true);
+    logger.info('📁 Created new feature: lib/features/$featureFile/');
+    final barrelFile = File('${featureDir.path}/${featureFile}_exports.dart');
+    barrelFile
+      ..createSync(recursive: true)
+      ..writeAsStringSync('// $featureClass feature exports\n');
+    logger.success('📦 Created: lib/features/$featureFile/${featureFile}_exports.dart');
+  }
+
+  // ── Mode: full clean-arch only for existing features ─────────────────────
+  final bool hasDataLayer =
+      !isNewFeature &&
+      (Directory('${featureDir.path}/data').existsSync() ||
+       Directory('${featureDir.path}/domain').existsSync());
+
+  logger.info(
+    hasDataLayer
+        ? '   Mode: full clean-arch (existing feature with data/domain layer)\n'
+        : '   Mode: presentation only\n',
+  );
+
+  // ── Layout: flat vs per-screen subfolder ──────────────────────────────────
+  final bool useScreenFolder = featureFile != screenFile;
+  final presentationDir = Directory('${featureDir.path}/presentation');
+  final screenBaseDir = useScreenFolder
+      ? Directory('${presentationDir.path}/$screenFile')
+      : presentationDir;
+
+  final featureBarrelPrefix = useScreenFolder ? '../../../' : '../../';
+  final corePrefix = useScreenFolder ? '../../../../../' : '../../../../';
+
   // ── Guard: screen must not already exist ──────────────────────────────────
-  final screenDir = Directory('${featureDir.path}/presentation/$screenFile');
-  if (screenDir.existsSync()) {
-    logger.err(
-      'Screen "$screenFile" already exists at '
-      'lib/features/$featureFile/presentation/$screenFile/.\n'
-      'Delete it first or choose a different screen name.',
-    );
+  final stateFolder = stateManagement == 'bloc' ? 'blocs' : 'cubit';
+  final viewFile = File('${screenBaseDir.path}/views/${screenFile}_view.dart');
+  if (viewFile.existsSync()) {
+    logger.err('Screen "$screenFile" already exists. Delete it first or choose a different name.');
     return;
   }
 
   // ── Create directories ────────────────────────────────────────────────────
-  final stateFolder = stateManagement == 'bloc' ? 'blocs' : 'cubit';
   for (final path in [
-    '${screenDir.path}/$stateFolder',
-    '${screenDir.path}/views',
+    '${screenBaseDir.path}/$stateFolder',
+    '${screenBaseDir.path}/views',
   ]) {
     Directory(path).createSync(recursive: true);
   }
 
-  // ── Generate files ────────────────────────────────────────────────────────
+  // ── Generate presentation files ───────────────────────────────────────────
   if (stateManagement == 'bloc') {
-    _createBlocFiles(featureDir, featureFile, screenClass, screenFile, logger);
+    _createBlocFiles(
+      featureDir, featureFile, screenClass, screenFile,
+      screenBaseDir, featureBarrelPrefix, corePrefix,
+      hasDataLayer, methodName, logger,
+    );
   } else {
-    _createCubitFiles(featureDir, featureFile, screenClass, screenFile, logger);
+    _createCubitFiles(
+      featureDir, featureFile, screenClass, screenFile,
+      screenBaseDir, featureBarrelPrefix, corePrefix, logger,
+    );
   }
 
   _createViewFile(
-    featureDir, featureFile, screenClass, screenFile, stateManagement, logger,
+    featureDir, featureFile, screenClass, screenFile,
+    screenBaseDir, featureBarrelPrefix, corePrefix, stateManagement, logger,
   );
+
+  // ── Generate data/domain layer (existing features only) ───────────────────
+  if (hasDataLayer) {
+    _addDatasourceMethod(featureDir, featureFile, featureClass, screenFile, screenClass, methodName, logger);
+    _addRepositoryMethod(featureDir, featureFile, featureClass, screenFile, screenClass, methodName, logger);
+    _createUsecase(featureDir, featureFile, featureClass, screenFile, screenClass, methodName, logger);
+  }
 
   // ── Update project files ──────────────────────────────────────────────────
   _updateFeatureBarrel(
-    featureDir, featureFile, screenFile, stateManagement, logger,
+    featureDir, featureFile, screenFile, stateManagement,
+    useScreenFolder, hasDataLayer, logger,
   );
-  _updateRoutes(libDir, screenClass, screenFile, logger);
+  _updateRoutes(libDir, featureFile, screenClass, screenFile, logger);
   _updateDiRegistration(
-    libDir, featureFile, screenClass, screenFile, stateManagement, logger,
+    libDir, featureFile, featureClass, screenClass, screenFile,
+    stateManagement, hasDataLayer, logger,
   );
 
   logger.success('\n✅ $screenClass screen added to $featureClass!');
-  logger.info('\n📦 Next steps:');
-  logger.info('1. Wire any required usecases into the '
-      '$screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'} '
-      'constructor inside core/di/register_$featureFile.dart');
-  logger.info('2. Build your UI in '
-      'presentation/$screenFile/views/${screenFile}_view.dart');
+  if (hasDataLayer) {
+    logger.info('\n📦 Next steps:');
+    logger.info('1. Replace Future<dynamic> with your actual response type in the datasource/repository/usecase');
+    logger.info('2. Implement the API call in I${featureClass}RemoteDatasourceImpl.$methodName()');
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -111,14 +161,51 @@ void _createBlocFiles(
   String featureFile,
   String screenClass,
   String screenFile,
+  Directory screenBaseDir,
+  String featureBarrelPrefix,
+  String corePrefix,
+  bool hasDataLayer,
+  String methodName,
   Logger logger,
 ) {
-  final dir = '${featureDir.path}/presentation/$screenFile/blocs';
+  final dir = '${screenBaseDir.path}/blocs';
+  final usecaseType = '${screenClass}Usecase';
+  final usecaseParam = '${methodName}Usecase';
 
   // ── Bloc ──────────────────────────────────────────────────────────────────
-  File('$dir/${screenFile}_bloc.dart')
-    ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../${featureFile}_exports.dart';
+  final blocContent = hasDataLayer
+      ? '''import 'package:bloc/bloc.dart';
+
+import '${corePrefix}core/shared/shared_exports.dart';
+import '$featureBarrelPrefix${featureFile}_exports.dart';
+
+class ${screenClass}Bloc extends Bloc<${screenClass}Event, ${screenClass}State>
+    with UsecaseExecuterMixin {
+  final $usecaseType $usecaseParam;
+
+  ${screenClass}Bloc({required this.$usecaseParam})
+      : super(const ${screenClass}State()) {
+    on<${screenClass}Submitted>(_on${screenClass}Submitted);
+  }
+
+  Future<void> _on${screenClass}Submitted(
+    ${screenClass}Submitted event,
+    Emitter<${screenClass}State> emit,
+  ) async {
+    await executeUsecase(
+      emit: emit,
+      currentState: state,
+      usecase: () => $usecaseParam(NoParams()),
+      stateBuilder: (status, {data, error}) =>
+          state.copyWith(apiStatus: status, data: data, message: error),
+    );
+  }
+}
+'''
+      : '''import 'package:bloc/bloc.dart';
+
+import '${corePrefix}core/shared/shared_exports.dart';
+import '$featureBarrelPrefix${featureFile}_exports.dart';
 
 class ${screenClass}Bloc extends Bloc<${screenClass}Event, ${screenClass}State>
     with UsecaseExecuterMixin {
@@ -143,15 +230,29 @@ class ${screenClass}Bloc extends Bloc<${screenClass}Event, ${screenClass}State>
   //   );
   // }
 }
-''');
-  logger.success(
-    '🧱 Created: lib/features/$featureFile/presentation/$screenFile/blocs/${screenFile}_bloc.dart',
-  );
+''';
+
+  File('$dir/${screenFile}_bloc.dart')
+    ..createSync(recursive: true)
+    ..writeAsStringSync(blocContent);
+  logger.success('🧱 Created: ${_relPath(featureFile, screenFile, 'blocs', '${screenFile}_bloc.dart')}');
 
   // ── Event ─────────────────────────────────────────────────────────────────
-  File('$dir/${screenFile}_event.dart')
-    ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../${featureFile}_exports.dart';
+  final eventContent = hasDataLayer
+      ? '''import 'package:equatable/equatable.dart';
+
+abstract class ${screenClass}Event extends Equatable {
+  const ${screenClass}Event();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ${screenClass}Submitted extends ${screenClass}Event {
+  const ${screenClass}Submitted();
+}
+'''
+      : '''import 'package:equatable/equatable.dart';
 
 abstract class ${screenClass}Event extends Equatable {
   const ${screenClass}Event();
@@ -162,15 +263,19 @@ abstract class ${screenClass}Event extends Equatable {
 
 // TODO: Define events for this screen
 // class ${screenClass}Submitted extends ${screenClass}Event {}
-''');
-  logger.success(
-    '🧱 Created: lib/features/$featureFile/presentation/$screenFile/blocs/${screenFile}_event.dart',
-  );
+''';
+
+  File('$dir/${screenFile}_event.dart')
+    ..createSync(recursive: true)
+    ..writeAsStringSync(eventContent);
+  logger.success('🧱 Created: ${_relPath(featureFile, screenFile, 'blocs', '${screenFile}_event.dart')}');
 
   // ── State ─────────────────────────────────────────────────────────────────
   File('$dir/${screenFile}_state.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../${featureFile}_exports.dart';
+    ..writeAsStringSync('''import 'package:equatable/equatable.dart';
+
+import '${corePrefix}core/constants/app_enums.dart';
 
 class ${screenClass}State extends Equatable {
   final dynamic data;
@@ -180,7 +285,7 @@ class ${screenClass}State extends Equatable {
   const ${screenClass}State({
     this.data,
     this.message,
-    this.apiStatus = ApiStatus.initial,
+    this.apiStatus = ApiStatus.INITIAL,
   });
 
   ${screenClass}State copyWith({
@@ -199,9 +304,7 @@ class ${screenClass}State extends Equatable {
   List<Object?> get props => [data, message, apiStatus];
 }
 ''');
-  logger.success(
-    '🧱 Created: lib/features/$featureFile/presentation/$screenFile/blocs/${screenFile}_state.dart',
-  );
+  logger.success('🧱 Created: ${_relPath(featureFile, screenFile, 'blocs', '${screenFile}_state.dart')}');
 }
 
 // ---------------------------------------------------------------------------
@@ -212,14 +315,18 @@ void _createCubitFiles(
   String featureFile,
   String screenClass,
   String screenFile,
+  Directory screenBaseDir,
+  String featureBarrelPrefix,
+  String corePrefix,
   Logger logger,
 ) {
-  final dir = '${featureDir.path}/presentation/$screenFile/cubit';
+  final dir = '${screenBaseDir.path}/cubit';
 
-  // ── Cubit ─────────────────────────────────────────────────────────────────
   File('$dir/${screenFile}_cubit.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../${featureFile}_exports.dart';
+    ..writeAsStringSync('''import 'package:bloc/bloc.dart';
+
+import '$featureBarrelPrefix${featureFile}_exports.dart';
 
 class ${screenClass}Cubit extends Cubit<${screenClass}State> {
   // TODO: Inject required usecases here
@@ -229,21 +336,20 @@ class ${screenClass}Cubit extends Cubit<${screenClass}State> {
   // TODO: Add state-changing methods here
 }
 ''');
-  logger.success(
-    '🧱 Created: lib/features/$featureFile/presentation/$screenFile/cubit/${screenFile}_cubit.dart',
-  );
+  logger.success('🧱 Created: ${_relPath(featureFile, screenFile, 'cubit', '${screenFile}_cubit.dart')}');
 
-  // ── State ─────────────────────────────────────────────────────────────────
   File('$dir/${screenFile}_state.dart')
     ..createSync(recursive: true)
-    ..writeAsStringSync('''import '../../../${featureFile}_exports.dart';
+    ..writeAsStringSync('''import 'package:equatable/equatable.dart';
+
+import '${corePrefix}core/constants/app_enums.dart';
 
 class ${screenClass}State extends Equatable {
   final ApiStatus apiStatus;
   final String? message;
 
   const ${screenClass}State({
-    this.apiStatus = ApiStatus.initial,
+    this.apiStatus = ApiStatus.INITIAL,
     this.message,
   });
 
@@ -261,9 +367,7 @@ class ${screenClass}State extends Equatable {
   List<Object?> get props => [apiStatus, message];
 }
 ''');
-  logger.success(
-    '🧱 Created: lib/features/$featureFile/presentation/$screenFile/cubit/${screenFile}_state.dart',
-  );
+  logger.success('🧱 Created: ${_relPath(featureFile, screenFile, 'cubit', '${screenFile}_state.dart')}');
 }
 
 // ---------------------------------------------------------------------------
@@ -274,12 +378,13 @@ void _createViewFile(
   String featureFile,
   String screenClass,
   String screenFile,
+  Directory screenBaseDir,
+  String featureBarrelPrefix,
+  String corePrefix,
   String stateManagement,
   Logger logger,
 ) {
-  final viewPath =
-      '${featureDir.path}/presentation/$screenFile/views/${screenFile}_view.dart';
-
+  final viewPath = '${screenBaseDir.path}/views/${screenFile}_view.dart';
   final controller =
       stateManagement == 'bloc' ? '${screenClass}Bloc' : '${screenClass}Cubit';
   final stateType = '${screenClass}State';
@@ -288,7 +393,13 @@ void _createViewFile(
     File(viewPath)
       ..createSync(recursive: true)
       ..writeAsStringSync('''import 'package:flutter/material.dart';
-import '../../../${featureFile}_exports.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '${corePrefix}core/di/di_exports.dart';
+import '${corePrefix}core/constants/const_exports.dart';
+import '${corePrefix}core/utils/utils_exports.dart';
+import '${corePrefix}core/widgets/widgets.dart';
+import '$featureBarrelPrefix${featureFile}_exports.dart';
 
 class ${screenClass}View extends StatelessWidget {
   const ${screenClass}View({super.key});
@@ -316,10 +427,10 @@ class _${screenClass}BodyState extends State<_${screenClass}Body> {
   Widget build(BuildContext context) {
     return BlocConsumer<$controller, $stateType>(
       listener: (context, state) {
-        if (state.apiStatus == ApiStatus.success) {
+        if (state.apiStatus == ApiStatus.SUCCESS) {
           AppToastsUtils.showSuccessTop(context, 'Success!');
         }
-        if (state.apiStatus == ApiStatus.failure) {
+        if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
       },
@@ -341,13 +452,17 @@ class _${screenClass}BodyState extends State<_${screenClass}Body> {
 }
 ''');
   } else {
-    // Cubit: both shell and body can be StatelessWidget
     File(viewPath)
       ..createSync(recursive: true)
       ..writeAsStringSync('''import 'package:flutter/material.dart';
-import '../../../${featureFile}_exports.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Public entry point for the $screenClass screen.
+import '${corePrefix}core/di/di_exports.dart';
+import '${corePrefix}core/constants/const_exports.dart';
+import '${corePrefix}core/utils/utils_exports.dart';
+import '${corePrefix}core/widgets/widgets.dart';
+import '$featureBarrelPrefix${featureFile}_exports.dart';
+
 class ${screenClass}View extends StatelessWidget {
   const ${screenClass}View({super.key});
 
@@ -380,63 +495,235 @@ class _${screenClass}Body extends StatelessWidget {
 ''');
   }
 
+  logger.success('🧱 Created: ${_relPath(featureFile, screenFile, 'views', '${screenFile}_view.dart')}');
+}
+
+// ---------------------------------------------------------------------------
+// Add method to existing datasource  (existing feature only)
+// ---------------------------------------------------------------------------
+void _addDatasourceMethod(
+  Directory featureDir,
+  String featureFile,
+  String featureClass,
+  String screenFile,
+  String screenClass,
+  String methodName,
+  Logger logger,
+) {
+  final dsPath =
+      '${featureDir.path}/data/datasources/${featureFile}_remote_datasource/${featureFile}_remote_datasource.dart';
+  final dsFile = File(dsPath);
+  if (!dsFile.existsSync()) {
+    logger.warn('⚠️  Datasource not found at $dsPath. Add $methodName() manually.');
+    return;
+  }
+
+  String content = dsFile.readAsStringSync();
+  if (content.contains('$methodName()')) {
+    logger.warn('⚠️  $methodName() already in datasource.');
+    return;
+  }
+
+  // Insert abstract method into the interface (before impl class declaration)
+  final implMarker = 'class I${featureClass}RemoteDatasourceImpl';
+  final implIdx = content.indexOf(implMarker);
+  if (implIdx != -1) {
+    final interfaceClose = content.lastIndexOf('}', implIdx);
+    content =
+        '${content.substring(0, interfaceClose)}'
+        '  Future<dynamic> $methodName();\n'
+        '${content.substring(interfaceClose)}';
+  }
+
+  // Re-find impl class position after modification, then insert override before last }
+  final updatedImplIdx = content.indexOf(implMarker);
+  if (updatedImplIdx != -1) {
+    final lastBrace = content.lastIndexOf('}');
+    content =
+        '${content.substring(0, lastBrace)}'
+        '\n  @override\n'
+        '  Future<dynamic> $methodName() async {\n'
+        '    // TODO: implement $methodName API call\n'
+        '    throw UnimplementedError(\'$methodName not implemented\');\n'
+        '  }\n'
+        '${content.substring(lastBrace)}';
+  }
+
+  dsFile.writeAsStringSync(content);
+  logger.success('🔌 Added $methodName() to I${featureClass}RemoteDatasource');
+}
+
+// ---------------------------------------------------------------------------
+// Add method to existing repository interface + impl  (existing feature only)
+// ---------------------------------------------------------------------------
+void _addRepositoryMethod(
+  Directory featureDir,
+  String featureFile,
+  String featureClass,
+  String screenFile,
+  String screenClass,
+  String methodName,
+  Logger logger,
+) {
+  // ── Repository interface ──────────────────────────────────────────────────
+  final repoInterfaceFile = File(
+    '${featureDir.path}/domain/i_repositories/${featureFile}_repository.dart',
+  );
+  if (repoInterfaceFile.existsSync()) {
+    String content = repoInterfaceFile.readAsStringSync();
+    if (!content.contains('$methodName()')) {
+      final lastBrace = content.lastIndexOf('}');
+      content =
+          '${content.substring(0, lastBrace)}'
+          '  Future<Either<AppException, dynamic>> $methodName();\n'
+          '${content.substring(lastBrace)}';
+      repoInterfaceFile.writeAsStringSync(content);
+      logger.success('🗂  Added $methodName() to I${featureClass}Repository interface');
+    } else {
+      logger.warn('⚠️  $methodName() already in repository interface.');
+    }
+  } else {
+    logger.warn('⚠️  Repository interface not found. Add $methodName() manually.');
+  }
+
+  // ── Repository impl ───────────────────────────────────────────────────────
+  final repoImplFile = File(
+    '${featureDir.path}/data/repositories_impl/${featureFile}_repository_impl.dart',
+  );
+  if (repoImplFile.existsSync()) {
+    String content = repoImplFile.readAsStringSync();
+    if (!content.contains('$methodName()')) {
+      final lastBrace = content.lastIndexOf('}');
+      content =
+          '${content.substring(0, lastBrace)}'
+          '\n  @override\n'
+          '  Future<Either<AppException, dynamic>> $methodName() {\n'
+          '    return execute(\n'
+          '      call: () => dataSource.$methodName(),\n'
+          '    );\n'
+          '  }\n'
+          '${content.substring(lastBrace)}';
+      repoImplFile.writeAsStringSync(content);
+      logger.success('🗂  Added $methodName() to ${featureClass}RepositoryImpl');
+    } else {
+      logger.warn('⚠️  $methodName() already in repository impl.');
+    }
+  } else {
+    logger.warn('⚠️  Repository impl not found. Add $methodName() manually.');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Create usecase  (existing feature only)
+// ---------------------------------------------------------------------------
+void _createUsecase(
+  Directory featureDir,
+  String featureFile,
+  String featureClass,
+  String screenFile,
+  String screenClass,
+  String methodName,
+  Logger logger,
+) {
+  final usecaseDir = Directory('${featureDir.path}/domain/usecases');
+  usecaseDir.createSync(recursive: true);
+
+  final usecaseFile = File('${usecaseDir.path}/${screenFile}_usecase.dart');
+  if (usecaseFile.existsSync()) {
+    logger.warn('⚠️  ${screenFile}_usecase.dart already exists.');
+    return;
+  }
+
+  // Repository interface class name — read from file to get exact name (handles typo variants)
+  String repoInterfaceName = 'I${featureClass}Repository';
+  final repoFile = File(
+    '${featureDir.path}/domain/i_repositories/${featureFile}_repository.dart',
+  );
+  if (repoFile.existsSync()) {
+    final repoContent = repoFile.readAsStringSync();
+    final match = RegExp(r'abstract\s+interface\s+class\s+(\w+)').firstMatch(repoContent);
+    if (match != null) repoInterfaceName = match.group(1)!;
+  }
+
+  usecaseFile
+    ..createSync(recursive: true)
+    ..writeAsStringSync(
+      "import 'package:fpdart/fpdart.dart';\n"
+      "\n"
+      "import '../../../../core/networks/network_exports.dart';\n"
+      "import '../../../../core/shared/shared_exports.dart';\n"
+      "import '../../${featureFile}_exports.dart';\n"
+      "\n"
+      "class ${screenClass}Usecase implements Usecase<dynamic, NoParams> {\n"
+      "  final $repoInterfaceName repository;\n"
+      "\n"
+      "  ${screenClass}Usecase({required this.repository});\n"
+      "\n"
+      "  @override\n"
+      "  Future<Either<AppException, dynamic>> call(NoParams params) {\n"
+      "    return repository.$methodName();\n"
+      "  }\n"
+      "}\n",
+    );
+
   logger.success(
-    '🧱 Created: lib/features/$featureFile/presentation/$screenFile/views/${screenFile}_view.dart',
+    '🧩 Created: lib/features/$featureFile/domain/usecases/${screenFile}_usecase.dart',
   );
 }
 
 // ---------------------------------------------------------------------------
 // Update feature barrel
-// Note: view is NOT exported here to avoid circular imports
-// (view imports the barrel; barrel must not export the view)
-// routes.dart imports the view directly instead.
 // ---------------------------------------------------------------------------
 void _updateFeatureBarrel(
   Directory featureDir,
   String featureFile,
   String screenFile,
   String stateManagement,
+  bool useScreenFolder,
+  bool hasDataLayer,
   Logger logger,
 ) {
   final barrelFile = File('${featureDir.path}/${featureFile}_exports.dart');
 
   if (!barrelFile.existsSync()) {
-    logger.warn(
-      '⚠️  ${featureFile}_exports.dart not found. Add exports manually.',
-    );
+    logger.warn('⚠️  ${featureFile}_exports.dart not found. Add exports manually.');
     return;
   }
 
   String content = barrelFile.readAsStringSync();
 
-  // Build the new export lines for this screen (view excluded — circular import)
-  final newExports = stateManagement == 'bloc'
-      ? '''
-// Presentation — $screenFile screen
-export './presentation/$screenFile/blocs/${screenFile}_bloc.dart';
-export './presentation/$screenFile/blocs/${screenFile}_event.dart';
-export './presentation/$screenFile/blocs/${screenFile}_state.dart';'''
-      : '''
-// Presentation — $screenFile screen
-export './presentation/$screenFile/cubit/${screenFile}_cubit.dart';
-export './presentation/$screenFile/cubit/${screenFile}_state.dart';''';
+  final prefix = useScreenFolder ? './presentation/$screenFile' : './presentation';
+
+  final presentationExports = stateManagement == 'bloc'
+      ? '\n// Presentation — $screenFile screen\n'
+        "export '$prefix/blocs/${screenFile}_bloc.dart';\n"
+        "export '$prefix/blocs/${screenFile}_event.dart';\n"
+        "export '$prefix/blocs/${screenFile}_state.dart';\n"
+        "export '$prefix/views/${screenFile}_view.dart';"
+      : '\n// Presentation — $screenFile screen\n'
+        "export '$prefix/cubit/${screenFile}_cubit.dart';\n"
+        "export '$prefix/cubit/${screenFile}_state.dart';\n"
+        "export '$prefix/views/${screenFile}_view.dart';";
+
+  final usecaseExport = hasDataLayer
+      ? "\nexport './domain/usecases/${screenFile}_usecase.dart';"
+      : '';
 
   // Guard: already exported?
-  if (content.contains("presentation/$screenFile/")) {
-    logger.warn(
-      '⚠️  Exports for $screenFile already present in ${featureFile}_exports.dart',
-    );
+  if (content.contains('${screenFile}_view.dart') ||
+      content.contains('${screenFile}_bloc.dart') ||
+      content.contains('${screenFile}_cubit.dart')) {
+    logger.warn('⚠️  Exports for $screenFile already present in ${featureFile}_exports.dart');
     return;
   }
 
-  // Append after last existing export line
   final lastExport = RegExp(r"export '[^']+';").allMatches(content);
+  final insertion = '$presentationExports$usecaseExport\n';
   if (lastExport.isNotEmpty) {
     final insertAt = lastExport.last.end;
-    content =
-        '${content.substring(0, insertAt)}\n$newExports\n${content.substring(insertAt)}';
+    content = '${content.substring(0, insertAt)}\n$insertion${content.substring(insertAt)}';
   } else {
-    content = '${content.trimRight()}\n$newExports\n';
+    content = '${content.trimRight()}\n$insertion';
   }
 
   barrelFile.writeAsStringSync(content);
@@ -450,30 +737,23 @@ export './presentation/$screenFile/cubit/${screenFile}_state.dart';''';
 // ---------------------------------------------------------------------------
 void _updateRoutes(
   Directory libDir,
+  String featureFile,
   String screenClass,
   String screenFile,
   Logger logger,
 ) {
-  _updateRoutePaths(
-    File('${libDir.path}/routes/route_paths.dart'), screenFile, logger,
-  );
-  _updateRouteNames(
-    File('${libDir.path}/routes/route_names.dart'), screenFile, logger,
-  );
+  _updateRoutePaths(File('${libDir.path}/routes/route_paths.dart'), screenFile, logger);
+  _updateRouteNames(File('${libDir.path}/routes/route_names.dart'), screenFile, logger);
   _updateRoutesFile(
-    File('${libDir.path}/routes/routes.dart'), screenClass, screenFile, logger,
+    File('${libDir.path}/routes/routes.dart'), featureFile, screenClass, screenFile, logger,
   );
 }
 
 void _updateRoutePaths(File file, String screenFile, Logger logger) {
-  if (!file.existsSync()) {
-    logger.warn('⚠️  route_paths.dart not found. Add path manually.');
-    return;
-  }
+  if (!file.existsSync()) { logger.warn('⚠️  route_paths.dart not found.'); return; }
   String content = file.readAsStringSync();
   if (content.contains("static const String $screenFile")) {
-    logger.warn('⚠️  Path for $screenFile already in route_paths.dart');
-    return;
+    logger.warn('⚠️  Path for $screenFile already in route_paths.dart'); return;
   }
   final brace = content.lastIndexOf('}');
   content = '${content.substring(0, brace)}'
@@ -484,14 +764,10 @@ void _updateRoutePaths(File file, String screenFile, Logger logger) {
 }
 
 void _updateRouteNames(File file, String screenFile, Logger logger) {
-  if (!file.existsSync()) {
-    logger.warn('⚠️  route_names.dart not found. Add name manually.');
-    return;
-  }
+  if (!file.existsSync()) { logger.warn('⚠️  route_names.dart not found.'); return; }
   String content = file.readAsStringSync();
   if (content.contains("static const String $screenFile")) {
-    logger.warn('⚠️  Name for $screenFile already in route_names.dart');
-    return;
+    logger.warn('⚠️  Name for $screenFile already in route_names.dart'); return;
   }
   final brace = content.lastIndexOf('}');
   content = '${content.substring(0, brace)}'
@@ -502,20 +778,21 @@ void _updateRouteNames(File file, String screenFile, Logger logger) {
 }
 
 void _updateRoutesFile(
-  File file,
-  String screenClass,
-  String screenFile,
-  Logger logger,
+  File file, String featureFile, String screenClass, String screenFile, Logger logger,
 ) {
-  if (!file.existsSync()) {
-    logger.warn('⚠️  routes.dart not found. Add route manually.');
-    return;
-  }
+  if (!file.existsSync()) { logger.warn('⚠️  routes.dart not found.'); return; }
   String content = file.readAsStringSync();
-  if (content.contains('RoutePaths.$screenFile') ||
-      content.contains('${screenClass}View()')) {
-    logger.warn('⚠️  Route for $screenFile already in routes.dart');
-    return;
+  if (content.contains('RoutePaths.$screenFile') || content.contains('${screenClass}View()')) {
+    logger.warn('⚠️  Route for $screenFile already in routes.dart'); return;
+  }
+
+  final barrelImport = "import '../features/$featureFile/${featureFile}_exports.dart';";
+  if (!content.contains("features/$featureFile/")) {
+    final lastImport = RegExp(r"import '[^']+';").allMatches(content);
+    if (lastImport.isNotEmpty) {
+      final insertAt = lastImport.last.end;
+      content = '${content.substring(0, insertAt)}\n$barrelImport${content.substring(insertAt)}';
+    }
   }
 
   final newRoute = '''      GoRoute(
@@ -530,8 +807,7 @@ void _updateRoutesFile(
     final beforeClosing = content.lastIndexOf(')', routesEnd);
     if (beforeClosing != -1) {
       final insertAt = content.indexOf(',', beforeClosing) + 1;
-      content =
-          '${content.substring(0, insertAt)}\n$newRoute${content.substring(insertAt)}';
+      content = '${content.substring(0, insertAt)}\n$newRoute${content.substring(insertAt)}';
     }
   }
 
@@ -540,86 +816,148 @@ void _updateRoutesFile(
 }
 
 // ---------------------------------------------------------------------------
-// Update DI — append factory to core/di/register_{feature}.dart
+// Update DI
 // ---------------------------------------------------------------------------
 void _updateDiRegistration(
   Directory libDir,
   String featureFile,
+  String featureClass,
   String screenClass,
   String screenFile,
   String stateManagement,
+  bool hasDataLayer,
   Logger logger,
 ) {
-  final registerFile =
-      File('${libDir.path}/core/di/register_$featureFile.dart');
+  final controllerType = '$screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}';
+  final usecaseType = '${screenClass}Usecase';
+  final methodName = _toCamelCase(screenFile);
+  final usecaseParam = '${methodName}Usecase';
+
+  final registerFile = File('${libDir.path}/core/di/register_$featureFile.dart');
 
   if (!registerFile.existsSync()) {
-    logger.warn(
-      '⚠️  core/di/register_$featureFile.dart not found.\n'
-      '   Add the registration manually:\n'
-      '   sl.registerFactory<$screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}>(\n'
-      '     () => $screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}(),\n'
-      '   );',
-    );
-    return;
+    registerFile
+      ..createSync(recursive: true)
+      ..writeAsStringSync(
+        "import 'package:get_it/get_it.dart';\n"
+        "import '../../features/$featureFile/${featureFile}_exports.dart';\n"
+        '\n'
+        'final _sl = GetIt.instance;\n'
+        '\n'
+        'Future<void> ${featureFile}Dependencies() async {\n'
+        '}\n',
+      );
+    logger.success('🔧 Created: lib/core/di/register_$featureFile.dart');
+    _wireIntoDependencies(libDir, featureFile, logger);
   }
 
   String content = registerFile.readAsStringSync();
 
-  final controllerType =
-      '$screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}';
-  final importPath =
-      "../../features/$featureFile/presentation/$screenFile/${stateManagement == 'bloc' ? 'blocs' : 'cubit'}/${screenFile}_$stateManagement.dart";
+  // Datasource + repository: register once per feature (only if not already registered)
+  if (hasDataLayer &&
+      !content.contains('registerLazySingleton<I${featureClass}RemoteDatasource>') &&
+      !content.contains('registerLazySingleton<I${featureClass}Repostiory>') &&
+      !content.contains('registerLazySingleton<I${featureClass}Repository>')) {
+    final closingBrace = content.lastIndexOf('}');
+    content =
+        '${content.substring(0, closingBrace)}'
+        '  // Datasource + Repository — $featureClass feature\n'
+        '  _sl.registerLazySingleton<I${featureClass}RemoteDatasource>(\n'
+        '    () => I${featureClass}RemoteDatasourceImpl(dioHelper: _sl()),\n'
+        '  );\n'
+        '  _sl.registerLazySingleton<I${featureClass}Repostiory>(\n'
+        '    () => ${featureClass}RepositoryImpl(dataSource: _sl()),\n'
+        '  );\n'
+        '${content.substring(closingBrace)}';
+    logger.success('🔧 Registered datasource + repository in register_$featureFile.dart');
+  }
 
-  // Guard: already registered?
+  // Usecase
+  if (hasDataLayer && !content.contains('registerLazySingleton<$usecaseType>')) {
+    content = registerFile.readAsStringSync(); // re-read after potential write above
+    final closingBrace = content.lastIndexOf('}');
+    content =
+        '${content.substring(0, closingBrace)}'
+        '  // UseCase — $screenClass\n'
+        '  _sl.registerLazySingleton<$usecaseType>(\n'
+        '    () => $usecaseType(repository: _sl()),\n'
+        '  );\n'
+        '${content.substring(closingBrace)}';
+    registerFile.writeAsStringSync(content);
+    logger.success('🔧 Registered $usecaseType in register_$featureFile.dart');
+  }
+
+  // Bloc / Cubit factory
+  content = registerFile.readAsStringSync();
   if (content.contains('registerFactory<$controllerType>')) {
-    logger.warn(
-      '⚠️  $controllerType already registered in register_$featureFile.dart',
-    );
+    logger.warn('⚠️  $controllerType already registered.');
     return;
   }
 
-  // Add import
-  final importLine = "import '$importPath';";
-  final lastImport = content.lastIndexOf("import '");
-  if (lastImport != -1) {
-    final endOfImport = content.indexOf(';', lastImport) + 1;
-    content =
-        '${content.substring(0, endOfImport)}\n$importLine${content.substring(endOfImport)}';
-  }
+  final registration = hasDataLayer && stateManagement == 'bloc'
+      ? '  // BLoC — $screenClass screen\n'
+        '  _sl.registerFactory<$controllerType>(\n'
+        '    () => $controllerType($usecaseParam: _sl()),\n'
+        '  );\n'
+      : stateManagement == 'bloc'
+          ? '  // BLoC — $screenClass screen\n'
+            '  _sl.registerFactory<$controllerType>(\n'
+            '    () => $controllerType(/* inject usecases */),\n'
+            '  );\n'
+          : '  // Cubit — $screenClass screen\n'
+            '  _sl.registerFactory<$controllerType>(\n'
+            '    () => $controllerType(),\n'
+            '  );\n';
 
-  // Append factory inside registerFeature() before closing brace
-  final funcMatch =
-      RegExp(r'Future<void>\s+register\w+\s*\(\s*\)\s+async\s*\{')
-          .firstMatch(content);
-  if (funcMatch != null) {
-    final closingBrace = content.lastIndexOf('}');
-    final registration = stateManagement == 'bloc'
-        ? '''
-  // BLoC — $screenClass screen
-  sl.registerFactory<$controllerType>(
-    () => $controllerType(/* inject usecases: someUsecase: sl() */),
-  );
-'''
-        : '''
-  // Cubit — $screenClass screen
-  sl.registerFactory<$controllerType>(
-    () => $controllerType(/* inject usecases if needed */),
-  );
-''';
-    content =
-        '${content.substring(0, closingBrace)}$registration${content.substring(closingBrace)}';
-  }
-
+  final closingBrace = content.lastIndexOf('}');
+  content =
+      '${content.substring(0, closingBrace)}$registration${content.substring(closingBrace)}';
   registerFile.writeAsStringSync(content);
-  logger.success(
-    '🔧 Registered $controllerType in core/di/register_$featureFile.dart',
-  );
+  logger.success('🔧 Registered $controllerType in core/di/register_$featureFile.dart');
+}
+
+// ---------------------------------------------------------------------------
+// Wire register_{feature}.dart into app_dependencies.dart
+// ---------------------------------------------------------------------------
+void _wireIntoDependencies(Directory libDir, String featureFile, Logger logger) {
+  final appDepsFile = File('${libDir.path}/core/di/app_dependencies.dart');
+  if (!appDepsFile.existsSync()) {
+    logger.warn('⚠️  core/di/app_dependencies.dart not found. Wire manually.');
+    return;
+  }
+
+  String content = appDepsFile.readAsStringSync();
+
+  final importLine = "import 'register_$featureFile.dart';";
+  if (!content.contains(importLine)) {
+    final lastImport = RegExp(r"import '[^']+';").allMatches(content);
+    if (lastImport.isNotEmpty) {
+      final insertAt = lastImport.last.end;
+      content = '${content.substring(0, insertAt)}\n$importLine${content.substring(insertAt)}';
+    }
+  }
+
+  if (!content.contains('${featureFile}Dependencies()')) {
+    final closingBrace = content.lastIndexOf('}');
+    content =
+        '${content.substring(0, closingBrace)}'
+        '  await ${featureFile}Dependencies();\n'
+        '${content.substring(closingBrace)}';
+  }
+
+  appDepsFile.writeAsStringSync(content);
+  logger.success('🔧 Wired ${featureFile}Dependencies() into core/di/app_dependencies.dart');
 }
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+String _relPath(String featureFile, String screenFile, String subFolder, String fileName) {
+  return featureFile != screenFile
+      ? 'lib/features/$featureFile/presentation/$screenFile/$subFolder/$fileName'
+      : 'lib/features/$featureFile/presentation/$subFolder/$fileName';
+}
+
 String _toPascalCase(String text) {
   return text.split('_').map((word) {
     if (word.isEmpty) return '';
@@ -632,4 +970,11 @@ String _toSnakeCase(String text) {
       .replaceAllMapped(RegExp(r'[A-Z]'), (match) => '_${match.group(0)}')
       .toLowerCase()
       .replaceAll(RegExp(r'^_'), '');
+}
+
+String _toCamelCase(String snake) {
+  final parts = snake.split('_');
+  if (parts.isEmpty) return snake;
+  return parts[0] +
+      parts.skip(1).map((w) => w.isEmpty ? '' : w[0].toUpperCase() + w.substring(1)).join('');
 }

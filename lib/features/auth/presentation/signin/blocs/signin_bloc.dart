@@ -3,7 +3,7 @@
 import 'package:bloc/bloc.dart';
 
 import '../../../../../core/shared/shared_exports.dart';
-import '../../../auth_export.dart';
+import '../../../auth_exports.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState>
     with UsecaseExecuterMixin {

@@ -11,7 +11,42 @@ class AdminDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Admin Dashboard'),
+      appBar: CustomAppBar(
+        title: 'Admin Dashboard',
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 14),
+            child: Column(
+              mainAxisAlignment: .center,
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    shape: .circle,
+                    border: Border.all(color: Colors.white, width: 1.5),
+                  ),
+                  child: const Icon(
+                    Icons.person_rounded,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                const Text(
+                  'Admin',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10,
+                    height: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: context.pagePadding,
         child: Column(
