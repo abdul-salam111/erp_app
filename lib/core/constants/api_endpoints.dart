@@ -2,5 +2,5 @@ class ApiEndPoints {
   static const baseUrl = "https://api.bigstaruae.com/v1/";
   static const String loginByUid = "${baseUrl}user/signinUid";
   static const String signupUser = "${baseUrl}user/signinUid";
-  static const String alert_panel = '${baseUrl}alert_panel';
+  static const String alertPanel = '${baseUrl}alert_panel';
 }

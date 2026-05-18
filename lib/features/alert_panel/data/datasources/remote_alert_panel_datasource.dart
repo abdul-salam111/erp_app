@@ -13,7 +13,7 @@ class RemoteAlertPanelDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<dynamic> performAction() async {
     return post(
-      url: ApiEndPoints.alert_panel,
+      url: ApiEndPoints.alertPanel,
       parser: (json) => json, // TODO: Replace with your model parser
       body: {}, // TODO: Add your request body
     );

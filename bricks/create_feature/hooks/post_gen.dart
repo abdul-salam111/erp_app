@@ -706,7 +706,7 @@ void _updateApiEndpoints(Directory libDir, String featureFile, Logger logger) {
   }
 
   String content = endpointsFile.readAsStringSync();
-  if (content.contains('static const String $featureFile')) {
+  if (content.contains('static const String ${_toLowerCamelCase(featureFile)}')) {
     logger.warn(
       '⚠️  Endpoint for $featureFile already exists in api_endpoints.dart',
     );
@@ -715,7 +715,7 @@ void _updateApiEndpoints(Directory libDir, String featureFile, Logger logger) {
 
   final closingBrace = content.lastIndexOf('}');
   content = '${content.substring(0, closingBrace)}'
-      "  static const String $featureFile = '\${baseUrl}$featureFile';\n"
+      "  static const String ${_toLowerCamelCase(featureFile)} = '\${baseUrl}$featureFile';\n"
       '${content.substring(closingBrace)}';
   endpointsFile.writeAsStringSync(content);
   logger.success('🔗 Added $featureFile endpoint to api_endpoints.dart');

@@ -1,6 +1,4 @@
 import 'package:fpdart/fpdart.dart';
-
-import '../../../../core/errors/failures.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../auth_exports.dart';
 

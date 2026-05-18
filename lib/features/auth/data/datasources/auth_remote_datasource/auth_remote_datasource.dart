@@ -1,6 +1,7 @@
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/shared/shared_exports.dart';
-import '../../../auth_exports.dart';
+import '../../models/request_models/login_user_by_id/login_user_by_id.dart';
+import '../../models/response_models/user_token/user_token.dart';
 
 abstract interface class IAuthRemoteDatasource {
   Future<UserToken> loginUserById({required LoginUserById loginUserById});
