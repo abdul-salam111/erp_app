@@ -3,6 +3,7 @@ import 'register_network.dart';
 import 'register_core.dart';
 import 'register_auth.dart';
 import 'register_profile.dart';
+import 'register_alert_panel.dart';
 
 
 /// Global service locator instance.
@@ -15,4 +16,5 @@ Future<void> setupLocator() async {
   await registerAuth();
 
   await profileDependencies();
+  await registerAlertPanel();
 }

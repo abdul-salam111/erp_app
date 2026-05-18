@@ -6,7 +6,6 @@ import '../../../../core/constants/const_exports.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/widgets/widgets.dart';
 
-
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
 
@@ -26,26 +25,16 @@ class AdminDashboard extends StatelessWidget {
                   height: 32,
                   decoration: BoxDecoration(
                     shape: .circle,
-                    border: Border.all(color: Colors.white, width: 1.5),
+                    border: Border.all(color: Colors.white, width: 1),
                   ),
                   child: const Icon(
-                    Icons.person_rounded,
+                    Icons.notifications,
                     color: Colors.white,
                     size: 18,
                   ),
                 ).onTap(() {
-                  context.pushNamed(RouteNames.profile);
+                  context.pushNamed(RouteNames.alert_panel);
                 }),
-                const SizedBox(height: 2),
-                const Text(
-                  AppConstants.admin,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 10,
-                    height: 1,
-                  ),
-                ),
               ],
             ),
           ),

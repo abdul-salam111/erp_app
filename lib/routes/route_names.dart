@@ -4,4 +4,5 @@ class RouteNames {
   static const String dashboard= 'dashboard';
 
   static const String profile = 'profile';
+  static const String alert_panel = 'alert_panel';
 }

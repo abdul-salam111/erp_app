@@ -6,6 +6,8 @@ import '../features/dashboard/dashboard_exports.dart';
 import '../features/splash/splash_view.dart';
 import 'route_exports.dart';
 import '../features/profile/profile_exports.dart';
+import '../features/alert_panel/alert_panel_exports.dart';
+
 
 class AppRoutes {
   static final GoRouter router = GoRouter(
@@ -48,6 +50,12 @@ class AppRoutes {
         name: RouteNames.profile,
         builder: (context, state) => const ProfileView(),
       ),
+      GoRoute(
+        path: RoutePaths.alert_panel,
+        name: RouteNames.alert_panel,
+        builder: (context, state) => const AlertPanelView(),
+      ),
+     
     ],
   );
 }
