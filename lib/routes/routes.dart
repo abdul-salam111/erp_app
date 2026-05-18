@@ -7,6 +7,9 @@ import '../features/splash/splash_view.dart';
 import 'route_exports.dart';
 import '../features/profile/profile_exports.dart';
 import '../features/alert_panel/alert_panel_exports.dart';
+import '../features/purchase_order/purchase_order_exports.dart';
+import '../features/sale_order/sale_order_exports.dart';
+import '../features/scan_document/scan_document_exports.dart';
 
 
 class AppRoutes {
@@ -54,6 +57,21 @@ class AppRoutes {
         path: RoutePaths.alert_panel,
         name: RouteNames.alert_panel,
         builder: (context, state) => const AlertPanelView(),
+      ),
+      GoRoute(
+        path: RoutePaths.purchase_order,
+        name: RouteNames.purchase_order,
+        builder: (context, state) => const PurchaseOrderView(),
+      ),
+      GoRoute(
+        path: RoutePaths.sale_order,
+        name: RouteNames.sale_order,
+        builder: (context, state) => const SaleOrderView(),
+      ),
+      GoRoute(
+        path: RoutePaths.scan_document,
+        name: RouteNames.scan_document,
+        builder: (context, state) => const ScanDocumentView(),
       ),
      
     ],
