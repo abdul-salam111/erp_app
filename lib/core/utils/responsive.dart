@@ -64,7 +64,7 @@ extension ResponsiveContext on BuildContext {
 
   /// Spacing between grid/list items.
   double get gridSpacing =>
-      Responsive.value<double>(this, phone: 4, tablet: 10, ipad: 14);
+      Responsive.value<double>(this, phone: 8, tablet: 10, ipad: 14);
 
   /// Grid column count for overview-style card grids (primary = iPad 4-col).
   int get gridColumnCount =>
