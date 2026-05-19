@@ -10,6 +10,7 @@ import '../features/alert_panel/alert_panel_exports.dart';
 import '../features/purchase_order/purchase_order_exports.dart';
 import '../features/sale_order/sale_order_exports.dart';
 import '../features/scan_document/scan_document_exports.dart';
+import '../features/accounts/accounts_exports.dart';
 
 
 class AppRoutes {
@@ -72,6 +73,11 @@ class AppRoutes {
         path: RoutePaths.scan_document,
         name: RouteNames.scan_document,
         builder: (context, state) => const ScanDocumentView(),
+      ),
+      GoRoute(
+        path: RoutePaths.accounts,
+        name: RouteNames.accounts,
+        builder: (context, state) => const AccountsView(),
       ),
      
     ],

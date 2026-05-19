@@ -7,6 +7,7 @@ import 'register_alert_panel.dart';
 import 'register_purchase_order.dart';
 import 'register_sale_order.dart';
 import 'register_scan_document.dart';
+import 'register_accounts.dart';
 
 
 /// Global service locator instance.
@@ -23,4 +24,5 @@ Future<void> setupLocator() async {
   await registerPurchaseOrder();
   await registerSaleOrder();
   await registerScanDocument();
+  await registerAccounts();
 }

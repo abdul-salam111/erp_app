@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/const_exports.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
+import '../bloc/dashboard_bloc.dart';
 import 'section_header.dart';
 
-class TodayOverviewSection extends StatefulWidget {
+class TodayOverviewSection extends StatelessWidget {
   const TodayOverviewSection({super.key});
-
-  @override
-  State<TodayOverviewSection> createState() => _TodayOverviewSectionState();
-}
-
-class _TodayOverviewSectionState extends State<TodayOverviewSection> {
-  bool _expanded = false;
 
   static const _items = <_OverviewItem>[
     _OverviewItem(
@@ -57,65 +52,73 @@ class _TodayOverviewSectionState extends State<TodayOverviewSection> {
     ),
   ];
 
-  void _toggle() => setState(() => _expanded = !_expanded);
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: .start,
-      children: [
-        SectionHeader(
-          title: AppConstants.todaySOverview,
-          trailing: context.isPhone
-              ? GestureDetector(
-                  onTap: _toggle,
-                  child: Row(
-                    mainAxisSize: .min,
-                    children: [
-                      Text(
-                        _expanded ? AppConstants.showLess : AppConstants.showMore,
-                        style: context.labelMedium.copyWith(
-                          color: context.primary,
-                          fontWeight: .w600,
-                        ),
+    return BlocBuilder<DashboardBloc, DashboardState>(
+      buildWhen: (prev, curr) =>
+          prev.todayOverviewExpanded != curr.todayOverviewExpanded,
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: .start,
+          children: [
+            SectionHeader(
+              title: AppConstants.todaySOverview,
+              trailing: context.isPhone
+                  ? GestureDetector(
+                      onTap: () => context
+                          .read<DashboardBloc>()
+                          .add(const TodayOverviewExpansionToggled()),
+                      child: Row(
+                        mainAxisSize: .min,
+                        children: [
+                          Text(
+                            state.todayOverviewExpanded
+                                ? AppConstants.showLess
+                                : AppConstants.showMore,
+                            style: context.labelMedium.copyWith(
+                              color:      context.primary,
+                              fontWeight: .w600,
+                            ),
+                          ),
+                          AnimatedRotation(
+                            turns:    state.todayOverviewExpanded ? 0.5 : 0,
+                            duration: const Duration(milliseconds: 380),
+                            curve:    Curves.easeInOutCubic,
+                            child: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: context.primary,
+                              size:  18,
+                            ),
+                          ),
+                        ],
                       ),
-                      AnimatedRotation(
-                        turns: _expanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 380),
-                        curve: Curves.easeInOutCubic,
-                        child: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: context.primary,
-                          size: 18,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : null,
-        ),
-        const SizedBox(height: 10),
-        AnimatedSize(
-          duration: const Duration(milliseconds: 420),
-          curve: Curves.easeInOutCubic,
-          alignment: .topCenter,
-          child: GridView.builder(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: context.isPhone
-                ? (_expanded ? _items.length : 4)
-                : _items.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: context.gridColumnCount,
-              mainAxisSpacing: context.gridSpacing,
-              crossAxisSpacing: context.gridSpacing,
-              childAspectRatio: context.overviewCardRatio,
+                    )
+                  : null,
             ),
-            itemBuilder: (context, index) => _OverviewCard(item: _items[index]),
-          ),
-        ),
-      ],
+            const SizedBox(height: 10),
+            AnimatedSize(
+              duration:  const Duration(milliseconds: 420),
+              curve:     Curves.easeInOutCubic,
+              alignment: .topCenter,
+              child: GridView.builder(
+                shrinkWrap: true,
+                padding:    EdgeInsets.zero,
+                physics:    const NeverScrollableScrollPhysics(),
+                itemCount:  context.isPhone
+                    ? (state.todayOverviewExpanded ? _items.length : 4)
+                    : _items.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount:  context.gridColumnCount,
+                  mainAxisSpacing: context.gridSpacing,
+                  crossAxisSpacing: context.gridSpacing,
+                  childAspectRatio: context.overviewCardRatio,
+                ),
+                itemBuilder: (context, index) => _OverviewCard(item: _items[index]),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -130,14 +133,14 @@ class _OverviewCard extends StatelessWidget {
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.white,
+        color:        context.white,
         borderRadius: .circular(10),
-        border: .all(color: const Color(0xFFEDEDED)),
+        border:       .all(color: const Color(0xFFEDEDED)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color:      Colors.black.withValues(alpha: 0.03),
             blurRadius: 4,
-            offset: const Offset(0, 1),
+            offset:     const Offset(0, 1),
           ),
         ],
       ),
@@ -152,11 +155,11 @@ class _OverviewCard extends StatelessWidget {
                 crossAxisAlignment: .center,
                 children: [
                   Container(
-                    width: 30,
+                    width:  30,
                     height: 30,
                     decoration: BoxDecoration(
                       borderRadius: .circular(8),
-                      color: item.color.withValues(alpha: 0.10),
+                      color:        item.color.withValues(alpha: 0.10),
                     ),
                     child: Icon(item.icon, color: item.color, size: 16),
                   ),
@@ -164,24 +167,24 @@ class _OverviewCard extends StatelessWidget {
                   Expanded(
                     child: Column(
                       crossAxisAlignment: .start,
-                      mainAxisAlignment: .center,
+                      mainAxisAlignment:  .center,
                       children: [
                         Text(
                           AppConstants.rs0,
                           style: context.bodyMedium.copyWith(
                             fontWeight: .w700,
-                            color: context.textPrimary,
-                            fontSize: 13,
-                            height: 1,
+                            color:      context.textPrimary,
+                            fontSize:   13,
+                            height:     1,
                           ),
                         ),
                         const SizedBox(height: 3),
                         Text(
                           item.label,
                           style: context.labelSmall.copyWith(
-                            color: context.textSecondary,
+                            color:    context.textSecondary,
                             fontSize: 10,
-                            height: 1.1,
+                            height:   1.1,
                           ),
                           maxLines: 1,
                           overflow: .ellipsis,
@@ -200,9 +203,9 @@ class _OverviewCard extends StatelessWidget {
 }
 
 class _OverviewItem {
-  final String label;
+  final String   label;
   final IconData icon;
-  final Color color;
+  final Color    color;
 
   const _OverviewItem({
     required this.label,

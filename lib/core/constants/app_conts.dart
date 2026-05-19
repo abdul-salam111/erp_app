@@ -13,7 +13,7 @@ class AppConstants {
 
   // ─── Dashboard ─────────────────────────────────────────
   static const String adminDashboardTitle = 'Admin Dashboard';
-  static const String admin = 'Admin';
+  static const String admin = 'Bahoo Foods';
   static const String recoveryDueTodayLabel = 'Recovery due today';
   static const String receivedTodayLabel = 'Received today';
   static const String expensesTodayLabel = 'Expenses today';
@@ -29,7 +29,7 @@ class AppConstants {
   static const String abbasLabourContractor = 'Abbas Labour Contractor';
   static const String abdullahENGOkara = 'Abdullah ENG Okara M. Sarwar';
   static const String cornFlour = 'Corn Flour';
-  static const String newOrders = 'New \nOrders';
+  static const String newOrders = 'New Orders';
   static const String viewAll = 'View all';
   static const String administrator = 'Administrator';
   static const String dashboardLabel = 'Dashboard';
@@ -48,26 +48,7 @@ class AppConstants {
   static const String goodMorning = 'Good Morning';
   static const String goodAfternoon = 'Good Afternoon';
   static const String goodEveningMsg = 'Good Evening';
-  static const String jan = 'Jan';
-  static const String feb = 'Feb';
-  static const String mar = 'Mar';
-  static const String apr = 'Apr';
-  static const String may = 'May';
-  static const String jun = 'Jun';
-  static const String jul = 'Jul';
-  static const String aug = 'Aug';
-  static const String sep = 'Sep';
-  static const String oct = 'Oct';
-  static const String nov = 'Nov';
-  static const String dec = 'Dec';
-  static const String mon = 'Mon';
-  static const String tue = 'Tue';
-  static const String wed = 'Wed';
-  static const String thu = 'Thu';
-  static const String fri = 'Fri';
-  static const String sat = 'Sat';
-  static const String sun = 'Sun';
-  static const String eRPDashboard = 'ERP Dashboard';
+  static const String eRPDashboard = 'Mantic ERP';
   static const String expensesLabel = 'Expenses';
   static const String rs6110 = 'Rs 6,110';
   static const String change84Percent = '84 %';

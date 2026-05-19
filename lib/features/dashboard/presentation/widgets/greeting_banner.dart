@@ -25,12 +25,8 @@ class DashboardHeader extends StatelessWidget {
 
   String get _formattedDate {
     final now = DateTime.now();
-    const months = [
-      AppConstants.jan, AppConstants.feb, AppConstants.mar, AppConstants.apr, AppConstants.may, AppConstants.jun,
-      AppConstants.jul, AppConstants.aug, AppConstants.sep, AppConstants.oct, AppConstants.nov, AppConstants.dec,
-    ];
-    const days = [AppConstants.mon, AppConstants.tue, AppConstants.wed, AppConstants.thu, AppConstants.fri, AppConstants.sat, AppConstants.sun];
-    return '${days[now.weekday - 1]}, ${months[now.month - 1]} ${now.day}';
+
+    return now.formatted;
   }
 
   @override

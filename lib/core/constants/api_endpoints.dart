@@ -6,4 +6,5 @@ class ApiEndPoints {
   static const String purchaseOrder = '${baseUrl}purchase_order';
   static const String saleOrder = '${baseUrl}sale_order';
   static const String scanDocument = '${baseUrl}scan_document';
+  static const String accounts = '${baseUrl}accounts';
 }
