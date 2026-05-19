@@ -7,4 +7,8 @@ class ApiEndPoints {
   static const String saleOrder = '${baseUrl}sale_order';
   static const String scanDocument = '${baseUrl}scan_document';
   static const String accounts = '${baseUrl}accounts';
+  static const String inventory = '${baseUrl}inventory';
+  static const String production = '${baseUrl}production';
+  static const String analytics = '${baseUrl}analytics';
+  static const String security = '${baseUrl}security';
 }

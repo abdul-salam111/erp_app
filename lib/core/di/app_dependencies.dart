@@ -8,6 +8,10 @@ import 'register_purchase_order.dart';
 import 'register_sale_order.dart';
 import 'register_scan_document.dart';
 import 'register_accounts.dart';
+import 'register_inventory.dart';
+import 'register_production.dart';
+import 'register_analytics.dart';
+import 'register_security.dart';
 
 
 /// Global service locator instance.
@@ -25,4 +29,8 @@ Future<void> setupLocator() async {
   await registerSaleOrder();
   await registerScanDocument();
   await registerAccounts();
+  await registerInventory();
+  await registerProduction();
+  await registerAnalytics();
+  await registerSecurity();
 }

@@ -11,6 +11,10 @@ import '../features/purchase_order/purchase_order_exports.dart';
 import '../features/sale_order/sale_order_exports.dart';
 import '../features/scan_document/scan_document_exports.dart';
 import '../features/accounts/accounts_exports.dart';
+import '../features/inventory/inventory_exports.dart';
+import '../features/production/production_exports.dart';
+import '../features/analytics/analytics_exports.dart';
+import '../features/security/security_exports.dart';
 
 
 class AppRoutes {
@@ -78,6 +82,26 @@ class AppRoutes {
         path: RoutePaths.accounts,
         name: RouteNames.accounts,
         builder: (context, state) => const AccountsView(),
+      ),
+      GoRoute(
+        path: RoutePaths.inventory,
+        name: RouteNames.inventory,
+        builder: (context, state) => const InventoryView(),
+      ),
+      GoRoute(
+        path: RoutePaths.production,
+        name: RouteNames.production,
+        builder: (context, state) => const ProductionView(),
+      ),
+      GoRoute(
+        path: RoutePaths.analytics,
+        name: RouteNames.analytics,
+        builder: (context, state) => const AnalyticsView(),
+      ),
+      GoRoute(
+        path: RoutePaths.security,
+        name: RouteNames.security,
+        builder: (context, state) => const SecurityView(),
       ),
      
     ],
