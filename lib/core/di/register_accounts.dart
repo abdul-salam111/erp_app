@@ -4,6 +4,8 @@ import '../../features/accounts/domain/repositories/accounts_repository.dart';
 import '../../features/accounts/domain/usecases/accounts_usecase.dart';
 import '../../features/accounts/presentation/accounts/blocs/accounts_bloc.dart';
 import 'app_dependencies.dart';
+import '../../features/accounts/domain/usecases/account_ledger_usecase.dart';
+import '../../features/accounts/presentation/account_ledger/blocs/account_ledger_bloc.dart';
 
 Future<void> registerAccounts() async {
   // DataSource
@@ -24,5 +26,15 @@ Future<void> registerAccounts() async {
   // BLoCs
   sl.registerFactory<AccountsBloc>(
     () => AccountsBloc(accountsUsecase: sl()),
+  );
+
+
+  // UseCase — AccountLedger
+  sl.registerLazySingleton<AccountLedgerUsecase>(
+    () => AccountLedgerUsecase(repository: sl()),
+  );
+  // BLoC — AccountLedger screen
+  sl.registerFactory<AccountLedgerBloc>(
+    () => AccountLedgerBloc(accountLedgerUsecase: sl()),
   );
 }

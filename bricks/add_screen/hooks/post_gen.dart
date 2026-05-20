@@ -142,14 +142,14 @@ Future<void> run(HookContext context) async {
   _updateRoutes(libDir, featureFile, screenClass, screenFile, logger);
   _updateDiRegistration(
     libDir, featureFile, featureClass, screenClass, screenFile,
-    stateManagement, hasDataLayer, logger,
+    stateManagement, hasDataLayer, useScreenFolder, logger,
   );
 
   logger.success('\n✅ $screenClass screen added to $featureClass!');
   if (hasDataLayer) {
     logger.info('\n📦 Next steps:');
     logger.info('1. Replace Future<dynamic> with your actual response type in the datasource/repository/usecase');
-    logger.info('2. Implement the API call in I${featureClass}RemoteDatasourceImpl.$methodName()');
+    logger.info('2. Implement the API call in Remote${featureClass}DataSourceImpl.$methodName()');
   }
 }
 
@@ -510,8 +510,13 @@ void _addDatasourceMethod(
   String methodName,
   Logger logger,
 ) {
-  final dsPath =
+  // Try the flat naming convention first (remote_X_datasource.dart),
+  // then fall back to the nested subfolder convention used by auth.
+  final dsPathFlat =
+      '${featureDir.path}/data/datasources/remote_${featureFile}_datasource.dart';
+  final dsPathNested =
       '${featureDir.path}/data/datasources/${featureFile}_remote_datasource/${featureFile}_remote_datasource.dart';
+  final dsPath = File(dsPathFlat).existsSync() ? dsPathFlat : dsPathNested;
   final dsFile = File(dsPath);
   if (!dsFile.existsSync()) {
     logger.warn('⚠️  Datasource not found at $dsPath. Add $methodName() manually.');
@@ -524,8 +529,8 @@ void _addDatasourceMethod(
     return;
   }
 
-  // Insert abstract method into the interface (before impl class declaration)
-  final implMarker = 'class I${featureClass}RemoteDatasourceImpl';
+  // Actual naming: interface = IRemote{Feature}DataSource, impl = Remote{Feature}DataSourceImpl
+  final implMarker = 'class Remote${featureClass}DataSourceImpl';
   final implIdx = content.indexOf(implMarker);
   if (implIdx != -1) {
     final interfaceClose = content.lastIndexOf('}', implIdx);
@@ -550,7 +555,7 @@ void _addDatasourceMethod(
   }
 
   dsFile.writeAsStringSync(content);
-  logger.success('🔌 Added $methodName() to I${featureClass}RemoteDatasource');
+  logger.success('🔌 Added $methodName() to IRemote${featureClass}DataSource');
 }
 
 // ---------------------------------------------------------------------------
@@ -567,7 +572,7 @@ void _addRepositoryMethod(
 ) {
   // ── Repository interface ──────────────────────────────────────────────────
   final repoInterfaceFile = File(
-    '${featureDir.path}/domain/i_repositories/${featureFile}_repository.dart',
+    '${featureDir.path}/domain/repositories/${featureFile}_repository.dart',
   );
   if (repoInterfaceFile.existsSync()) {
     String content = repoInterfaceFile.readAsStringSync();
@@ -575,7 +580,7 @@ void _addRepositoryMethod(
       final lastBrace = content.lastIndexOf('}');
       content =
           '${content.substring(0, lastBrace)}'
-          '  Future<Either<AppException, dynamic>> $methodName();\n'
+          '  Future<Either<Failure, dynamic>> $methodName();\n'
           '${content.substring(lastBrace)}';
       repoInterfaceFile.writeAsStringSync(content);
       logger.success('🗂  Added $methodName() to I${featureClass}Repository interface');
@@ -597,7 +602,7 @@ void _addRepositoryMethod(
       content =
           '${content.substring(0, lastBrace)}'
           '\n  @override\n'
-          '  Future<Either<AppException, dynamic>> $methodName() {\n'
+          '  Future<Either<Failure, dynamic>> $methodName() {\n'
           '    return execute(\n'
           '      call: () => dataSource.$methodName(),\n'
           '    );\n'
@@ -637,7 +642,7 @@ void _createUsecase(
   // Repository interface class name — read from file to get exact name (handles typo variants)
   String repoInterfaceName = 'I${featureClass}Repository';
   final repoFile = File(
-    '${featureDir.path}/domain/i_repositories/${featureFile}_repository.dart',
+    '${featureDir.path}/domain/repositories/${featureFile}_repository.dart',
   );
   if (repoFile.existsSync()) {
     final repoContent = repoFile.readAsStringSync();
@@ -660,7 +665,7 @@ void _createUsecase(
       "  ${screenClass}Usecase({required this.repository});\n"
       "\n"
       "  @override\n"
-      "  Future<Either<AppException, dynamic>> call(NoParams params) {\n"
+      "  Future<Either<Failure, dynamic>> call(NoParams params) {\n"
       "    return repository.$methodName();\n"
       "  }\n"
       "}\n",
@@ -826,6 +831,7 @@ void _updateDiRegistration(
   String screenFile,
   String stateManagement,
   bool hasDataLayer,
+  bool useScreenFolder,
   Logger logger,
 ) {
   final controllerType = '$screenClass${stateManagement == 'bloc' ? 'Bloc' : 'Cubit'}';
@@ -839,10 +845,8 @@ void _updateDiRegistration(
     registerFile
       ..createSync(recursive: true)
       ..writeAsStringSync(
-        "import 'package:get_it/get_it.dart';\n"
         "import '../../features/$featureFile/${featureFile}_exports.dart';\n"
-        '\n'
-        'final _sl = GetIt.instance;\n'
+        "import 'app_dependencies.dart';\n"
         '\n'
         'Future<void> ${featureFile}Dependencies() async {\n'
         '}\n',
@@ -855,18 +859,17 @@ void _updateDiRegistration(
 
   // Datasource + repository: register once per feature (only if not already registered)
   if (hasDataLayer &&
-      !content.contains('registerLazySingleton<I${featureClass}RemoteDatasource>') &&
-      !content.contains('registerLazySingleton<I${featureClass}Repostiory>') &&
+      !content.contains('registerLazySingleton<IRemote${featureClass}DataSource>') &&
       !content.contains('registerLazySingleton<I${featureClass}Repository>')) {
     final closingBrace = content.lastIndexOf('}');
     content =
         '${content.substring(0, closingBrace)}'
         '  // Datasource + Repository — $featureClass feature\n'
-        '  _sl.registerLazySingleton<I${featureClass}RemoteDatasource>(\n'
-        '    () => I${featureClass}RemoteDatasourceImpl(dioHelper: _sl()),\n'
+        '  sl.registerLazySingleton<IRemote${featureClass}DataSource>(\n'
+        '    () => Remote${featureClass}DataSourceImpl(dioHelper: sl()),\n'
         '  );\n'
-        '  _sl.registerLazySingleton<I${featureClass}Repostiory>(\n'
-        '    () => ${featureClass}RepositoryImpl(dataSource: _sl()),\n'
+        '  sl.registerLazySingleton<I${featureClass}Repository>(\n'
+        '    () => ${featureClass}RepositoryImpl(dataSource: sl()),\n'
         '  );\n'
         '${content.substring(closingBrace)}';
     logger.success('🔧 Registered datasource + repository in register_$featureFile.dart');
@@ -879,8 +882,8 @@ void _updateDiRegistration(
     content =
         '${content.substring(0, closingBrace)}'
         '  // UseCase — $screenClass\n'
-        '  _sl.registerLazySingleton<$usecaseType>(\n'
-        '    () => $usecaseType(repository: _sl()),\n'
+        '  sl.registerLazySingleton<$usecaseType>(\n'
+        '    () => $usecaseType(repository: sl()),\n'
         '  );\n'
         '${content.substring(closingBrace)}';
     registerFile.writeAsStringSync(content);
@@ -894,18 +897,53 @@ void _updateDiRegistration(
     return;
   }
 
+  // ── Inject missing imports ──────────────────────────────────────────────────
+  // Only needed when the file uses direct imports (not the feature barrel).
+  // Safe to skip if the barrel import is already present.
+  final barrelImport = "import '../../features/$featureFile/${featureFile}_exports.dart';";
+  if (!content.contains(barrelImport)) {
+    final stateFolder = stateManagement == 'bloc' ? 'blocs' : 'cubit';
+    final controllerFile = stateManagement == 'bloc'
+        ? '${screenFile}_bloc.dart'
+        : '${screenFile}_cubit.dart';
+    final screenSubPath = useScreenFolder ? '$screenFile/' : '';
+
+    final usecaseImport = hasDataLayer
+        ? "import '../../features/$featureFile/domain/usecases/${screenFile}_usecase.dart';"
+        : null;
+    final controllerImport =
+        "import '../../features/$featureFile/presentation/$screenSubPath$stateFolder/$controllerFile';";
+
+    final lastImport = RegExp(r"import '[^']+';").allMatches(content);
+    if (lastImport.isNotEmpty) {
+      var insertAt = lastImport.last.end;
+      final extra = StringBuffer();
+      if (usecaseImport != null && !content.contains(usecaseImport)) {
+        extra.write('\n$usecaseImport');
+      }
+      if (!content.contains(controllerImport)) {
+        extra.write('\n$controllerImport');
+      }
+      if (extra.isNotEmpty) {
+        content = '${content.substring(0, insertAt)}${extra.toString()}${content.substring(insertAt)}';
+        registerFile.writeAsStringSync(content);
+        logger.success('🔧 Added missing imports to register_$featureFile.dart');
+      }
+    }
+  }
+
   final registration = hasDataLayer && stateManagement == 'bloc'
       ? '  // BLoC — $screenClass screen\n'
-        '  _sl.registerFactory<$controllerType>(\n'
-        '    () => $controllerType($usecaseParam: _sl()),\n'
+        '  sl.registerFactory<$controllerType>(\n'
+        '    () => $controllerType($usecaseParam: sl()),\n'
         '  );\n'
       : stateManagement == 'bloc'
           ? '  // BLoC — $screenClass screen\n'
-            '  _sl.registerFactory<$controllerType>(\n'
+            '  sl.registerFactory<$controllerType>(\n'
             '    () => $controllerType(/* inject usecases */),\n'
             '  );\n'
           : '  // Cubit — $screenClass screen\n'
-            '  _sl.registerFactory<$controllerType>(\n'
+            '  sl.registerFactory<$controllerType>(\n'
             '    () => $controllerType(),\n'
             '  );\n';
 

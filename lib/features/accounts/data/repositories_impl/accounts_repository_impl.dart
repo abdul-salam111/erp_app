@@ -11,8 +11,13 @@ class AccountsRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<Failure, dynamic>> performAction() {
+    return execute(call: () => dataSource.performAction());
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> accountLedger() {
     return execute(
-      call: () => dataSource.performAction(),
+      call: () => dataSource.accountLedger(),
     );
   }
 }

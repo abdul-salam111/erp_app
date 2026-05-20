@@ -19,109 +19,149 @@ class StockReceivedSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        // ── Header card ───────────────────────────────────────────────────────
+        Container(
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: .circular(14),
+            border: .all(color: context.border),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          child: Padding(
+            padding: .fromLTRB(14, 14, 14, 14),
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        color: context.primary.withValues(alpha: 0.10),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        Icons.inventory_2_outlined,
-                        color: context.primary,
-                        size: 16,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Stock Received',
-                      style: context.titleSmall.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const Spacer(),
-                    InventoryOutlineChip(label: 'Open Report', onTap: () {}),
-                  ],
+                Container(
+                  padding: .all(8),
+                  decoration: BoxDecoration(
+                    color: context.primary.withValues(alpha: 0.12),
+                    borderRadius: .circular(10),
+                  ),
+                  child: Icon(
+                    Icons.inventory_2_outlined,
+                    color: context.primary,
+                    size: 17,
+                  ),
                 ),
-                const SizedBox(height: 10),
-                Row(
-                  children: List.generate(_filters.length, (i) {
-                    final sel = i == selectedFilter;
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        right: i < _filters.length - 1 ? 6 : 0,
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Text(
+                        'Stock Received',
+                        style: context.titleSmall.copyWith(fontWeight: .w700),
                       ),
-                      child: GestureDetector(
-                        onTap: () => onFilterTap(i),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: sel
-                                ? context.primary.withValues(alpha: 0.10)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: sel
-                                  ? context.primary.withValues(alpha: 0.30)
-                                  : context.border,
+                      const SizedBox(height: 1),
+                      Text(
+                        'Incoming stock by party / item',
+                        style: TextStyle(fontSize: 10, color: context.grey400),
+                      ),
+                    ],
+                  ),
+                ),
+                InventoryOutlineChip(label: 'Open Report', onTap: () {}),
+              ],
+            ),
+          ),
+        ),
+
+
+        const SizedBox(height: 8),
+
+        // ── Scrollable list card ──────────────────────────────────────────────
+        Container(
+          height: 300,
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: context.border),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                // ── Filter row ──
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    children: List.generate(_filters.length, (i) {
+                      final sel = i == selectedFilter;
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          right: i < _filters.length - 1 ? 6 : 0,
+                        ),
+                        child: GestureDetector(
+                          onTap: () => onFilterTap(i),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
                             ),
-                          ),
-                          child: Text(
-                            _filters[i],
-                            style: context.labelSmall.copyWith(
+                            decoration: BoxDecoration(
                               color: sel
-                                  ? context.primary
-                                  : context.textSecondary,
-                              fontWeight:
-                                  sel ? FontWeight.w600 : FontWeight.w500,
+                                  ? context.primary.withValues(alpha: 0.10)
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: sel
+                                    ? context.primary.withValues(alpha: 0.30)
+                                    : context.border,
+                              ),
+                            ),
+                            child: Text(
+                              _filters[i],
+                              style: context.labelSmall.copyWith(
+                                color: sel
+                                    ? context.primary
+                                    : context.textSecondary,
+                                fontWeight:
+                                    sel ? FontWeight.w600 : FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+                  ),
+                ),
+                Divider(height: 1, thickness: 1, color: context.border),
+                Expanded(
+                  child: ListView.separated(
+                    padding: EdgeInsets.zero,
+                    itemCount: rows.length,
+                    separatorBuilder: (_, __) =>
+                        Divider(height: 1, thickness: 1, color: context.border),
+                    itemBuilder: (context, i) =>
+                        _StockReceivedTile(row: rows[i]),
+                  ),
                 ),
               ],
             ),
           ),
-          Divider(height: 1, thickness: 1, color: context.border),
-          ListView.separated(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: rows.length,
-            separatorBuilder: (_, __) =>
-                Divider(height: 1, thickness: 1, color: context.border),
-            itemBuilder: (context, i) => _StockReceivedTile(row: rows[i]),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -138,13 +178,13 @@ class _StockReceivedTile extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 18,
+            radius: 15,
             backgroundColor: row.avatarColor.withValues(alpha: 0.15),
             child: Text(
               row.initials,
               style: context.labelSmall.copyWith(
                 color: row.avatarColor,
-                fontWeight: FontWeight.w700,
+                fontWeight: .w700,
                 fontSize: 11,
               ),
             ),
@@ -152,22 +192,22 @@ class _StockReceivedTile extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text(
                   row.name,
                   style: context.bodySmall.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: .w600,
                     color: context.textPrimary,
                   ),
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                  overflow: .ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   row.city,
                   style: context.labelSmall.copyWith(
-                    color: context.textSecondary,
+                    color: context.grey300,
                   ),
                 ),
               ],
@@ -185,26 +225,26 @@ class _StockReceivedTile extends StatelessWidget {
                 row.itemCount!,
                 style: context.labelSmall.copyWith(
                   color: context.primary,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: .w600,
                 ),
               ),
             )
           else
             Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: .end,
               children: [
                 Text(
                   row.itemName!,
                   style: context.labelSmall.copyWith(
                     color: context.textPrimary,
-                    fontWeight: FontWeight.w600,
+                    fontWeight: .w600,
                   ),
                 ),
                 if (row.category != null)
                   Text(
                     row.category!,
                     style: context.labelSmall.copyWith(
-                      color: context.primary.withValues(alpha: 0.65),
+                      color: context.grey300,
                       fontSize: 10,
                     ),
                   ),
@@ -212,7 +252,7 @@ class _StockReceivedTile extends StatelessWidget {
             ),
           const SizedBox(width: 12),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: .end,
             children: [
               Text(
                 row.qty,
@@ -220,7 +260,7 @@ class _StockReceivedTile extends StatelessWidget {
                   color: row.qty == 'N/A'
                       ? context.textSecondary
                       : context.textPrimary,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: .w600,
                 ),
               ),
               if (row.weight.isNotEmpty)

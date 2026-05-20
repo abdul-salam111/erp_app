@@ -36,6 +36,7 @@ class AppConstants {
   static const String scanDocumentLabel = 'Scan Document';
   static const String modules = 'Modules';
   static const String accountsLabel = 'Accounts';
+  static const String accountLedgerLabel = 'Account Ledger';
   static const String inventoryLabel = 'Inventory';
   static const String purchaseLabel = 'Purchase';
   static const String salesLabel = 'Sales';
@@ -136,8 +137,8 @@ class AppConstants {
   static const String recoveryDueTodayTitle = 'Recovery Due Today';
   static const String hideDetails = 'Hide Details';
   static const String showDetails = 'Show Details';
-  static const String accountStatementsLabel = 'Account Statements';
-  static const String partyStatementsLabel = 'Party Statements';
+  static const String accountStatementsLabel = 'Account Ledger';
+  static const String partyStatementsLabel = 'Party Ledger';
   static const String bankCashPositionLabel = 'Bank & Cash Position';
   static const String cashbookLabel = 'Cashbook';
   static const String creditManagementLabel = 'Credit Management';

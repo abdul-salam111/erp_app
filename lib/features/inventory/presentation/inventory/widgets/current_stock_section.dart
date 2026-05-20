@@ -7,113 +7,151 @@ class CurrentStockSection extends StatelessWidget {
   final List<StockItem> items;
   const CurrentStockSection({super.key, required this.items});
 
+  static const _green = Color(0xFF4CAF50);
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        // ── Header card ───────────────────────────────────────────────────────
+        Container(
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: context.border),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
+          child: Padding(
             padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(7),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF4CAF50).withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(8),
+                    color: _green.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
                     Icons.warehouse_outlined,
-                    color: Color(0xFF4CAF50),
-                    size: 16,
+                    color: _green,
+                    size: 17,
                   ),
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  'Current Stock',
-                  style: context.titleSmall.copyWith(
-                    fontWeight: FontWeight.w700,
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Text(
+                        'Current Stock',
+                        style: context.titleSmall.copyWith(fontWeight: .w700),
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        'Live inventory by product',
+                        style: TextStyle(fontSize: 10, color: context.grey400),
+                      ),
+                    ],
                   ),
                 ),
-                const Spacer(),
                 InventoryOutlineChip(label: 'Open Report', onTap: () {}),
               ],
             ),
           ),
-          Divider(height: 1, thickness: 1, color: context.border),
-          // ── Column headers ───────────────────────────────────────
-          Container(
-            color: context.primary.withValues(alpha: 0.07),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-            child: Row(
+        ),
+
+        const SizedBox(height: 8),
+
+        // ── Table card ───────────────────────────────────────────────────────
+        Container(
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: context.border),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: Column(
               children: [
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    'Product',
-                    style: context.labelSmall.copyWith(
-                      color: context.primary,
-                      fontWeight: FontWeight.w700,
-                    ),
+                // ── Column headers ──
+                Container(
+                  color: const Color(0xFFF5F5F5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: Text(
+                          'Product',
+                          style: context.labelSmall.copyWith(
+                            color: Colors.black87,
+                            fontWeight: .w700,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 80,
+                        child: Text(
+                          'Qty / Weight',
+                          textAlign: .center,
+                          style: context.labelSmall.copyWith(
+                            color: Colors.black87,
+                            fontWeight: .w700,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 54,
+                        child: Text(
+                          'Total',
+                          textAlign: .end,
+                          style: context.labelSmall.copyWith(
+                            color: Colors.black87,
+                            fontWeight: .w700,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    'Qty / Weight',
-                    textAlign: TextAlign.center,
-                    style: context.labelSmall.copyWith(
-                      color: context.primary,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    'Total',
-                    textAlign: TextAlign.end,
-                    style: context.labelSmall.copyWith(
-                      color: context.primary,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
+                Divider(height: 1, thickness: 1, color: context.border),
+                // ── All rows (no scroll — outer screen scrolls) ──
+                ...List.generate(items.length, (i) => Column(
+                  children: [
+                    _StockTableRow(item: items[i]),
+                    if (i < items.length - 1)
+                      Divider(height: 1, thickness: 1, color: context.border),
+                  ],
+                )),
               ],
             ),
           ),
-          Divider(height: 1, thickness: 1, color: context.border),
-          ListView.separated(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: items.length,
-            separatorBuilder: (_, __) =>
-                Divider(height: 1, thickness: 1, color: context.border),
-            itemBuilder: (context, i) => _StockItemTile(item: items[i]),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-class _StockItemTile extends StatelessWidget {
+class _StockTableRow extends StatelessWidget {
   final StockItem item;
-  const _StockItemTile({required this.item});
+  const _StockTableRow({required this.item});
 
   static bool _isNeg(String v) => v.startsWith('-');
 
@@ -125,74 +163,72 @@ class _StockItemTile extends StatelessWidget {
         _isNeg(item.total) ? const Color(0xFFE53935) : context.textPrimary;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .center,
         children: [
+          // Product + category
           Expanded(
-            flex: 3,
+            flex: 5,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text(
                   item.name,
                   style: context.bodySmall.copyWith(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: .w600,
                     color: context.textPrimary,
                   ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   item.category,
                   style: context.labelSmall.copyWith(
-                    color: context.primary.withValues(alpha: 0.65),
+                    color:context.grey300,
+                    fontSize: 10,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+              ],
+            ),
+          ),
+          // Qty / Weight
+          SizedBox(
+            width: 80,
+            child: Column(
+              children: [
+                Text(
+                  item.qty,
+                  textAlign: .center,
+                  style: context.labelSmall.copyWith(
+                    color: qtyColor,
+                    fontWeight: .w600,
+                  ),
+                ),
+                Text(
+                  item.weight,
+                  textAlign: .center,
+                  style: context.labelSmall.copyWith(
+                    color:context.grey300,
                     fontSize: 10,
                   ),
                 ),
               ],
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: Column(
-              children: [
-                Text(
-                  item.qty,
-                  textAlign: TextAlign.center,
-                  style: context.labelSmall.copyWith(
-                    color: qtyColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  item.weight,
-                  textAlign: TextAlign.center,
-                  style: context.labelSmall.copyWith(
-                    color: context.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  item.total,
-                  style: context.labelSmall.copyWith(
-                    color: totalColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  item.totalWeight,
-                  style: context.labelSmall.copyWith(
-                    color: context.textSecondary,
-                  ),
-                ),
-              ],
+          // Total
+          SizedBox(
+            width: 54,
+            child: Text(
+              item.total,
+              textAlign: .end,
+              style: context.labelSmall.copyWith(
+                color: totalColor,
+                fontWeight: .w600,
+              ),
             ),
           ),
         ],

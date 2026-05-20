@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mantic_erp_app/features/dashboard/presentation/widgets/dashboard_widgets.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../../../routes/route_exports.dart';
 
 class AccountsQuickActions extends StatelessWidget {
   const AccountsQuickActions({super.key});
@@ -13,6 +15,7 @@ class AccountsQuickActions extends StatelessWidget {
       label: AppConstants.accountStatementsLabel,
       icon: Iconsax.document_text,
       color: Color(0xFF1B84FF),
+      routeName: RouteNames.account_ledger,
     ),
     _QAItem(
       label: AppConstants.partyStatementsLabel,
@@ -85,7 +88,9 @@ class _QACard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        if (item.routeName != null) context.pushNamed(item.routeName!);
+      },
       borderRadius: .circular(10),
       child: Container(
         decoration: BoxDecoration(
@@ -137,5 +142,11 @@ class _QAItem {
   final String label;
   final IconData icon;
   final Color color;
-  const _QAItem({required this.label, required this.icon, required this.color});
+  final String? routeName;
+  const _QAItem({
+    required this.label,
+    required this.icon,
+    required this.color,
+    this.routeName,
+  });
 }

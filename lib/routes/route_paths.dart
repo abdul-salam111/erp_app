@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 class RoutePaths {
   static const String signin = '/signin';
   static const String splash = '/splash';
@@ -12,4 +14,6 @@ class RoutePaths {
   static const String production = '/production';
   static const String analytics = '/analytics';
   static const String security = '/security';
+
+  static const String account_ledger = '/account_ledger';
 }

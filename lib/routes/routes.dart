@@ -103,6 +103,13 @@ class AppRoutes {
         name: RouteNames.security,
         builder: (context, state) => const SecurityView(),
       ),
+      GoRoute(
+        path: RoutePaths.account_ledger,
+        name: RouteNames.account_ledger,
+        builder: (context, state) => const AccountLedgerView(),
+      ),
+    
+     
      
     ],
   );

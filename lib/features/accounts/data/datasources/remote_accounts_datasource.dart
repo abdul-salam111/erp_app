@@ -4,6 +4,7 @@ import '../../../../core/constants/const_exports.dart';
 abstract interface class IRemoteAccountsDataSource {
   // TODO: Define your datasource methods here
   Future<dynamic> performAction();
+  Future<dynamic> accountLedger();
 }
 
 class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
@@ -17,5 +18,11 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
       parser: (json) => json, // TODO: Replace with your model parser
       body: {}, // TODO: Add your request body
     );
+  }
+
+  @override
+  Future<dynamic> accountLedger() async {
+    // TODO: implement accountLedger API call
+    throw UnimplementedError('accountLedger not implemented');
   }
 }
