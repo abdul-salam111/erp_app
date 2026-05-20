@@ -130,7 +130,19 @@ class AppConstants {
 
   // ─── Accounts ──────────────────────────────────────────
   static const String accountsView = 'Accounts View';
-
+  static const String totalReceivedTodayLabel = 'Total Received Today';
+  static const String totalPostponeLabel = 'Total Postpone';
+  static const String totalDueTodayLabel = 'Total Due Today';
+  static const String recoveryDueTodayTitle = 'Recovery Due Today';
+  static const String hideDetails = 'Hide Details';
+  static const String showDetails = 'Show Details';
+  static const String accountStatementsLabel = 'Account Statements';
+  static const String partyStatementsLabel = 'Party Statements';
+  static const String bankCashPositionLabel = 'Bank & Cash Position';
+  static const String cashbookLabel = 'Cashbook';
+  static const String creditManagementLabel = 'Credit Management';
+  static const String customerReceivableLabel = 'Customer Receivable';
+  static const String vendorPayableLabel = 'Vendor Payable';
   // ─── Analytics ─────────────────────────────────────────
   static const String analyticsView = 'Analytics View';
 

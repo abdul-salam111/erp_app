@@ -9,8 +9,10 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
   final AccountsUsecase accountsUsecase;
 
   AccountsBloc({required this.accountsUsecase})
-      : super(const AccountsState()) {
+    : super(const AccountsState(todayOverviewExpanded: false)) {
     on<AccountsSubmitted>(_onAccountsSubmitted);
+    on<TodayOverviewExpansionToggled>(_onTodayOverviewExpansionToggled);
+    on<RecoveryFilterChanged>(_onRecoveryFilterChanged);
   }
 
   Future<void> _onAccountsSubmitted(
@@ -27,5 +29,20 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
       stateBuilder: (status, {data, error}) =>
           state.copyWith(apiStatus: status, data: data, message: error),
     );
+  }
+
+  void _onTodayOverviewExpansionToggled(
+    TodayOverviewExpansionToggled event,
+    Emitter<AccountsState> emit,
+  ) {
+    emit(state.copyWith(todayOverviewExpanded: !state.todayOverviewExpanded));
+  }
+
+  void _onRecoveryFilterChanged(
+    RecoveryFilterChanged event,
+    Emitter<AccountsState> emit,
+  ) {
+    if (state.selectedFilter == event.filter) return;
+    emit(state.copyWith(selectedFilter: event.filter));
   }
 }
