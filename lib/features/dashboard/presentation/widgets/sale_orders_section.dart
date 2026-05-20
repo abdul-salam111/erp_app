@@ -4,13 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../bloc/dashboard_bloc.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 // ─── Section ──────────────────────────────────────────────────────────────────
 
 class SaleOrdersSection extends StatelessWidget {
   const SaleOrdersSection({super.key});
 
-  static const _filters = ['Jan - Mar', 'In-complete only', 'Completed only', 'All'];
+  static const _filters = [AppConstants.janMar, AppConstants.inCompleteOnly, AppConstants.completedOnly, AppConstants.allSaleOrders];
 
   static const int _totalOrders = 16;
   static const int _completed   = 8;
@@ -58,7 +59,7 @@ class SaleOrdersSection extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      'Sale Orders',
+                      AppConstants.saleOrders,
                       style: context.titleSmall.copyWith(fontWeight: .w700),
                     ),
                     const Spacer(),
@@ -71,7 +72,7 @@ class SaleOrdersSection extends StatelessWidget {
                           borderRadius: .circular(8),
                         ),
                         child: Text(
-                          'Report',
+                          AppConstants.report,
                           style: context.labelSmall.copyWith(
                             color:      Colors.white,
                             fontWeight: .w600,
@@ -139,9 +140,9 @@ class SaleOrdersSection extends StatelessWidget {
               IntrinsicHeight(
                 child: Row(
                   children: [
-                    Expanded(child: _StatBox(label: 'Total Orders', value: '$_totalOrders', icon: Iconsax.bag_2,       color: const Color(0xFF1B84FF))),
+                    Expanded(child: _StatBox(label: AppConstants.totalOrdersLabel, value: '$_totalOrders', icon: Iconsax.bag_2,       color: const Color(0xFF1B84FF))),
                     VerticalDivider(width: 1, thickness: 1, color: context.border),
-                    Expanded(child: _StatBox(label: 'Completed',    value: '$_completed',   icon: Iconsax.tick_circle, color: const Color(0xFF43A047))),
+                    Expanded(child: _StatBox(label: AppConstants.completedLabel,    value: '$_completed',   icon: Iconsax.tick_circle, color: const Color(0xFF43A047))),
                   ],
                 ),
               ),
@@ -149,9 +150,9 @@ class SaleOrdersSection extends StatelessWidget {
               IntrinsicHeight(
                 child: Row(
                   children: [
-                    Expanded(child: _StatBox(label: 'Partial in Progress', value: '$_partial',    icon: Iconsax.note_2, color: const Color(0xFFFF9800))),
+                    Expanded(child: _StatBox(label: AppConstants.partialInProgressLabel, value: '$_partial',    icon: Iconsax.note_2, color: const Color(0xFFFF9800))),
                     VerticalDivider(width: 1, thickness: 1, color: context.border),
-                    Expanded(child: _StatBox(label: 'Not Started',         value: '$_notStarted', icon: Iconsax.clock,  color: const Color(0xFF37474F))),
+                    Expanded(child: _StatBox(label: AppConstants.notStartedLabel,         value: '$_notStarted', icon: Iconsax.clock,  color: const Color(0xFF37474F))),
                   ],
                 ),
               ),
@@ -248,7 +249,7 @@ class _SemiDonut extends StatelessWidget {
                 mainAxisSize: .min,
                 children: [
                   Text(
-                    'Progress',
+                    AppConstants.progress,
                     style: context.labelSmall.copyWith(color: context.textSecondary),
                   ),
                   const SizedBox(height: 2),
@@ -262,13 +263,13 @@ class _SemiDonut extends StatelessWidget {
                     children: [
                       _LegendItem(
                         color: const Color(0xFF5C6BC0),
-                        label: 'Completed',
+                        label: AppConstants.completedLabel,
                         pct:   '$completedPct %',
                       ),
                       const SizedBox(width: 24),
                       _LegendItem(
                         color: const Color(0xFFB3BAE8),
-                        label: 'Remaining',
+                        label: AppConstants.remainingLabel,
                         pct:   '$remainingPct %',
                       ),
                     ],

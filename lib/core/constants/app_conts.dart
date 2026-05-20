@@ -63,6 +63,34 @@ class AppConstants {
   static const String monthOverview = 'Month Overview';
   static const String may2026 = 'May 2026';
   static const String quickActionsTitle = 'Quick Actions';
+  static const String menu1Label = 'Menu 1';
+  static const String menu2Label = 'Menu 2';
+  static const String menu3Label = 'Menu 3';
+  static const String jan = 'Jan';
+  static const String feb = 'Feb';
+  static const String mar = 'Mar';
+  static const String apr = 'Apr';
+  static const String may = 'May';
+  static const String jun = 'Jun';
+  static const String jul = 'Jul';
+  static const String aug = 'Aug';
+  static const String sep = 'Sep';
+  static const String oct = 'Oct';
+  static const String nov = 'Nov';
+  static const String dec = 'Dec';
+  static const String stats = 'Stats';
+  static const String janMar = 'Jan - Mar';
+  static const String inCompleteOnly = 'In-complete only';
+  static const String completedOnly = 'Completed only';
+  static const String allSaleOrders = 'All';
+  static const String saleOrders = 'Sale Orders';
+  static const String report = 'Report';
+  static const String totalOrdersLabel = 'Total Orders';
+  static const String completedLabel = 'Completed';
+  static const String partialInProgressLabel = 'Partial in Progress';
+  static const String notStartedLabel = 'Not Started';
+  static const String progress = 'Progress';
+  static const String remainingLabel = 'Remaining';
   // ─── AlertPanel ────────────────────────────────────────
   static const String pendingQCTitle = 'Pending QC';
   static const String itemsReceivedButNotYetTitle = 'Items received but not yet quality-checked.';
@@ -99,4 +127,19 @@ class AppConstants {
   // ─── ScanDocument ──────────────────────────────────────
   static const String scanDocumentTitle = 'ScanDocument';
   static const String scanDocumentView = 'ScanDocument View';
+
+  // ─── Accounts ──────────────────────────────────────────
+  static const String accountsView = 'Accounts View';
+
+  // ─── Analytics ─────────────────────────────────────────
+  static const String analyticsView = 'Analytics View';
+
+  // ─── Inventory ─────────────────────────────────────────
+  static const String inventoryView = 'Inventory View';
+
+  // ─── Production ────────────────────────────────────────
+  static const String productionView = 'Production View';
+
+  // ─── Security ──────────────────────────────────────────
+  static const String securityView = 'Security View';
 }

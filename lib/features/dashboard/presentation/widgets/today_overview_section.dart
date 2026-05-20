@@ -147,7 +147,7 @@ class _OverviewCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: .stretch,
         children: [
-          Container(width: 4, color: item.color),
+          Container(width: 4, color: item.color.withValues(alpha: 0.20)),
           Expanded(
             child: Padding(
               padding: .symmetric(horizontal: 10, vertical: 9),

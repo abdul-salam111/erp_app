@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/theme_utils.dart';
+import '../../../../core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
 import '../bloc/dashboard_bloc.dart';
 
@@ -15,40 +16,43 @@ class MonthOverviewSection extends StatelessWidget {
       label: AppConstants.expensesLabel,
       value: AppConstants.rs6110,
       change: AppConstants.change84Percent,
-      isUp: true,
+      isUp:  true,
+      color: Color(0xFFE53935),
     ),
     _StatCard(
       label: AppConstants.newOrders,
       value: '2',
       change: AppConstants.changeMinus250Percent,
-      isUp: false,
+      isUp:  false,
+      color: Color(0xFF1B84FF),
     ),
     _StatCard(
       label: AppConstants.newClientsLabel,
       value: '0',
       change: AppConstants.changeMinus100Percent,
-      isUp: false,
+      isUp:  false,
+      color: Color(0xFF4CAF50),
     ),
-  ];
-
-  static const _summaryRows = <_SummaryRow>[
-    _SummaryRow(
+    _StatCard(
       label: AppConstants.totalRevenueLabel,
       value: AppConstants.rs503100Label,
       change: '-139%',
-      isUp: true,
+      isUp:  true,
+      color: Color(0xFFFF9800),
     ),
-    _SummaryRow(
+    _StatCard(
       label: AppConstants.totalPurchasesLabel,
       value: AppConstants.rs6300Label,
       change: '-42,887%',
-      isUp: true,
+      isUp:  true,
+      color: Color(0xFF9C27B0),
     ),
-    _SummaryRow(
+    _StatCard(
       label: AppConstants.recoveriesLabel,
       value: AppConstants.rs0,
       change: '0%',
-      isUp: true,
+      isUp:  true,
+      color: Color(0xFF00ACC1),
     ),
   ];
 
@@ -73,18 +77,8 @@ class MonthOverviewSection extends StatelessWidget {
   ];
 
   static const _monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
+    AppConstants.jan, AppConstants.feb, AppConstants.mar, AppConstants.apr, AppConstants.may, AppConstants.jun,
+    AppConstants.jul, AppConstants.aug, AppConstants.sep, AppConstants.oct, AppConstants.nov, AppConstants.dec,
   ];
 
   static String _monthLabel(DateTime selected) =>
@@ -104,19 +98,19 @@ class MonthOverviewSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       buildWhen: (prev, curr) =>
-          prev.selectedMonth != curr.selectedMonth ||
-          prev.showMonthStats != curr.showMonthStats,
+          prev.selectedMonth   != curr.selectedMonth ||
+          prev.showMonthStats  != curr.showMonthStats,
       builder: (context, state) {
         return Container(
           decoration: BoxDecoration(
-            color: context.white,
+            color:        context.white,
             borderRadius: .circular(16),
-            border: Border.all(color: context.border),
+            border:       Border.all(color: context.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
+                color:      Colors.black.withValues(alpha: 0.06),
                 blurRadius: 14,
-                offset: const Offset(0, 4),
+                offset:     const Offset(0, 4),
               ),
             ],
           ),
@@ -131,13 +125,13 @@ class MonthOverviewSection extends StatelessWidget {
                     Container(
                       padding: .all(7),
                       decoration: BoxDecoration(
-                        color: context.primary.withValues(alpha: 0.10),
+                        color:        context.primary.withValues(alpha: 0.10),
                         borderRadius: .circular(8),
                       ),
                       child: Icon(
                         Icons.bar_chart_rounded,
                         color: context.primary,
-                        size: 16,
+                        size:  16,
                       ),
                     ),
                     const SizedBox(width: 5),
@@ -168,13 +162,13 @@ class MonthOverviewSection extends StatelessWidget {
                           mainAxisSize: .min,
                           children: [
                             Text(
-                              'Stats',
+                              AppConstants.stats,
                               style: context.labelSmall.copyWith(
                                 color: state.showMonthStats
                                     ? context.primary
                                     : context.textSecondary,
                                 fontWeight: .w600,
-                                fontSize: 10
+                                fontSize:   10,
                               ),
                             ),
                             const SizedBox(width: 3),
@@ -184,7 +178,7 @@ class MonthOverviewSection extends StatelessWidget {
                               curve:    Curves.easeInOut,
                               child: Icon(
                                 Icons.keyboard_arrow_down_rounded,
-                                size: 14,
+                                size:  14,
                                 color: state.showMonthStats
                                     ? context.primary
                                     : context.textSecondary,
@@ -201,7 +195,7 @@ class MonthOverviewSection extends StatelessWidget {
                       child: Container(
                         padding: .symmetric(horizontal: 4, vertical: 3),
                         decoration: BoxDecoration(
-                          color: context.primary.withValues(alpha: 0.07),
+                          color:        context.primary.withValues(alpha: 0.07),
                           borderRadius: .circular(20),
                           border: .all(
                             color: context.primary.withValues(alpha: 0.25),
@@ -212,22 +206,22 @@ class MonthOverviewSection extends StatelessWidget {
                           children: [
                             Icon(
                               Icons.calendar_month_rounded,
-                              size: 13,
+                              size:  13,
                               color: context.primary,
                             ),
                             const SizedBox(width: 5),
                             Text(
                               _monthLabel(state.selectedMonth),
                               style: context.labelSmall.copyWith(
-                                color: context.primary,
+                                color:      context.primary,
                                 fontWeight: .w600,
-                                fontSize: 10
+                                fontSize:   10,
                               ),
                             ),
                             const SizedBox(width: 4),
                             Icon(
                               Icons.keyboard_arrow_down_rounded,
-                              size: 14,
+                              size:  14,
                               color: context.primary,
                             ),
                           ],
@@ -240,77 +234,29 @@ class MonthOverviewSection extends StatelessWidget {
 
               // ── Expandable stats ────────────────────────────────
               AnimatedSize(
-                duration: const Duration(milliseconds: 320),
-                curve: Curves.easeInOut,
-                clipBehavior: .hardEdge,
+                duration:      const Duration(milliseconds: 320),
+                curve:         Curves.easeInOut,
+                clipBehavior:  .hardEdge,
                 child: state.showMonthStats
                     ? Column(
                         mainAxisSize: .min,
                         children: [
-                          Divider(
-                            height: 1,
-                            thickness: 1,
-                            color: context.border,
-                          ),
-                          IntrinsicHeight(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: _StatCardWidget(data: _statCards[0]),
-                                ),
-                                VerticalDivider(
-                                  width: 1,
-                                  thickness: 1,
-                                  color: context.border,
-                                ),
-                                Expanded(
-                                  child: _StatCardWidget(data: _statCards[1]),
-                                ),
-                                VerticalDivider(
-                                  width: 1,
-                                  thickness: 1,
-                                  color: context.border,
-                                ),
-                                Expanded(
-                                  child: _StatCardWidget(data: _statCards[2]),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Divider(
-                            height: 1,
-                            thickness: 1,
-                            color: context.border,
-                          ),
-                          IntrinsicHeight(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: _SummaryColWidget(
-                                    data: _summaryRows[0],
-                                  ),
-                                ),
-                                VerticalDivider(
-                                  width: 1,
-                                  thickness: 1,
-                                  color: context.border,
-                                ),
-                                Expanded(
-                                  child: _SummaryColWidget(
-                                    data: _summaryRows[1],
-                                  ),
-                                ),
-                                VerticalDivider(
-                                  width: 1,
-                                  thickness: 1,
-                                  color: context.border,
-                                ),
-                                Expanded(
-                                  child: _SummaryColWidget(
-                                    data: _summaryRows[2],
-                                  ),
-                                ),
-                              ],
+                          Divider(height: 1, thickness: 1, color: context.border),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              padding:   EdgeInsets.zero,
+                              physics:   const NeverScrollableScrollPhysics(),
+                              itemCount: _statCards.length,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount:   context.gridColumnCount,
+                                mainAxisSpacing:  context.gridSpacing,
+                                crossAxisSpacing: context.gridSpacing,
+                                childAspectRatio: context.overviewCardRatio,
+                              ),
+                              itemBuilder: (context, i) =>
+                                  _MonthStatCard(data: _statCards[i]),
                             ),
                           ),
                         ],
@@ -326,84 +272,181 @@ class MonthOverviewSection extends StatelessWidget {
                 child: SizedBox(
                   height: 160,
                   child: LineChart(
-                        LineChartData(
-                          gridData: FlGridData(
-                            show: true,
-                            drawVerticalLine: false,
-                            horizontalInterval: 100000,
-                            getDrawingHorizontalLine: (_) =>
-                                FlLine(color: context.border, strokeWidth: 0.8),
-                          ),
-                          titlesData: FlTitlesData(
-                            leftTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                reservedSize: 48,
-                                interval: 100000,
-                                getTitlesWidget: (v, _) => Padding(
-                                  padding: const EdgeInsets.only(right: 4),
-                                  child: Text(
-                                    '${(v / 1000).toStringAsFixed(0)}k',
-                                    style: TextStyle(
-                                      fontSize: 8.5,
-                                      color: context.textSecondary,
-                                    ),
-                                  ),
+                    LineChartData(
+                      gridData: FlGridData(
+                        show:               true,
+                        drawVerticalLine:   false,
+                        horizontalInterval: 100000,
+                        getDrawingHorizontalLine: (_) =>
+                            FlLine(color: context.border, strokeWidth: 0.8),
+                      ),
+                      titlesData: FlTitlesData(
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles:   true,
+                            reservedSize: 48,
+                            interval:     100000,
+                            getTitlesWidget: (v, _) => Padding(
+                              padding: const EdgeInsets.only(right: 4),
+                              child: Text(
+                                '${(v / 1000).toStringAsFixed(0)}k',
+                                style: TextStyle(
+                                  fontSize: 8.5,
+                                  color:    context.textSecondary,
                                 ),
                               ),
                             ),
-                            bottomTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            rightTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            topTitles: const AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
                           ),
-                          borderData: FlBorderData(show: false),
-                          minY: 0,
-                          maxY: 400000,
-                          lineTouchData: LineTouchData(
-                            touchTooltipData: LineTouchTooltipData(
-                              getTooltipColor: (_) =>
-                                  context.primary.withValues(alpha: 0.85),
-                              getTooltipItems: (spots) => spots
-                                  .map(
-                                    (s) => LineTooltipItem(
-                                      'Rs ${s.y.toStringAsFixed(0)}',
-                                      const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                          ),
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: _chartSpots,
-                              isCurved: true,
-                              color: context.primary,
-                              barWidth: 2.2,
-                              dotData: const FlDotData(show: false),
-                              belowBarData: BarAreaData(
-                                show: true,
-                                color: context.primary.withValues(alpha: 0.10),
-                              ),
-                            ),
-                          ],
+                        ),
+                        bottomTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        topTitles: const AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
                         ),
                       ),
+                      borderData: FlBorderData(show: false),
+                      minY: 0,
+                      maxY: 400000,
+                      lineTouchData: LineTouchData(
+                        touchTooltipData: LineTouchTooltipData(
+                          getTooltipColor: (_) =>
+                              context.primary.withValues(alpha: 0.85),
+                          getTooltipItems: (spots) => spots
+                              .map(
+                                (s) => LineTooltipItem(
+                                  'Rs ${s.y.toStringAsFixed(0)}',
+                                  const TextStyle(
+                                    color:      Colors.white,
+                                    fontSize:   11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots:    _chartSpots,
+                          isCurved: true,
+                          color:    context.primary,
+                          barWidth: 2.2,
+                          dotData:  const FlDotData(show: false),
+                          belowBarData: BarAreaData(
+                            show:  true,
+                            color: context.primary.withValues(alpha: 0.10),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                ),
+              ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+// ─── Month stat card (matches TodayOverview style) ────────────────────────────
+
+class _MonthStatCard extends StatelessWidget {
+  final _StatCard data;
+  const _MonthStatCard({required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    final changeColor = data.isUp
+        ? const Color(0xFFE53935)
+        : const Color(0xFF43A047);
+
+    return Container(
+      clipBehavior: .hardEdge,
+      decoration: BoxDecoration(
+        color:        context.white,
+        borderRadius: .circular(10),
+        border:       .all(color: const Color(0xFFEDEDED)),
+        boxShadow: [
+          BoxShadow(
+            color:      Colors.black.withValues(alpha: 0.03),
+            blurRadius: 4,
+            offset:     const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: .stretch,
+        children: [
+          Container(width: 4, color: data.color),
+          Expanded(
+            child: Padding(
+              padding: .symmetric(horizontal: 10, vertical: 9),
+              child: Column(
+                crossAxisAlignment: .start,
+                mainAxisAlignment:  .center,
+                children: [
+                  Row(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          data.value,
+                          style: context.bodyMedium.copyWith(
+                            fontWeight: .w700,
+                            color:      context.textPrimary,
+                            fontSize:   13,
+                            height:     1,
+                          ),
+                          maxLines: 1,
+                          overflow: .ellipsis,
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: .min,
+                        children: [
+                          Icon(
+                            data.isUp
+                                ? Icons.arrow_upward_rounded
+                                : Icons.arrow_downward_rounded,
+                            size:  9,
+                            color: changeColor,
+                          ),
+                          const SizedBox(width: 2),
+                          Text(
+                            data.change,
+                            style: TextStyle(
+                              fontSize:   9,
+                              fontWeight: FontWeight.w600,
+                              color:      changeColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    data.label,
+                    style: context.labelSmall.copyWith(
+                      color:    context.textSecondary,
+                      fontSize: 10,
+                      height:   1.1,
+                    ),
+                    maxLines: 1,
+                    overflow: .ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -422,18 +465,8 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
   late int _year;
 
   static const _months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
+    AppConstants.jan, AppConstants.feb, AppConstants.mar, AppConstants.apr, AppConstants.may, AppConstants.jun,
+    AppConstants.jul, AppConstants.aug, AppConstants.sep, AppConstants.oct, AppConstants.nov, AppConstants.dec,
   ];
 
   @override
@@ -456,7 +489,7 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
               mainAxisAlignment: .center,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.chevron_left),
+                  icon:      const Icon(Icons.chevron_left),
                   onPressed: () => setState(() => _year--),
                 ),
                 Text(
@@ -464,7 +497,7 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
                   style: context.titleSmall.copyWith(fontWeight: .w700),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.chevron_right),
+                  icon:      const Icon(Icons.chevron_right),
                   onPressed: () => setState(() => _year++),
                 ),
               ],
@@ -472,34 +505,34 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
             const SizedBox(height: 12),
             // Month grid
             GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 12,
+              shrinkWrap:  true,
+              physics:     const NeverScrollableScrollPhysics(),
+              itemCount:   12,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount:  3,
                 childAspectRatio: 2.2,
                 crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
+                mainAxisSpacing:  8,
               ),
               itemBuilder: (_, i) {
                 final isSelected =
                     (i + 1) == widget.initial.month &&
-                    _year == widget.initial.year;
+                    _year    == widget.initial.year;
                 return GestureDetector(
                   onTap: () => Navigator.pop(context, DateTime(_year, i + 1)),
                   child: Container(
                     alignment: .center,
                     decoration: BoxDecoration(
-                      color: isSelected ? context.primary : context.grey50,
+                      color:        isSelected ? context.primary : context.grey50,
                       borderRadius: .circular(8),
-                      border: Border.all(
+                      border:       Border.all(
                         color: isSelected ? context.primary : context.border,
                       ),
                     ),
                     child: Text(
                       _months[i],
                       style: context.labelSmall.copyWith(
-                        color: isSelected ? context.white : context.textPrimary,
+                        color:      isSelected ? context.white : context.textPrimary,
                         fontWeight: isSelected ? .w700 : .w500,
                       ),
                     ),
@@ -514,160 +547,20 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
   }
 }
 
-// ─── Stat card ────────────────────────────────────────────────────────────────
-
-class _StatCardWidget extends StatelessWidget {
-  final _StatCard data;
-  const _StatCardWidget({required this.data});
-
-  @override
-  Widget build(BuildContext context) {
-    final changeColor = data.isUp
-        ? const Color(0xFFE53935)
-        : const Color(0xFF43A047);
-
-    return Padding(
-      padding: .symmetric(horizontal: 10, vertical: 11),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Text(
-            data.label,
-            style: context.labelSmall.copyWith(color: context.textSecondary),
-            maxLines: 1,
-            overflow: .ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            data.value,
-            style: context.labelSmall.copyWith(
-              fontWeight: .w700,
-              color: context.textPrimary,
-            ),
-            maxLines: 1,
-            overflow: .ellipsis,
-          ),
-          const SizedBox(height: 3),
-          Row(
-            children: [
-              Icon(
-                data.isUp
-                    ? Icons.arrow_upward_rounded
-                    : Icons.arrow_downward_rounded,
-                size: 9,
-                color: changeColor,
-              ),
-              const SizedBox(width: 2),
-              Expanded(
-                child: Text(
-                  data.change,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: changeColor,
-                  ),
-                  maxLines: 1,
-                  overflow: .ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Summary column ───────────────────────────────────────────────────────────
-
-class _SummaryColWidget extends StatelessWidget {
-  final _SummaryRow data;
-  const _SummaryColWidget({required this.data});
-
-  @override
-  Widget build(BuildContext context) {
-    final changeColor = data.isUp
-        ? const Color(0xFFE53935)
-        : const Color(0xFF43A047);
-
-    return Padding(
-      padding: .symmetric(horizontal: 10, vertical: 11),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Text(
-            data.label,
-            style: context.labelSmall.copyWith(color: context.textSecondary),
-            maxLines: 1,
-            overflow: .ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            data.value,
-            style: context.labelSmall.copyWith(
-              fontWeight: .w700,
-              color: context.textPrimary,
-            ),
-            maxLines: 1,
-            overflow: .ellipsis,
-          ),
-          const SizedBox(height: 3),
-          Row(
-            children: [
-              Icon(
-                data.isUp
-                    ? Icons.arrow_upward_rounded
-                    : Icons.arrow_downward_rounded,
-                size: 9,
-                color: changeColor,
-              ),
-              const SizedBox(width: 2),
-              Expanded(
-                child: Text(
-                  data.change,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: changeColor,
-                  ),
-                  maxLines: 1,
-                  overflow: .ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Data models ──────────────────────────────────────────────────────────────
+// ─── Data model ───────────────────────────────────────────────────────────────
 
 class _StatCard {
   final String label;
   final String value;
   final String change;
-  final bool isUp;
+  final bool   isUp;
+  final Color  color;
 
   const _StatCard({
     required this.label,
     required this.value,
     required this.change,
     required this.isUp,
-  });
-}
-
-class _SummaryRow {
-  final String label;
-  final String value;
-  final String change;
-  final bool isUp;
-
-  const _SummaryRow({
-    required this.label,
-    required this.value,
-    required this.change,
-    required this.isUp,
+    required this.color,
   });
 }

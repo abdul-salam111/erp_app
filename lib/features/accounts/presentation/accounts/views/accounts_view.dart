@@ -6,6 +6,7 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../accounts_exports.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class AccountsView extends StatelessWidget {
   const AccountsView({super.key});
@@ -34,7 +35,7 @@ class _AccountsBodyState extends State<_AccountsBody> {
     return BlocConsumer<AccountsBloc, AccountsState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(context, 'Success!');
+          AppToastsUtils.showSuccessTop(context, AppConstants.successSuccessMsg);
         }
         if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
@@ -43,7 +44,7 @@ class _AccountsBodyState extends State<_AccountsBody> {
       builder: (context, state) {
         return UnfocusWrapper(
           child: Scaffold(
-            appBar: CustomAppBar(title: 'Accounts'),
+            appBar: CustomAppBar(title: AppConstants.accountsLabel),
             body: Center(
               child: Padding(
                 padding: const EdgeInsets.all(12),
@@ -51,20 +52,19 @@ class _AccountsBodyState extends State<_AccountsBody> {
                   key: _formKey,
                   child: ListView(
                     children: [
-                      // TODO: Add your UI widgets here
-                      const Text('Accounts View'),
+                      const Text(AppConstants.accountsView),
                       heightBox(context.screenHeight * 0.05),
                       BlocBuilder<AccountsBloc, AccountsState>(
                         buildWhen: (p, n) => p.apiStatus != n.apiStatus,
                         builder: (context, state) {
                           return CustomButton(
                             isLoading: state.apiStatus == ApiStatus.LOADING,
-                            text: 'Submit',
+                            text: AppConstants.submitBtn,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                context
-                                    .read<AccountsBloc>()
-                                    .add(AccountsSubmitted());
+                                context.read<AccountsBloc>().add(
+                                  AccountsSubmitted(),
+                                );
                               }
                             },
                             radius: 10,
