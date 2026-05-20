@@ -97,9 +97,7 @@ class MonthOverviewSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
-      buildWhen: (prev, curr) =>
-          prev.selectedMonth   != curr.selectedMonth ||
-          prev.showMonthStats  != curr.showMonthStats,
+      buildWhen: (prev, curr) => prev.selectedMonth != curr.selectedMonth,
       builder: (context, state) {
         return Container(
           decoration: BoxDecoration(
@@ -140,55 +138,6 @@ class MonthOverviewSection extends StatelessWidget {
                       style: context.titleSmall.copyWith(fontWeight: .w700),
                     ),
                     const Spacer(),
-                    // View Stats toggle
-                    GestureDetector(
-                      onTap: () => context.read<DashboardBloc>().add(
-                        const DashboardMonthStatsToggled(),
-                      ),
-                      child: Container(
-                        padding: .symmetric(horizontal: 4, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: state.showMonthStats
-                              ? context.primary.withValues(alpha: 0.09)
-                              : context.grey50,
-                          borderRadius: .circular(20),
-                          border: .all(
-                            color: state.showMonthStats
-                                ? context.primary.withValues(alpha: 0.35)
-                                : context.border,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: .min,
-                          children: [
-                            Text(
-                              AppConstants.stats,
-                              style: context.labelSmall.copyWith(
-                                color: state.showMonthStats
-                                    ? context.primary
-                                    : context.textSecondary,
-                                fontWeight: .w600,
-                                fontSize:   10,
-                              ),
-                            ),
-                            const SizedBox(width: 3),
-                            AnimatedRotation(
-                              turns:    state.showMonthStats ? 0.5 : 0,
-                              duration: const Duration(milliseconds: 300),
-                              curve:    Curves.easeInOut,
-                              child: Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                size:  14,
-                                color: state.showMonthStats
-                                    ? context.primary
-                                    : context.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
                     // Month/year picker chip
                     GestureDetector(
                       onTap: () => _pickMonth(context, state.selectedMonth),
@@ -232,36 +181,23 @@ class MonthOverviewSection extends StatelessWidget {
                 ),
               ),
 
-              // ── Expandable stats ────────────────────────────────
-              AnimatedSize(
-                duration:      const Duration(milliseconds: 320),
-                curve:         Curves.easeInOut,
-                clipBehavior:  .hardEdge,
-                child: state.showMonthStats
-                    ? Column(
-                        mainAxisSize: .min,
-                        children: [
-                          Divider(height: 1, thickness: 1, color: context.border),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                            child: GridView.builder(
-                              shrinkWrap: true,
-                              padding:   EdgeInsets.zero,
-                              physics:   const NeverScrollableScrollPhysics(),
-                              itemCount: _statCards.length,
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount:   context.gridColumnCount,
-                                mainAxisSpacing:  context.gridSpacing,
-                                crossAxisSpacing: context.gridSpacing,
-                                childAspectRatio: context.overviewCardRatio,
-                              ),
-                              itemBuilder: (context, i) =>
-                                  _MonthStatCard(data: _statCards[i]),
-                            ),
-                          ),
-                        ],
-                      )
-                    : const SizedBox(width: double.infinity),
+              // ── Stats grid ──────────────────────────────────────
+              Divider(height: 1, thickness: 1, color: context.border),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  padding:    EdgeInsets.zero,
+                  physics:    const NeverScrollableScrollPhysics(),
+                  itemCount:  _statCards.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount:   context.gridColumnCount,
+                    mainAxisSpacing:  context.gridSpacing,
+                    crossAxisSpacing: context.gridSpacing,
+                    childAspectRatio: context.overviewCardRatio,
+                  ),
+                  itemBuilder: (context, i) => _MonthStatCard(data: _statCards[i]),
+                ),
               ),
 
               Divider(height: 1, thickness: 1, color: context.border),
@@ -374,9 +310,9 @@ class _MonthStatCard extends StatelessWidget {
         border:       .all(color: const Color(0xFFEDEDED)),
         boxShadow: [
           BoxShadow(
-            color:      Colors.black.withValues(alpha: 0.03),
-            blurRadius: 4,
-            offset:     const Offset(0, 1),
+            color:      Colors.black.withValues(alpha: 0.07),
+            blurRadius: 8,
+            offset:     const Offset(0, 2),
           ),
         ],
       ),

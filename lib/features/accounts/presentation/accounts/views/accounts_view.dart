@@ -267,32 +267,35 @@ class _AccountsBodyState extends State<_AccountsBody>
                     position: _slides[1],
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OverviewStatCard(
-                                label: _items[0].label,
-                                value: 'Rs 318,073',
-                                icon: _items[0].icon,
-                                color: _items[0].color,
+                        IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: .stretch,
+                            children: [
+                              Expanded(
+                                child: OverviewStatCard(
+                                  label: _items[0].label,
+                                  value: 'Rs 318,073',
+                                  icon:  _items[0].icon,
+                                  color: _items[0].color,
+                                ),
                               ),
-                            ),
-                            SizedBox(width: context.gridSpacing),
-                            Expanded(
-                              child: OverviewStatCard(
-                                label: _items[1].label,
-                                value: 'Rs 318,073',
-                                icon: _items[1].icon,
-                                color: _items[1].color,
+                              SizedBox(width: context.gridSpacing),
+                              Expanded(
+                                child: OverviewStatCard(
+                                  label: _items[1].label,
+                                  value: 'Rs 318,073',
+                                  icon:  _items[1].icon,
+                                  color: _items[1].color,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         SizedBox(height: context.gridSpacing),
                         OverviewStatCard(
                           label: _items[2].label,
                           value: 'Rs 318,073,375.57',
-                          icon: _items[2].icon,
+                          icon:  _items[2].icon,
                           color: _items[2].color,
                         ),
                       ],
@@ -434,6 +437,16 @@ class _ExpandedListSection extends StatelessWidget {
             itemCount: rows.length,
             separatorBuilder: (_, __) => const SizedBox(height: 8),
             itemBuilder: (context, index) => _CustomerTile(row: rows[index]),
+          ),
+        ),
+        Align(
+          alignment: .centerRight,
+          child: TextButton.icon(
+            onPressed: () => context
+                .read<AccountsBloc>()
+                .add(const TodayOverviewExpansionToggled()),
+            icon: const Icon(Icons.keyboard_arrow_up_rounded, size: 16),
+            label: const Text('Hide Details'),
           ),
         ),
       ],

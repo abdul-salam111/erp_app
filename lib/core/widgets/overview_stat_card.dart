@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../theme/theme_utils.dart';
 
 class OverviewStatCard extends StatelessWidget {
-  final String   label;
-  final String   value;
+  final String label;
+  final String value;
   final IconData icon;
-  final Color    color;
+  final Color color;
 
   const OverviewStatCard({
     super.key,
@@ -19,83 +19,113 @@ class OverviewStatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return IntrinsicHeight(
       child: Container(
-      clipBehavior: .hardEdge,
-      decoration: BoxDecoration(
-        color:        context.white,
-        borderRadius: .circular(10),
-        border:       .all(color: const Color(0xFFEDEDED)),
-        boxShadow: [
-          BoxShadow(
-            color:      Colors.black.withValues(alpha: 0.03),
-            blurRadius: 4,
-            offset:     const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: .stretch,
-        children: [
-          Container(width: 4, color: color.withValues(alpha: 0.20)),
-          Expanded(
-            child: Padding(
-              padding: .symmetric(horizontal: 10, vertical: 9),
-              child: Row(
-                crossAxisAlignment: .center,
-                children: [
-                  Container(
-                    width:  30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      borderRadius: .circular(8),
-                      color:        color.withValues(alpha: 0.10),
-                    ),
-                    child: Icon(icon, color: color, size: 16),
-                  ),
-                  const SizedBox(width: 9),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: .start,
-                      mainAxisAlignment:  .center,
+        clipBehavior: .hardEdge,
+        decoration: BoxDecoration(
+          color: context.white,
+          borderRadius: .circular(10),
+
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            // ── Decorative arcs — top-right corner ────────────
+            Positioned(
+              top: -18,
+              right: -18,
+              child: Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.08),
+                  shape: .circle,
+                ),
+              ),
+            ),
+            Positioned(
+              top: -8,
+              right: -8,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.09),
+                  shape: .circle,
+                ),
+              ),
+            ),
+            // ── Content ───────────────────────────────────────
+            Row(
+              crossAxisAlignment: .stretch,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: .symmetric(horizontal: 10, vertical: 14),
+                    child: Row(
+                      crossAxisAlignment: .center,
                       children: [
-                        Text(
-                          value,
-                          style: context.bodyMedium.copyWith(
-                            fontWeight: .w700,
-                            color:      context.textPrimary,
-                            fontSize:   13,
-                            height:     1,
+                        Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            borderRadius: .circular(8),
+                            color: color.withValues(alpha: 0.10),
                           ),
-                          maxLines: 1,
-                          overflow: .ellipsis,
+                          child: Icon(icon, color: color, size: 16),
                         ),
-                        const SizedBox(height: 3),
-                        Text(
-                          label,
-                          style: context.labelSmall.copyWith(
-                            color:    context.textSecondary,
-                            fontSize: 10,
-                            height:   1.1,
+                        const SizedBox(width: 9),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: .start,
+                            mainAxisAlignment: .center,
+                            children: [
+                              Text(
+                                value,
+                                style: context.bodyMedium.copyWith(
+                                  fontWeight: .w700,
+                                  color: context.textPrimary,
+                                  fontSize: 13,
+                                  height: 1,
+                                ),
+                                maxLines: 1,
+                                overflow: .ellipsis,
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                label,
+                                style: context.labelSmall.copyWith(
+                                  color: context.textSecondary,
+                                  fontSize: 10,
+                                  height: 1.1,
+                                ),
+                                maxLines: 1,
+                                overflow: .ellipsis,
+                              ),
+                            ],
                           ),
-                          maxLines: 1,
-                          overflow: .ellipsis,
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
 }
+
 class OverviewItem {
-  final String   label;
+  final String label;
   final IconData icon;
-  final Color    color;
+  final Color color;
 
   const OverviewItem({
     required this.label,

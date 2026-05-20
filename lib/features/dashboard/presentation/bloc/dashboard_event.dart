@@ -23,10 +23,6 @@ final class DashboardMonthChanged extends DashboardEvent {
   List<Object> get props => [month];
 }
 
-final class DashboardMonthStatsToggled extends DashboardEvent {
-  const DashboardMonthStatsToggled();
-}
-
 final class TodayOverviewExpansionToggled extends DashboardEvent {
   const TodayOverviewExpansionToggled();
 }
