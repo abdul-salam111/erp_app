@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
-import '../bloc/dashboard_bloc.dart';
+import '../dashboard/blocs/dashboard_bloc.dart';
 
 // ─── Section ──────────────────────────────────────────────────────────────────
 

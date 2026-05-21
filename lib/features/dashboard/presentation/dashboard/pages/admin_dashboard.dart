@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mantic_erp_app/core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/routes/route_exports.dart';
-import '../../../../core/constants/const_exports.dart';
-import '../widgets/dashboard_widgets.dart';
+import '../../../../../core/constants/const_exports.dart';
+import '../../widgets/dashboard_widgets.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class AdminDashboard extends StatelessWidget {

@@ -12,4 +12,5 @@ class ApiEndPoints {
   static const String production = '${baseUrl}production';
   static const String analytics = '${baseUrl}analytics';
   static const String security = '${baseUrl}security';
+  static const String dashboard = '${baseUrl}dashboard';
 }

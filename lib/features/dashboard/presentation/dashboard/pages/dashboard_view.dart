@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../dashboard_exports.dart';
 
-import '../../dashboard_exports.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
