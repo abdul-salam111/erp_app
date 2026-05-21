@@ -14,14 +14,14 @@ class SplashServices {
 
   Future<void> checkLoginStatus(BuildContext context) async {
     try {
-      await SessionController().getUserfromSharedpref();
+      await SessionController().getUserFromStorage();
 
       if (!context.mounted) return;
 
       if (SessionController().islogin == true) {
-        context.pushNamed(RouteNames.signin);
-      } else {
         context.goNamed(RouteNames.dashboard);
+      } else {
+        context.goNamed(RouteNames.signin);
       }
     } catch (e) {
       debugPrint('Error in checkLoginStatus: $e');

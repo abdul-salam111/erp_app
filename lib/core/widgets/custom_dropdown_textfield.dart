@@ -12,6 +12,8 @@ class SearchableDropdown extends StatefulWidget {
   final Color? fillColor;
   final Color? borderColor;
   final Color? dropdownBackgroundColor;
+  final EdgeInsetsGeometry? contentPadding;
+  final double? fieldHeight;
 
   const SearchableDropdown({
     super.key,
@@ -22,6 +24,8 @@ class SearchableDropdown extends StatefulWidget {
     this.fillColor,
     this.borderColor,
     this.dropdownBackgroundColor,
+    this.contentPadding,
+    this.fieldHeight = 56,
   });
 
   @override
@@ -60,7 +64,9 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
     return Column(
       children: [
         // Search Input Field
-        TextFormField(
+        SizedBox(
+          height: widget.fieldHeight,
+          child: TextFormField(
           style: context.bodySmall.copyWith(color: context.textPrimary),
           controller: widget.controller,
           validator: (val) =>
@@ -77,13 +83,25 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
             hintText: widget.hintText,
             hintStyle: context.bodySmall.copyWith(color: context.textSecondary),
             prefixIcon: Icon(Iconsax.map, color: context.grey500, size: 20),
-            suffixIcon: Icon(
-              _isDropdownOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-              color: context.grey500,
-            ),
+            suffixIcon: widget.controller.text.isNotEmpty
+                ? IconButton(
+                    icon: Icon(Icons.close, color: context.grey500, size: 18),
+                    onPressed: () {
+                      setState(() {
+                        widget.controller.clear();
+                        _filteredItems = widget.items;
+                        _isDropdownOpen = false;
+                      });
+                      widget.onChanged('');
+                    },
+                  )
+                : Icon(
+                    _isDropdownOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                    color: context.grey500,
+                  ),
             fillColor: defaultFillColor,
             filled: true,
-            contentPadding: const EdgeInsets.only(left: 10),
+            contentPadding: widget.contentPadding ?? const EdgeInsets.only(left: 10),
 
             // Default border
             border: OutlineInputBorder(
@@ -115,6 +133,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
               borderSide: BorderSide(color: context.error, width: 2),
             ),
           ),
+        ),
         ),
 
         // Dropdown List

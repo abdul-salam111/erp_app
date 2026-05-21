@@ -21,6 +21,7 @@ class CustomTextFormField extends StatefulWidget {
   final bool isRequired;
   final int labelFontSize;
   final bool readOnly;
+  final double? fieldHeight;
 
   const CustomTextFormField({
     super.key,
@@ -40,6 +41,7 @@ class CustomTextFormField extends StatefulWidget {
     this.onChanged,
     this.onTap,
     this.maxLines = 1,
+    this.fieldHeight = 56,
   });
 
   @override
@@ -93,7 +95,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         if (widget.label != null) heightBox(5),
 
         // Text Form Field
-        TextFormField(
+        SizedBox(
+          height: widget.fieldHeight,
+          child: TextFormField(
           autofocus: false,
           textCapitalization: TextCapitalization.words,
           readOnly: widget.readOnly,
@@ -161,6 +165,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           validator: widget.validator,
           onChanged: widget.onChanged,
           onTap: widget.onTap,
+        ),
         ),
       ],
     );

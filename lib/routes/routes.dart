@@ -19,7 +19,7 @@ import '../features/security/security_exports.dart';
 
 class AppRoutes {
   static final GoRouter router = GoRouter(
-    initialLocation: RoutePaths.splash,
+    initialLocation: RoutePaths.dashboard,
     redirect: (context, state) {
       // final isLoggedIn = SessionController.instance.islogin;
       // final location = state.matchedLocation;
@@ -107,6 +107,11 @@ class AppRoutes {
         path: RoutePaths.account_ledger,
         name: RouteNames.account_ledger,
         builder: (context, state) => const AccountLedgerView(),
+      ),
+      GoRoute(
+        path: RoutePaths.organizationSelection,
+        name: RouteNames.organizationSelection,
+        builder: (context, state) => const OrganizationSelectionView(),
       ),
     
      

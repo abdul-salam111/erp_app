@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get_utils/get_utils.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../../../../routes/route_names.dart';
 import '../../../auth_exports.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
-
 
 class SignInView extends StatefulWidget {
   const SignInView({super.key});
@@ -19,6 +20,7 @@ class SignInView extends StatefulWidget {
 
 class _SignInViewState extends State<SignInView> {
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -29,10 +31,7 @@ class _SignInViewState extends State<SignInView> {
           body: BlocConsumer<SignInBloc, SignInState>(
             listener: (context, state) {
               if (state.apiStatus == ApiStatus.SUCCESS) {
-                AppToastsUtils.showSuccessTop(
-                  context,
-                  AppConstants.youHaveLoggedinSuccessfully,
-                );
+                context.goNamed(RouteNames.organizationSelection);
               }
 
               if (state.apiStatus == ApiStatus.FAILURE) {
@@ -90,9 +89,7 @@ class _SignInViewState extends State<SignInView> {
                             text: AppConstants.signInBtn,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                context.read<SignInBloc>().add(
-                                  SignInSubmitted(),
-                                );
+                                context.read<SignInBloc>().add(SignInSubmitted());
                               }
                             },
                             radius: 10,

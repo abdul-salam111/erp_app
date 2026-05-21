@@ -1,41 +1,68 @@
 import 'dart:convert';
-
-import '../../features/auth/data/models/response_models/user_token/user_token.dart';
+import 'package:mantic_erp_app/features/auth/auth_exports.dart';
 import '../constants/const_exports.dart';
 import '../local_storage/storage.dart';
 
 class SessionController {
-  UserToken getUserDetails = UserToken();
-
   static final SessionController _session = SessionController._internal();
-  bool islogin = false;
-  String? userId;
   SessionController._internal();
 
   static SessionController get instance => _session;
+  factory SessionController() => _session;
 
-  factory SessionController() {
-    return _session;
-  }
+  LoggedInUserModel? loggedInUser;
+  Organization? selectedOrganization;
+  bool islogin = false;
 
-  Future<void> saveUserInStorage(UserToken user) async {
-    await storage.setValues(StorageKeys.userDetails, jsonEncode(user));
+  /// The active access token from the first branch of the selected organization.
+  String? get activeAccessToken =>
+      selectedOrganization?.branches?.firstOrNull?.authToken?.accessToken;
+
+  Future<void> saveUserInStorage(LoggedInUserModel user) async {
+    loggedInUser = user;
     await storage.setValues(StorageKeys.loggedIn, 'true');
-    await storage.setValues(StorageKeys.token, user.accessToken.toString());
+    await storage.setValues(StorageKeys.userDetails, jsonEncode(user.toJson()));
+    islogin = true;
   }
 
-  Future<void> getUserfromSharedpref() async {
+  Future<void> saveSelectedOrganization(Organization org) async {
+    selectedOrganization = org;
+    await storage.setValues(
+      StorageKeys.selectedOrganization,
+      jsonEncode(org.toJson()),
+    );
+    final token = org.branches?.firstOrNull?.authToken?.accessToken;
+    if (token != null) {
+      await storage.setValues(StorageKeys.token, token);
+    }
+  }
+
+  Future<void> getUserFromStorage() async {
     try {
       final userData = await storage.readValues(StorageKeys.userDetails);
       if (userData != null) {
-        SessionController().getUserDetails = UserToken.fromJson(
-          jsonDecode(userData),
-        );
+        loggedInUser = LoggedInUserModel.fromJson(jsonDecode(userData));
       }
+
+      final orgData = await storage.readValues(StorageKeys.selectedOrganization);
+      if (orgData != null) {
+        selectedOrganization = Organization.fromJson(jsonDecode(orgData));
+      }
+
       final isLoggedIn = await storage.readValues(StorageKeys.loggedIn);
-      SessionController().islogin = (isLoggedIn == 'true' ? true : false);
+      islogin = isLoggedIn == 'true';
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  Future<void> clearSession() async {
+    loggedInUser = null;
+    selectedOrganization = null;
+    islogin = false;
+    await storage.setValues(StorageKeys.loggedIn, 'false');
+    await storage.clearValues(StorageKeys.userDetails);
+    await storage.clearValues(StorageKeys.selectedOrganization);
+    await storage.clearValues(StorageKeys.token);
   }
 }

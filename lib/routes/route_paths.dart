@@ -16,4 +16,5 @@ class RoutePaths {
   static const String security = '/security';
 
   static const String account_ledger = '/account_ledger';
+  static const String organizationSelection = '/organization-selection';
 }

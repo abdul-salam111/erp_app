@@ -59,7 +59,7 @@ extension ResponsiveContext on BuildContext {
 
   /// Horizontal page padding — tighter on phones, roomier on iPad.
   EdgeInsets get pagePadding => EdgeInsets.all(
-        Responsive.value(this, phone: 12, tablet: 16, ipad: 24),
+        Responsive.value(this, phone: 10, tablet: 16, ipad: 24),
       );
 
   /// Spacing between grid/list items.
