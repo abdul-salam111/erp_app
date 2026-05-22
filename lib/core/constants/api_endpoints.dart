@@ -12,6 +12,9 @@ class ApiEndPoints {
   static const String analytics = '${baseUrl}analytics';
   static const String security = '${baseUrl}security';
   static const String dashboard = '${baseUrl}dashboard';
+  static const String getDailyStats = '${baseUrl}getDailyStates';
+  static const String getMonthlyStats = '${baseUrl}getDailyStates';
+  static const String getSalesOrderSummaryByParty = '${baseUrl}getDailyStates';
   // Account Statements
   static const String getAccountStatements =
       '$baseUrl/AccountStatement/GetAccountStatements';

@@ -1,7 +1,11 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../entities/daily_stats_entity.dart';
+import '../entities/monthly_stats_entity.dart';
+import '../entities/sale_order_summary_entity.dart';
 
 abstract interface class DashboardRepository {
-  // TODO: Define your repository methods here
-  Future<Either<Failure, dynamic>> performAction();
+  Future<Either<Failure, DailyStatsEntity>> getDailyStats();
+  Future<Either<Failure, MonthlyStatsEntity>> getMonthlyStats();
+  Future<Either<Failure, SaleOrderSummaryEntity>> getSaleOrderSummary();
 }

@@ -1,9 +1,11 @@
 import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/constants/const_exports.dart';
+import '../../dashboard_exports.dart';
 
 abstract interface class IRemoteDashboardDataSource {
-  // TODO: Define your datasource methods here
-  Future<dynamic> performAction();
+  Future<DailyStatsModel> getDailyStats();
+  Future<MonthlyStatsModel> getMonthlyStats();
+  Future<SaleOrderSummaryByParty> getSalesOrderSummaryByParty();
 }
 
 class RemoteDashboardDataSourceImpl extends BaseRemoteDatasource
@@ -11,11 +13,26 @@ class RemoteDashboardDataSourceImpl extends BaseRemoteDatasource
   RemoteDashboardDataSourceImpl({required super.dioHelper});
 
   @override
-  Future<dynamic> performAction() async {
-    return post(
-      url: ApiEndPoints.dashboard,
-      parser: (json) => json, // TODO: Replace with your model parser
-      body: {}, // TODO: Add your request body
+  Future<DailyStatsModel> getDailyStats() async {
+    return get(
+      url: ApiEndPoints.getDailyStats,
+      parser: (json) => DailyStatsModel.fromJson(json),
+    );
+  }
+
+  @override
+  Future<MonthlyStatsModel> getMonthlyStats() async {
+    return get(
+      url: ApiEndPoints.getMonthlyStats,
+      parser: (json) => MonthlyStatsModel.fromJson(json),
+    );
+  }
+
+  @override
+  Future<SaleOrderSummaryByParty> getSalesOrderSummaryByParty() async {
+    return get(
+      url: ApiEndPoints.getSalesOrderSummaryByParty,
+      parser: (json) => SaleOrderSummaryByParty.fromJson(json),
     );
   }
 }

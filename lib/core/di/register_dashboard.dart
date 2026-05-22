@@ -1,4 +1,3 @@
-
 import '../../features/dashboard/dashboard_exports.dart';
 import 'app_dependencies.dart';
 
@@ -14,12 +13,16 @@ Future<void> registerDashboard() async {
   );
 
   // UseCases
-  sl.registerLazySingleton<DashboardUsecase>(
-    () => DashboardUsecase(repository: sl()),
-  );
+  sl.registerLazySingleton(() => GetDailyStatsUsecase(repository: sl()));
+  sl.registerLazySingleton(() => GetMonthlyStatsUsecase(repository: sl()));
+  sl.registerLazySingleton(() => GetSaleOrderSummaryUsecase(repository: sl()));
 
-  // BLoCs
+  // BLoC
   sl.registerFactory<DashboardBloc>(
-    () => DashboardBloc(),
+    () => DashboardBloc(
+      getDailyStats: sl(),
+      getMonthlyStats: sl(),
+      getSaleOrderSummary: sl(),
+    ),
   );
 }

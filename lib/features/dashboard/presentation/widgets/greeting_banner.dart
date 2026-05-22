@@ -31,7 +31,7 @@ class DashboardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final top  = MediaQuery.paddingOf(context).top;
+    final top = MediaQuery.paddingOf(context).top;
     final hPad = context.pagePadding.left;
 
     return Container(
@@ -43,7 +43,7 @@ class DashboardHeader extends StatelessWidget {
           end: .bottomRight,
         ),
         borderRadius: const BorderRadius.only(
-          bottomLeft:  Radius.circular(28),
+          bottomLeft: Radius.circular(28),
           bottomRight: Radius.circular(28),
         ),
       ),
@@ -52,16 +52,16 @@ class DashboardHeader extends StatelessWidget {
           // ── Decorative circles ──
           Positioned(
             right: -35,
-            top:   top - 35,
+            top: top - 35,
             child: _Circle(size: 150, opacity: 0.07),
           ),
           Positioned(
             right: 55,
-            top:   top + 18,
+            top: top + 18,
             child: _Circle(size: 70, opacity: 0.05),
           ),
           Positioned(
-            left:   -25,
+            left: -25,
             bottom: -15,
             child: _Circle(size: 100, opacity: 0.05),
           ),
@@ -69,10 +69,10 @@ class DashboardHeader extends StatelessWidget {
           // ── Content ──
           Padding(
             padding: EdgeInsets.only(
-              top:    top + 14,
+              top: top + 14,
               bottom: 20,
-              left:   hPad,
-              right:  hPad,
+              left: hPad,
+              right: hPad,
             ),
             child: Column(
               crossAxisAlignment: .start,
@@ -101,13 +101,14 @@ class DashboardHeader extends StatelessWidget {
                       children: [
                         _HeaderIconBtn(
                           icon: Iconsax.notification,
-                          onTap: () => context.pushNamed(RouteNames.alert_panel),
+                          onTap: () =>
+                              context.pushNamed(RouteNames.alert_panel),
                         ),
                         Positioned(
-                          top:   6,
+                          top: 6,
                           right: 6,
                           child: Container(
-                            width:  8,
+                            width: 8,
                             height: 8,
                             decoration: const BoxDecoration(
                               color: Color(0xFFFF5252),
@@ -171,14 +172,18 @@ class DashboardHeader extends StatelessWidget {
                                   children: [
                                     Icon(
                                       Iconsax.buildings,
-                                      color: Colors.white.withValues(alpha: 0.85),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.85,
+                                      ),
                                       size: 11,
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
                                       orgName,
                                       style: context.labelSmall.copyWith(
-                                        color: Colors.white.withValues(alpha: 0.90),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.90,
+                                        ),
                                         fontWeight: .w500,
                                       ),
                                     ),
@@ -230,7 +235,7 @@ class DashboardHeader extends StatelessWidget {
 // ─── Header icon button ───────────────────────────────────────────────────────
 
 class _HeaderIconBtn extends StatelessWidget {
-  final IconData  icon;
+  final IconData icon;
   final VoidCallback onTap;
 
   const _HeaderIconBtn({required this.icon, required this.onTap});
@@ -240,11 +245,11 @@ class _HeaderIconBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width:  38,
+        width: 38,
         height: 38,
         decoration: BoxDecoration(
-          color:         Colors.white.withValues(alpha: 0.15),
-          borderRadius:  .circular(10),
+          color: Colors.white.withValues(alpha: 0.15),
+          borderRadius: .circular(10),
         ),
         child: Icon(icon, color: Colors.white, size: 20),
       ),
@@ -263,7 +268,7 @@ class _Circle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width:  size,
+      width: size,
       height: size,
       decoration: BoxDecoration(
         shape: .circle,

@@ -7,6 +7,10 @@ sealed class DashboardEvent extends Equatable {
   List<Object> get props => [];
 }
 
+final class DashboardDataRequested extends DashboardEvent {
+  const DashboardDataRequested();
+}
+
 final class SaleOrderFilterChanged extends DashboardEvent {
   final int filterIndex;
   const SaleOrderFilterChanged(this.filterIndex);

@@ -2,7 +2,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../core/constants/app_enums.dart';
 import '../../../../core/theme/theme_utils.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../dashboard/blocs/dashboard_bloc.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
@@ -11,23 +13,32 @@ import 'package:mantic_erp_app/core/constants/app_conts.dart';
 class SaleOrdersSection extends StatelessWidget {
   const SaleOrdersSection({super.key});
 
-  static const _filters = [AppConstants.janMar, AppConstants.inCompleteOnly, AppConstants.completedOnly, AppConstants.allSaleOrders];
-
-  static const int _totalOrders = 16;
-  static const int _completed   = 8;
-  static const int _partial     = 2;
-  static const int _notStarted  = 6;
-
-  // Semicircle: completed + remaining must sum to 180 (the visible half)
-  static double get _completedDeg => (_completed / _totalOrders) * 180;
-  static double get _remainingDeg => 180 - _completedDeg;
+  static const _filters = [
+    AppConstants.janMar,
+    AppConstants.inCompleteOnly,
+    AppConstants.completedOnly,
+    AppConstants.allSaleOrders,
+  ];
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
-      buildWhen: (prev, curr) =>
-          prev.saleOrderFilterIndex != curr.saleOrderFilterIndex,
+      buildWhen: (p, c) =>
+          p.saleOrderFilterIndex    != c.saleOrderFilterIndex    ||
+          p.saleOrderSummaryStatus  != c.saleOrderSummaryStatus  ||
+          p.saleOrderSummary        != c.saleOrderSummary,
       builder: (context, state) {
+        final isLoading = state.saleOrderSummaryStatus == ApiStatus.INITIAL ||
+                          state.saleOrderSummaryStatus == ApiStatus.LOADING;
+
+        final summary       = state.saleOrderSummary;
+        final total         = summary?.ttlOrders            ?? 0;
+        final completed     = summary?.ttlCompletedOrders   ?? 0;
+        final partial       = summary?.ttlPartialOrders     ?? 0;
+        final notStarted    = summary?.ttlNotStartedOrders  ?? 0;
+        final completedDeg  = total > 0 ? (completed / total) * 180.0 : 0.0;
+        final remainingDeg  = 180.0 - completedDeg;
+
         return Container(
           decoration: BoxDecoration(
             color:        context.white,
@@ -63,20 +74,16 @@ class SaleOrdersSection extends StatelessWidget {
                       style: context.titleSmall.copyWith(fontWeight: .w700),
                     ),
                     const Spacer(),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        padding: .symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color:        context.primary,
-                          borderRadius: .circular(8),
-                        ),
-                        child: Text(
-                          AppConstants.report,
-                          style: context.labelSmall.copyWith(
-                            color:      Colors.white,
-                            fontWeight: .w600,
-                          ),
+                    Container(
+                      padding: .symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color:        context.primary,
+                        borderRadius: .circular(8),
+                      ),
+                      child: Text(
+                        AppConstants.report,
+                        style: context.labelSmall.copyWith(
+                          color: Colors.white, fontWeight: .w600,
                         ),
                       ),
                     ),
@@ -124,11 +131,7 @@ class SaleOrdersSection extends StatelessWidget {
                         );
                       }),
                       const SizedBox(width: 8),
-                      Icon(
-                        Icons.filter_list_rounded,
-                        size:  18,
-                        color: context.textSecondary,
-                      ),
+                      Icon(Icons.filter_list_rounded, size: 18, color: context.textSecondary),
                     ],
                   ),
                 ),
@@ -136,43 +139,78 @@ class SaleOrdersSection extends StatelessWidget {
 
               Divider(height: 1, thickness: 1, color: context.border),
 
-              // ── Stats grid (2×2) ─────────────────────────────────
-              IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Expanded(child: _StatBox(label: AppConstants.totalOrdersLabel, value: '$_totalOrders', icon: Iconsax.bag_2,       color: const Color(0xFF1B84FF))),
-                    VerticalDivider(width: 1, thickness: 1, color: context.border),
-                    Expanded(child: _StatBox(label: AppConstants.completedLabel,    value: '$_completed',   icon: Iconsax.tick_circle, color: const Color(0xFF43A047))),
-                  ],
+              if (isLoading)
+                _SaleOrderShimmer()
+              else ...[
+                // ── Stats grid (2×2) ─────────────────────────────────
+                IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Expanded(child: _StatBox(label: AppConstants.totalOrdersLabel,      value: '$total',      icon: Iconsax.bag_2,       color: const Color(0xFF1B84FF))),
+                      VerticalDivider(width: 1, thickness: 1, color: context.border),
+                      Expanded(child: _StatBox(label: AppConstants.completedLabel,         value: '$completed',  icon: Iconsax.tick_circle, color: const Color(0xFF43A047))),
+                    ],
+                  ),
                 ),
-              ),
-              Divider(height: 1, thickness: 1, color: context.border),
-              IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Expanded(child: _StatBox(label: AppConstants.partialInProgressLabel, value: '$_partial',    icon: Iconsax.note_2, color: const Color(0xFFFF9800))),
-                    VerticalDivider(width: 1, thickness: 1, color: context.border),
-                    Expanded(child: _StatBox(label: AppConstants.notStartedLabel,         value: '$_notStarted', icon: Iconsax.clock,  color: const Color(0xFF37474F))),
-                  ],
+                Divider(height: 1, thickness: 1, color: context.border),
+                IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Expanded(child: _StatBox(label: AppConstants.partialInProgressLabel, value: '$partial',    icon: Iconsax.note_2, color: const Color(0xFFFF9800))),
+                      VerticalDivider(width: 1, thickness: 1, color: context.border),
+                      Expanded(child: _StatBox(label: AppConstants.notStartedLabel,        value: '$notStarted', icon: Iconsax.clock,  color: const Color(0xFF37474F))),
+                    ],
+                  ),
                 ),
-              ),
+                Divider(height: 1, thickness: 1, color: context.border),
 
-              Divider(height: 1, thickness: 1, color: context.border),
-
-              // ── Chart solo ───────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: _SemiDonut(
-                  completed:    _completed,
-                  total:        _totalOrders,
-                  completedDeg: _completedDeg,
-                  remainingDeg: _remainingDeg,
+                // ── Semi-donut chart ─────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: _SemiDonut(
+                    completed:    completed,
+                    total:        total,
+                    completedDeg: completedDeg,
+                    remainingDeg: remainingDeg,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         );
       },
+    );
+  }
+}
+
+// ─── Shimmer skeleton ─────────────────────────────────────────────────────────
+
+class _SaleOrderShimmer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(child: ShimmerBox(height: 64, radius: 8)),
+              const SizedBox(width: 12),
+              Expanded(child: ShimmerBox(height: 64, radius: 8)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(child: ShimmerBox(height: 64, radius: 8)),
+              const SizedBox(width: 12),
+              Expanded(child: ShimmerBox(height: 64, radius: 8)),
+            ],
+          ),
+          const SizedBox(height: 20),
+          ShimmerBox(height: 120, width: double.infinity, radius: 8),
+        ],
+      ),
     );
   }
 }
@@ -202,7 +240,6 @@ class _SemiDonut extends StatelessWidget {
         final w = constraints.maxWidth;
         return Stack(
           children: [
-            // Arc — full-width, clipped to the top half only
             ClipRect(
               child: Align(
                 alignment:    .topCenter,
@@ -216,62 +253,30 @@ class _SemiDonut extends StatelessWidget {
                       sectionsSpace:     0,
                       centerSpaceRadius: w * 0.30,
                       sections: [
-                        PieChartSectionData(
-                          value:     completedDeg,
-                          color:     const Color(0xFF5C6BC0),
-                          showTitle: false,
-                          radius:    w * 0.12,
-                        ),
-                        PieChartSectionData(
-                          value:     remainingDeg,
-                          color:     const Color(0xFFB3BAE8),
-                          showTitle: false,
-                          radius:    w * 0.12,
-                        ),
-                        PieChartSectionData(
-                          value:     180,
-                          color:     Colors.transparent,
-                          showTitle: false,
-                          radius:    w * 0.12,
-                        ),
+                        PieChartSectionData(value: completedDeg, color: const Color(0xFF5C6BC0), showTitle: false, radius: w * 0.12),
+                        PieChartSectionData(value: remainingDeg, color: const Color(0xFFB3BAE8), showTitle: false, radius: w * 0.12),
+                        PieChartSectionData(value: 180,          color: Colors.transparent,      showTitle: false, radius: w * 0.12),
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-            // Text + legend overlaid inside the donut hole
             Positioned(
-              left:   0,
-              right:  0,
-              bottom: 10,
+              left: 0, right: 0, bottom: 10,
               child: Column(
                 mainAxisSize: .min,
                 children: [
-                  Text(
-                    AppConstants.progress,
-                    style: context.labelSmall.copyWith(color: context.textSecondary),
-                  ),
+                  Text(AppConstants.progress, style: context.labelSmall.copyWith(color: context.textSecondary)),
                   const SizedBox(height: 2),
-                  Text(
-                    '$completed / $total',
-                    style: context.titleMedium.copyWith(fontWeight: .w700),
-                  ),
+                  Text('$completed / $total', style: context.titleMedium.copyWith(fontWeight: .w700)),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: .center,
                     children: [
-                      _LegendItem(
-                        color: const Color(0xFF5C6BC0),
-                        label: AppConstants.completedLabel,
-                        pct:   '$completedPct %',
-                      ),
+                      _LegendItem(color: const Color(0xFF5C6BC0), label: AppConstants.completedLabel, pct: '$completedPct %'),
                       const SizedBox(width: 24),
-                      _LegendItem(
-                        color: const Color(0xFFB3BAE8),
-                        label: AppConstants.remainingLabel,
-                        pct:   '$remainingPct %',
-                      ),
+                      _LegendItem(color: const Color(0xFFB3BAE8), label: AppConstants.remainingLabel,  pct: '$remainingPct %'),
                     ],
                   ),
                 ],
@@ -291,41 +296,21 @@ class _LegendItem extends StatelessWidget {
   final String label;
   final String pct;
 
-  const _LegendItem({
-    required this.color,
-    required this.label,
-    required this.pct,
-  });
+  const _LegendItem({required this.color, required this.label, required this.pct});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: .min,
       children: [
-        Container(
-          width:  7,
-          height: 7,
-          decoration: BoxDecoration(shape: .circle, color: color),
-        ),
+        Container(width: 7, height: 7, decoration: BoxDecoration(shape: .circle, color: color)),
         const SizedBox(width: 5),
         Column(
           crossAxisAlignment: .start,
           mainAxisSize:       .min,
           children: [
-            Text(
-              label,
-              style: context.labelSmall.copyWith(
-                color:    context.textSecondary,
-                fontSize: 9.5,
-              ),
-            ),
-            Text(
-              pct,
-              style: context.labelSmall.copyWith(
-                fontWeight: .w700,
-                fontSize:   11,
-              ),
-            ),
+            Text(label, style: context.labelSmall.copyWith(color: context.textSecondary, fontSize: 9.5)),
+            Text(pct,   style: context.labelSmall.copyWith(fontWeight: .w700, fontSize: 11)),
           ],
         ),
       ],
@@ -341,19 +326,13 @@ class _StatBox extends StatelessWidget {
   final IconData icon;
   final Color    color;
 
-  const _StatBox({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-  });
+  const _StatBox({required this.label, required this.value, required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: .stretch,
       children: [
-        // Accent bar — same as Today's Overview
         Container(width: 4, color: color),
         Expanded(
           child: Padding(
@@ -362,8 +341,7 @@ class _StatBox extends StatelessWidget {
               crossAxisAlignment: .center,
               children: [
                 Container(
-                  width:  30,
-                  height: 30,
+                  width: 30, height: 30,
                   decoration: BoxDecoration(
                     borderRadius: .circular(8),
                     color:        color.withValues(alpha: 0.10),
@@ -376,26 +354,9 @@ class _StatBox extends StatelessWidget {
                     crossAxisAlignment: .start,
                     mainAxisAlignment:  .center,
                     children: [
-                      Text(
-                        value,
-                        style: context.bodyMedium.copyWith(
-                          fontWeight: .w700,
-                          color:      context.textPrimary,
-                          fontSize:   13,
-                          height:     1,
-                        ),
-                      ),
+                      Text(value, style: context.bodyMedium.copyWith(fontWeight: .w700, color: context.textPrimary, fontSize: 13, height: 1)),
                       const SizedBox(height: 3),
-                      Text(
-                        label,
-                        style: context.labelSmall.copyWith(
-                          color:    context.textSecondary,
-                          fontSize: 10,
-                          height:   1.1,
-                        ),
-                        maxLines: 1,
-                        overflow: .ellipsis,
-                      ),
+                      Text(label, style: context.labelSmall.copyWith(color: context.textSecondary, fontSize: 10, height: 1.1), maxLines: 1, overflow: .ellipsis),
                     ],
                   ),
                 ),
