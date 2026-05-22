@@ -32,7 +32,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
       ),
       (user) async {
         await SessionController.instance.saveUserInStorage(user);
-        emit(state.copyWith(apiStatus: ApiStatus.SUCCESS, loggedInUser: user));
+        emit(state.copyWith(apiStatus: ApiStatus.SUCCESS, user: user));
       },
     );
   }

@@ -4,6 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:mantic_erp_app/core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/routes/route_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
+import '../../../../../core/services/current_user.dart';
 import '../../widgets/dashboard_widgets.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
@@ -12,6 +13,7 @@ class AdminDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -22,8 +24,8 @@ class AdminDashboard extends StatelessWidget {
           statusBarIconBrightness: Brightness.light,
         ),
       ),
-      drawer: const AppDrawer(
-        userName: AppConstants.admin,
+      drawer: AppDrawer(
+        userName: currentUser.fullName,
         userRole: AppConstants.administrator,
         items: [
           DrawerItem.tile(
@@ -57,9 +59,42 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.dollar_circle,
             color: Color(0xFF1B84FF),
             children: [
-              DrawerItem.tile(label: AppConstants.menu1Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu2Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu3Label, icon: Iconsax.document),
+              DrawerItem.tile(
+                label: AppConstants.accountStatementsLabel,
+                icon: Iconsax.document_text,
+                color: Color(0xFF1B84FF),
+                routeName: RouteNames.account_ledger,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.partyStatementsLabel,
+                icon: Iconsax.people,
+                color: Color(0xFF9C27B0),
+              ),
+              DrawerItem.tile(
+                label: AppConstants.bankCashPositionLabel,
+                icon: Iconsax.bank,
+                color: Color(0xFF00897B),
+              ),
+              DrawerItem.tile(
+                label: AppConstants.cashbookLabel,
+                icon: Iconsax.book,
+                color: Color(0xFF4CAF50),
+              ),
+              DrawerItem.tile(
+                label: AppConstants.creditManagementLabel,
+                icon: Iconsax.card,
+                color: Color(0xFFE53935),
+              ),
+              DrawerItem.tile(
+                label: AppConstants.customerReceivableLabel,
+                icon: Iconsax.receive_square,
+                color: Color(0xFFFF9800),
+              ),
+              DrawerItem.tile(
+                label: AppConstants.vendorPayableLabel,
+                icon: Iconsax.send_square,
+                color: Color(0xFF546E7A),
+              ),
             ],
           ),
           DrawerItem.expandable(

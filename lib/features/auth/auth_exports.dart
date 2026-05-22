@@ -3,7 +3,8 @@
 // — imported directly by DI only.
 
 
-export './domain/entities/auth_entity.dart';
+export './domain/entities/user_entity.dart';
+export './data/models/response_models/logged_in_user_model/logged_in_user_model_mapper.dart';
 export './domain/i_repositories/auth_repository.dart';
 export './domain/usecases/signin_usecase.dart';
 

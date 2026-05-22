@@ -10,28 +10,27 @@ class SessionController {
   static SessionController get instance => _session;
   factory SessionController() => _session;
 
-  LoggedInUserModel? loggedInUser;
-  Organization? selectedOrganization;
+  UserEntity? loggedInUser;
+  UserOrganizationEntity? selectedOrganization;
   bool islogin = false;
 
   /// The active access token from the first branch of the selected organization.
-  String? get activeAccessToken =>
-      selectedOrganization?.branches?.firstOrNull?.authToken?.accessToken;
+  String? get activeAccessToken => selectedOrganization?.activeAccessToken;
 
-  Future<void> saveUserInStorage(LoggedInUserModel user) async {
+  Future<void> saveUserInStorage(UserEntity user) async {
     loggedInUser = user;
+    islogin = true;
     await storage.setValues(StorageKeys.loggedIn, 'true');
     await storage.setValues(StorageKeys.userDetails, jsonEncode(user.toJson()));
-    islogin = true;
   }
 
-  Future<void> saveSelectedOrganization(Organization org) async {
+  Future<void> saveSelectedOrganization(UserOrganizationEntity org) async {
     selectedOrganization = org;
     await storage.setValues(
       StorageKeys.selectedOrganization,
       jsonEncode(org.toJson()),
     );
-    final token = org.branches?.firstOrNull?.authToken?.accessToken;
+    final token = org.activeAccessToken;
     if (token != null) {
       await storage.setValues(StorageKeys.token, token);
     }
@@ -41,12 +40,13 @@ class SessionController {
     try {
       final userData = await storage.readValues(StorageKeys.userDetails);
       if (userData != null) {
-        loggedInUser = LoggedInUserModel.fromJson(jsonDecode(userData));
+        loggedInUser = UserEntity.fromJson(jsonDecode(userData));
       }
 
       final orgData = await storage.readValues(StorageKeys.selectedOrganization);
       if (orgData != null) {
-        selectedOrganization = Organization.fromJson(jsonDecode(orgData));
+        selectedOrganization =
+            UserOrganizationEntity.fromJson(jsonDecode(orgData));
       }
 
       final isLoggedIn = await storage.readValues(StorageKeys.loggedIn);

@@ -1,7 +1,6 @@
 class ApiEndPoints {
-  static const baseUrl = "http://desktop-a42b3hq:7000/api/mis/";
-  static const String loginUser =
-      "${baseUrl}auth/login?email=tayyabb_Staging@bahooricemills.com&password=uZbLHbeVea";
+  static const baseUrl = "http://192.168.1.12:7000/api";
+  static const String loginUser = "$baseUrl/mis/auth/Authlogin";
   static const String signupUser = "${baseUrl}user/signinUid";
   static const String alertPanel = '${baseUrl}alert_panel';
   static const String purchaseOrder = '${baseUrl}purchase_order';
@@ -13,4 +12,10 @@ class ApiEndPoints {
   static const String analytics = '${baseUrl}analytics';
   static const String security = '${baseUrl}security';
   static const String dashboard = '${baseUrl}dashboard';
+  // Account Statements
+  static const String getAccountStatements =
+      '$baseUrl/AccountStatement/GetAccountStatements';
+  static const String getInvoicePdf = '$baseUrl/AccountStatement/GetInvoicePdf';
+  static const String getPrintableFeatures =
+      '$baseUrl/AccountStatement/GetPrintableFeatures';
 }

@@ -19,7 +19,11 @@ class SplashServices {
       if (!context.mounted) return;
 
       if (SessionController().islogin == true) {
-        context.goNamed(RouteNames.dashboard);
+        if (SessionController().selectedOrganization == null) {
+          context.goNamed(RouteNames.organizationSelection);
+        } else {
+          context.goNamed(RouteNames.dashboard);
+        }
       } else {
         context.goNamed(RouteNames.signin);
       }

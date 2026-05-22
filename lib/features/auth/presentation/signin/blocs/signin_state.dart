@@ -1,32 +1,31 @@
 import 'package:equatable/equatable.dart';
-
 import '../../../../../core/constants/const_exports.dart';
 import '../../../auth_exports.dart';
 
 class SignInState extends Equatable {
-  final LoggedInUserModel? loggedInUser;
+  final UserEntity? user;
   final String? message;
   final ApiStatus apiStatus;
   final String email;
   final String password;
 
   const SignInState({
-    this.loggedInUser,
+    this.user,
     this.message,
     this.apiStatus = ApiStatus.INITIAL,
-    this.email = "",
-    this.password = "",
+    this.email = '',
+    this.password = '',
   });
 
   SignInState copyWith({
-    LoggedInUserModel? loggedInUser,
+    UserEntity? user,
     String? message,
     ApiStatus? apiStatus,
     String? email,
     String? password,
   }) {
     return SignInState(
-      loggedInUser: loggedInUser ?? this.loggedInUser,
+      user: user ?? this.user,
       message: message ?? this.message,
       apiStatus: apiStatus ?? this.apiStatus,
       email: email ?? this.email,
@@ -35,6 +34,5 @@ class SignInState extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [loggedInUser, message, apiStatus, email, password];
+  List<Object?> get props => [user, message, apiStatus, email, password];
 }

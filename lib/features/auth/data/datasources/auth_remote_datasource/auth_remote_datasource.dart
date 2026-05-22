@@ -2,10 +2,10 @@ import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../auth_exports.dart';
 
-
 abstract interface class IAuthRemoteDatasource {
-  Future<LoggedInUserModel> loginUser({required LoginRequestModel  loginRequestModel});
-
+  Future<LoggedInUserModel> loginUser({
+    required LoginRequestModel loginRequestModel,
+  });
 }
 
 class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
@@ -19,9 +19,8 @@ class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
     return post(
       url: ApiEndPoints.loginUser,
       parser: (json) => LoggedInUserModel.fromJson(json),
-      body:loginRequestModel.toJson(),
+      body: loginRequestModel.toJson(),
+      
     );
   }
-
-
 }

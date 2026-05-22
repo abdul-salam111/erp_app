@@ -19,7 +19,7 @@ import '../features/security/security_exports.dart';
 
 class AppRoutes {
   static final GoRouter router = GoRouter(
-    initialLocation: RoutePaths.dashboard,
+    initialLocation: RoutePaths.splash,
     redirect: (context, state) {
       // final isLoggedIn = SessionController.instance.islogin;
       // final location = state.matchedLocation;

@@ -5,11 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
+import '../../../../../core/services/session_manager.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../routes/route_names.dart';
 import '../../../auth_exports.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class SignInView extends StatefulWidget {
   const SignInView({super.key});
@@ -31,7 +31,18 @@ class _SignInViewState extends State<SignInView> {
           body: BlocConsumer<SignInBloc, SignInState>(
             listener: (context, state) {
               if (state.apiStatus == ApiStatus.SUCCESS) {
-                context.goNamed(RouteNames.organizationSelection);
+                final orgs = state.user?.organizations ?? [];
+                if (orgs.length == 1) {
+                  SessionController.instance
+                      .saveSelectedOrganization(orgs.first)
+                      .then((_) {
+                    if (context.mounted) {
+                      context.goNamed(RouteNames.dashboard);
+                    }
+                  });
+                } else {
+                  context.goNamed(RouteNames.organizationSelection);
+                }
               }
 
               if (state.apiStatus == ApiStatus.FAILURE) {
