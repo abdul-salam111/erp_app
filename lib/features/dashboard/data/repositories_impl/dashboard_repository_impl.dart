@@ -16,9 +16,9 @@ class DashboardRepositoryImpl extends BaseRepository
   DashboardRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Either<Failure, DailyStatsEntity>> getDailyStats() {
+  Future<Either<Failure, DailyStatsEntity>> getDailyStats({required String date}) {
     return execute(
-      call: () async => (await dataSource.getDailyStats()).toEntity(),
+      call: () async => (await dataSource.getDailyStats(date: date)).toEntity(),
     );
   }
 

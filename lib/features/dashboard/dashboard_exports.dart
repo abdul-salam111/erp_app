@@ -2,6 +2,7 @@
 
 // ── Domain ────────────────────────────────────────────────────────────────────
 export 'domain/entities/daily_stats_entity.dart';
+export 'domain/entities/order_entity.dart';
 export 'domain/entities/monthly_stats_entity.dart';
 export 'domain/entities/sale_order_summary_entity.dart';
 export 'domain/repositories/dashboard_repository.dart';
@@ -16,7 +17,6 @@ export 'data/models/response_models/get_daily_stats/daily_stats_model.dart';
 export 'data/models/response_models/get_daily_stats/daily_stats_model_mapper.dart';
 export 'data/models/response_models/get_monthly_stats/monthly_stats_model.dart';
 export 'data/models/response_models/get_monthly_stats/monthly_stats_model_mapper.dart';
-export 'data/models/response_models/get_sale_order_summary_by_party/sale_order_summary_by_party.dart';
 export 'data/models/response_models/get_sale_order_summary_by_party/sale_order_summary_mapper.dart';
 
 // ── Presentation — BLoC ───────────────────────────────────────────────────────

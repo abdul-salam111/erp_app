@@ -1,14 +1,18 @@
 import 'package:equatable/equatable.dart';
+import 'order_entity.dart';
 
 class DailyStatsEntity extends Equatable {
-  final int ttlRecovery;
-  final int ttlReceived;
-  final int ttlExpense;
-  final int ttlPurchase;
-  final int ttlDuePayment;
-  final int ttlPaid;
-  final int ttlSale;
-  final int ttlSaleOrder;
+  final double           ttlRecovery;
+  final double           ttlReceived;
+  final double           ttlExpense;
+  final double           ttlPurchase;
+  final double           ttlDuePayment;
+  final double           ttlPaid;
+  final double           ttlSale;
+  final double           ttlSaleCount;
+  final double           ttlSaleOrder;
+  final double           ttlSaleOrderCount;
+  final List<NewOrdersEntity> orders;
 
   const DailyStatsEntity({
     required this.ttlRecovery,
@@ -18,12 +22,16 @@ class DailyStatsEntity extends Equatable {
     required this.ttlDuePayment,
     required this.ttlPaid,
     required this.ttlSale,
+    required this.ttlSaleCount,
     required this.ttlSaleOrder,
+    required this.ttlSaleOrderCount,
+    required this.orders,
   });
 
   @override
   List<Object?> get props => [
     ttlRecovery, ttlReceived, ttlExpense, ttlPurchase,
-    ttlDuePayment, ttlPaid, ttlSale, ttlSaleOrder,
+    ttlDuePayment, ttlPaid, ttlSale, ttlSaleCount,
+    ttlSaleOrder, ttlSaleOrderCount, orders,
   ];
 }

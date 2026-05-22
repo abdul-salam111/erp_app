@@ -6,30 +6,66 @@ part 'daily_stats_model.g.dart';
 abstract class DailyStatsModel with _$DailyStatsModel {
     const factory DailyStatsModel({
         @JsonKey(name: "TTLRecovery")
-        int? ttlRecovery,
+        double? ttlRecovery,
         @JsonKey(name: "TTLReceived")
-        int? ttlReceived,
+        double? ttlReceived,
         @JsonKey(name: "TTLExpense")
-        int? ttlExpense,
+        double? ttlExpense,
         @JsonKey(name: "TTLPurchase")
-        int? ttlPurchase,
+        double? ttlPurchase,
         @JsonKey(name: "TTLDuePayment")
-        int? ttlDuePayment,
+        double? ttlDuePayment,
         @JsonKey(name: "TTLPaid")
-        int? ttlPaid,
+        double? ttlPaid,
         @JsonKey(name: "TTLSale")
-        int? ttlSale,
+        double? ttlSale,
         @JsonKey(name: "TTLSaleCount")
-        int? ttlSaleCount,
+        double? ttlSaleCount,
         @JsonKey(name: "TTLSaleOrder")
-        int? ttlSaleOrder,
+        double? ttlSaleOrder,
         @JsonKey(name: "TTLSaleOrderCount")
-        int? ttlSaleOrderCount,
+        double? ttlSaleOrderCount,
         @JsonKey(name: "Orders")
-        List<dynamic>? orders,
-        @JsonKey(name: "Stocks")
-        List<dynamic>? stocks,
+        List<Order>? orders,
     }) = _DailyStatsModel;
 
     factory DailyStatsModel.fromJson(Map<String, dynamic> json) => _$DailyStatsModelFromJson(json);
+}
+
+@freezed
+abstract class Order with _$Order {
+    const factory Order({
+        @JsonKey(name: "Id")
+        int? id,
+        @JsonKey(name: "DocDate")
+        DateTime? docDate,
+        @JsonKey(name: "DocNbr")
+        String? docNbr,
+        @JsonKey(name: "Party")
+        Party? party,
+        @JsonKey(name: "TTLNetAmount")
+        double? ttlNetAmount,
+    }) = _Order;
+
+    factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
+}
+
+@freezed
+abstract class Party with _$Party {
+    const factory Party({
+        @JsonKey(name: "Id")
+        int? id,
+        @JsonKey(name: "FullName")
+        String? fullName,
+        @JsonKey(name: "PartyTypeId")
+        int? partyTypeId,
+        @JsonKey(name: "LocationId")
+        int? locationId,
+        @JsonKey(name: "LocationName")
+        String? locationName,
+        @JsonKey(name: "PartyTypeName")
+        String? partyTypeName,
+    }) = _Party;
+
+    factory Party.fromJson(Map<String, dynamic> json) => _$PartyFromJson(json);
 }

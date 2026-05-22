@@ -5,7 +5,7 @@ import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/entities/daily_stats_entity.dart';
 import '../../../domain/entities/monthly_stats_entity.dart';
 import '../../../domain/entities/sale_order_summary_entity.dart';
-import '../../../domain/usecases/get_daily_stats_usecase.dart';
+import '../../../domain/usecases/get_daily_stats_usecase.dart' show GetDailyStatsUsecase, DailyStatsParams;
 import '../../../domain/usecases/get_monthly_stats_usecase.dart';
 import '../../../domain/usecases/get_sale_order_summary_usecase.dart';
 
@@ -48,8 +48,12 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       saleOrderSummaryStatus: ApiStatus.LOADING,
     ));
 
+    final today = DateTime.now();
+    final dateStr =
+        '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+
     final (dailyResult, monthlyResult, saleOrderResult) = await (
-      _getDailyStats(NoParams()),
+      _getDailyStats(DailyStatsParams(date: dateStr)),
       _getMonthlyStats(NoParams()),
       _getSaleOrderSummary(NoParams()),
     ).wait;
