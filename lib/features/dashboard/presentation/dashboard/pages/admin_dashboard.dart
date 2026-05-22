@@ -13,7 +13,6 @@ class AdminDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -26,7 +25,7 @@ class AdminDashboard extends StatelessWidget {
       ),
       drawer: AppDrawer(
         userName: currentUser.fullName,
-        userRole: AppConstants.administrator,
+        orgName: currentUser.org.name,
         items: [
           DrawerItem.tile(
             label: AppConstants.dashboardLabel,
@@ -102,9 +101,18 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.element_3,
             color: Color(0xFF009688),
             children: [
-              DrawerItem.tile(label: AppConstants.menu1Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu2Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu3Label, icon: Iconsax.document),
+              DrawerItem.tile(
+                label: AppConstants.menu1Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu2Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu3Label,
+                icon: Iconsax.document,
+              ),
             ],
           ),
           DrawerItem.expandable(
@@ -112,9 +120,18 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.shopping_bag,
             color: Color(0xFF9C27B0),
             children: [
-              DrawerItem.tile(label: AppConstants.menu1Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu2Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu3Label, icon: Iconsax.document),
+              DrawerItem.tile(
+                label: AppConstants.menu1Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu2Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu3Label,
+                icon: Iconsax.document,
+              ),
             ],
           ),
           DrawerItem.expandable(
@@ -122,9 +139,18 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.truck,
             color: Color(0xFF4CAF50),
             children: [
-              DrawerItem.tile(label: AppConstants.menu1Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu2Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu3Label, icon: Iconsax.document),
+              DrawerItem.tile(
+                label: AppConstants.menu1Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu2Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu3Label,
+                icon: Iconsax.document,
+              ),
             ],
           ),
           DrawerItem.expandable(
@@ -132,9 +158,18 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.buildings_2,
             color: Color(0xFFFF9800),
             children: [
-              DrawerItem.tile(label: AppConstants.menu1Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu2Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu3Label, icon: Iconsax.document),
+              DrawerItem.tile(
+                label: AppConstants.menu1Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu2Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu3Label,
+                icon: Iconsax.document,
+              ),
             ],
           ),
           DrawerItem.expandable(
@@ -142,9 +177,18 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.chart_2,
             color: Color(0xFF7B1FA2),
             children: [
-              DrawerItem.tile(label: AppConstants.menu1Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu2Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu3Label, icon: Iconsax.document),
+              DrawerItem.tile(
+                label: AppConstants.menu1Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu2Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu3Label,
+                icon: Iconsax.document,
+              ),
             ],
           ),
           DrawerItem.expandable(
@@ -152,9 +196,18 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.security_user,
             color: Color(0xFF546E7A),
             children: [
-              DrawerItem.tile(label: AppConstants.menu1Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu2Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu3Label, icon: Iconsax.document),
+              DrawerItem.tile(
+                label: AppConstants.menu1Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu2Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu3Label,
+                icon: Iconsax.document,
+              ),
             ],
           ),
           DrawerItem.expandable(
@@ -162,9 +215,18 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.setting_2,
             color: Color(0xFF6D4C41),
             children: [
-              DrawerItem.tile(label: AppConstants.menu1Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu2Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu3Label, icon: Iconsax.document),
+              DrawerItem.tile(
+                label: AppConstants.menu1Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu2Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu3Label,
+                icon: Iconsax.document,
+              ),
             ],
           ),
           DrawerItem.expandable(
@@ -172,9 +234,18 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.convert_3d_cube,
             color: Color(0xFF00897B),
             children: [
-              DrawerItem.tile(label: AppConstants.menu1Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu2Label, icon: Iconsax.document),
-              DrawerItem.tile(label: AppConstants.menu3Label, icon: Iconsax.document),
+              DrawerItem.tile(
+                label: AppConstants.menu1Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu2Label,
+                icon: Iconsax.document,
+              ),
+              DrawerItem.tile(
+                label: AppConstants.menu3Label,
+                icon: Iconsax.document,
+              ),
             ],
           ),
         ],
@@ -184,9 +255,9 @@ class AdminDashboard extends StatelessWidget {
         crossAxisAlignment: .stretch,
         children: [
           // ── Merged greeting + app-bar header ──
-          const DashboardHeader(
-            userName: AppConstants.admin,
-            userRole: AppConstants.administrator,
+          DashboardHeader(
+            userName: currentUser.fullName,
+            orgName: currentUser.org.name,
           ),
           // ── Scrollable content ──
           Expanded(

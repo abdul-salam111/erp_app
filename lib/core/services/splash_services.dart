@@ -20,7 +20,14 @@ class SplashServices {
 
       if (SessionController().islogin == true) {
         if (SessionController().selectedOrganization == null) {
-          context.goNamed(RouteNames.organizationSelection);
+          final orgs = SessionController().loggedInUser?.organizations ?? [];
+          if (orgs.length == 1) {
+            await SessionController().saveSelectedOrganization(orgs.first);
+            if (!context.mounted) return;
+            context.goNamed(RouteNames.dashboard);
+          } else {
+            context.goNamed(RouteNames.organizationSelection);
+          }
         } else {
           context.goNamed(RouteNames.dashboard);
         }

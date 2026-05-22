@@ -8,12 +8,12 @@ import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class DashboardHeader extends StatelessWidget {
   final String userName;
-  final String userRole;
+  final String orgName;
 
   const DashboardHeader({
     super.key,
     required this.userName,
-    required this.userRole,
+    required this.orgName,
   });
 
   String get _greeting {
@@ -70,7 +70,7 @@ class DashboardHeader extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(
               top:    top + 14,
-              bottom: 28,
+              bottom: 20,
               left:   hPad,
               right:  hPad,
             ),
@@ -157,12 +157,35 @@ class DashboardHeader extends StatelessWidget {
                               height: 1.1,
                             ),
                           ),
-                          const SizedBox(height: 3),
-                          Text(
-                            userRole,
-                            style: context.labelSmall.copyWith(
-                              color: Colors.white.withValues(alpha: 0.65),
-                            ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Container(
+                                padding: .symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  borderRadius: .circular(20),
+                                ),
+                                child: Row(
+                                  mainAxisSize: .min,
+                                  children: [
+                                    Icon(
+                                      Iconsax.buildings,
+                                      color: Colors.white.withValues(alpha: 0.85),
+                                      size: 11,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      orgName,
+                                      style: context.labelSmall.copyWith(
+                                        color: Colors.white.withValues(alpha: 0.90),
+                                        fontWeight: .w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

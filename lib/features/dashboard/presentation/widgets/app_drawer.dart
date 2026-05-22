@@ -53,13 +53,13 @@ class DrawerItem {
 
 class AppDrawer extends StatelessWidget {
   final String           userName;
-  final String           userRole;
+  final String           orgName;
   final List<DrawerItem> items;
 
   const AppDrawer({
     super.key,
     required this.userName,
-    required this.userRole,
+    required this.orgName,
     required this.items,
   });
 
@@ -72,7 +72,7 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: [
           // ── Header ──
-          _DrawerHeader(userName: userName, userRole: userRole),
+          _DrawerHeader(userName: userName, orgName: orgName),
 
           // ── Nav items ──
           Expanded(
@@ -418,9 +418,9 @@ class _LogoutButton extends StatelessWidget {
 
 class _DrawerHeader extends StatelessWidget {
   final String userName;
-  final String userRole;
+  final String orgName;
 
-  const _DrawerHeader({required this.userName, required this.userRole});
+  const _DrawerHeader({required this.userName, required this.orgName});
 
   @override
   Widget build(BuildContext context) {
@@ -513,13 +513,13 @@ class _DrawerHeader extends StatelessWidget {
                           mainAxisSize: .min,
                           children: [
                             Icon(
-                              Iconsax.shield_tick,
+                              Iconsax.buildings,
                               color: Colors.white.withValues(alpha: 0.90),
                               size:  11,
                             ),
                             const SizedBox(width: 5),
                             Text(
-                              userRole,
+                              orgName,
                               style: context.labelSmall.copyWith(
                                 color:      Colors.white.withValues(alpha: 0.92),
                                 fontWeight: .w600,
