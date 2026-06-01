@@ -50,7 +50,7 @@ class _OrganizationSelectionBodyState
       listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, state) {
         if (state.status == ApiStatus.SUCCESS) {
-          context.goNamed(RouteNames.dashboard);
+          context.pushNamed(RouteNames.dashboard);
         }
         if (state.status == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message ?? 'Failed to select branch');

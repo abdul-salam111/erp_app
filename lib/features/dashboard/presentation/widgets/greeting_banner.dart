@@ -120,13 +120,16 @@ class DashboardHeader extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     // Avatar
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors.white.withValues(alpha: 0.18),
-                      child: const Icon(
-                        Iconsax.profile_circle,
-                        color: Colors.white,
-                        size: 19,
+                    GestureDetector(
+                      onTap: () => context.pushNamed(RouteNames.profile),
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Colors.white.withValues(alpha: 0.18),
+                        child: const Icon(
+                          Iconsax.profile_circle,
+                          color: Colors.white,
+                          size: 19,
+                        ),
                       ),
                     ),
                   ],
