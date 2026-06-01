@@ -30,3 +30,19 @@ final class DashboardMonthChanged extends DashboardEvent {
 final class TodayOverviewExpansionToggled extends DashboardEvent {
   const TodayOverviewExpansionToggled();
 }
+
+final class DailyStatsDateChanged extends DashboardEvent {
+  final DateTime date;
+  const DailyStatsDateChanged(this.date);
+
+  @override
+  List<Object> get props => [date];
+}
+
+final class MonthlyStatsDetailKeyChanged extends DashboardEvent {
+  final String panelKey;
+  const MonthlyStatsDetailKeyChanged(this.panelKey);
+
+  @override
+  List<Object> get props => [panelKey];
+}

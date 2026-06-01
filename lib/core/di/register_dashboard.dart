@@ -15,14 +15,16 @@ Future<void> registerDashboard() async {
   // UseCases
   sl.registerLazySingleton(() => GetDailyStatsUsecase(repository: sl()));
   sl.registerLazySingleton(() => GetMonthlyStatsUsecase(repository: sl()));
+  sl.registerLazySingleton(() => GetMonthlyStatsDetailUsecase(repository: sl()));
   sl.registerLazySingleton(() => GetSaleOrderSummaryUsecase(repository: sl()));
 
   // BLoC
   sl.registerFactory<DashboardBloc>(
     () => DashboardBloc(
-      getDailyStats: sl(),
-      getMonthlyStats: sl(),
-      getSaleOrderSummary: sl(),
+      getDailyStats:          sl(),
+      getMonthlyStats:        sl(),
+      getMonthlyStatsDetail:  sl(),
+      getSaleOrderSummary:    sl(),
     ),
   );
 }

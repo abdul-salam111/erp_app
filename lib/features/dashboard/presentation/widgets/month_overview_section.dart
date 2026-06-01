@@ -9,6 +9,17 @@ import '../../../../core/widgets/widgets.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
 import '../dashboard/blocs/dashboard_bloc.dart';
 
+// ─── Panel keys ───────────────────────────────────────────────────────────────
+
+const _panels = <_PanelMeta>[
+  _PanelMeta(key: 'revenue',      label: 'Revenue'),
+  _PanelMeta(key: 'expenses',     label: 'Expenses'),
+  _PanelMeta(key: 'purchases',    label: 'Purchases'),
+  _PanelMeta(key: 'recoveries',   label: 'Recoveries'),
+  _PanelMeta(key: 'sale_orders',  label: 'Sale Orders'),
+  _PanelMeta(key: 'new_parties',  label: 'New Parties'),
+];
+
 // ─── Section ──────────────────────────────────────────────────────────────────
 
 class MonthOverviewSection extends StatelessWidget {
@@ -37,12 +48,17 @@ class MonthOverviewSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       buildWhen: (p, c) =>
-          p.selectedMonth       != c.selectedMonth       ||
-          p.monthlyStatsStatus  != c.monthlyStatsStatus  ||
-          p.monthlyStats        != c.monthlyStats,
+          p.selectedMonth             != c.selectedMonth             ||
+          p.monthlyStatsStatus        != c.monthlyStatsStatus        ||
+          p.monthlyStats              != c.monthlyStats              ||
+          p.monthlyStatsDetailStatus  != c.monthlyStatsDetailStatus  ||
+          p.monthlyStatsDetail        != c.monthlyStatsDetail        ||
+          p.selectedPanelKey          != c.selectedPanelKey,
       builder: (context, state) {
-        final isLoading = state.monthlyStatsStatus == ApiStatus.INITIAL ||
-                          state.monthlyStatsStatus == ApiStatus.LOADING;
+        final isLoading       = state.monthlyStatsStatus == ApiStatus.INITIAL ||
+                                state.monthlyStatsStatus == ApiStatus.LOADING;
+        final isDetailLoading = state.monthlyStatsDetailStatus == ApiStatus.INITIAL ||
+                                state.monthlyStatsDetailStatus == ApiStatus.LOADING;
 
         return Container(
           decoration: BoxDecoration(
@@ -117,11 +133,11 @@ class MonthOverviewSection extends StatelessWidget {
                 child: isLoading
                     ? _StatsShimmer(columnCount: context.gridColumnCount, spacing: context.gridSpacing, ratio: context.overviewCardRatio)
                     : GridView.count(
-                        shrinkWrap:      true,
-                        padding:         EdgeInsets.zero,
-                        physics:         const NeverScrollableScrollPhysics(),
-                        crossAxisCount:  context.gridColumnCount,
-                        mainAxisSpacing: context.gridSpacing,
+                        shrinkWrap:       true,
+                        padding:          EdgeInsets.zero,
+                        physics:          const NeverScrollableScrollPhysics(),
+                        crossAxisCount:   context.gridColumnCount,
+                        mainAxisSpacing:  context.gridSpacing,
                         crossAxisSpacing: context.gridSpacing,
                         childAspectRatio: context.overviewCardRatio,
                         children: _buildStatCards(state),
@@ -130,12 +146,58 @@ class MonthOverviewSection extends StatelessWidget {
 
               Divider(height: 1, thickness: 1, color: context.border),
 
+              // ── Panel selector chips ─────────────────────────────
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+                child: SingleChildScrollView(
+                  scrollDirection: .horizontal,
+                  child: Row(
+                    children: _panels.map((p) {
+                      final selected = p.key == state.selectedPanelKey;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: GestureDetector(
+                          onTap: selected
+                              ? null
+                              : () => context.read<DashboardBloc>().add(
+                                    MonthlyStatsDetailKeyChanged(p.key),
+                                  ),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: .symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: selected
+                                  ? context.primary
+                                  : context.primary.withValues(alpha: 0.07),
+                              borderRadius: .circular(20),
+                              border: Border.all(
+                                color: selected
+                                    ? context.primary
+                                    : context.primary.withValues(alpha: 0.25),
+                              ),
+                            ),
+                            child: Text(
+                              p.label,
+                              style: context.labelSmall.copyWith(
+                                color:      selected ? context.white : context.primary,
+                                fontWeight: selected ? .w600 : .w500,
+                                fontSize:   10,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+
               // ── Chart ────────────────────────────────────────────
               Padding(
-                padding: const EdgeInsets.fromLTRB(4, 14, 14, 16),
+                padding: const EdgeInsets.fromLTRB(4, 10, 14, 16),
                 child: SizedBox(
                   height: 160,
-                  child: isLoading
+                  child: isDetailLoading
                       ? ShimmerBox(radius: 8, height: 160, width: double.infinity)
                       : _buildChart(context, state),
                 ),
@@ -151,62 +213,81 @@ class MonthOverviewSection extends StatelessWidget {
     final sym = currentUser.org.currencySymbol;
     final m   = state.monthlyStats;
 
+    const red   = Color(0xFFE53935);
+    const green = Color(0xFF43A047);
+
     return [
       _MonthStatCard(
-        label:  AppConstants.expensesLabel,
-        value:  (m?.currentMonthExpense    ?? 0).toCompact(decimals: 1).let((v) => '$sym$v'),
-        pct:    m?.expensePercentage       ?? 0,
-        color:  const Color(0xFFE53935),
+        label:      AppConstants.expensesLabel,
+        value:      (m?.currentMonthExpense    ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
+        pct:        m?.expensePercentage        ?? 0,
+        color:      red,
+        trendColor: red,
       ),
       _MonthStatCard(
-        label:  AppConstants.newOrders,
-        value:  (m?.currentMonthSaleOrders ?? 0).toStringAsFixed(0),
-        pct:    m?.saleOrdersPercentage    ?? 0,
-        color:  const Color(0xFF1B84FF),
+        label:      AppConstants.newOrders,
+        value:      (m?.currentMonthSaleOrders ?? 0).toStringAsFixed(0),
+        pct:        m?.saleOrdersPercentage    ?? 0,
+        color:      const Color(0xFF1B84FF),
+        trendColor: green,
       ),
       _MonthStatCard(
-        label:  AppConstants.newClientsLabel,
-        value:  (m?.currentMonthParties    ?? 0).toStringAsFixed(0),
-        pct:    m?.partiesPercentage       ?? 0,
-        color:  const Color(0xFF4CAF50),
+        label:      AppConstants.newClientsLabel,
+        value:      (m?.currentMonthParties    ?? 0).toStringAsFixed(0),
+        pct:        m?.partiesPercentage        ?? 0,
+        color:      green,
+        trendColor: green,
       ),
       _MonthStatCard(
-        label:  AppConstants.totalRevenueLabel,
-        value:  (m?.currentMonthSales      ?? 0).toCompact(decimals: 1).let((v) => '$sym$v'),
-        pct:    m?.salesPercentage         ?? 0,
-        color:  const Color(0xFFFF9800),
+        label:      AppConstants.totalRevenueLabel,
+        value:      (m?.currentMonthSales      ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
+        pct:        m?.salesPercentage          ?? 0,
+        color:      const Color(0xFFFF9800),
+        trendColor: green,
       ),
       _MonthStatCard(
-        label:  AppConstants.totalPurchasesLabel,
-        value:  (m?.currentMonthPurchases  ?? 0).toCompact(decimals: 1).let((v) => '$sym$v'),
-        pct:    m?.purchasesPercentage     ?? 0,
-        color:  const Color(0xFF9C27B0),
+        label:      AppConstants.totalPurchasesLabel,
+        value:      (m?.currentMonthPurchases  ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
+        pct:        m?.purchasesPercentage      ?? 0,
+        color:      const Color(0xFF9C27B0),
+        trendColor: red,
       ),
       _MonthStatCard(
-        label:  AppConstants.recoveriesLabel,
-        value:  (m?.currentMonthRecoveries ?? 0).toCompact(decimals: 1).let((v) => '$sym$v'),
-        pct:    m?.recoveriesPercentage    ?? 0,
-        color:  const Color(0xFF00ACC1),
+        label:      AppConstants.recoveriesLabel,
+        value:      (m?.currentMonthRecoveries ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
+        pct:        m?.recoveriesPercentage     ?? 0,
+        color:      const Color(0xFF00ACC1),
+        trendColor: green,
       ),
     ];
   }
 
   Widget _buildChart(BuildContext context, DashboardState state) {
-    // Static representative spots — replace with time-series API data when available
-    const spots = <FlSpot>[
-      FlSpot(0, 0), FlSpot(1, 8000), FlSpot(2, 25000), FlSpot(3, 60000),
-      FlSpot(4, 140000), FlSpot(5, 370000), FlSpot(6, 210000), FlSpot(7, 80000),
-      FlSpot(8, 20000), FlSpot(9, 4000), FlSpot(10, 0), FlSpot(11, 12000),
-      FlSpot(12, 120000), FlSpot(13, 100000), FlSpot(14, 42000), FlSpot(15, 10000),
-      FlSpot(16, 0),
-    ];
+    final points = state.monthlyStatsDetail;
+
+    if (points.isEmpty) {
+      return Center(
+        child: Text(
+          'No data available',
+          style: context.bodySmall.copyWith(color: context.textSecondary),
+        ),
+      );
+    }
+
+    final spots = points
+        .map((p) => FlSpot(p.date.day.toDouble(), p.amount))
+        .toList();
+
+    final maxAmount = points.fold(0.0, (m, p) => p.amount > m ? p.amount : m);
+    final maxY      = maxAmount == 0 ? 100.0 : (maxAmount * 1.3).ceilToDouble();
+    final interval  = (maxY / 4).ceilToDouble().clamp(1.0, double.infinity);
 
     return LineChart(
       LineChartData(
         gridData: FlGridData(
-          show: true,
+          show:             true,
           drawVerticalLine: false,
-          horizontalInterval: 100000,
+          horizontalInterval: interval,
           getDrawingHorizontalLine: (_) =>
               FlLine(color: context.border, strokeWidth: 0.8),
         ),
@@ -214,15 +295,26 @@ class MonthOverviewSection extends StatelessWidget {
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles:   true,
-              reservedSize: 48,
-              interval:     100000,
-              getTitlesWidget: (v, _) => Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: Text(
-                  '${(v / 1000).toStringAsFixed(0)}k',
-                  style: TextStyle(fontSize: 8.5, color: context.textSecondary),
-                ),
-              ),
+              reservedSize: 46,
+              interval:     interval,
+              getTitlesWidget: (v, _) {
+                final label = v >= 1000000
+                    ? '${(v / 1000000).toStringAsFixed(1)}M'
+                    : v >= 1000
+                        ? '${(v / 1000).toStringAsFixed(0)}k'
+                        : v.toStringAsFixed(0);
+                return Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 2),
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize:   8.5,
+                      fontWeight: FontWeight.w700,
+                      color:      context.textSecondary,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -231,7 +323,7 @@ class MonthOverviewSection extends StatelessWidget {
         ),
         borderData: FlBorderData(show: false),
         minY: 0,
-        maxY: 400000,
+        maxY: maxY,
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
             getTooltipColor: (_) => context.primary.withValues(alpha: 0.85),
@@ -294,18 +386,19 @@ class _MonthStatCard extends StatelessWidget {
   final String value;
   final double pct;
   final Color  color;
+  final Color  trendColor;
 
   const _MonthStatCard({
     required this.label,
     required this.value,
     required this.pct,
     required this.color,
+    required this.trendColor,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isUp       = pct >= 0;
-    final changeColor = isUp ? const Color(0xFFE53935) : const Color(0xFF43A047);
+    final changeColor = trendColor;
     final pctLabel    = '${pct.abs().toStringAsFixed(1)}%';
 
     return Container(
@@ -351,7 +444,7 @@ class _MonthStatCard extends StatelessWidget {
                         mainAxisSize: .min,
                         children: [
                           Icon(
-                            isUp ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+                            Icons.arrow_upward_rounded,
                             size: 9, color: changeColor,
                           ),
                           const SizedBox(width: 2),
@@ -473,6 +566,14 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
       ),
     );
   }
+}
+
+// ─── Panel meta ───────────────────────────────────────────────────────────────
+
+class _PanelMeta {
+  final String key;
+  final String label;
+  const _PanelMeta({required this.key, required this.label});
 }
 
 // ─── Extension helper ─────────────────────────────────────────────────────────

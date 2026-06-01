@@ -1,6 +1,7 @@
 class ApiEndPoints {
-  static const baseUrl = "http://192.168.1.12:7000/api";
+  static const baseUrl = "https://erpstagingapi.manticapps.com/api";
   static const String loginUser = "$baseUrl/mis/auth/Authlogin";
+  static const String selectBranch = '$baseUrl/mis/Auth/SelectBranch';
   static const String signupUser = "${baseUrl}user/signinUid";
   static const String alertPanel = '${baseUrl}alert_panel';
   static const String purchaseOrder = '${baseUrl}purchase_order';
@@ -13,12 +14,17 @@ class ApiEndPoints {
   static const String security = '${baseUrl}security';
   static const String dashboard = '${baseUrl}dashboard';
   static const String getDailyStats = '$baseUrl/core/MBLDashboard/GetDailyStatistics';
-  static const String getMonthlyStats = '${baseUrl}getDailyStates';
-  static const String getSalesOrderSummaryByParty = '${baseUrl}getDailyStates';
+  static const String getMonthlyStats =
+      '$baseUrl/core/MBLDashboard/GetMonthlyStatistics';
+  static const String getMonthlyStatsDetail =
+      '$baseUrl/core/MBLDashboard/GetMonthlyStatisticsDetail';
+  static const String getSalesOrderSummaryByParty = '$baseUrl/core/MBLDashboard/GetSalesOrderSummaryByParty';
   // Account Statements
   static const String getAccountStatements =
       '$baseUrl/AccountStatement/GetAccountStatements';
   static const String getInvoicePdf = '$baseUrl/AccountStatement/GetInvoicePdf';
   static const String getPrintableFeatures =
       '$baseUrl/AccountStatement/GetPrintableFeatures';
+  
+    
 }

@@ -177,8 +177,9 @@ class _OrderTile extends StatelessWidget {
     final initials = order.partyName
         .trim()
         .split(' ')
+        .where((w) => w.isNotEmpty && RegExp(r'^[a-zA-Z]').hasMatch(w))
         .take(2)
-        .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '')
+        .map((w) => w[0].toUpperCase())
         .join();
 
     final sym = currentUser.org.currencySymbol;

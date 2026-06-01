@@ -4,10 +4,12 @@
 export 'domain/entities/daily_stats_entity.dart';
 export 'domain/entities/order_entity.dart';
 export 'domain/entities/monthly_stats_entity.dart';
+export 'domain/entities/monthly_stats_detail_entity.dart';
 export 'domain/entities/sale_order_summary_entity.dart';
 export 'domain/repositories/dashboard_repository.dart';
 export 'domain/usecases/get_daily_stats_usecase.dart';
 export 'domain/usecases/get_monthly_stats_usecase.dart';
+export 'domain/usecases/get_monthly_stats_detail_usecase.dart';
 export 'domain/usecases/get_sale_order_summary_usecase.dart';
 
 // ── Data ──────────────────────────────────────────────────────────────────────

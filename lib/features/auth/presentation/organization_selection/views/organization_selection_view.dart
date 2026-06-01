@@ -1,43 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../../core/constants/app_enums.dart';
+import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/services/session_manager.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../routes/route_names.dart';
 import '../../../auth_exports.dart';
 
-class OrganizationSelectionView extends StatefulWidget {
+class OrganizationSelectionView extends StatelessWidget {
   const OrganizationSelectionView({super.key});
 
   @override
-  State<OrganizationSelectionView> createState() =>
-      _OrganizationSelectionViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<BranchSelectionBloc>(),
+      child: const _OrganizationSelectionBody(),
+    );
+  }
 }
 
-class _OrganizationSelectionViewState
-    extends State<OrganizationSelectionView> {
-  int? _loadingIndex;
+class _OrganizationSelectionBody extends StatefulWidget {
+  const _OrganizationSelectionBody();
 
+  @override
+  State<_OrganizationSelectionBody> createState() =>
+      _OrganizationSelectionBodyState();
+}
+
+class _OrganizationSelectionBodyState
+    extends State<_OrganizationSelectionBody> {
   List<UserOrganizationEntity> get _organizations =>
       SessionController.instance.loggedInUser?.organizations ?? [];
 
   String get _userName =>
       SessionController.instance.loggedInUser?.fullName ?? '';
 
-  Future<void> _selectOrganization(
-      UserOrganizationEntity org, int index) async {
-    setState(() => _loadingIndex = index);
-    await SessionController.instance.saveSelectedOrganization(org);
-    if (mounted) {
-      setState(() => _loadingIndex = null);
-      context.goNamed(RouteNames.dashboard);
-    }
+  void _selectOrganization(UserOrganizationEntity org, int index) {
+    context.read<BranchSelectionBloc>().add(
+          BranchSelectedEvent(org: org, orgIndex: index),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocConsumer<BranchSelectionBloc, BranchSelectionState>(
+      listenWhen: (prev, curr) => prev.status != curr.status,
+      listener: (context, state) {
+        if (state.status == ApiStatus.SUCCESS) {
+          context.goNamed(RouteNames.dashboard);
+        }
+        if (state.status == ApiStatus.FAILURE) {
+          AppToastsUtils.showErrorTop(context, state.message ?? 'Failed to select branch');
+        }
+      },
+      builder: (context, state) => Scaffold(
       backgroundColor: context.background,
       body: CustomScrollView(
         slivers: [
@@ -76,14 +95,15 @@ class _OrganizationSelectionViewState
                   return _OrganizationCard(
                     org: org,
                     index: index,
-                    isLoading: _loadingIndex == index,
-                    isDisabled: _loadingIndex != null,
+                    isLoading: state.loadingOrgIndex == index,
+                    isDisabled: state.loadingOrgIndex != null,
                     onTap: () => _selectOrganization(org, index),
                   );
                 },
               ),
             ),
         ],
+      ),
       ),
     );
   }

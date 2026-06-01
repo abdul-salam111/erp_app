@@ -4,7 +4,9 @@ final class DashboardState extends Equatable {
   // ── UI state ──────────────────────────────────────────────────────────────
   final int      saleOrderFilterIndex;
   final DateTime selectedMonth;
+  final DateTime selectedDailyDate;
   final bool     todayOverviewExpanded;
+  final String   selectedPanelKey;
 
   // ── Daily stats ───────────────────────────────────────────────────────────
   final ApiStatus         dailyStatsStatus;
@@ -16,6 +18,11 @@ final class DashboardState extends Equatable {
   final MonthlyStatsEntity? monthlyStats;
   final String              monthlyStatsError;
 
+  // ── Monthly stats detail (chart) ──────────────────────────────────────────
+  final ApiStatus                    monthlyStatsDetailStatus;
+  final List<MonthlyStatDetailPoint> monthlyStatsDetail;
+  final String                       monthlyStatsDetailError;
+
   // ── Sale order summary ────────────────────────────────────────────────────
   final ApiStatus               saleOrderSummaryStatus;
   final SaleOrderSummaryEntity? saleOrderSummary;
@@ -24,53 +31,70 @@ final class DashboardState extends Equatable {
   const DashboardState({
     required this.saleOrderFilterIndex,
     required this.selectedMonth,
+    required this.selectedDailyDate,
     required this.todayOverviewExpanded,
+    required this.selectedPanelKey,
     required this.dailyStatsStatus,
     this.dailyStats,
     this.dailyStatsError = '',
     required this.monthlyStatsStatus,
     this.monthlyStats,
     this.monthlyStatsError = '',
+    required this.monthlyStatsDetailStatus,
+    this.monthlyStatsDetail = const [],
+    this.monthlyStatsDetailError = '',
     required this.saleOrderSummaryStatus,
     this.saleOrderSummary,
     this.saleOrderSummaryError = '',
   });
 
   DashboardState copyWith({
-    int?                   saleOrderFilterIndex,
-    DateTime?              selectedMonth,
-    bool?                  todayOverviewExpanded,
-    ApiStatus?             dailyStatsStatus,
-    DailyStatsEntity?      dailyStats,
-    String?                dailyStatsError,
-    ApiStatus?             monthlyStatsStatus,
-    MonthlyStatsEntity?    monthlyStats,
-    String?                monthlyStatsError,
-    ApiStatus?             saleOrderSummaryStatus,
-    SaleOrderSummaryEntity? saleOrderSummary,
-    String?                saleOrderSummaryError,
+    int?                        saleOrderFilterIndex,
+    DateTime?                   selectedMonth,
+    DateTime?                   selectedDailyDate,
+    bool?                       todayOverviewExpanded,
+    String?                     selectedPanelKey,
+    ApiStatus?                  dailyStatsStatus,
+    DailyStatsEntity?           dailyStats,
+    String?                     dailyStatsError,
+    ApiStatus?                  monthlyStatsStatus,
+    MonthlyStatsEntity?         monthlyStats,
+    String?                     monthlyStatsError,
+    ApiStatus?                  monthlyStatsDetailStatus,
+    List<MonthlyStatDetailPoint>? monthlyStatsDetail,
+    String?                     monthlyStatsDetailError,
+    ApiStatus?                  saleOrderSummaryStatus,
+    SaleOrderSummaryEntity?     saleOrderSummary,
+    String?                     saleOrderSummaryError,
   }) {
     return DashboardState(
-      saleOrderFilterIndex:   saleOrderFilterIndex   ?? this.saleOrderFilterIndex,
-      selectedMonth:          selectedMonth          ?? this.selectedMonth,
-      todayOverviewExpanded:  todayOverviewExpanded  ?? this.todayOverviewExpanded,
-      dailyStatsStatus:       dailyStatsStatus       ?? this.dailyStatsStatus,
-      dailyStats:             dailyStats             ?? this.dailyStats,
-      dailyStatsError:        dailyStatsError        ?? this.dailyStatsError,
-      monthlyStatsStatus:     monthlyStatsStatus     ?? this.monthlyStatsStatus,
-      monthlyStats:           monthlyStats           ?? this.monthlyStats,
-      monthlyStatsError:      monthlyStatsError      ?? this.monthlyStatsError,
-      saleOrderSummaryStatus: saleOrderSummaryStatus ?? this.saleOrderSummaryStatus,
-      saleOrderSummary:       saleOrderSummary       ?? this.saleOrderSummary,
-      saleOrderSummaryError:  saleOrderSummaryError  ?? this.saleOrderSummaryError,
+      saleOrderFilterIndex:      saleOrderFilterIndex      ?? this.saleOrderFilterIndex,
+      selectedMonth:             selectedMonth             ?? this.selectedMonth,
+      selectedDailyDate:         selectedDailyDate         ?? this.selectedDailyDate,
+      todayOverviewExpanded:     todayOverviewExpanded     ?? this.todayOverviewExpanded,
+      selectedPanelKey:          selectedPanelKey          ?? this.selectedPanelKey,
+      dailyStatsStatus:          dailyStatsStatus          ?? this.dailyStatsStatus,
+      dailyStats:                dailyStats                ?? this.dailyStats,
+      dailyStatsError:           dailyStatsError           ?? this.dailyStatsError,
+      monthlyStatsStatus:        monthlyStatsStatus        ?? this.monthlyStatsStatus,
+      monthlyStats:              monthlyStats              ?? this.monthlyStats,
+      monthlyStatsError:         monthlyStatsError         ?? this.monthlyStatsError,
+      monthlyStatsDetailStatus:  monthlyStatsDetailStatus  ?? this.monthlyStatsDetailStatus,
+      monthlyStatsDetail:        monthlyStatsDetail        ?? this.monthlyStatsDetail,
+      monthlyStatsDetailError:   monthlyStatsDetailError   ?? this.monthlyStatsDetailError,
+      saleOrderSummaryStatus:    saleOrderSummaryStatus    ?? this.saleOrderSummaryStatus,
+      saleOrderSummary:          saleOrderSummary          ?? this.saleOrderSummary,
+      saleOrderSummaryError:     saleOrderSummaryError     ?? this.saleOrderSummaryError,
     );
   }
 
   @override
   List<Object?> get props => [
-    saleOrderFilterIndex, selectedMonth, todayOverviewExpanded,
+    saleOrderFilterIndex, selectedMonth, selectedDailyDate,
+    todayOverviewExpanded, selectedPanelKey,
     dailyStatsStatus, dailyStats, dailyStatsError,
     monthlyStatsStatus, monthlyStats, monthlyStatsError,
+    monthlyStatsDetailStatus, monthlyStatsDetail, monthlyStatsDetailError,
     saleOrderSummaryStatus, saleOrderSummary, saleOrderSummaryError,
   ];
 }

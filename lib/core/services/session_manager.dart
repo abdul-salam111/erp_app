@@ -14,8 +14,13 @@ class SessionController {
   UserOrganizationEntity? selectedOrganization;
   bool islogin = false;
 
-  /// The active access token from the first branch of the selected organization.
-  String? get activeAccessToken => selectedOrganization?.activeAccessToken;
+  // Token returned by SelectBranch — takes priority over the branch pre-token.
+  String? _sessionToken;
+
+  /// Returns the SelectBranch token when available, falls back to the branch
+  /// pre-token from the login response.
+  String? get activeAccessToken =>
+      _sessionToken ?? selectedOrganization?.activeAccessToken;
 
   Future<void> saveUserInStorage(UserEntity user) async {
     loggedInUser = user;
@@ -30,10 +35,12 @@ class SessionController {
       StorageKeys.selectedOrganization,
       jsonEncode(org.toJson()),
     );
-    final token = org.activeAccessToken;
-    if (token != null) {
-      await storage.setValues(StorageKeys.token, token);
-    }
+  }
+
+  /// Persists the final session token returned by the SelectBranch API.
+  Future<void> updateActiveToken(String token) async {
+    _sessionToken = token;
+    await storage.setValues(StorageKeys.token, token);
   }
 
   Future<void> getUserFromStorage() async {
@@ -51,6 +58,9 @@ class SessionController {
 
       final isLoggedIn = await storage.readValues(StorageKeys.loggedIn);
       islogin = isLoggedIn == 'true';
+
+      final storedToken = await storage.readValues(StorageKeys.token);
+      if (storedToken != null) _sessionToken = storedToken;
     } catch (e) {
       throw Exception(e);
     }
@@ -59,6 +69,7 @@ class SessionController {
   Future<void> clearSession() async {
     loggedInUser = null;
     selectedOrganization = null;
+    _sessionToken = null;
     islogin = false;
     await storage.setValues(StorageKeys.loggedIn, 'false');
     await storage.clearValues(StorageKeys.userDetails);

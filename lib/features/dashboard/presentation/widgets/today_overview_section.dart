@@ -22,13 +22,29 @@ class TodayOverviewSection extends StatelessWidget {
     _CardMeta(label: AppConstants.newOrdersLabel,        icon: Icons.inventory_2_outlined,       color: Color(0xFF7B61FF)),
   ];
 
+  String _formatDate(DateTime d) =>
+      '${d.shortMonthName} ${d.day.toString().padLeft(2, '0')}';
+
+  Future<void> _pickDate(BuildContext context, DateTime current) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: current,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && context.mounted) {
+      context.read<DashboardBloc>().add(DailyStatsDateChanged(picked));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       buildWhen: (p, c) =>
           p.todayOverviewExpanded != c.todayOverviewExpanded ||
           p.dailyStatsStatus      != c.dailyStatsStatus      ||
-          p.dailyStats            != c.dailyStats,
+          p.dailyStats            != c.dailyStats             ||
+          p.selectedDailyDate     != c.selectedDailyDate,
       builder: (context, state) {
         final isLoading = state.dailyStatsStatus == ApiStatus.INITIAL ||
                           state.dailyStatsStatus == ApiStatus.LOADING;
@@ -42,8 +58,28 @@ class TodayOverviewSection extends StatelessWidget {
           children: [
             SectionHeader(
               title: AppConstants.todaySOverview,
-              trailing: context.isPhone
-                  ? GestureDetector(
+              trailing: Row(
+                mainAxisSize: .min,
+                children: [
+                  GestureDetector(
+                    onTap: () => _pickDate(context, state.selectedDailyDate),
+                    child: Row(
+                      mainAxisSize: .min,
+                      children: [
+                        Icon(Icons.calendar_today_outlined, color: context.primary, size: 13),
+                        const SizedBox(width: 4),
+                        Text(
+                          _formatDate(state.selectedDailyDate),
+                          style: context.labelMedium.copyWith(
+                            color: context.primary, fontWeight: .w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (context.isPhone) ...[
+                    const SizedBox(width: 10),
+                    GestureDetector(
                       onTap: () => context.read<DashboardBloc>().add(
                         const TodayOverviewExpansionToggled(),
                       ),
@@ -69,8 +105,10 @@ class TodayOverviewSection extends StatelessWidget {
                           ),
                         ],
                       ),
-                    )
-                  : null,
+                    ),
+                  ],
+                ],
+              ),
             ),
             const SizedBox(height: 10),
             AnimatedSize(

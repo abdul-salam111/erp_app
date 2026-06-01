@@ -1,6 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:mantic_erp_app/features/auth/auth_exports.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../models/request_models/select_branch_request_model/select_branch_request_model.dart';
 
 class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
   final IAuthRemoteDatasource dataSource;
@@ -18,6 +19,15 @@ class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
         );
         return model.toEntity();
       },
+    );
+  }
+
+  @override
+  Future<Either<Failure, AuthToken>> selectBranch({
+    required SelectBranchRequestModel request,
+  }) {
+    return execute(
+      call: () => dataSource.selectBranch(request: request),
     );
   }
 }

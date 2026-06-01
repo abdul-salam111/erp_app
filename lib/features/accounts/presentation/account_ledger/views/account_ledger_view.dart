@@ -57,7 +57,6 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
     _fromDate = _toDate.subtractMonths(1);
     _fromDateController.text = _fromDate.format('dd/MM/yyyy');
     _toDateController.text = _toDate.format('dd/MM/yyyy');
-    WidgetsBinding.instance.addPostFrameCallback((_) => _onView());
   }
 
   @override
@@ -119,7 +118,10 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
       },
       child: Scaffold(
         appBar: CustomAppBar(title: AppConstants.accountLedgerLabel),
-        body: Column(
+        body: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Column(
           crossAxisAlignment: .start,
           children: [
             // ── Filter form ──────────────────────────────────────────────────
@@ -256,6 +258,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );
