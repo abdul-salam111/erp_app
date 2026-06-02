@@ -5,7 +5,12 @@ import 'outline_chip.dart';
 
 class CurrentStockSection extends StatelessWidget {
   final List<StockItem> items;
-  const CurrentStockSection({super.key, required this.items});
+  final bool isLoading;
+  const CurrentStockSection({
+    super.key,
+    required this.items,
+    this.isLoading = false,
+  });
 
   static const _green = Color(0xFF4CAF50);
 
@@ -133,13 +138,29 @@ class CurrentStockSection extends StatelessWidget {
                 ),
                 Divider(height: 1, thickness: 1, color: context.border),
                 // ── All rows (no scroll — outer screen scrolls) ──
-                ...List.generate(items.length, (i) => Column(
-                  children: [
-                    _StockTableRow(item: items[i]),
-                    if (i < items.length - 1)
-                      Divider(height: 1, thickness: 1, color: context.border),
-                  ],
-                )),
+                if (isLoading && items.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (items.isEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32),
+                    child: Center(
+                      child: Text(
+                        'No stock data available',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  )
+                else
+                  ...List.generate(items.length, (i) => Column(
+                    children: [
+                      _StockTableRow(item: items[i]),
+                      if (i < items.length - 1)
+                        Divider(height: 1, thickness: 1, color: context.border),
+                    ],
+                  )),
               ],
             ),
           ),

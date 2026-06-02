@@ -27,4 +27,8 @@ class ApiEndPoints {
       '$baseUrl/AccountStatement/GetPrintableFeatures';
   static const String getDueReceiptCount =
       '$baseUrl/core/MBLDashboard/GetDueReceiptCount';
+  static const String getStockReceived =
+      '$baseUrl/core/MBLDashboard/GetStockReceived';
+  static const String getCurrentStock =
+      '$baseUrl/core/MBLDashboard/GetCurrentStock';
 }

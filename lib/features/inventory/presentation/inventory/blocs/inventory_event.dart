@@ -7,4 +7,14 @@ abstract class InventoryEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class InventorySubmitted extends InventoryEvent {}
+class FetchInventoryData extends InventoryEvent {
+  const FetchInventoryData();
+}
+
+class StockReceivedDateTypeChanged extends InventoryEvent {
+  final String dateType;
+  const StockReceivedDateTypeChanged(this.dateType);
+
+  @override
+  List<Object> get props => [dateType];
+}

@@ -4,7 +4,8 @@
 // interfaces, usecases) are intentionally excluded — imported directly by DI.
 
 // Domain
-export 'domain/entities/inventory_entity.dart';
+export 'domain/entities/stock_received_entity.dart';
+export 'domain/entities/current_stock_entity.dart';
 
 // Presentation — inventory screen
 export 'presentation/inventory/blocs/inventory_bloc.dart';

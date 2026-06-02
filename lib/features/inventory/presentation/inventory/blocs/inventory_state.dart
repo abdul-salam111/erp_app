@@ -1,29 +1,51 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/const_exports.dart';
+import '../../../domain/entities/current_stock_entity.dart';
+import '../../../domain/entities/stock_received_entity.dart';
 
 class InventoryState extends Equatable {
-  final dynamic data;
-  final String? message;
-  final ApiStatus apiStatus;
+  final List<StockReceivedEntity> stockReceived;
+  final ApiStatus stockReceivedStatus;
+  final String? stockReceivedError;
+
+  final List<CurrentStockEntity> currentStock;
+  final ApiStatus currentStockStatus;
+  final String? currentStockError;
 
   const InventoryState({
-    this.data,
-    this.message,
-    this.apiStatus = ApiStatus.INITIAL,
+    this.stockReceived = const [],
+    this.stockReceivedStatus = ApiStatus.INITIAL,
+    this.stockReceivedError,
+    this.currentStock = const [],
+    this.currentStockStatus = ApiStatus.INITIAL,
+    this.currentStockError,
   });
 
   InventoryState copyWith({
-    dynamic data,
-    String? message,
-    ApiStatus? apiStatus,
+    List<StockReceivedEntity>? stockReceived,
+    ApiStatus? stockReceivedStatus,
+    String? stockReceivedError,
+    List<CurrentStockEntity>? currentStock,
+    ApiStatus? currentStockStatus,
+    String? currentStockError,
   }) {
     return InventoryState(
-      data: data ?? this.data,
-      message: message ?? this.message,
-      apiStatus: apiStatus ?? this.apiStatus,
+      stockReceived: stockReceived ?? this.stockReceived,
+      stockReceivedStatus: stockReceivedStatus ?? this.stockReceivedStatus,
+      stockReceivedError: stockReceivedError ?? this.stockReceivedError,
+      currentStock: currentStock ?? this.currentStock,
+      currentStockStatus: currentStockStatus ?? this.currentStockStatus,
+      currentStockError: currentStockError ?? this.currentStockError,
     );
   }
 
   @override
-  List<Object?> get props => [data, message, apiStatus];
+  List<Object?> get props => [
+        stockReceived,
+        stockReceivedStatus,
+        stockReceivedError,
+        currentStock,
+        currentStockStatus,
+        currentStockError,
+      ];
 }

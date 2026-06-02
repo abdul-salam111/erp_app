@@ -31,139 +31,139 @@ class _InventoryBody extends StatefulWidget {
 class _InventoryBodyState extends State<_InventoryBody> {
   int _stockFilter = 0;
 
-  static const _stockRows = <StockRow>[
-    StockRow(
-      initials: 'AL',
-      avatarColor: Color(0xFFFF9800),
-      name: 'Abbas Labour Contractor',
-      city: 'Okara',
-      itemCount: '2 Items',
-      qty: 'N/A',
-      weight: '',
-    ),
-    StockRow(
-      initials: 'PI',
-      avatarColor: Color(0xFF1B84FF),
-      name: '42-504 - Punjab Iron and Pipe Store',
-      city: 'Okara',
-      itemCount: '7 Items',
-      qty: 'N/A',
-      weight: '',
-    ),
-    StockRow(
-      initials: 'AB',
-      avatarColor: Color(0xFFE53935),
-      name: 'abc',
-      city: 'Multan',
-      itemName: 'Basmati Rice',
-      category: 'Bahoo Foods | Rice Products',
-      qty: '50',
-      weight: '100',
-    ),
-    StockRow(
-      initials: 'T',
-      avatarColor: Color(0xFF9C27B0),
-      name: 'Test',
-      city: 'Lahore',
-      itemName: 'Raw Maize',
-      category: 'Bahoo Foods | Maize Products',
-      qty: '100',
-      weight: '4,000',
-    ),
+  static const _dateTypes = ['today', 'week', 'month'];
+
+  static const _avatarColors = <Color>[
+    Color(0xFFFF9800),
+    Color(0xFF1B84FF),
+    Color(0xFFE53935),
+    Color(0xFF9C27B0),
+    Color(0xFF00BCD4),
+    Color(0xFF4CAF50),
+    Color(0xFFFF5722),
+    Color(0xFF607D8B),
+    Color(0xFF795548),
+    Color(0xFF009688),
   ];
 
-  static const _stockItems = <StockItem>[
-    StockItem(
-      name: '100% Broken Rice',
-      category: 'Bahoo Foods | Rice Products',
-      qty: '67',
-      weight: '2,460',
-      total: '67',
-      totalWeight: '2,460',
-    ),
-    StockItem(
-      name: '1121 Pk Basmati Raw',
-      category: 'Bahoo Foods | Rice Products',
-      qty: '1,125',
-      weight: '58,340',
-      total: '1,125',
-      totalWeight: '58,340',
-    ),
-    StockItem(
-      name: '1121 Pk Basmati Rejection',
-      category: 'Bahoo Foods | Rice Products',
-      qty: '-8',
-      weight: '40',
-      total: '-8',
-      totalWeight: '40',
-    ),
-    StockItem(
-      name: '1121 Pk Basmati Rice 1',
-      category: 'Bahoo Foods | Rice Products',
-      qty: '-9',
-      weight: '1,850',
-      total: '-9',
-      totalWeight: '1,850',
-    ),
-    StockItem(
-      name: '1121 Pk Sella Basmati',
-      category: 'Bahoo Foods | Rice Products',
-      qty: '-2,714',
-      weight: '5,733',
-      total: '-2,714',
-      totalWeight: '5,733',
-    ),
-    StockItem(
-      name: '1121 Pk Sella Raw',
-      category: 'Bahoo Foods | Rice Products',
-      qty: '184',
-      weight: '9,980',
-      total: '184',
-      totalWeight: '9,980',
-    ),
-    StockItem(
-      name: '1121 Pk Steam Basmati',
-      category: 'Bahoo Foods | Rice Products',
-      qty: '2',
-      weight: '1,000',
-      total: '2',
-      totalWeight: '1,000',
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<InventoryBloc>().add(const FetchInventoryData());
+      }
+    });
+  }
+
+  // ── Formatters ───────────────────────────────────────────────────────────
+
+  static String _initials(String name) {
+    final words = name.trim().split(RegExp(r'\s+'));
+    if (words.isEmpty) return '';
+    if (words.length == 1) return words[0][0].toUpperCase();
+    return '${words[0][0]}${words[1][0]}'.toUpperCase();
+  }
+
+  static String _fmt(double v) {
+    if (v == 0) return '0';
+    final n = v.abs();
+    final intStr = n.toInt().toString();
+    final buf = StringBuffer();
+    for (int i = 0; i < intStr.length; i++) {
+      if (i > 0 && (intStr.length - i) % 3 == 0) buf.write(',');
+      buf.write(intStr[i]);
+    }
+    return v < 0 ? '-${buf.toString()}' : buf.toString();
+  }
+
+  // ── Mappers ──────────────────────────────────────────────────────────────
+
+  static List<StockRow> _toStockRows(List<StockReceivedEntity> entities) {
+    return List.generate(entities.length, (i) {
+      final e = entities[i];
+      final hasGroup = e.itemId == 0;
+      return StockRow(
+        initials: _initials(e.partyName),
+        avatarColor: _avatarColors[i % _avatarColors.length],
+        name: e.partyName,
+        city: e.locationName,
+        itemCount: hasGroup ? '${e.itemCount ?? 0} Items' : null,
+        itemName: hasGroup ? null : (e.itemName ?? ''),
+        category: hasGroup ? null : '',
+        qty: hasGroup ? 'N/A' : _fmt(e.qty),
+        weight: e.weight > 0 ? _fmt(e.weight) : '',
+      );
+    });
+  }
+
+  static List<StockItem> _toStockItems(List<CurrentStockEntity> entities) {
+    return entities.map((e) {
+      final based = e.invAmountBasedOn;
+      return StockItem(
+        name: e.itemName,
+        category: based.isNotEmpty
+            ? '${based[0].toUpperCase()}${based.substring(1)} based'
+            : '',
+        qty: _fmt(e.currentQty),
+        weight: _fmt(e.currentWeight),
+        total: _fmt(e.totalQty),
+        totalWeight: _fmt(e.totalWeight),
+      );
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<InventoryBloc, InventoryState>(
-      listenWhen: (prev, curr) => prev.apiStatus != curr.apiStatus,
+      listenWhen: (prev, curr) =>
+          prev.stockReceivedStatus != curr.stockReceivedStatus ||
+          prev.currentStockStatus != curr.currentStockStatus,
       listener: (context, state) {
-        if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(
-            context,
-            AppConstants.successSuccessMsg,
-          );
+        if (state.stockReceivedStatus == ApiStatus.FAILURE &&
+            state.stockReceivedError != null) {
+          AppToastsUtils.showErrorTop(context, state.stockReceivedError!);
         }
-        if (state.apiStatus == ApiStatus.FAILURE) {
-          AppToastsUtils.showErrorTop(context, state.message.toString());
+        if (state.currentStockStatus == ApiStatus.FAILURE &&
+            state.currentStockError != null) {
+          AppToastsUtils.showErrorTop(context, state.currentStockError!);
         }
       },
       child: UnfocusWrapper(
         child: Scaffold(
           appBar: CustomAppBar(title: AppConstants.inventoryLabel),
-          body: SingleChildScrollView(
-            padding: context.pagePadding.copyWith(top: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                StockReceivedSection(
-                  rows: _stockRows,
-                  selectedFilter: _stockFilter,
-                  onFilterTap: (i) => setState(() => _stockFilter = i),
+          body: BlocBuilder<InventoryBloc, InventoryState>(
+            builder: (context, state) {
+              final rows = _toStockRows(state.stockReceived);
+              final items = _toStockItems(state.currentStock);
+
+              return SingleChildScrollView(
+                padding: context.pagePadding.copyWith(top: 16),
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    StockReceivedSection(
+                      rows: rows,
+                      selectedFilter: _stockFilter,
+                      isLoading: state.stockReceivedStatus == ApiStatus.LOADING,
+                      onFilterTap: (i) {
+                        setState(() => _stockFilter = i);
+                        context.read<InventoryBloc>().add(
+                          StockReceivedDateTypeChanged(_dateTypes[i]),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    CurrentStockSection(
+                      items: items,
+                      isLoading:
+                          state.currentStockStatus == ApiStatus.LOADING,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                CurrentStockSection(items: _stockItems),
-                const SizedBox(height: 16),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

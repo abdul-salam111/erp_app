@@ -7,12 +7,14 @@ class StockReceivedSection extends StatelessWidget {
   final List<StockRow> rows;
   final int selectedFilter;
   final ValueChanged<int> onFilterTap;
+  final bool isLoading;
 
   const StockReceivedSection({
     super.key,
     required this.rows,
     required this.selectedFilter,
     required this.onFilterTap,
+    this.isLoading = false,
   });
 
   static const _filters = ['Today', 'This Week', 'This Month'];
@@ -148,14 +150,26 @@ class StockReceivedSection extends StatelessWidget {
                 ),
                 Divider(height: 1, thickness: 1, color: context.border),
                 Expanded(
-                  child: ListView.separated(
-                    padding: EdgeInsets.zero,
-                    itemCount: rows.length,
-                    separatorBuilder: (_, __) =>
-                        Divider(height: 1, thickness: 1, color: context.border),
-                    itemBuilder: (context, i) =>
-                        _StockReceivedTile(row: rows[i]),
-                  ),
+                  child: isLoading && rows.isEmpty
+                      ? const Center(child: CircularProgressIndicator())
+                      : rows.isEmpty
+                          ? Center(
+                              child: Text(
+                                'No stock received',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            )
+                          : ListView.separated(
+                              padding: EdgeInsets.zero,
+                              itemCount: rows.length,
+                              separatorBuilder: (_, __) => Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: context.border,
+                              ),
+                              itemBuilder: (context, i) =>
+                                  _StockReceivedTile(row: rows[i]),
+                            ),
                 ),
               ],
             ),

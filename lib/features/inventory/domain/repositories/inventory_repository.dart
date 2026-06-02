@@ -1,7 +1,9 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../entities/current_stock_entity.dart';
+import '../entities/stock_received_entity.dart';
 
 abstract interface class InventoryRepository {
-  // TODO: Define your repository methods here
-  Future<Either<Failure, dynamic>> performAction();
+  Future<Either<Failure, List<StockReceivedEntity>>> getStockReceived(String dateType);
+  Future<Either<Failure, List<CurrentStockEntity>>> getCurrentStock();
 }

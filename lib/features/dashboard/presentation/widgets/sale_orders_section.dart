@@ -484,7 +484,7 @@ class _OrderDetailSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: context.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const .vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.fromLTRB(
         20,
@@ -615,7 +615,7 @@ class _DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const .symmetric(vertical: 5),
       child: Row(
         crossAxisAlignment: .center,
         children: [
@@ -742,7 +742,7 @@ class _SaleOrderShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const .all(16),
       child: Column(
         children: [
           Row(
