@@ -2,7 +2,8 @@ part of 'dashboard_bloc.dart';
 
 final class DashboardState extends Equatable {
   // ── UI state ──────────────────────────────────────────────────────────────
-  final int      saleOrderFilterIndex;
+  final DateTime saleOrderFromDate;
+  final DateTime saleOrderToDate;
   final DateTime selectedMonth;
   final DateTime selectedDailyDate;
   final bool     todayOverviewExpanded;
@@ -29,7 +30,8 @@ final class DashboardState extends Equatable {
   final String                  saleOrderSummaryError;
 
   const DashboardState({
-    required this.saleOrderFilterIndex,
+    required this.saleOrderFromDate,
+    required this.saleOrderToDate,
     required this.selectedMonth,
     required this.selectedDailyDate,
     required this.todayOverviewExpanded,
@@ -49,7 +51,8 @@ final class DashboardState extends Equatable {
   });
 
   DashboardState copyWith({
-    int?                        saleOrderFilterIndex,
+    DateTime?                   saleOrderFromDate,
+    DateTime?                   saleOrderToDate,
     DateTime?                   selectedMonth,
     DateTime?                   selectedDailyDate,
     bool?                       todayOverviewExpanded,
@@ -68,7 +71,8 @@ final class DashboardState extends Equatable {
     String?                     saleOrderSummaryError,
   }) {
     return DashboardState(
-      saleOrderFilterIndex:      saleOrderFilterIndex      ?? this.saleOrderFilterIndex,
+      saleOrderFromDate:         saleOrderFromDate         ?? this.saleOrderFromDate,
+      saleOrderToDate:           saleOrderToDate           ?? this.saleOrderToDate,
       selectedMonth:             selectedMonth             ?? this.selectedMonth,
       selectedDailyDate:         selectedDailyDate         ?? this.selectedDailyDate,
       todayOverviewExpanded:     todayOverviewExpanded     ?? this.todayOverviewExpanded,
@@ -90,7 +94,7 @@ final class DashboardState extends Equatable {
 
   @override
   List<Object?> get props => [
-    saleOrderFilterIndex, selectedMonth, selectedDailyDate,
+    saleOrderFromDate, saleOrderToDate, selectedMonth, selectedDailyDate,
     todayOverviewExpanded, selectedPanelKey,
     dailyStatsStatus, dailyStats, dailyStatsError,
     monthlyStatsStatus, monthlyStats, monthlyStatsError,

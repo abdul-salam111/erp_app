@@ -26,7 +26,7 @@ class TodayOverviewSection extends StatelessWidget {
       '${d.shortMonthName} ${d.day.toString().padLeft(2, '0')}';
 
   Future<void> _pickDate(BuildContext context, DateTime current) async {
-    final picked = await showDatePicker(
+    final picked = await showCompactDatePicker(
       context: context,
       initialDate: current,
       firstDate: DateTime(2020),

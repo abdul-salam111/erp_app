@@ -18,7 +18,7 @@ class ApiEndPoints {
       '$baseUrl/core/MBLDashboard/GetMonthlyStatistics';
   static const String getMonthlyStatsDetail =
       '$baseUrl/core/MBLDashboard/GetMonthlyStatisticsDetail';
-  static const String getSalesOrderSummaryByParty = '$baseUrl/core/MBLDashboard/GetSalesOrderSummaryByParty';
+  static const String getSalesOrderSummaryByParty = '$baseUrl/core/MBLDashboard/GetSaleOrderSummaryByParty';
   // Account Statements
   static const String getAccountStatements =
       '$baseUrl/AccountStatement/GetAccountStatements';

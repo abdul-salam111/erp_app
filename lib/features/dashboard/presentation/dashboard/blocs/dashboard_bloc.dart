@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mantic_erp_app/core/constants/app_enums.dart';
-import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/entities/daily_stats_entity.dart';
 import '../../../domain/entities/monthly_stats_detail_entity.dart';
 import '../../../domain/entities/monthly_stats_entity.dart';
@@ -9,7 +8,7 @@ import '../../../domain/entities/sale_order_summary_entity.dart';
 import '../../../domain/usecases/get_daily_stats_usecase.dart' show GetDailyStatsUsecase, DailyStatsParams;
 import '../../../domain/usecases/get_monthly_stats_detail_usecase.dart';
 import '../../../domain/usecases/get_monthly_stats_usecase.dart';
-import '../../../domain/usecases/get_sale_order_summary_usecase.dart';
+import '../../../domain/usecases/get_sale_order_summary_usecase.dart' show GetSaleOrderSummaryUsecase, SaleOrderSummaryParams;
 
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
@@ -30,7 +29,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         _getMonthlyStatsDetail  = getMonthlyStatsDetail,
         _getSaleOrderSummary    = getSaleOrderSummary,
         super(DashboardState(
-          saleOrderFilterIndex:     0,
+          saleOrderFromDate:        DateTime.now().subtract(const Duration(days: 30)),
+          saleOrderToDate:          DateTime.now(),
           selectedMonth:            DateTime(DateTime.now().year, DateTime.now().month),
           selectedDailyDate:        DateTime.now(),
           todayOverviewExpanded:    false,
@@ -41,7 +41,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           saleOrderSummaryStatus:   ApiStatus.INITIAL,
         )) {
     on<DashboardDataRequested>(_onDashboardDataRequested);
-    on<SaleOrderFilterChanged>(_onSaleOrderFilterChanged);
+    on<SaleOrderDateRangeChanged>(_onSaleOrderDateRangeChanged);
     on<DashboardMonthChanged>(_onDashboardMonthChanged);
     on<TodayOverviewExpansionToggled>(_onTodayOverviewExpansionToggled);
     on<DailyStatsDateChanged>(_onDailyStatsDateChanged);
@@ -72,7 +72,10 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       _getDailyStats(DailyStatsParams(date: dailyDateStr)),
       _getMonthlyStats(MonthlyStatsParams(date: monthDateStr)),
       _getMonthlyStatsDetail(MonthlyStatsDetailParams(date: monthDateStr, panelKey: state.selectedPanelKey)),
-      _getSaleOrderSummary(NoParams()),
+      _getSaleOrderSummary(SaleOrderSummaryParams(
+        fromDate: _toDateStr(state.saleOrderFromDate),
+        toDate:   _toDateStr(state.saleOrderToDate),
+      )),
     ).wait;
 
     dailyResult.fold(
@@ -96,11 +99,23 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     );
   }
 
-  void _onSaleOrderFilterChanged(
-    SaleOrderFilterChanged event,
+  Future<void> _onSaleOrderDateRangeChanged(
+    SaleOrderDateRangeChanged event,
     Emitter<DashboardState> emit,
-  ) {
-    emit(state.copyWith(saleOrderFilterIndex: event.filterIndex));
+  ) async {
+    emit(state.copyWith(
+      saleOrderFromDate:     event.fromDate,
+      saleOrderToDate:       event.toDate,
+      saleOrderSummaryStatus: ApiStatus.LOADING,
+    ));
+    final result = await _getSaleOrderSummary(SaleOrderSummaryParams(
+      fromDate: _toDateStr(event.fromDate),
+      toDate:   _toDateStr(event.toDate),
+    ));
+    result.fold(
+      (f) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message)),
+      (d) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d)),
+    );
   }
 
   Future<void> _onDashboardMonthChanged(

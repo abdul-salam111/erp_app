@@ -7,6 +7,7 @@ import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../../../core/widgets/compact_date_picker.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../core/widgets/custom_dropdown_textfield.dart';
@@ -69,7 +70,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
 
   Future<void> _pickDate(bool isFrom) async {
     final initial = isFrom ? _fromDate : _toDate;
-    final picked = await showDatePicker(
+    final picked = await showCompactDatePicker(
       context: context,
       initialDate: initial,
       firstDate: DateTime(2000),

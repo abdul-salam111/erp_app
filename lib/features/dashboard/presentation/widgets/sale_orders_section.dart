@@ -4,40 +4,83 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/theme/theme_utils.dart';
+import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../dashboard/blocs/dashboard_bloc.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
+import '../../../dashboard/domain/entities/sale_order_summary_entity.dart';
 
 // ─── Section ──────────────────────────────────────────────────────────────────
 
-class SaleOrdersSection extends StatelessWidget {
+class SaleOrdersSection extends StatefulWidget {
   const SaleOrdersSection({super.key});
 
-  static const _filters = [
-    AppConstants.janMar,
-    AppConstants.inCompleteOnly,
-    AppConstants.completedOnly,
-    AppConstants.allSaleOrders,
-  ];
+  @override
+  State<SaleOrdersSection> createState() => _SaleOrdersSectionState();
+}
+
+class _SaleOrdersSectionState extends State<SaleOrdersSection> {
+  late DateTime _fromDate;
+  late DateTime _toDate;
+  bool _showDetails = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final bloc = context.read<DashboardBloc>();
+    _fromDate = bloc.state.saleOrderFromDate;
+    _toDate   = bloc.state.saleOrderToDate;
+  }
+
+  Future<void> _pickFrom() async {
+    final picked = await showCompactDatePicker(
+      context:     context,
+      initialDate: _fromDate,
+      firstDate:   DateTime(2000),
+      lastDate:    DateTime(2100),
+    );
+    if (picked == null || !mounted) return;
+    final newTo = picked.addMonths(1);
+    setState(() {
+      _fromDate = picked;
+      _toDate   = newTo;
+    });
+    context.read<DashboardBloc>().add(
+      SaleOrderDateRangeChanged(fromDate: _fromDate, toDate: _toDate),
+    );
+  }
+
+  Future<void> _pickTo() async {
+    final picked = await showCompactDatePicker(
+      context:     context,
+      initialDate: _toDate,
+      firstDate:   _fromDate.addMonths(1),
+      lastDate:    DateTime(2100),
+    );
+    if (picked == null || !mounted) return;
+    setState(() => _toDate = picked);
+    context.read<DashboardBloc>().add(
+      SaleOrderDateRangeChanged(fromDate: _fromDate, toDate: _toDate),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       buildWhen: (p, c) =>
-          p.saleOrderFilterIndex    != c.saleOrderFilterIndex    ||
-          p.saleOrderSummaryStatus  != c.saleOrderSummaryStatus  ||
-          p.saleOrderSummary        != c.saleOrderSummary,
+          p.saleOrderSummaryStatus != c.saleOrderSummaryStatus ||
+          p.saleOrderSummary       != c.saleOrderSummary,
       builder: (context, state) {
         final isLoading = state.saleOrderSummaryStatus == ApiStatus.INITIAL ||
                           state.saleOrderSummaryStatus == ApiStatus.LOADING;
 
-        final summary       = state.saleOrderSummary;
-        final total         = summary?.ttlOrders            ?? 0;
-        final completed     = summary?.ttlCompletedOrders   ?? 0;
-        final partial       = summary?.ttlPartialOrders     ?? 0;
-        final notStarted    = summary?.ttlNotStartedOrders  ?? 0;
-        final completedDeg  = total > 0 ? (completed / total) * 180.0 : 0.0;
-        final remainingDeg  = 180.0 - completedDeg;
+        final summary    = state.saleOrderSummary;
+        final total      = summary?.ttlOrders            ?? 0;
+        final completed  = summary?.ttlCompletedOrders   ?? 0;
+        final partial    = summary?.ttlPartialOrders     ?? 0;
+        final notStarted = summary?.ttlNotStartedOrders  ?? 0;
+        final completedDeg = total > 0 ? (completed / total) * 180.0 : 0.0;
+        final remainingDeg = 180.0 - completedDeg;
 
         return Container(
           decoration: BoxDecoration(
@@ -74,16 +117,19 @@ class SaleOrdersSection extends StatelessWidget {
                       style: context.titleSmall.copyWith(fontWeight: .w700),
                     ),
                     const Spacer(),
-                    Container(
-                      padding: .symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color:        context.primary,
-                        borderRadius: .circular(8),
-                      ),
-                      child: Text(
-                        AppConstants.report,
-                        style: context.labelSmall.copyWith(
-                          color: Colors.white, fontWeight: .w600,
+                    GestureDetector(
+                      onTap: () => setState(() => _showDetails = !_showDetails),
+                      child: Container(
+                        padding: .symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color:        context.primary,
+                          borderRadius: .circular(8),
+                        ),
+                        child: Text(
+                          _showDetails ? AppConstants.hideDetails : AppConstants.showDetails,
+                          style: context.labelSmall.copyWith(
+                            color: Colors.white, fontWeight: .w600,
+                          ),
                         ),
                       ),
                     ),
@@ -91,49 +137,23 @@ class SaleOrdersSection extends StatelessWidget {
                 ),
               ),
 
-              // ── Filter chips ─────────────────────────────────────
+              // ── Date range row ───────────────────────────────────
               Padding(
                 padding: .fromLTRB(12, 0, 12, 12),
-                child: SingleChildScrollView(
-                  scrollDirection: .horizontal,
-                  child: Row(
-                    children: [
-                      ...List.generate(_filters.length, (i) {
-                        final sel = i == state.saleOrderFilterIndex;
-                        return Padding(
-                          padding: .only(right: i < _filters.length - 1 ? 6 : 0),
-                          child: GestureDetector(
-                            onTap: () => context
-                                .read<DashboardBloc>()
-                                .add(SaleOrderFilterChanged(i)),
-                            child: Container(
-                              padding: .symmetric(horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: sel
-                                    ? context.primary.withValues(alpha: 0.09)
-                                    : context.grey50,
-                                borderRadius: .circular(20),
-                                border: Border.all(
-                                  color: sel
-                                      ? context.primary.withValues(alpha: 0.35)
-                                      : context.border,
-                                ),
-                              ),
-                              child: Text(
-                                _filters[i],
-                                style: context.labelSmall.copyWith(
-                                  color:      sel ? context.primary : context.textSecondary,
-                                  fontWeight: sel ? .w600 : .w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                      const SizedBox(width: 8),
-                      Icon(Icons.filter_list_rounded, size: 18, color: context.textSecondary),
-                    ],
-                  ),
+                child: Row(
+                  children: [
+                    Expanded(child: _DateButton(
+                      label: 'From',
+                      date:  _fromDate,
+                      onTap: _pickFrom,
+                    )),
+                    const SizedBox(width: 8),
+                    Expanded(child: _DateButton(
+                      label: 'To',
+                      date:  _toDate,
+                      onTap: _pickTo,
+                    )),
+                  ],
                 ),
               ),
 
@@ -141,6 +161,8 @@ class SaleOrdersSection extends StatelessWidget {
 
               if (isLoading)
                 _SaleOrderShimmer()
+              else if (_showDetails)
+                _OrdersTable(orders: summary?.orders ?? const [])
               else ...[
                 // ── Stats grid (2×2) ─────────────────────────────────
                 IntrinsicHeight(
@@ -179,6 +201,220 @@ class SaleOrdersSection extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+// ─── Date button ──────────────────────────────────────────────────────────────
+
+class _DateButton extends StatelessWidget {
+  final String   label;
+  final DateTime date;
+  final VoidCallback onTap;
+
+  const _DateButton({required this.label, required this.date, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: .symmetric(horizontal: 10, vertical: 7),
+        decoration: BoxDecoration(
+          color:        context.grey50,
+          borderRadius: .circular(8),
+          border:       Border.all(color: context.border),
+        ),
+        child: Row(
+          children: [
+            Icon(Iconsax.calendar_1, size: 14, color: context.primary),
+            const SizedBox(width: 6),
+            Column(
+              crossAxisAlignment: .start,
+              mainAxisSize: .min,
+              children: [
+                Text(
+                  label,
+                  style: context.labelSmall.copyWith(
+                    color: context.textSecondary, fontSize: 9, height: 1,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  date.format('dd/MM/yyyy'),
+                  style: context.labelSmall.copyWith(
+                    fontWeight: .w600, fontSize: 11, height: 1,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Orders table ─────────────────────────────────────────────────────────────
+
+class _OrdersTable extends StatelessWidget {
+  final List<SaleOrderRow> orders;
+  const _OrdersTable({required this.orders});
+
+  static const _cols = ['Party', 'Order #', 'Date', 'Item', 'Status', 'Qty', 'Rem.'];
+  static const _widths = [120.0, 72.0, 70.0, 96.0, 82.0, 44.0, 44.0];
+
+  @override
+  Widget build(BuildContext context) {
+    if (orders.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 32),
+        child: Center(
+          child: Text(
+            'No orders in this period',
+            style: context.bodySmall.copyWith(color: context.textSecondary),
+          ),
+        ),
+      );
+    }
+    return SingleChildScrollView(
+      scrollDirection: .horizontal,
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          // ── Header ──────────────────────────────────────
+          Container(
+            color: context.grey50,
+            child: Row(
+              children: List.generate(
+                _cols.length,
+                (i) => _Cell(
+                  width: _widths[i],
+                  isHeader: true,
+                  child: Text(
+                    _cols[i],
+                    style: context.labelSmall.copyWith(
+                      fontWeight: .w700,
+                      fontSize: 10,
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // ── Rows ─────────────────────────────────────────
+          ...orders.asMap().entries.map((e) {
+            final i   = e.key;
+            final row = e.value;
+            return Container(
+              color: i.isOdd ? const Color(0xFFF9FAFB) : Colors.white,
+              child: Row(
+                crossAxisAlignment: .center,
+                children: [
+                  _Cell(
+                    width: _widths[0],
+                    child: Text(
+                      row.party.isEmpty ? '-' : row.party,
+                      style: context.labelSmall.copyWith(fontSize: 11, height: 1.3),
+                      maxLines: 2,
+                      overflow: .ellipsis,
+                    ),
+                  ),
+                  _Cell(
+                    width: _widths[1],
+                    child: Text(
+                      row.docNbr.isEmpty ? '-' : row.docNbr,
+                      style: context.labelSmall.copyWith(fontSize: 11),
+                    ),
+                  ),
+                  _Cell(
+                    width: _widths[2],
+                    child: Text(
+                      row.docDate != null ? row.docDate!.format('dd/MM/yy') : '-',
+                      style: context.labelSmall.copyWith(fontSize: 11),
+                    ),
+                  ),
+                  _Cell(
+                    width: _widths[3],
+                    child: Text(
+                      row.item.isEmpty ? '-' : row.item,
+                      style: context.labelSmall.copyWith(fontSize: 11),
+                      maxLines: 2,
+                      overflow: .ellipsis,
+                    ),
+                  ),
+                  _Cell(
+                    width: _widths[4],
+                    child: _StatusBadge(status: row.status),
+                  ),
+                  _Cell(
+                    width: _widths[5],
+                    child: Text(
+                      '${row.ttlQty}',
+                      style: context.labelSmall.copyWith(fontSize: 11, fontWeight: .w600),
+                    ),
+                  ),
+                  _Cell(
+                    width: _widths[6],
+                    child: Text(
+                      '${row.ttlRemainingQty}',
+                      style: context.labelSmall.copyWith(fontSize: 11, fontWeight: .w600),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+class _Cell extends StatelessWidget {
+  final double width;
+  final Widget child;
+  final bool   isHeader;
+  const _Cell({required this.width, required this.child, this.isHeader = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: isHeader ? 8 : 10),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  final String status;
+  const _StatusBadge({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final lower = status.toLowerCase();
+    final (bg, fg) = lower.contains('complet')
+        ? (const Color(0xFF43A047).withValues(alpha: 0.12), const Color(0xFF43A047))
+        : lower.contains('partial') || lower.contains('progress')
+            ? (const Color(0xFFFF9800).withValues(alpha: 0.12), const Color(0xFFFF9800))
+            : (const Color(0xFF37474F).withValues(alpha: 0.10), const Color(0xFF37474F));
+
+    return Container(
+      padding: .symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(color: bg, borderRadius: .circular(4)),
+      child: Text(
+        status.isEmpty ? '-' : status,
+        style: context.labelSmall.copyWith(
+          color: fg, fontSize: 9.5, fontWeight: .w600,
+        ),
+        maxLines: 1,
+        overflow: .ellipsis,
+      ),
     );
   }
 }

@@ -44,10 +44,10 @@ class DashboardRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, SaleOrderSummaryEntity>> getSaleOrderSummary() {
+  Future<Either<Failure, SaleOrderSummaryEntity>> getSaleOrderSummary({required String fromDate, required String toDate}) {
     return execute(
       call: () async =>
-          (await dataSource.getSalesOrderSummaryByParty()).toEntity(),
+          (await dataSource.getSalesOrderSummaryByParty(fromDate: fromDate, toDate: toDate)).toEntity(),
     );
   }
 }

@@ -11,12 +11,13 @@ final class DashboardDataRequested extends DashboardEvent {
   const DashboardDataRequested();
 }
 
-final class SaleOrderFilterChanged extends DashboardEvent {
-  final int filterIndex;
-  const SaleOrderFilterChanged(this.filterIndex);
+final class SaleOrderDateRangeChanged extends DashboardEvent {
+  final DateTime fromDate;
+  final DateTime toDate;
+  const SaleOrderDateRangeChanged({required this.fromDate, required this.toDate});
 
   @override
-  List<Object> get props => [filterIndex];
+  List<Object> get props => [fromDate, toDate];
 }
 
 final class DashboardMonthChanged extends DashboardEvent {

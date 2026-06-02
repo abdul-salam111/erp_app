@@ -9,5 +9,5 @@ abstract interface class DashboardRepository {
   Future<Either<Failure, DailyStatsEntity>>              getDailyStats({required String date});
   Future<Either<Failure, MonthlyStatsEntity>>            getMonthlyStats({required String date});
   Future<Either<Failure, List<MonthlyStatDetailPoint>>>  getMonthlyStatsDetail({required String date, required String panelKey});
-  Future<Either<Failure, SaleOrderSummaryEntity>>        getSaleOrderSummary();
+  Future<Either<Failure, SaleOrderSummaryEntity>>        getSaleOrderSummary({required String fromDate, required String toDate});
 }

@@ -9,7 +9,7 @@ abstract interface class IRemoteDashboardDataSource {
   Future<DailyStatsModel> getDailyStats({required String date});
   Future<MonthlyStatsModel> getMonthlyStats({required String date});
   Future<List<MonthlyStatDetailModel>> getMonthlyStatsDetail({required String date, required String panelKey});
-  Future<SaleOrderSummaryByParty> getSalesOrderSummaryByParty();
+  Future<SaleOrderSummaryByParty> getSalesOrderSummaryByParty({required String fromDate, required String toDate});
 }
 
 class RemoteDashboardDataSourceImpl extends BaseRemoteDatasource
@@ -52,9 +52,10 @@ class RemoteDashboardDataSourceImpl extends BaseRemoteDatasource
   }
 
   @override
-  Future<SaleOrderSummaryByParty> getSalesOrderSummaryByParty() async {
-    return get(
+  Future<SaleOrderSummaryByParty> getSalesOrderSummaryByParty({required String fromDate, required String toDate}) async {
+    return post(
       url:      ApiEndPoints.getSalesOrderSummaryByParty,
+      body:     {'FromDate': fromDate, 'ToDate': toDate},
       parser:   (json) => SaleOrderSummaryByParty.fromJson(json),
       authToken: _token,
     );
