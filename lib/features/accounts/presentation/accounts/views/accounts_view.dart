@@ -38,7 +38,7 @@ class _AccountsBodyState extends State<_AccountsBody>
 
   static const _offscreen = Offset(0, 0.06);
 
-  static const _items = <OverviewItem>[
+  static const _statItems = <OverviewItem>[
     OverviewItem(
       label: AppConstants.totalReceivedTodayLabel,
       icon: Icons.monetization_on_outlined,
@@ -239,40 +239,77 @@ class _AccountsBodyState extends State<_AccountsBody>
                   opacity: _fades[1],
                   child: SlideTransition(
                     position: _slides[1],
-                    child: Column(
-                      children: [
-                        IntrinsicHeight(
-                          child: Row(
-                            crossAxisAlignment: .stretch,
+                    child: BlocBuilder<AccountsBloc, AccountsState>(
+                      buildWhen: (p, c) =>
+                          p.recoveryDueStatus != c.recoveryDueStatus ||
+                          p.recoveryDue != c.recoveryDue,
+                      builder: (context, state) {
+                        final isLoading =
+                            state.recoveryDueStatus == ApiStatus.INITIAL ||
+                            state.recoveryDueStatus == ApiStatus.LOADING;
+                        final rd = state.recoveryDue;
+                        String fmt(double? v) =>
+                            v == null ? 'Rs 0' : 'Rs ${v.formatPrice()}';
+
+                        if (isLoading) {
+                          return Column(
                             children: [
-                              Expanded(
-                                child: OverviewStatCard(
-                                  label: _items[0].label,
-                                  value: 'Rs 318,073',
-                                  icon: _items[0].icon,
-                                  color: _items[0].color,
+                              IntrinsicHeight(
+                                child: Row(
+                                  crossAxisAlignment: .stretch,
+                                  children: [
+                                    Expanded(
+                                      child: ShimmerBox(height: 62, radius: 10),
+                                    ),
+                                    SizedBox(width: context.gridSpacing),
+                                    Expanded(
+                                      child: ShimmerBox(height: 62, radius: 10),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              SizedBox(width: context.gridSpacing),
-                              Expanded(
-                                child: OverviewStatCard(
-                                  label: _items[1].label,
-                                  value: 'Rs 318,073',
-                                  icon: _items[1].icon,
-                                  color: _items[1].color,
-                                ),
-                              ),
+                              SizedBox(height: context.gridSpacing),
+                              ShimmerBox(height: 62, radius: 10),
                             ],
-                          ),
-                        ),
-                        SizedBox(height: context.gridSpacing),
-                        OverviewStatCard(
-                          label: _items[2].label,
-                          value: 'Rs 318,073,375.57',
-                          icon: _items[2].icon,
-                          color: _items[2].color,
-                        ),
-                      ],
+                          );
+                        }
+
+                        return Column(
+                          children: [
+                            IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: .stretch,
+                                children: [
+                                  Expanded(
+                                    child: OverviewStatCard(
+                                      label: _statItems[0].label,
+                                      value: fmt(rd?.ttlReceivedAmount),
+                                      icon:  _statItems[0].icon,
+                                      color: _statItems[0].color,
+                                    ),
+                                  ),
+                                  SizedBox(width: context.gridSpacing),
+                                  Expanded(
+                                    child: OverviewStatCard(
+                                      label: _statItems[1].label,
+                                      value: fmt(rd?.ttlPostponeAmount),
+                                      icon:  _statItems[1].icon,
+                                      color: _statItems[1].color,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: context.gridSpacing),
+                            OverviewStatCard(
+                              label: _statItems[2].label,
+                              value: fmt(rd?.ttlRecoveryAmount),
+                              icon:  _statItems[2].icon,
+                              color: _statItems[2].color,
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ),

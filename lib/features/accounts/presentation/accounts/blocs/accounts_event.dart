@@ -21,3 +21,11 @@ final class RecoveryFilterChanged extends AccountsEvent {
   @override
   List<Object> get props => [filter];
 }
+
+final class RecoveryDueFetched extends AccountsEvent {
+  final FilterType filter;
+  const RecoveryDueFetched({this.filter = FilterType.today});
+
+  @override
+  List<Object> get props => [filter];
+}

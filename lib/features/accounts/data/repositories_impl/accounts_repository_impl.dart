@@ -3,6 +3,7 @@ import '../../../../core/shared/shared_exports.dart';
 import '../../accounts_exports.dart';
 import '../../domain/repositories/accounts_repository.dart';
 import '../datasources/remote_accounts_datasource.dart';
+import '../models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
 
 class AccountsRepositoryImpl extends BaseRepository
     implements AccountsRepository {
@@ -49,5 +50,14 @@ class AccountsRepositoryImpl extends BaseRepository
   @override
   Future<Either<Failure, List<int>>> getPrintableFeatures() {
     return execute(call: () => dataSource.getPrintableFeatures());
+  }
+
+  @override
+  Future<Either<Failure, DueReceiptCountModel>> getDueReceiptCount({
+    required String dateType,
+  }) {
+    return execute(
+      call: () => dataSource.getDueReceiptCount(dateType: dateType),
+    );
   }
 }

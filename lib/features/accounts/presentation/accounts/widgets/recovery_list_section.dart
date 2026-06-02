@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_utils.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../blocs/accounts_bloc.dart';
 import '../blocs/accounts_event.dart';
 import '../blocs/accounts_state.dart';
@@ -18,40 +20,69 @@ class RecoveryListSection extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: .start,
-                children: [
-                  Row(
-                    mainAxisAlignment: .spaceBetween,
+              child: BlocBuilder<AccountsBloc, AccountsState>(
+                buildWhen: (p, c) =>
+                    p.recoveryDueStatus != c.recoveryDueStatus ||
+                    p.recoveryDue != c.recoveryDue,
+                builder: (context, state) {
+                  final isLoading =
+                      state.recoveryDueStatus == ApiStatus.INITIAL ||
+                      state.recoveryDueStatus == ApiStatus.LOADING;
+
+                  if (isLoading) {
+                    return Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        ShimmerBox(height: 11, radius: 4),
+                        const SizedBox(height: 5),
+                        ShimmerBox(height: 5, radius: 4),
+                      ],
+                    );
+                  }
+
+                  final rd       = state.recoveryDue;
+                  final total    = rd?.ttlRecoveryAmount ?? 0;
+                  final received = rd?.ttlReceivedAmount ?? 0;
+                  final progress = total > 0
+                      ? (received / total).clamp(0.0, 1.0)
+                      : 0.0;
+                  final pct = (progress * 100).round();
+                  return Column(
+                    crossAxisAlignment: .start,
                     children: [
-                      Text(
-                        'Recovery progress',
-                        style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
-                        ),
+                      Row(
+                        mainAxisAlignment: .spaceBetween,
+                        children: [
+                          Text(
+                            'Recovery progress',
+                            style: context.labelSmall.copyWith(
+                              color: context.textSecondary,
+                            ),
+                          ),
+                          Text(
+                            '$pct%',
+                            style: context.labelSmall.copyWith(
+                              color: context.textSecondary,
+                              fontWeight: .w600,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        '0%',
-                        style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
-                          fontWeight: .w600,
+                      const SizedBox(height: 5),
+                      ClipRRect(
+                        borderRadius: .circular(4),
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          minHeight: 5,
+                          backgroundColor: const Color(0xFFEDEDED),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            context.primary,
+                          ),
                         ),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 5),
-                  ClipRRect(
-                    borderRadius: .circular(4),
-                    child: LinearProgressIndicator(
-                      value: 0,
-                      minHeight: 5,
-                      backgroundColor: const Color(0xFFEDEDED),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        context.primary,
-                      ),
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
             const SizedBox(width: 12),
@@ -81,15 +112,37 @@ class RecoveryListSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        SizedBox(
-          height: MediaQuery.sizeOf(context).height * 0.5,
-          child: ListView.separated(
-            padding: EdgeInsets.zero,
-            physics: const ClampingScrollPhysics(),
-            itemCount: rows.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) => _CustomerTile(row: rows[index]),
-          ),
+        BlocBuilder<AccountsBloc, AccountsState>(
+          buildWhen: (p, c) => p.recoveryDueStatus != c.recoveryDueStatus,
+          builder: (context, state) {
+            final isLoading =
+                state.recoveryDueStatus == ApiStatus.INITIAL ||
+                state.recoveryDueStatus == ApiStatus.LOADING;
+
+            if (isLoading) {
+              return Column(
+                children: List.generate(
+                  4,
+                  (i) => Padding(
+                    padding: EdgeInsets.only(bottom: i < 3 ? 8 : 0),
+                    child: const ShimmerBox(height: 82, radius: 10),
+                  ),
+                ),
+              );
+            }
+
+            return SizedBox(
+              height: MediaQuery.sizeOf(context).height * 0.5,
+              child: ListView.separated(
+                padding: EdgeInsets.zero,
+                physics: const ClampingScrollPhysics(),
+                itemCount: rows.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) =>
+                    _CustomerTile(row: rows[index]),
+              ),
+            );
+          },
         ),
         Align(
           alignment: .centerRight,

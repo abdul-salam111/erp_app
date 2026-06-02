@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Read(//c/Users/ABDUL/Downloads/**)"
+      "Read(//c/Users/ABDUL/Downloads/**)",
+      "Bash(Get-ChildItem -Path \"d:\\\\softronix\\\\erp_app\\\\lib\\\\features\\\\accounts\" -Recurse -File)",
+      "Bash(find \"d:/softronix\" -name \"*.json\" -not -path \"*/build/*\" -not -path \"*/.dart_tool/*\" -not -path \"*/.mason/*\" -not -path \"*/ios/*\" -not -path \"*/web/*\" 2>/dev/null | head -30)",
+      "Read(//d/softronix/**)",
+      "Bash(find \"C:/Users/ABDUL\" -maxdepth 3 -name \"*.json\" 2>/dev/null | grep -i \"recovery\\\\|account\\\\|erp\\\\|api\\\\|mantic\" | head -20)",
+      "Read(//c/Users/ABDUL/**)",
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); paths=[p for p in data.get\\('paths',{}\\) if 'recovery' in p.lower\\(\\) or 'Recovery' in p]; print\\('\\\\n'.join\\(paths\\)\\)\")",
+      "Bash(python -c ' *)"
     ]
   }
 }

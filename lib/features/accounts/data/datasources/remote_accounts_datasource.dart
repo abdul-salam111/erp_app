@@ -2,6 +2,7 @@ import '../../../../core/services/session_manager.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/constants/const_exports.dart';
 import '../models/response_models/get_ledger/account_ledger_model.dart';
+import '../models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
 
 abstract interface class IRemoteAccountsDataSource {
   Future<dynamic> performAction();
@@ -15,6 +16,7 @@ abstract interface class IRemoteAccountsDataSource {
     required int parentEntityId,
   });
   Future<List<int>> getPrintableFeatures();
+  Future<DueReceiptCountModel> getDueReceiptCount({required String dateType});
 }
 
 class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
@@ -69,6 +71,17 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
     return getList<int>(
       url: ApiEndPoints.getPrintableFeatures,
       parser: (json) => json as int,
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<DueReceiptCountModel> getDueReceiptCount({required String dateType}) {
+    return post<DueReceiptCountModel>(
+      url: ApiEndPoints.getDueReceiptCount,
+      body: {'DateType': dateType},
+      parser: (json) =>
+          DueReceiptCountModel.fromJson(json as Map<String, dynamic>),
       authToken: _token,
     );
   }

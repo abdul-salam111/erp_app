@@ -40,7 +40,7 @@ extension CurrencyFormatting on num {
   String formatPrice({String? symbol}) {
     final formatter = NumberFormat('#,###');
     final formatted = formatter.format(this);
-    return symbol != null ? '$symbol$formatted' : formatted;
+    return symbol != null ? '$symbol $formatted' : formatted;
   }
 
   /// Compact currency: 1000 -> $1K, 1000000 -> $1M

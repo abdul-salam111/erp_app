@@ -6,10 +6,15 @@ Future<DateTime?> showCompactDatePicker({
   required DateTime firstDate,
   required DateTime lastDate,
 }) {
+  final clamped = initialDate.isBefore(firstDate)
+      ? firstDate
+      : initialDate.isAfter(lastDate)
+          ? lastDate
+          : initialDate;
   return showDialog<DateTime>(
     context: context,
     builder: (_) => _CompactDatePickerDialog(
-      initialDate: initialDate,
+      initialDate: clamped,
       firstDate: firstDate,
       lastDate: lastDate,
     ),

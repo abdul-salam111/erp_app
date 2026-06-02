@@ -25,6 +25,6 @@ class ApiEndPoints {
   static const String getInvoicePdf = '$baseUrl/AccountStatement/GetInvoicePdf';
   static const String getPrintableFeatures =
       '$baseUrl/AccountStatement/GetPrintableFeatures';
-  
-    
+  static const String getDueReceiptCount =
+      '$baseUrl/core/MBLDashboard/GetDueReceiptCount';
 }

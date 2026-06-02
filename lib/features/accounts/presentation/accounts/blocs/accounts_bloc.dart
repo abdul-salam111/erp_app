@@ -1,18 +1,26 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/constants/const_exports.dart';
 import '../../../domain/usecases/accounts_usecase.dart';
+import '../../../domain/usecases/get_due_receipt_count_usecase.dart';
 import 'accounts_event.dart';
 import 'accounts_state.dart';
 
 class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
     with UsecaseExecuterMixin {
-  final AccountsUsecase accountsUsecase;
+  final AccountsUsecase          accountsUsecase;
+  final GetDueReceiptCountUsecase getDueReceiptCountUsecase;
 
-  AccountsBloc({required this.accountsUsecase})
-    : super(const AccountsState(todayOverviewExpanded: false)) {
+  AccountsBloc({
+    required this.accountsUsecase,
+    required this.getDueReceiptCountUsecase,
+  }) : super(const AccountsState(todayOverviewExpanded: false)) {
     on<AccountsSubmitted>(_onAccountsSubmitted);
     on<TodayOverviewExpansionToggled>(_onTodayOverviewExpansionToggled);
     on<RecoveryFilterChanged>(_onRecoveryFilterChanged);
+    on<RecoveryDueFetched>(_onRecoveryDueFetched);
+
+    add(const RecoveryDueFetched());
   }
 
   Future<void> _onAccountsSubmitted(
@@ -22,10 +30,7 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
     await executeUsecase(
       emit: emit,
       currentState: state,
-      usecase: () => accountsUsecase.call(
-        // TODO: Pass your parameters here
-        NoParams(),
-      ),
+      usecase: () => accountsUsecase.call(NoParams()),
       stateBuilder: (status, {data, error}) =>
           state.copyWith(apiStatus: status, data: data, message: error),
     );
@@ -44,5 +49,27 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
   ) {
     if (state.selectedFilter == event.filter) return;
     emit(state.copyWith(selectedFilter: event.filter));
+    add(RecoveryDueFetched(filter: event.filter));
+  }
+
+  Future<void> _onRecoveryDueFetched(
+    RecoveryDueFetched event,
+    Emitter<AccountsState> emit,
+  ) async {
+    emit(state.copyWith(recoveryDueStatus: ApiStatus.LOADING));
+    final dateType = event.filter == FilterType.today ? 'today' : 'oldest';
+    final result = await getDueReceiptCountUsecase.call(
+      GetDueReceiptCountParams(dateType: dateType),
+    );
+    result.fold(
+      (failure) => emit(state.copyWith(
+        recoveryDueStatus: ApiStatus.FAILURE,
+        recoveryDueError:  failure.message,
+      )),
+      (data) => emit(state.copyWith(
+        recoveryDueStatus: ApiStatus.SUCCESS,
+        recoveryDue:       data,
+      )),
+    );
   }
 }

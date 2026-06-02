@@ -89,7 +89,7 @@ class AppConstants {
   static const String totalOrdersLabel = 'Total Orders';
   static const String completedLabel = 'Completed';
   static const String partialInProgressLabel = 'Partial in Progress';
-  static const String notStartedLabel = 'Not Started';
+  static const String notStartedLabel = 'Pending';
   static const String progress = 'Progress';
   static const String remainingLabel = 'Remaining';
   // ─── AlertPanel ────────────────────────────────────────

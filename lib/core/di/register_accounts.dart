@@ -5,6 +5,7 @@ import '../../features/accounts/domain/usecases/accounts_usecase.dart';
 import '../../features/accounts/domain/usecases/get_account_statements_usecase.dart';
 import '../../features/accounts/domain/usecases/get_invoice_pdf_usecase.dart';
 import '../../features/accounts/domain/usecases/get_printable_features_usecase.dart';
+import '../../features/accounts/domain/usecases/get_due_receipt_count_usecase.dart';
 import '../../features/accounts/presentation/accounts/blocs/accounts_bloc.dart';
 import '../../features/accounts/presentation/account_ledger/blocs/account_ledger_bloc.dart';
 import 'app_dependencies.dart';
@@ -33,10 +34,16 @@ Future<void> registerAccounts() async {
   sl.registerLazySingleton<GetPrintableFeaturesUsecase>(
     () => GetPrintableFeaturesUsecase(repository: sl()),
   );
+  sl.registerLazySingleton<GetDueReceiptCountUsecase>(
+    () => GetDueReceiptCountUsecase(repository: sl()),
+  );
 
   // BLoCs
   sl.registerFactory<AccountsBloc>(
-    () => AccountsBloc(accountsUsecase: sl()),
+    () => AccountsBloc(
+      accountsUsecase:          sl(),
+      getDueReceiptCountUsecase: sl(),
+    ),
   );
   sl.registerFactory<AccountLedgerBloc>(
     () => AccountLedgerBloc(
