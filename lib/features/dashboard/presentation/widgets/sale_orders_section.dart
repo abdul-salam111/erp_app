@@ -348,7 +348,7 @@ class _OrdersTable extends StatelessWidget {
   const _OrdersTable({super.key, required this.orders});
 
   static const _cols = ['Party', 'Date', 'Product', 'Status'];
-  static const _flex = [3, 2, 3, 2];
+  static const _flex = [2, 2, 2, 2];
 
   void _showOrderDetail(BuildContext context, SaleOrderRow row) {
     showModalBottomSheet(

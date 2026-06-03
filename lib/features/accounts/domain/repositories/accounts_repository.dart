@@ -18,4 +18,5 @@ abstract interface class AccountsRepository {
   Future<Either<Failure, DueReceiptCountModel>> getDueReceiptCount({
     required String dateType,
   });
+  Future<Either<Failure, dynamic>> partyLedger();
 }

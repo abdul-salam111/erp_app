@@ -113,6 +113,16 @@ class AppRoutes {
         name: RouteNames.organizationSelection,
         builder: (context, state) => const OrganizationSelectionView(),
       ),
+      GoRoute(
+        path: RoutePaths.party_ledger,
+        name: RouteNames.party_ledger,
+        builder: (context, state) => const PartyLedgerView(),
+      ),
+      GoRoute(
+        path: RoutePaths.bank_and_cash_position,
+        name: RouteNames.bank_and_cash_position,
+        builder: (context, state) => const BankAndCashPositionView(),
+      ),
     
      
      

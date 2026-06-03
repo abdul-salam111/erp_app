@@ -26,6 +26,7 @@ class AccountsQuickActions extends StatelessWidget {
       label: AppConstants.bankCashPositionLabel,
       icon: Iconsax.bank,
       color: Color(0xFF00897B),
+      routeName: RouteNames.bank_and_cash_position,
     ),
     _QAItem(
       label: AppConstants.cashbookLabel,

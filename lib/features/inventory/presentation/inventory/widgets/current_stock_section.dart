@@ -23,8 +23,8 @@ class CurrentStockSection extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: context.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: context.border),
+            borderRadius: .circular(14),
+            border: .all(color: context.border),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -38,10 +38,10 @@ class CurrentStockSection extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const .all(8),
                   decoration: BoxDecoration(
                     color: _green.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: .circular(10),
                   ),
                   child: const Icon(
                     Icons.warehouse_outlined,
@@ -78,8 +78,8 @@ class CurrentStockSection extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: context.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: context.border),
+            borderRadius: .circular(14),
+            border: .all(color: context.border),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -156,7 +156,7 @@ class CurrentStockSection extends StatelessWidget {
                 else
                   ...List.generate(items.length, (i) => Column(
                     children: [
-                      _StockTableRow(item: items[i]),
+                      CurrentStockTableRow(item: items[i]),
                       if (i < items.length - 1)
                         Divider(height: 1, thickness: 1, color: context.border),
                     ],
@@ -170,9 +170,9 @@ class CurrentStockSection extends StatelessWidget {
   }
 }
 
-class _StockTableRow extends StatelessWidget {
+class CurrentStockTableRow extends StatelessWidget {
   final StockItem item;
-  const _StockTableRow({required this.item});
+  const CurrentStockTableRow({super.key, required this.item});
 
   static bool _isNeg(String v) => v.startsWith('-');
 

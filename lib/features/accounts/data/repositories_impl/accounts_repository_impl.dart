@@ -60,4 +60,18 @@ class AccountsRepositoryImpl extends BaseRepository
       call: () => dataSource.getDueReceiptCount(dateType: dateType),
     );
   }
+
+  @override
+  Future<Either<Failure, dynamic>> partyLedger() {
+    return execute(
+      call: () => dataSource.partyLedger(),
+    );
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> bankAndCashPosition() {
+    return execute(
+      call: () => dataSource.bankAndCashPosition(),
+    );
+  }
 }

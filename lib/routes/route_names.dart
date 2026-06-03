@@ -17,4 +17,6 @@ class RouteNames {
   static const String security = 'security';
   static const String account_ledger = 'account_ledger';
   static const String organizationSelection = 'organizationSelection';
+  static const String party_ledger = 'party_ledger';
+  static const String bank_and_cash_position = 'bank_and_cash_position';
 }

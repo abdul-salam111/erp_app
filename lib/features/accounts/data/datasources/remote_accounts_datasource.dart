@@ -17,6 +17,8 @@ abstract interface class IRemoteAccountsDataSource {
   });
   Future<List<int>> getPrintableFeatures();
   Future<DueReceiptCountModel> getDueReceiptCount({required String dateType});
+  Future<dynamic> partyLedger();
+  Future<dynamic> bankAndCashPosition();
 }
 
 class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
@@ -84,5 +86,17 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
           DueReceiptCountModel.fromJson(json as Map<String, dynamic>),
       authToken: _token,
     );
+  }
+
+  @override
+  Future<dynamic> partyLedger() async {
+    // TODO: implement partyLedger API call
+    throw UnimplementedError('partyLedger not implemented');
+  }
+
+  @override
+  Future<dynamic> bankAndCashPosition() async {
+    // TODO: implement bankAndCashPosition API call
+    throw UnimplementedError('bankAndCashPosition not implemented');
   }
 }
