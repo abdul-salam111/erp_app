@@ -37,6 +37,7 @@ class AppConstants {
   static const String modules = 'Modules';
   static const String accountsLabel = 'Accounts';
   static const String accountLedgerLabel = 'Account Ledger';
+  static const String partyLedgerLabel = 'Party Ledger';
   static const String inventoryLabel = 'Inventory';
   static const String purchaseLabel = 'Purchase';
   static const String salesLabel = 'Sales';

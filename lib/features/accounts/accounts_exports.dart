@@ -4,7 +4,7 @@
 // interfaces, usecases) are intentionally excluded — imported directly by DI.
 
 // Data — models
-export './data/models/response_models/get_ledger/account_ledger_model.dart';
+export 'data/models/response_models/get_ledger/get_ledger_model.dart';
 export './data/models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
 // Domain
 export 'domain/entities/accounts_entity.dart';
@@ -32,7 +32,7 @@ export './presentation/party_ledger/blocs/party_ledger_bloc.dart';
 export './presentation/party_ledger/blocs/party_ledger_event.dart';
 export './presentation/party_ledger/blocs/party_ledger_state.dart';
 export './presentation/party_ledger/views/party_ledger_view.dart';
-export './domain/usecases/party_ledger_usecase.dart';
+export './domain/usecases/get_party_statements_usecase.dart';
 
 // Presentation — bank_and_cash_position screen
 export './presentation/bank_and_cash_position/blocs/bank_and_cash_position_bloc.dart';

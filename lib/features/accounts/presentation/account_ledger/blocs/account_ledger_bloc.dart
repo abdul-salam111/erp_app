@@ -1,18 +1,14 @@
 import 'package:bloc/bloc.dart';
 import '../../../../../core/constants/app_enums.dart';
-import '../../../../../core/shared/shared_exports.dart';
 import '../../../accounts_exports.dart';
-
 
 class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
   final GetAccountStatementsUsecase getAccountStatementsUsecase;
   final GetInvoicePdfUsecase getInvoicePdfUsecase;
-  final GetPrintableFeaturesUsecase getPrintableFeaturesUsecase;
 
   AccountLedgerBloc({
     required this.getAccountStatementsUsecase,
     required this.getInvoicePdfUsecase,
-    required this.getPrintableFeaturesUsecase,
   }) : super(const AccountLedgerState()) {
     on<AccountLedgerSubmitted>(_onSubmitted);
     on<AccountLedgerPrintRequested>(_onPrintRequested);
@@ -27,54 +23,29 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
       pdfStatus: ApiStatus.INITIAL,
       pdfUrl: null,
       message: null,
+      fromDateDisplay: event.fromDate,
+      toDateDisplay: event.toDate,
     ));
 
-    // Fetch statements and printable features in parallel
-    final results = await Future.wait([
-      getAccountStatementsUsecase(
-        GetAccountStatementsParams(
-          fromDate: event.fromDate,
-          toDate: event.toDate,
-        ),
+    final result = await getAccountStatementsUsecase(
+      GetAccountStatementsParams(
+        fromDate: event.fromDate,
+        toDate: event.toDate,
+        accountId: event.accountId,
       ),
-      getPrintableFeaturesUsecase(NoParams()),
-    ]);
-
-    final statementsResult =
-        results[0] as dynamic; // Either<Failure, List<GetAccountStatementsModel>>
-    final featuresResult =
-        results[1] as dynamic; // Either<Failure, List<int>>
-
-    // Handle statements result
-    String? error;
-    List<AccountLedgerModel> statements = [];
-    List<int> featureIds = state.printableFeatureIds;
-
-    statementsResult.fold(
-      (failure) => error = failure.message as String?,
-      (data) => statements = data as List<AccountLedgerModel>,
     );
 
-    if (error != null) {
-      emit(state.copyWith(
+    result.fold(
+      (failure) => emit(state.copyWith(
         apiStatus: ApiStatus.FAILURE,
-        message: error,
+        message: failure.message,
         statements: [],
-      ));
-      return;
-    }
-
-    // Handle printable features (non-fatal — keep old value on failure)
-    featuresResult.fold(
-      (_) {},
-      (data) => featureIds = data as List<int>,
+      )),
+      (statements) => emit(state.copyWith(
+        apiStatus: ApiStatus.SUCCESS,
+        statements: statements,
+      )),
     );
-
-    emit(state.copyWith(
-      apiStatus: ApiStatus.SUCCESS,
-      statements: statements,
-      printableFeatureIds: featureIds,
-    ));
   }
 
   Future<void> _onPrintRequested(

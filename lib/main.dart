@@ -20,7 +20,6 @@ class MyApp extends StatelessWidget {
         builder: (context, state) {
           return MaterialApp.router(
             title: 'Mantic ERP',
-            
             theme: AppThemes.lightTheme,
             darkTheme: AppThemes.darkTheme,
             themeMode: ThemeMode.light,

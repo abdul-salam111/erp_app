@@ -1,15 +1,16 @@
 import '../../../../core/services/session_manager.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/constants/const_exports.dart';
-import '../models/response_models/get_ledger/account_ledger_model.dart';
+import '../models/response_models/get_ledger/get_ledger_model.dart';
 import '../models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
 
 abstract interface class IRemoteAccountsDataSource {
   Future<dynamic> performAction();
   Future<dynamic> accountLedger();
-  Future<List<AccountLedgerModel>> getAccountStatements({
+  Future<List<GetLedgerModel>> getAccountStatements({
     required String fromDate,
     required String toDate,
+    int? accountId,
   });
   Future<String> getInvoicePdf({
     required int featureId,
@@ -17,7 +18,11 @@ abstract interface class IRemoteAccountsDataSource {
   });
   Future<List<int>> getPrintableFeatures();
   Future<DueReceiptCountModel> getDueReceiptCount({required String dateType});
-  Future<dynamic> partyLedger();
+  Future<List<GetLedgerModel>> getPartyStatements({
+    required String fromDate,
+    required String toDate,
+    int? partyId,
+  });
   Future<dynamic> bankAndCashPosition();
 }
 
@@ -42,15 +47,20 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
   }
 
   @override
-  Future<List<AccountLedgerModel>> getAccountStatements({
+  Future<List<GetLedgerModel>> getAccountStatements({
     required String fromDate,
     required String toDate,
+    int? accountId,
   }) {
-    return postList<AccountLedgerModel>(
-      url: ApiEndPoints.getAccountStatements,
-      body: {'FromDate': fromDate, 'ToDate': toDate},
-      parser: (json) =>
-          AccountLedgerModel.fromJson(json as Map<String, dynamic>),
+    final body = <String, dynamic>{
+      'FromDate': fromDate,
+      'ToDate': toDate,
+      'AccountId': accountId ?? 281,
+    };
+    return postList<GetLedgerModel>(
+      url: ApiEndPoints.getLedger,
+      body: body,
+      parser: (json) => GetLedgerModel.fromJson(json as Map<String, dynamic>),
       authToken: _token,
     );
   }
@@ -89,9 +99,22 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
   }
 
   @override
-  Future<dynamic> partyLedger() async {
-    // TODO: implement partyLedger API call
-    throw UnimplementedError('partyLedger not implemented');
+  Future<List<GetLedgerModel>> getPartyStatements({
+    required String fromDate,
+    required String toDate,
+    int? partyId,
+  }) {
+    final body = <String, dynamic>{
+      'FromDate': fromDate,
+      'ToDate': toDate,
+      'PartyId': partyId ?? 206,
+    };
+    return postList<GetLedgerModel>(
+      url: ApiEndPoints.getLedger,
+      body: body,
+      parser: (json) => GetLedgerModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
   }
 
   @override

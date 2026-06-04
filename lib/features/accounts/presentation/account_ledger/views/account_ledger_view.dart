@@ -7,12 +7,10 @@ import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
-import '../../../../../core/widgets/compact_date_picker.dart';
-import '../../../../../core/widgets/custom_appbar.dart';
-import '../../../../../core/widgets/custom_button.dart';
-import '../../../../../core/widgets/custom_dropdown_textfield.dart';
-import '../../../../../core/widgets/custom_textfield.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../accounts_exports.dart';
+
+// ─── View ─────────────────────────────────────────────────────────────────────
 
 class AccountLedgerView extends StatelessWidget {
   const AccountLedgerView({super.key});
@@ -36,43 +34,53 @@ class _AccountLedgerBody extends StatefulWidget {
 }
 
 class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
-  final _formKey = GlobalKey<FormState>();
-  final _accountController = TextEditingController();
-  final _fromDateController = TextEditingController();
-  final _toDateController = TextEditingController();
+  static const _accounts = <_AccountItem>[
+    _AccountItem(id: 281, name: 'Cash in Hand',      group: 'Cash'),
+    _AccountItem(id: 282, name: 'HBL Main Account',  group: 'Bank Accounts'),
+    _AccountItem(id: 283, name: 'MCB Bank Account',  group: 'Bank Accounts'),
+    _AccountItem(id: 284, name: 'Petty Cash',        group: 'Cash'),
+  ];
 
   late DateTime _fromDate;
   late DateTime _toDate;
-
-  // Placeholder — replace with API-loaded accounts
-  static const List<String> _accounts = [
-    'HMB Okara-PK39MPBL0224027140126601',
-    'MCB Lahore-PK12MCBL0000001234567890',
-    'HBL Karachi-PK36HABB0000049008001001',
-  ];
+  late _AccountItem _selectedAccount;
+  late final TextEditingController _accountController;
 
   @override
   void initState() {
     super.initState();
     _toDate = DateTime.now();
     _fromDate = _toDate.subtractMonths(1);
-    _fromDateController.text = _fromDate.format('dd/MM/yyyy');
-    _toDateController.text = _toDate.format('dd/MM/yyyy');
+    _selectedAccount = _accounts.first;
+    _accountController = TextEditingController(text: _accounts.first.name);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
   }
 
   @override
   void dispose() {
     _accountController.dispose();
-    _fromDateController.dispose();
-    _toDateController.dispose();
     super.dispose();
   }
 
+  void _fetch() {
+    context.read<AccountLedgerBloc>().add(
+      AccountLedgerSubmitted(
+        fromDate: _fromDate.format('yyyy-MM-dd'),
+        toDate: _toDate.format('yyyy-MM-dd'),
+        accountId: _selectedAccount.id,
+      ),
+    );
+  }
+
+  void _onAccountChanged(String name) {
+    final match = _accounts.where((a) => a.name == name).firstOrNull;
+    if (match != null) setState(() => _selectedAccount = match);
+  }
+
   Future<void> _pickDate(bool isFrom) async {
-    final initial = isFrom ? _fromDate : _toDate;
     final picked = await showCompactDatePicker(
       context: context,
-      initialDate: initial,
+      initialDate: isFrom ? _fromDate : _toDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -80,217 +88,183 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
       setState(() {
         if (isFrom) {
           _fromDate = picked;
-          _fromDateController.text = picked.format('dd/MM/yyyy');
         } else {
           _toDate = picked;
-          _toDateController.text = picked.format('dd/MM/yyyy');
         }
       });
     }
   }
 
-  void _onView() {
-    if (!_formKey.currentState!.validate()) return;
-    context.read<AccountLedgerBloc>().add(
-      AccountLedgerSubmitted(
-        fromDate: _fromDate.format('dd-MMM-yyyy'),
-        toDate: _toDate.format('dd-MMM-yyyy'),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<AccountLedgerBloc, AccountLedgerState>(
-      listenWhen: (prev, curr) =>
-          prev.apiStatus != curr.apiStatus ||
-          prev.pdfStatus != curr.pdfStatus,
+      listenWhen: (p, c) => p.pdfStatus != c.pdfStatus,
       listener: (context, state) {
-        if (state.apiStatus == ApiStatus.FAILURE) {
-          AppToastsUtils.showErrorTop(context, state.message.toString());
-        }
         if (state.pdfStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
         if (state.pdfStatus == ApiStatus.SUCCESS && state.pdfUrl != null) {
-          // TODO: Navigate to PDF preview screen when available
           AppToastsUtils.showSuccessTop(context, 'Invoice ready');
         }
       },
       child: Scaffold(
+        backgroundColor: context.grey50,
         appBar: CustomAppBar(title: AppConstants.accountLedgerLabel),
-        body: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Column(
-          crossAxisAlignment: .start,
+        body: Column(
           children: [
-            // ── Filter form ──────────────────────────────────────────────────
-            Padding(
-              padding: context.pagePadding,
-              child: Form(
-                key: _formKey,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: .circular(10),
-                    border: .all(color: context.border),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      _FieldLabel('Account', isRequired: true),
-                      const SizedBox(height: 5),
-                      SearchableDropdown(
-                        items: _accounts,
-                        controller: _accountController,
-                        hintText: 'Select account',
-                        fieldHeight: 35,
-                        onChanged: (_) {},
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextFormField(
-                              label: 'From Date',
-                              isRequired: true,
-                              labelFontSize: 12,
-                              hintText: 'dd/MM/yyyy',
-                              prefixIcon: Iconsax.calendar,
-                              controller: _fromDateController,
-                              readOnly: true,
-                              fieldHeight: 35,
-                              onTap: () => _pickDate(true),
-                              validator: (val) => Validator.validateRequired(
-                                val,
-                                fieldName: 'From Date',
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextFormField(
-                              label: 'To Date',
-                              isRequired: true,
-                              labelFontSize: 12,
-                              hintText: 'dd/MM/yyyy',
-                              prefixIcon: Iconsax.calendar,
-                              controller: _toDateController,
-                              readOnly: true,
-                              fieldHeight: 35,
-                              onTap: () => _pickDate(false),
-                              validator: (val) => Validator.validateRequired(
-                                val,
-                                fieldName: 'To Date',
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Divider(height: 1, thickness: 1, color: context.border),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
-                              buildWhen: (p, c) => p.apiStatus != c.apiStatus,
-                              builder: (context, state) => CustomButton(
-                                text: 'View',
-                                icon: Iconsax.eye,
-                                size: const Size(double.infinity, 36),
-                                radius: 8,
-                                fontsize: 13,
-                                iconSize: 16,
-                                isLoading: state.apiStatus == ApiStatus.LOADING,
-                                onPressed: _onView,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomButton(
-                              size: const Size(double.infinity, 36),
-                              text: 'Print',
-                              icon: Iconsax.printer,
-                              radius: 8,
-                              fontsize: 13,
-                              iconSize: 16,
-                              backgroundColor: AppColors.primaryLight,
-                              onPressed: () {},
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+            _FilterForm(
+              fromDate: _fromDate,
+              toDate: _toDate,
+              accountItems: _accounts.map((a) => a.name).toList(),
+              accountSubtitles: _accounts.map((a) => a.group).toList(),
+              accountController: _accountController,
+              onAccountChanged: _onAccountChanged,
+              onPickFrom: () => _pickDate(true),
+              onPickTo: () => _pickDate(false),
+              onView: _fetch,
             ),
-
-            // ── Statements section ───────────────────────────────────────────
             Expanded(
               child: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
-                buildWhen: (p, c) =>
-                    p.apiStatus != c.apiStatus ||
-                    p.statements != c.statements,
                 builder: (context, state) {
-                  if (state.apiStatus == ApiStatus.LOADING) {
-                    return const Center(child: CircularProgressIndicator());
+                  if (state.apiStatus == ApiStatus.LOADING ||
+                      state.apiStatus == ApiStatus.INITIAL) {
+                    return const _ShimmerBody();
+                  }
+                  if (state.apiStatus == ApiStatus.FAILURE) {
+                    return _ErrorBody(
+                      message: state.message ?? 'Something went wrong',
+                      onRetry: _fetch,
+                    );
                   }
                   if (state.apiStatus == ApiStatus.SUCCESS &&
                       state.statements.isEmpty) {
-                    return _EmptyStatements(onChangeDates: _onView);
+                    return const _EmptyState();
                   }
-                  if (state.apiStatus == ApiStatus.SUCCESS) {
-                    return _StatementsList(statements: state.statements);
-                  }
-                  return const SizedBox.shrink();
+                  return _StatementsBody(statements: state.statements);
                 },
               ),
             ),
           ],
-        ),
         ),
       ),
     );
   }
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────────────
+class _AccountItem {
+  final int id;
+  final String name;
+  final String group;
+  const _AccountItem({required this.id, required this.name, required this.group});
+}
 
-class _EmptyStatements extends StatelessWidget {
-  final VoidCallback onChangeDates;
-  const _EmptyStatements({required this.onChangeDates});
+// ─── Filter form ──────────────────────────────────────────────────────────────
+
+class _FilterForm extends StatelessWidget {
+  final DateTime fromDate;
+  final DateTime toDate;
+  final List<String> accountItems;
+  final List<String>? accountSubtitles;
+  final TextEditingController accountController;
+  final ValueChanged<String> onAccountChanged;
+  final VoidCallback onPickFrom;
+  final VoidCallback onPickTo;
+  final VoidCallback onView;
+
+  const _FilterForm({
+    required this.fromDate,
+    required this.toDate,
+    required this.accountItems,
+    this.accountSubtitles,
+    required this.accountController,
+    required this.onAccountChanged,
+    required this.onPickFrom,
+    required this.onPickTo,
+    required this.onView,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      color: context.white,
+      padding: EdgeInsets.fromLTRB(
+        context.pagePadding.left,
+        12,
+        context.pagePadding.right,
+        12,
+      ),
       child: Column(
-        mainAxisSize: .min,
+        crossAxisAlignment: .start,
         children: [
-          Icon(Icons.search_off_rounded, size: 48, color: Colors.grey.shade300),
-          const SizedBox(height: 12),
-          Text(
-            'No records found',
-            style: context.bodyMedium.copyWith(
-              fontWeight: .w500,
-              color: context.textSecondary,
-            ),
+          // ── Account field ─────────────────────────────────────
+          _FormLabel(text: 'Account'),
+          const SizedBox(height: 6),
+          SearchableDropdown(
+            items: accountItems,
+            subtitles: accountSubtitles,
+            controller: accountController,
+            hintText: 'Select Account',
+            onChanged: onAccountChanged,
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Try selecting a different date range',
-            style: context.bodySmall.copyWith(color: Colors.grey.shade400),
+          const SizedBox(height: 10),
+          // ── Date row ──────────────────────────────────────────
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    _FormLabel(text: 'From Date'),
+                    const SizedBox(height: 6),
+                    _FieldTile(
+                      icon: Iconsax.calendar_1,
+                      label: fromDate.format('dd MMM yyyy'),
+                      onTap: onPickFrom,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    _FormLabel(text: 'To Date'),
+                    const SizedBox(height: 6),
+                    _FieldTile(
+                      icon: Iconsax.calendar_1,
+                      label: toDate.format('dd MMM yyyy'),
+                      onTap: onPickTo,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // ── View button ───────────────────────────────────────
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onView,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: context.primary,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: .circular(10),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 13),
+                elevation: 0,
+              ),
+              child: Text(
+                'View',
+                style: context.bodySmall.copyWith(
+                  color: Colors.white,
+                  fontWeight: .w600,
+                  fontSize: 14,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -298,11 +272,74 @@ class _EmptyStatements extends StatelessWidget {
   }
 }
 
-// ─── Statements list ──────────────────────────────────────────────────────────
+class _FormLabel extends StatelessWidget {
+  final String text;
+  const _FormLabel({required this.text});
 
-class _StatementsList extends StatelessWidget {
-  final List<AccountLedgerModel> statements;
-  const _StatementsList({required this.statements});
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: context.labelSmall.copyWith(
+        color: context.textSecondary,
+        fontWeight: .w500,
+        fontSize: 12,
+      ),
+    );
+  }
+}
+
+class _FieldTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  const _FieldTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+        decoration: BoxDecoration(
+          color: context.grey50,
+          borderRadius: .circular(8),
+          border: Border.all(color: context.border),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 16, color: context.textSecondary),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                label,
+                style: context.bodySmall.copyWith(
+                  color: onTap != null ? context.textPrimary : context.textSecondary,
+                  fontSize: 13,
+                ),
+                overflow: .ellipsis,
+              ),
+            ),
+            if (onTap != null)
+              Icon(Icons.keyboard_arrow_down_rounded,
+                  size: 18, color: context.textSecondary),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Statements body ──────────────────────────────────────────────────────────
+
+class _StatementsBody extends StatelessWidget {
+  final List<GetLedgerModel> statements;
+  const _StatementsBody({required this.statements});
 
   @override
   Widget build(BuildContext context) {
@@ -310,16 +347,37 @@ class _StatementsList extends StatelessWidget {
       padding: EdgeInsets.only(
         left: context.pagePadding.left,
         right: context.pagePadding.right,
-        top: 8,
+        top: 12,
         bottom: 16,
       ),
       children: [
-        for (final yearData in statements)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: _YearCard(yearData: yearData),
-          ),
+        const _SectionLabel(text: 'Statements'),
+        const SizedBox(height: 8),
+        for (final yearData in statements) ...[
+          _YearCard(yearData: yearData),
+          const SizedBox(height: 8),
+        ],
       ],
+    );
+  }
+}
+
+// ─── Section label ────────────────────────────────────────────────────────────
+
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text.toUpperCase(),
+      style: context.labelSmall.copyWith(
+        fontSize: 11,
+        fontWeight: .w500,
+        color: context.textSecondary,
+        letterSpacing: 0.8,
+      ),
     );
   }
 }
@@ -327,7 +385,7 @@ class _StatementsList extends StatelessWidget {
 // ─── Year card ────────────────────────────────────────────────────────────────
 
 class _YearCard extends StatefulWidget {
-  final AccountLedgerModel yearData;
+  final GetLedgerModel yearData;
   const _YearCard({required this.yearData});
 
   @override
@@ -341,20 +399,21 @@ class _YearCardState extends State<_YearCard> {
   Widget build(BuildContext context) {
     final yearData = widget.yearData;
     final hasContent = yearData.ledgerTypes?.any(
-      (lt) =>
-          (lt.ledgers ?? []).isNotEmpty &&
-          !(lt.ttlDebit == 0 && lt.ttlCredit == 0 && lt.balance == 0),
-    ) ?? false;
+          (lt) =>
+              (lt.ledgers ?? []).isNotEmpty &&
+              !(lt.ttlDebit == 0 && lt.ttlCredit == 0 && lt.balance == 0),
+        ) ??
+        false;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.white,
         borderRadius: .circular(10),
         border: Border.all(color: context.border),
       ),
       child: Column(
         children: [
-          // ── Year header ──
+          // ── Year header ──────────────────────────────────────
           GestureDetector(
             onTap: () => setState(() => _expanded = !_expanded),
             behavior: HitTestBehavior.opaque,
@@ -371,14 +430,15 @@ class _YearCardState extends State<_YearCard> {
               ),
               child: Row(
                 children: [
-                  Icon(Iconsax.calendar_1, color: context.primary, size: 22),
+                  Icon(Iconsax.calendar_1, color: context.primary, size: 24),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      yearData.finYear?.name??"",
+                      yearData.finYear?.name ?? '',
                       style: context.bodySmall.copyWith(
                         fontWeight: .w600,
                         color: context.textPrimary,
+                        fontSize: 14,
                       ),
                     ),
                   ),
@@ -386,26 +446,29 @@ class _YearCardState extends State<_YearCard> {
                     crossAxisAlignment: .end,
                     children: [
                       Text(
-                        _formatBalance(context, yearData.balance ?? 0),
+                        _formatBalance(context, (yearData.balance ?? 0).toDouble()),
                         style: context.bodySmall.copyWith(
                           fontWeight: .w700,
                           color: context.textPrimary,
+                          fontSize: 14,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 3),
                       Row(
                         children: [
                           Text(
-                            'Rs. ${yearData.ttlDebit!.formatPrice()} Dr',
+                            'Rs. ${(yearData.ttlDebit ?? 0).toDouble().formatPrice()} Dr',
                             style: context.labelSmall.copyWith(
                               color: context.textSecondary,
+                              fontSize: 11,
                             ),
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Rs. ${yearData.ttlCredit!.formatPrice()} Cr',
+                            'Rs. ${(yearData.ttlCredit ?? 0).toDouble().formatPrice()} Cr',
                             style: context.labelSmall.copyWith(
                               color: context.textSecondary,
+                              fontSize: 11,
                             ),
                           ),
                         ],
@@ -428,7 +491,7 @@ class _YearCardState extends State<_YearCard> {
             ),
           ),
 
-          // ── Ledger types ──
+          // ── Ledger types (animated expand) ───────────────────
           AnimatedSize(
             duration: const Duration(milliseconds: 280),
             curve: Curves.easeInOutCubic,
@@ -468,7 +531,7 @@ class _YearCardState extends State<_YearCard> {
 // ─── Ledger type section ──────────────────────────────────────────────────────
 
 class _LedgerTypeSection extends StatelessWidget {
-  final LedgerTypeModel ledgerType;
+  final LedgerType ledgerType;
   const _LedgerTypeSection({required this.ledgerType});
 
   @override
@@ -480,7 +543,7 @@ class _LedgerTypeSection extends StatelessWidget {
         if (type.isNotEmpty)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               color: Colors.grey.shade100,
               border: Border(top: BorderSide(color: context.border)),
@@ -490,11 +553,12 @@ class _LedgerTypeSection extends StatelessWidget {
               style: context.labelSmall.copyWith(
                 fontWeight: .w600,
                 color: context.textSecondary,
+                fontSize: 10,
                 letterSpacing: 0.8,
               ),
             ),
           ),
-        ...(ledgerType.ledgers ?? []).map((ledger) => _LedgerRow(ledger: ledger)),
+        ...(ledgerType.ledgers ?? []).map((l) => _LedgerRow(ledger: l)),
       ],
     );
   }
@@ -503,25 +567,30 @@ class _LedgerTypeSection extends StatelessWidget {
 // ─── Ledger row ───────────────────────────────────────────────────────────────
 
 class _LedgerRow extends StatelessWidget {
-  final LedgerModel ledger;
+  final Ledger ledger;
   const _LedgerRow({required this.ledger});
 
   @override
   Widget build(BuildContext context) {
     final isOpening = ledger.isOpening ?? false;
-    final drAmount = ledger.drAmount ?? 0;
-    final crAmount = ledger.crAmount ?? 0;
-    final date = _parsedDate(ledger.docDate ?? '', isOpening);
-    final dr = drAmount == 0 ? '0.0' : drAmount.formatPrice();
-    final cr = crAmount == 0 ? '0.0' : crAmount.formatPrice();
+    final drAmt = (ledger.drAmount ?? 0).toDouble();
+    final crAmt = (ledger.crAmount ?? 0).toDouble();
+    final isDrOnly = drAmt > 0 && crAmt == 0;
+    final isCrOnly = crAmt > 0 && drAmt == 0;
 
-    final bool isDrOnly = drAmount > 0 && crAmount == 0;
-    final bool isCrOnly = crAmount > 0 && drAmount == 0;
+    // Date
+    final docDate = ledger.docDate;
+    final date = (!isOpening && docDate != null && docDate.year > 1)
+        ? DateFormat('dd MMM yyyy').format(docDate)
+        : '';
 
+    final dr = drAmt == 0 ? '0.0' : drAmt.formatPrice();
+    final cr = crAmt == 0 ? '0.0' : crAmt.formatPrice();
+
+    // Icon style
     final Color iconBg;
     final Color iconColor;
     final IconData iconData;
-
     if (isOpening) {
       iconBg = Colors.grey.shade100;
       iconColor = Colors.grey.shade500;
@@ -540,25 +609,25 @@ class _LedgerRow extends StatelessWidget {
       iconData = Icons.swap_horiz_rounded;
     }
 
+    // Amount
     final String amountText;
     final Color amountColor;
-
     if (isOpening) {
-      final val = drAmount > 0 ? drAmount : crAmount;
+      final val = drAmt > 0 ? drAmt : crAmt;
       amountText = val.formatPrice();
       amountColor = Colors.grey.shade600;
     } else if (isDrOnly) {
-      amountText = drAmount.formatPrice();
+      amountText = drAmt.formatPrice();
       amountColor = const Color(0xFFD63A3A);
     } else if (isCrOnly) {
-      amountText = crAmount.formatPrice();
+      amountText = crAmt.formatPrice();
       amountColor = const Color(0xFF1B8A5A);
     } else {
-      amountText = '${drAmount.formatPrice()} / ${crAmount.formatPrice()}';
+      amountText = '${drAmt.formatPrice()} / ${crAmt.formatPrice()}';
       amountColor = context.textPrimary;
     }
 
-    final String title = isOpening
+    final title = isOpening
         ? 'Opening balance'
         : [
             if (ledger.featureName?.isNotEmpty == true) ledger.featureName!,
@@ -568,7 +637,7 @@ class _LedgerRow extends StatelessWidget {
     return InkWell(
       onTap: () => _openDetail(context, date, dr, cr),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           border: Border(top: BorderSide(color: context.border)),
         ),
@@ -576,15 +645,15 @@ class _LedgerRow extends StatelessWidget {
           children: [
             // Icon box
             Container(
-              width: 38,
-              height: 38,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 color: iconBg,
-                borderRadius: .circular(10),
+                borderRadius: .circular(12),
               ),
-              child: Icon(iconData, size: 17, color: iconColor),
+              child: Icon(iconData, size: 18, color: iconColor),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
 
             // Title + date
             Expanded(
@@ -596,16 +665,18 @@ class _LedgerRow extends StatelessWidget {
                     style: context.bodySmall.copyWith(
                       fontWeight: .w600,
                       color: context.textPrimary,
+                      fontSize: 13,
                     ),
                     maxLines: 1,
                     overflow: .ellipsis,
                   ),
-                  if (date.isNotEmpty) ...[
-                    const SizedBox(height: 2),
+                  if (date.isNotEmpty || isOpening) ...[
+                    const SizedBox(height: 3),
                     Text(
-                      date,
+                      isOpening ? '---' : date,
                       style: context.labelSmall.copyWith(
                         color: context.textSecondary,
+                        fontSize: 11,
                       ),
                     ),
                   ],
@@ -623,20 +694,24 @@ class _LedgerRow extends StatelessWidget {
                     isDrOnly ? 'Debit' : isCrOnly ? 'Credit' : 'Dr / Cr',
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
+                      fontSize: 10,
                     ),
                   ),
+                if (!isOpening) const SizedBox(height: 2),
                 Text(
                   amountText,
                   style: context.bodySmall.copyWith(
                     fontWeight: .w700,
                     color: amountColor,
+                    fontSize: 14,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Text(
-                  _formatBalance(context, ledger.balance ?? 0),
+                  _formatBalance(context, (ledger.balance ?? 0).toDouble()),
                   style: context.labelSmall.copyWith(
                     color: context.textSecondary,
+                    fontSize: 11,
                   ),
                 ),
               ],
@@ -661,21 +736,12 @@ class _LedgerRow extends StatelessWidget {
       ),
     );
   }
-
-  static String _parsedDate(String docDate, bool isOpening) {
-    if (isOpening || docDate.isEmpty || docDate == '0001-01-01') return '';
-    try {
-      return DateFormat('dd MMM yyyy').format(DateTime.parse(docDate));
-    } catch (_) {
-      return '';
-    }
-  }
 }
 
 // ─── Ledger detail dialog ─────────────────────────────────────────────────────
 
 class _LedgerDetailDialog extends StatelessWidget {
-  final LedgerModel ledger;
+  final Ledger ledger;
   final String date;
   final String dr;
   final String cr;
@@ -695,7 +761,6 @@ class _LedgerDetailDialog extends StatelessWidget {
 
     final Color accentColor;
     final IconData directionIcon;
-
     if (isOpening) {
       accentColor = Colors.grey.shade500;
       directionIcon = Icons.horizontal_rule_rounded;
@@ -720,7 +785,7 @@ class _LedgerDetailDialog extends StatelessWidget {
 
     return Dialog(
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: .circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: .circular(20)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
@@ -745,6 +810,7 @@ class _LedgerDetailDialog extends StatelessWidget {
                     style: context.labelSmall.copyWith(
                       fontWeight: .w600,
                       color: accentColor,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -803,7 +869,7 @@ class _LedgerDetailDialog extends StatelessWidget {
             ],
             _InfoRow(
               label: 'Balance after',
-              value: _formatBalance(context, ledger.balance ?? 0),
+              value: _formatBalance(context, (ledger.balance ?? 0).toDouble()),
             ),
             const SizedBox(height: 20),
 
@@ -829,10 +895,7 @@ class _LedgerDetailDialog extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: Text(
-                          'Close',
-                          style: context.bodySmall,
-                        ),
+                        child: Text('Close', style: context.bodySmall),
                       ),
                     ),
                     if (canPrint) ...[
@@ -859,10 +922,7 @@ class _LedgerDetailDialog extends StatelessWidget {
                                     color: context.textSecondary,
                                   ),
                                 )
-                              : const Icon(
-                                  Icons.print_outlined,
-                                  size: 16,
-                                ),
+                              : const Icon(Icons.print_outlined, size: 16),
                           label: Text('Print Invoice', style: context.bodySmall),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: context.textPrimary,
@@ -906,10 +966,7 @@ class _AmountCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: .circular(12),
-      ),
+      decoration: BoxDecoration(color: bg, borderRadius: .circular(12)),
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -917,6 +974,7 @@ class _AmountCard extends StatelessWidget {
             label,
             style: context.labelSmall.copyWith(
               color: color.withValues(alpha: 0.75),
+              fontSize: 12,
             ),
           ),
           const SizedBox(height: 4),
@@ -925,6 +983,7 @@ class _AmountCard extends StatelessWidget {
             style: context.titleSmall.copyWith(
               fontWeight: .w700,
               color: color,
+              fontSize: 20,
             ),
           ),
         ],
@@ -938,7 +997,6 @@ class _AmountCard extends StatelessWidget {
 class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
-
   const _InfoRow({required this.label, required this.value});
 
   @override
@@ -947,7 +1005,13 @@ class _InfoRow extends StatelessWidget {
       crossAxisAlignment: .start,
       mainAxisAlignment: .spaceBetween,
       children: [
-        Text(label, style: context.bodySmall.copyWith(color: context.textSecondary)),
+        Text(
+          label,
+          style: context.bodySmall.copyWith(
+            color: context.textSecondary,
+            fontSize: 13,
+          ),
+        ),
         const SizedBox(width: 16),
         Flexible(
           child: Text(
@@ -957,6 +1021,7 @@ class _InfoRow extends StatelessWidget {
             style: context.bodySmall.copyWith(
               fontWeight: .w500,
               color: context.textPrimary,
+              fontSize: 13,
             ),
           ),
         ),
@@ -965,31 +1030,167 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-// ─── Field label ──────────────────────────────────────────────────────────────
 
-class _FieldLabel extends StatelessWidget {
-  const _FieldLabel(this.label, {this.isRequired = false});
+// ─── Empty state ──────────────────────────────────────────────────────────────
 
-  final String label;
-  final bool isRequired;
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(
+    return Center(
+      child: Column(
+        mainAxisSize: .min,
         children: [
-          TextSpan(
-            text: label,
-            style: context.bodySmall.copyWith(color: context.textSecondary),
+          Icon(Icons.search_off_rounded, size: 48, color: Colors.grey.shade300),
+          const SizedBox(height: 12),
+          Text(
+            'No records found',
+            style: context.bodyMedium.copyWith(
+              fontWeight: .w500,
+              color: context.textSecondary,
+            ),
           ),
-          if (isRequired)
-            TextSpan(
-              text: ' *',
-              style: context.bodySmall.copyWith(
-                color: context.error,
-                fontWeight: .bold,
+          const SizedBox(height: 4),
+          Text(
+            'Try selecting a different date range',
+            style: context.bodySmall.copyWith(color: Colors.grey.shade400),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Error state ──────────────────────────────────────────────────────────────
+
+class _ErrorBody extends StatelessWidget {
+  final String message;
+  final VoidCallback onRetry;
+  const _ErrorBody({required this.message, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: .min,
+        children: [
+          Icon(Icons.error_outline_rounded,
+              size: 48, color: Colors.grey.shade300),
+          const SizedBox(height: 12),
+          Text(
+            message,
+            style: context.bodySmall.copyWith(color: context.textSecondary),
+            textAlign: .center,
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: onRetry,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: context.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: .circular(10)),
+              elevation: 0,
+            ),
+            child: const Text('Retry'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Shimmer ──────────────────────────────────────────────────────────────────
+
+class _ShimmerBody extends StatelessWidget {
+  const _ShimmerBody();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: EdgeInsets.only(
+        left: context.pagePadding.left,
+        right: context.pagePadding.right,
+        top: 12,
+        bottom: 16,
+      ),
+      children: [
+        ShimmerBox(height: 12, width: 90, radius: 4),
+        const SizedBox(height: 10),
+        _ShimmerYearCard(),
+        const SizedBox(height: 8),
+        _ShimmerYearCard(rowCount: 3),
+      ],
+    );
+  }
+}
+
+class _ShimmerYearCard extends StatelessWidget {
+  final int rowCount;
+  const _ShimmerYearCard({this.rowCount = 4});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(10),
+        border: Border.all(color: context.border),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            child: Row(
+              children: [
+                ShimmerBox(height: 24, width: 24, radius: 6),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      ShimmerBox(height: 12, width: 100, radius: 4),
+                      const SizedBox(height: 5),
+                      ShimmerBox(height: 10, width: 160, radius: 4),
+                    ],
+                  ),
+                ),
+                ShimmerBox(height: 30, width: 80, radius: 6),
+              ],
+            ),
+          ),
+          ...List.generate(
+            rowCount,
+            (_) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  ShimmerBox(height: 40, width: 40, radius: 12),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        ShimmerBox(
+                            height: 12, width: double.infinity, radius: 4),
+                        const SizedBox(height: 5),
+                        ShimmerBox(height: 10, width: 80, radius: 4),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Column(
+                    crossAxisAlignment: .end,
+                    children: [
+                      ShimmerBox(height: 14, width: 70, radius: 4),
+                      const SizedBox(height: 4),
+                      ShimmerBox(height: 11, width: 60, radius: 4),
+                    ],
+                  ),
+                ],
               ),
             ),
+          ),
         ],
       ),
     );

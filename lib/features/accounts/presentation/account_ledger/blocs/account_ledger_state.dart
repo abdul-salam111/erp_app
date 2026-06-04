@@ -2,15 +2,16 @@ import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../accounts_exports.dart';
 
-
 class AccountLedgerState extends Equatable {
-  final List<AccountLedgerModel> statements;
+  final List<GetLedgerModel> statements;
   final List<int> printableFeatureIds;
   final ApiStatus apiStatus;
   final ApiStatus pdfStatus;
   final String? message;
   final String? pdfUrl;
   final bool isPrinting;
+  final String fromDateDisplay;
+  final String toDateDisplay;
 
   const AccountLedgerState({
     this.statements = const [],
@@ -20,16 +21,20 @@ class AccountLedgerState extends Equatable {
     this.message,
     this.pdfUrl,
     this.isPrinting = false,
+    this.fromDateDisplay = '',
+    this.toDateDisplay = '',
   });
 
   AccountLedgerState copyWith({
-    List<AccountLedgerModel>? statements,
+    List<GetLedgerModel>? statements,
     List<int>? printableFeatureIds,
     ApiStatus? apiStatus,
     ApiStatus? pdfStatus,
     String? message,
     String? pdfUrl,
     bool? isPrinting,
+    String? fromDateDisplay,
+    String? toDateDisplay,
   }) {
     return AccountLedgerState(
       statements: statements ?? this.statements,
@@ -39,6 +44,8 @@ class AccountLedgerState extends Equatable {
       message: message ?? this.message,
       pdfUrl: pdfUrl ?? this.pdfUrl,
       isPrinting: isPrinting ?? this.isPrinting,
+      fromDateDisplay: fromDateDisplay ?? this.fromDateDisplay,
+      toDateDisplay: toDateDisplay ?? this.toDateDisplay,
     );
   }
 
@@ -53,5 +60,7 @@ class AccountLedgerState extends Equatable {
     message,
     pdfUrl,
     isPrinting,
+    fromDateDisplay,
+    toDateDisplay,
   ];
 }

@@ -3,30 +3,30 @@ import '../../../../core/shared/shared_exports.dart';
 import '../../data/models/response_models/get_ledger/get_ledger_model.dart';
 import '../repositories/accounts_repository.dart';
 
-class GetAccountStatementsParams {
+class GetPartyStatementsParams {
   final String fromDate;
   final String toDate;
-  final int? accountId;
-  const GetAccountStatementsParams({
+  final int? partyId;
+  const GetPartyStatementsParams({
     required this.fromDate,
     required this.toDate,
-    this.accountId,
+    this.partyId,
   });
 }
 
-class GetAccountStatementsUsecase
-    implements Usecase<List<GetLedgerModel>, GetAccountStatementsParams> {
+class GetPartyStatementsUsecase
+    implements Usecase<List<GetLedgerModel>, GetPartyStatementsParams> {
   final AccountsRepository repository;
 
-  GetAccountStatementsUsecase({required this.repository});
+  GetPartyStatementsUsecase({required this.repository});
 
   @override
   Future<Either<Failure, List<GetLedgerModel>>> call(
-    GetAccountStatementsParams params,
+    GetPartyStatementsParams params,
   ) =>
-      repository.getAccountStatements(
+      repository.getPartyStatements(
         fromDate: params.fromDate,
         toDate: params.toDate,
-        accountId: params.accountId,
+        partyId: params.partyId,
       );
 }

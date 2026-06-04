@@ -25,7 +25,6 @@ class AccountsView extends StatelessWidget {
 
 class _AccountsBody extends StatefulWidget {
   const _AccountsBody();
-
   @override
   State<_AccountsBody> createState() => _AccountsBodyState();
 }
@@ -35,7 +34,6 @@ class _AccountsBodyState extends State<_AccountsBody>
   late final AnimationController _entryCtrl;
   late final List<Animation<double>> _fades;
   late final List<Animation<Offset>> _slides;
-
   static const _offscreen = Offset(0, 0.06);
 
   static const _statItems = <OverviewItem>[
@@ -284,7 +282,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                                     child: OverviewStatCard(
                                       label: _statItems[0].label,
                                       value: fmt(rd?.ttlReceivedAmount),
-                                      icon:  _statItems[0].icon,
+                                      icon: _statItems[0].icon,
                                       color: _statItems[0].color,
                                     ),
                                   ),
@@ -293,7 +291,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                                     child: OverviewStatCard(
                                       label: _statItems[1].label,
                                       value: fmt(rd?.ttlPostponeAmount),
-                                      icon:  _statItems[1].icon,
+                                      icon: _statItems[1].icon,
                                       color: _statItems[1].color,
                                     ),
                                   ),
@@ -304,7 +302,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                             OverviewStatCard(
                               label: _statItems[2].label,
                               value: fmt(rd?.ttlRecoveryAmount),
-                              icon:  _statItems[2].icon,
+                              icon: _statItems[2].icon,
                               color: _statItems[2].color,
                             ),
                           ],

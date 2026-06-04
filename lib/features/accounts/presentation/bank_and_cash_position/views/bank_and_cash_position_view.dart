@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iconsax/iconsax.dart';
 
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
@@ -71,19 +70,17 @@ class _BankAndCashPositionBody extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: context.grey50,
-          appBar: CustomAppBar(
-            title: 'Bank & Cash Position',
-            actions: [
-              IconButton(
-                icon: const Icon(Iconsax.filter, size: 20, color: Colors.white),
-                onPressed: () {},
-              ),
-            ],
-          ),
+          appBar: CustomAppBar(title: 'Bank & Cash Position'),
           body: Column(
             crossAxisAlignment: .stretch,
             children: [
-              const _HeroCard(),
+              ColoredBox(
+                color: context.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: _HeroCard(banks: _banks),
+                ),
+              ),
               _SectionLabel(count: _banks.length),
               Expanded(child: _BankList(banks: _banks)),
             ],
@@ -97,34 +94,28 @@ class _BankAndCashPositionBody extends StatelessWidget {
 // ─── Hero card ────────────────────────────────────────────────────────────────
 
 class _HeroCard extends StatelessWidget {
-  const _HeroCard();
+  final List<_BankItem> banks;
+  const _HeroCard({required this.banks});
 
-  static const _barValues = <double>[
-    3.0, 8.5, 7.0, 5.5, 4.0, 3.0, 9.0, 7.5, 6.0, 8.0,
-    12.0, 11.0, 9.0, 13.5, 12.0, 10.0, 11.5, 9.0, 7.0, 10.0,
-    8.0, 6.0, 5.0, 4.0, 7.0, 9.0, 6.0, 4.5, 3.5, 8.5,
-  ];
-
-  static const _gradStart = Color(0xFF3949AB);
-  static const _gradEnd = Color(0xFF7E57C2);
+  static const _creditColor = Color(0xFF6366F1);
+  static const _debitColor = Color(0xFFC62828);
+  static const _bgColor = Color(0xFFEEEEFF);
 
   @override
   Widget build(BuildContext context) {
+    final maxAmount = banks.fold(0.0, (m, b) => b.amount > m ? b.amount : m);
+
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
-      height: 120,
+      height: context.screenHeight * 0.25,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [_gradStart, _gradEnd],
-          begin: .topLeft,
-          end: .bottomRight,
-        ),
+        color: _bgColor,
         borderRadius: .circular(20),
         boxShadow: [
           BoxShadow(
-            color: _gradStart.withValues(alpha: 0.28),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -133,30 +124,23 @@ class _HeroCard extends StatelessWidget {
         BarChartData(
           backgroundColor: Colors.transparent,
           minY: 0,
-          maxY: 15,
+          maxY: maxAmount * 1.2,
           barTouchData: BarTouchData(enabled: false),
           titlesData: const FlTitlesData(show: false),
           gridData: const FlGridData(show: false),
           borderData: FlBorderData(show: false),
-          groupsSpace: 3,
+          groupsSpace: 4,
           barGroups: List.generate(
-            _barValues.length,
+            banks.length,
             (i) => BarChartGroupData(
               x: i,
               barRods: [
                 BarChartRodData(
-                  toY: _barValues[i],
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.white.withValues(alpha: 0.85),
-                      Colors.white.withValues(alpha: 0.20),
-                    ],
-                    begin: .topCenter,
-                    end: .bottomCenter,
-                  ),
-                  width: 7,
+                  toY: banks[i].amount,
+                  color: banks[i].isCredit ? _creditColor : _debitColor,
+                  width: 14,
                   borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(3),
+                    top: Radius.circular(6),
                   ),
                 ),
               ],
@@ -219,10 +203,10 @@ class _BankList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+      margin: const .fromLTRB(0, 0, 0, 12),
       decoration: BoxDecoration(
         color: context.white,
-        borderRadius: .circular(16),
+
         border: Border.all(color: context.border),
         boxShadow: [
           BoxShadow(

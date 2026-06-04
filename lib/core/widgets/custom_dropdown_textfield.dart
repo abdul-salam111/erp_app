@@ -5,6 +5,7 @@ import '../utils/utils_exports.dart';
 
 class SearchableDropdown extends StatefulWidget {
   final List<String> items;
+  final List<String?>? subtitles;
   final String hintText;
   final Function(String) onChanged;
   final TextEditingController controller;
@@ -19,6 +20,7 @@ class SearchableDropdown extends StatefulWidget {
   const SearchableDropdown({
     super.key,
     required this.items,
+    this.subtitles,
     required this.onChanged,
     this.hintText = "Select item",
     required this.controller,
@@ -36,14 +38,29 @@ class SearchableDropdown extends StatefulWidget {
 
 class _SearchableDropdownState extends State<SearchableDropdown> {
   final _layerLink = LayerLink();
-  final _filteredNotifier = ValueNotifier<List<String>>([]);
+  final _filteredNotifier = ValueNotifier<List<(String, String?)>>([]);
   OverlayEntry? _overlayEntry;
   bool _isOpen = false;
+
+  List<(String, String?)> _buildPairs({String? filter}) {
+    final subs = widget.subtitles;
+    final lower = filter?.trim().toLowerCase();
+    final pairs = <(String, String?)>[];
+    for (var i = 0; i < widget.items.length; i++) {
+      final label = widget.items[i];
+      if (lower != null && lower.isNotEmpty && !label.toLowerCase().contains(lower)) {
+        continue;
+      }
+      final sub = subs != null && i < subs.length ? subs[i] : null;
+      pairs.add((label, sub));
+    }
+    return pairs;
+  }
 
   @override
   void initState() {
     super.initState();
-    _filteredNotifier.value = widget.items;
+    _filteredNotifier.value = _buildPairs();
   }
 
   @override
@@ -54,11 +71,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
   }
 
   void _filterItems(String input) {
-    _filteredNotifier.value = input.trim().isEmpty
-        ? widget.items
-        : widget.items
-            .where((i) => i.toLowerCase().contains(input.trim().toLowerCase()))
-            .toList();
+    _filteredNotifier.value = _buildPairs(filter: input);
   }
 
   void _openDropdown() {
@@ -87,7 +100,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
               width: dropdownWidth,
               child: Material(
                 color: Colors.transparent,
-                child: ValueListenableBuilder<List<String>>(
+                child: ValueListenableBuilder<List<(String, String?)>>(
                   valueListenable: _filteredNotifier,
                   builder: (ctx, items, _) => _DropdownList(
                     items: items,
@@ -147,7 +160,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
                     icon: Icon(Icons.close, color: context.grey500, size: 18),
                     onPressed: () {
                       setState(() => widget.controller.clear());
-                      _filteredNotifier.value = widget.items;
+                      _filteredNotifier.value = _buildPairs();
                       _closeDropdown();
                       widget.onChanged('');
                     },
@@ -188,7 +201,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
 }
 
 class _DropdownList extends StatelessWidget {
-  final List<String> items;
+  final List<(String, String?)> items;
   final TextEditingController controller;
   final ValueChanged<String> onSelect;
   final Color? dropdownBackgroundColor;
@@ -238,25 +251,36 @@ class _DropdownList extends StatelessWidget {
                 color: context.divider,
               ),
               itemBuilder: (_, index) {
-                final item = items[index];
-                final isSelected = controller.text == item;
+                final (label, subtitle) = items[index];
+                final isSelected = controller.text == label;
                 return ListTile(
-                  dense: true,
-                  visualDensity: VisualDensity.compact,
+                  dense: subtitle == null,
+                  visualDensity: subtitle != null
+                      ? VisualDensity.standard
+                      : VisualDensity.compact,
                   selected: isSelected,
                   selectedTileColor: context.primary.withAlpha(10),
                   title: Text(
-                    item,
+                    label,
                     style: context.bodyMedium.copyWith(
                       color: isSelected ? context.primary : context.textPrimary,
                       fontWeight:
                           isSelected ? FontWeight.w600 : FontWeight.normal,
                     ),
                   ),
+                  subtitle: subtitle != null
+                      ? Text(
+                          subtitle,
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 11,
+                          ),
+                        )
+                      : null,
                   trailing: isSelected
                       ? Icon(Icons.check, color: context.primary, size: 20)
                       : null,
-                  onTap: () => onSelect(item),
+                  onTap: () => onSelect(label),
                 );
               },
             ),

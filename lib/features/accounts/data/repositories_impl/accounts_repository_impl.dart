@@ -1,9 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../accounts_exports.dart';
-import '../../domain/repositories/accounts_repository.dart';
 import '../datasources/remote_accounts_datasource.dart';
-import '../models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
+
 
 class AccountsRepositoryImpl extends BaseRepository
     implements AccountsRepository {
@@ -22,14 +21,16 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<AccountLedgerModel>>> getAccountStatements({
+  Future<Either<Failure, List<GetLedgerModel>>> getAccountStatements({
     required String fromDate,
     required String toDate,
+    int? accountId,
   }) {
     return execute(
       call: () => dataSource.getAccountStatements(
         fromDate: fromDate,
         toDate: toDate,
+        accountId: accountId,
       ),
     );
   }
@@ -62,9 +63,17 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, dynamic>> partyLedger() {
+  Future<Either<Failure, List<GetLedgerModel>>> getPartyStatements({
+    required String fromDate,
+    required String toDate,
+    int? partyId,
+  }) {
     return execute(
-      call: () => dataSource.partyLedger(),
+      call: () => dataSource.getPartyStatements(
+        fromDate: fromDate,
+        toDate: toDate,
+        partyId: partyId,
+      ),
     );
   }
 

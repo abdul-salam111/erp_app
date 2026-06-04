@@ -10,11 +10,16 @@ abstract class AccountLedgerEvent extends Equatable {
 class AccountLedgerSubmitted extends AccountLedgerEvent {
   final String fromDate;
   final String toDate;
+  final int? accountId;
 
-  const AccountLedgerSubmitted({required this.fromDate, required this.toDate});
+  const AccountLedgerSubmitted({
+    required this.fromDate,
+    required this.toDate,
+    this.accountId,
+  });
 
   @override
-  List<Object?> get props => [fromDate, toDate];
+  List<Object?> get props => [fromDate, toDate, accountId];
 }
 
 class AccountLedgerPrintRequested extends AccountLedgerEvent {
