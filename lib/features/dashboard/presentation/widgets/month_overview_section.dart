@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/services/current_user.dart';
+import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -67,7 +68,7 @@ class MonthOverviewSection extends StatelessWidget {
             border:       Border.all(color: context.border),
             boxShadow: [
               BoxShadow(
-                color:      Colors.black.withValues(alpha: 0.06),
+                color:      AppColors.black.withValues(alpha: 0.06),
                 blurRadius: 14,
                 offset:     const Offset(0, 4),
               ),
@@ -213,51 +214,48 @@ class MonthOverviewSection extends StatelessWidget {
     final sym = currentUser.org.currencySymbol;
     final m   = state.monthlyStats;
 
-    const red   = Color(0xFFE53935);
-    const green = Color(0xFF43A047);
-
     return [
       _MonthStatCard(
         label:      AppConstants.expensesLabel,
         value:      (m?.currentMonthExpense    ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
         pct:        m?.expensePercentage        ?? 0,
-        color:      red,
-        trendColor: red,
+        color:      AppColors.errorBright,
+        trendColor: AppColors.errorBright,
       ),
       _MonthStatCard(
         label:      AppConstants.newOrders,
         value:      (m?.currentMonthSaleOrders ?? 0).toStringAsFixed(0),
         pct:        m?.saleOrdersPercentage    ?? 0,
-        color:      const Color(0xFF1B84FF),
-        trendColor: green,
+        color:      AppColors.primary,
+        trendColor: AppColors.greenDark,
       ),
       _MonthStatCard(
         label:      AppConstants.newClientsLabel,
         value:      (m?.currentMonthParties    ?? 0).toStringAsFixed(0),
         pct:        m?.partiesPercentage        ?? 0,
-        color:      green,
-        trendColor: green,
+        color:      AppColors.greenDark,
+        trendColor: AppColors.greenDark,
       ),
       _MonthStatCard(
         label:      AppConstants.totalRevenueLabel,
         value:      (m?.currentMonthSales      ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
         pct:        m?.salesPercentage          ?? 0,
-        color:      const Color(0xFFFF9800),
-        trendColor: green,
+        color:      AppColors.orange,
+        trendColor: AppColors.greenDark,
       ),
       _MonthStatCard(
         label:      AppConstants.totalPurchasesLabel,
         value:      (m?.currentMonthPurchases  ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
         pct:        m?.purchasesPercentage      ?? 0,
-        color:      const Color(0xFF9C27B0),
-        trendColor: red,
+        color:      AppColors.purple,
+        trendColor: AppColors.errorBright,
       ),
       _MonthStatCard(
         label:      AppConstants.recoveriesLabel,
         value:      (m?.currentMonthRecoveries ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
         pct:        m?.recoveriesPercentage     ?? 0,
-        color:      const Color(0xFF00ACC1),
-        trendColor: green,
+        color:      AppColors.cyan,
+        trendColor: AppColors.greenDark,
       ),
     ];
   }
@@ -329,7 +327,7 @@ class MonthOverviewSection extends StatelessWidget {
             getTooltipColor: (_) => context.primary.withValues(alpha: 0.85),
             getTooltipItems: (spots) => spots.map((s) => LineTooltipItem(
               '${currentUser.org.currencySymbol} ${s.y.toStringAsFixed(0)}',
-              const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600),
+              const TextStyle(color: AppColors.white, fontSize: 11, fontWeight: FontWeight.w600),
             )).toList(),
           ),
         ),
@@ -406,10 +404,10 @@ class _MonthStatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color:        context.white,
         borderRadius: .circular(10),
-        border:       .all(color: const Color(0xFFEDEDED)),
+        border:       .all(color: AppColors.grey200),
         boxShadow: [
           BoxShadow(
-            color:      Colors.black.withValues(alpha: 0.07),
+            color:      AppColors.black.withValues(alpha: 0.07),
             blurRadius: 8,
             offset:     const Offset(0, 2),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../routes/route_exports.dart';
@@ -89,7 +90,7 @@ class DashboardHeader extends StatelessWidget {
                       child: Text(
                         AppConstants.eRPDashboard,
                         style: context.titleSmall.copyWith(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontWeight: .w600,
                           letterSpacing: 0.3,
                         ),
@@ -111,7 +112,7 @@ class DashboardHeader extends StatelessWidget {
                             width: 8,
                             height: 8,
                             decoration: const BoxDecoration(
-                              color: Color(0xFFFF5252),
+                              color: AppColors.redAccent,
                               shape: .circle,
                             ),
                           ),
@@ -124,10 +125,10 @@ class DashboardHeader extends StatelessWidget {
                       onTap: () => context.pushNamed(RouteNames.profile),
                       child: CircleAvatar(
                         radius: 18,
-                        backgroundColor: Colors.white.withValues(alpha: 0.18),
+                        backgroundColor: AppColors.white.withValues(alpha: 0.18),
                         child: const Icon(
                           Iconsax.profile_circle,
-                          color: Colors.white,
+                          color: AppColors.white,
                           size: 19,
                         ),
                       ),
@@ -148,7 +149,7 @@ class DashboardHeader extends StatelessWidget {
                           Text(
                             _greeting,
                             style: context.labelMedium.copyWith(
-                              color: Colors.white.withValues(alpha: 0.80),
+                              color: AppColors.white.withValues(alpha: 0.80),
                               fontWeight: .w500,
                             ),
                           ),
@@ -156,7 +157,7 @@ class DashboardHeader extends StatelessWidget {
                           Text(
                             userName,
                             style: context.headlineSmall.copyWith(
-                              color: Colors.white,
+                              color: AppColors.white,
                               fontWeight: .w700,
                               height: 1.1,
                             ),
@@ -167,7 +168,7 @@ class DashboardHeader extends StatelessWidget {
                               Container(
                                 padding: .symmetric(horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.15),
+                                  color: AppColors.white.withValues(alpha: 0.15),
                                   borderRadius: .circular(20),
                                 ),
                                 child: Row(
@@ -175,7 +176,7 @@ class DashboardHeader extends StatelessWidget {
                                   children: [
                                     Icon(
                                       Iconsax.buildings,
-                                      color: Colors.white.withValues(
+                                      color: AppColors.white.withValues(
                                         alpha: 0.85,
                                       ),
                                       size: 11,
@@ -184,7 +185,7 @@ class DashboardHeader extends StatelessWidget {
                                     Text(
                                       orgName,
                                       style: context.labelSmall.copyWith(
-                                        color: Colors.white.withValues(
+                                        color: AppColors.white.withValues(
                                           alpha: 0.90,
                                         ),
                                         fontWeight: .w500,
@@ -202,7 +203,7 @@ class DashboardHeader extends StatelessWidget {
                     Container(
                       padding: .symmetric(horizontal: 11, vertical: 6),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
+                        color: AppColors.white.withValues(alpha: 0.15),
                         borderRadius: .circular(20),
                       ),
                       child: Row(
@@ -210,14 +211,14 @@ class DashboardHeader extends StatelessWidget {
                         children: [
                           Icon(
                             Iconsax.calendar,
-                            color: Colors.white.withValues(alpha: 0.85),
+                            color: AppColors.white.withValues(alpha: 0.85),
                             size: 13,
                           ),
                           const SizedBox(width: 5),
                           Text(
                             _formattedDate,
                             style: context.labelSmall.copyWith(
-                              color: Colors.white,
+                              color: AppColors.white,
                               fontWeight: .w500,
                             ),
                           ),
@@ -251,10 +252,10 @@ class _HeaderIconBtn extends StatelessWidget {
         width: 38,
         height: 38,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.15),
+          color: AppColors.white.withValues(alpha: 0.15),
           borderRadius: .circular(10),
         ),
-        child: Icon(icon, color: Colors.white, size: 20),
+        child: Icon(icon, color: AppColors.white, size: 20),
       ),
     );
   }
@@ -275,7 +276,7 @@ class _Circle extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: .circle,
-        color: Colors.white.withValues(alpha: opacity),
+        color: AppColors.white.withValues(alpha: opacity),
       ),
     );
   }

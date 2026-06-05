@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import '../theme/colors.dart';
 import '../theme/theme_utils.dart';
 import '../utils/utils_exports.dart';
 
@@ -65,7 +66,8 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
 
   @override
   void dispose() {
-    _closeDropdown();
+    _overlayEntry?.remove();
+    _overlayEntry = null;
     _filteredNotifier.dispose();
     super.dispose();
   }
@@ -99,7 +101,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
             child: SizedBox(
               width: dropdownWidth,
               child: Material(
-                color: Colors.transparent,
+                color: AppColors.transparent,
                 child: ValueListenableBuilder<List<(String, String?)>>(
                   valueListenable: _filteredNotifier,
                   builder: (ctx, items, _) => _DropdownList(
@@ -110,7 +112,6 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
                       widget.controller.text = item;
                       widget.onChanged(item);
                       _closeDropdown();
-                      FocusScope.of(context).unfocus();
                     },
                   ),
                 ),
@@ -124,11 +125,12 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
   }
 
   void _closeDropdown() {
-    if (!_isOpen) return;
-    setState(() => _isOpen = false);
     _overlayEntry?.remove();
     _overlayEntry = null;
-    if (mounted) FocusScope.of(context).unfocus();
+    if (!mounted) return;
+    if (!_isOpen) return;
+    setState(() => _isOpen = false);
+    FocusScope.of(context).unfocus();
   }
 
   @override
@@ -217,7 +219,7 @@ class _DropdownList extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = dropdownBackgroundColor ?? context.surfaceElevated;
     return Container(
-      constraints: const BoxConstraints(maxHeight: 200),
+      constraints: const BoxConstraints(maxHeight: 320),
       decoration: BoxDecoration(
         color: bg,
         border: Border.all(color: context.border),

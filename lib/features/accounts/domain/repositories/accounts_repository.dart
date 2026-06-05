@@ -1,12 +1,15 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
-import '../../data/models/response_models/get_ledger/get_ledger_model.dart';
-import '../../data/models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
+import '../entities/account_list_item_entity.dart';
+import '../entities/bank_cash_item_entity.dart';
+import '../entities/due_receipt_count_entity.dart';
+import '../entities/ledger_statement_entity.dart';
+import '../entities/party_list_item_entity.dart';
 
 abstract interface class AccountsRepository {
   Future<Either<Failure, dynamic>> performAction();
   Future<Either<Failure, dynamic>> accountLedger();
-  Future<Either<Failure, List<GetLedgerModel>>> getAccountStatements({
+  Future<Either<Failure, List<LedgerStatementEntity>>> getAccountStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
@@ -16,13 +19,15 @@ abstract interface class AccountsRepository {
     required int parentEntityId,
   });
   Future<Either<Failure, List<int>>> getPrintableFeatures();
-  Future<Either<Failure, DueReceiptCountModel>> getDueReceiptCount({
+  Future<Either<Failure, DueReceiptCountEntity>> getDueReceiptCount({
     required String dateType,
   });
-  Future<Either<Failure, List<GetLedgerModel>>> getPartyStatements({
+  Future<Either<Failure, List<LedgerStatementEntity>>> getPartyStatements({
     required String fromDate,
     required String toDate,
     int? partyId,
   });
-  Future<Either<Failure, dynamic>> bankAndCashPosition();
+  Future<Either<Failure, List<BankCashItemEntity>>> bankAndCashPosition();
+  Future<Either<Failure, List<AccountListItemEntity>>> getAccountsList();
+  Future<Either<Failure, List<PartyListItemEntity>>> getPartyList();
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import 'inventory_models.dart';
 import 'outline_chip.dart';
@@ -32,7 +33,7 @@ class StockReceivedSection extends StatelessWidget {
             border: .all(color: context.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: AppColors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -89,7 +90,7 @@ class StockReceivedSection extends StatelessWidget {
             border: Border.all(color: context.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: AppColors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -124,7 +125,7 @@ class StockReceivedSection extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: sel
                                   ? context.primary.withValues(alpha: 0.10)
-                                  : Colors.transparent,
+                                  : AppColors.transparent,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: sel
@@ -156,7 +157,7 @@ class StockReceivedSection extends StatelessWidget {
                           ? Center(
                               child: Text(
                                 'No stock received',
-                                style: TextStyle(color: Colors.grey),
+                                style: TextStyle(color: AppColors.grey400),
                               ),
                             )
                           : ListView.separated(

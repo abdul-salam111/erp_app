@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/const_exports.dart';
 import '../../../../core/services/current_user.dart';
+import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -12,14 +13,14 @@ class TodayOverviewSection extends StatelessWidget {
   const TodayOverviewSection({super.key});
 
   static const _meta = <_CardMeta>[
-    _CardMeta(label: AppConstants.recoveryDueTodayLabel, icon: Icons.monetization_on_outlined,  color: Color(0xFFFF9800)),
-    _CardMeta(label: AppConstants.receivedTodayLabel,    icon: Icons.attach_money_rounded,       color: Color(0xFF4CAF50)),
-    _CardMeta(label: AppConstants.expensesTodayLabel,    icon: Icons.credit_card_outlined,       color: Color(0xFFE53935)),
-    _CardMeta(label: AppConstants.purchasesTodayLabel,   icon: Icons.shopping_bag_outlined,      color: Color(0xFF9C27B0)),
-    _CardMeta(label: AppConstants.paymentsToMakeLabel,   icon: Icons.payment_outlined,           color: Color(0xFFFF9800)),
-    _CardMeta(label: AppConstants.paymentsMadeLabel,     icon: Icons.task_alt_outlined,          color: Color(0xFF00ACC1)),
-    _CardMeta(label: AppConstants.salesTodayLabel,       icon: Icons.shopping_cart_outlined,     color: Color(0xFF1B84FF)),
-    _CardMeta(label: AppConstants.newOrdersLabel,        icon: Icons.inventory_2_outlined,       color: Color(0xFF7B61FF)),
+    _CardMeta(label: AppConstants.recoveryDueTodayLabel, icon: Icons.monetization_on_outlined,  color: AppColors.orange),
+    _CardMeta(label: AppConstants.receivedTodayLabel,    icon: Icons.attach_money_rounded,       color: AppColors.green),
+    _CardMeta(label: AppConstants.expensesTodayLabel,    icon: Icons.credit_card_outlined,       color: AppColors.errorBright),
+    _CardMeta(label: AppConstants.purchasesTodayLabel,   icon: Icons.shopping_bag_outlined,      color: AppColors.purple),
+    _CardMeta(label: AppConstants.paymentsToMakeLabel,   icon: Icons.payment_outlined,           color: AppColors.orange),
+    _CardMeta(label: AppConstants.paymentsMadeLabel,     icon: Icons.task_alt_outlined,          color: AppColors.cyan),
+    _CardMeta(label: AppConstants.salesTodayLabel,       icon: Icons.shopping_cart_outlined,     color: AppColors.primary),
+    _CardMeta(label: AppConstants.newOrdersLabel,        icon: Icons.inventory_2_outlined,       color: AppColors.violet),
   ];
 
   String _formatDate(DateTime d) =>

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
+import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
@@ -29,31 +30,31 @@ class _AlertPanelBody extends StatelessWidget {
       title:    AppConstants.pendingQCTitle,
       subtitle: AppConstants.itemsReceivedButNotYetTitle,
       count:    5,
-      color:    Color(0xFFFFA000),
+      color:    AppColors.amber,
     ),
     _AlertItem(
       title:    AppConstants.lowStockTitle,
       subtitle: AppConstants.itemsBelowMinimumThresholdTitle,
       count:    3,
-      color:    Color(0xFFFF9800),
+      color:    AppColors.orange,
     ),
     _AlertItem(
       title:    AppConstants.overdueMaintenanceTitle,
       subtitle: AppConstants.scheduledMaintenanceIsPastDueTitle,
       count:    6,
-      color:    Color(0xFFE53935),
+      color:    AppColors.errorBright,
     ),
     _AlertItem(
       title:    AppConstants.pendingAssetRegistrationTitle,
       subtitle: AppConstants.gRNItemsAwaitingTitle,
       count:    3,
-      color:    Color(0xFF00ACC1),
+      color:    AppColors.cyan,
     ),
     _AlertItem(
       title:    AppConstants.delayedRepairTitle,
       subtitle: AppConstants.twoAssetsOverdueFromRepairTitle,
       count:    2,
-      color:    Color(0xFFE53935),
+      color:    AppColors.errorBright,
     ),
   ];
 
@@ -91,7 +92,7 @@ class _AlertPanelBody extends StatelessWidget {
                   border:       Border.all(color: context.border),
                   boxShadow: [
                     BoxShadow(
-                      color:     Colors.black.withValues(alpha: 0.05),
+                      color:     AppColors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
                       offset:    const Offset(0, 3),
                     ),
@@ -139,7 +140,7 @@ class _SummaryCard extends StatelessWidget {
         border:       Border.all(color: context.border),
         boxShadow: [
           BoxShadow(
-            color:     Colors.black.withValues(alpha: 0.05),
+            color:     AppColors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset:    const Offset(0, 3),
           ),
@@ -155,12 +156,12 @@ class _SummaryCard extends StatelessWidget {
                 width:  42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color:        const Color(0xFFE53935).withValues(alpha: 0.10),
+                  color:        AppColors.errorBright.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Iconsax.notification,
-                  color: Color(0xFFE53935),
+                  color: AppColors.errorBright,
                   size:  20,
                 ),
               ),
@@ -170,13 +171,13 @@ class _SummaryCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                   decoration: BoxDecoration(
-                    color:        const Color(0xFFE53935),
+                    color:        AppColors.errorBright,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     '$totalCount',
                     style: const TextStyle(
-                      color:      Colors.white,
+                      color:      AppColors.white,
                       fontSize:   10,
                       fontWeight: FontWeight.w700,
                       height:     1,

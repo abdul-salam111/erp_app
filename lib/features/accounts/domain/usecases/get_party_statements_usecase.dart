@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
-import '../../data/models/response_models/get_ledger/get_ledger_model.dart';
+import '../entities/ledger_statement_entity.dart';
 import '../repositories/accounts_repository.dart';
 
 class GetPartyStatementsParams {
@@ -15,13 +15,13 @@ class GetPartyStatementsParams {
 }
 
 class GetPartyStatementsUsecase
-    implements Usecase<List<GetLedgerModel>, GetPartyStatementsParams> {
+    implements Usecase<List<LedgerStatementEntity>, GetPartyStatementsParams> {
   final AccountsRepository repository;
 
   GetPartyStatementsUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<GetLedgerModel>>> call(
+  Future<Either<Failure, List<LedgerStatementEntity>>> call(
     GetPartyStatementsParams params,
   ) =>
       repository.getPartyStatements(

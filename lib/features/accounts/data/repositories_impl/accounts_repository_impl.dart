@@ -1,8 +1,13 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
-import '../../accounts_exports.dart';
+import '../../domain/entities/account_list_item_entity.dart';
+import '../../domain/entities/bank_cash_item_entity.dart';
+import '../../domain/entities/due_receipt_count_entity.dart';
+import '../../domain/entities/ledger_statement_entity.dart';
+import '../../domain/entities/party_list_item_entity.dart';
+import '../../domain/repositories/accounts_repository.dart';
 import '../datasources/remote_accounts_datasource.dart';
-
+import '../mappers/accounts_mappers.dart';
 
 class AccountsRepositoryImpl extends BaseRepository
     implements AccountsRepository {
@@ -21,18 +26,19 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<GetLedgerModel>>> getAccountStatements({
+  Future<Either<Failure, List<LedgerStatementEntity>>> getAccountStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
-  }) {
-    return execute(
+  }) async {
+    final result = await execute(
       call: () => dataSource.getAccountStatements(
         fromDate: fromDate,
         toDate: toDate,
         accountId: accountId,
       ),
     );
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
   }
 
   @override
@@ -54,33 +60,46 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, DueReceiptCountModel>> getDueReceiptCount({
+  Future<Either<Failure, DueReceiptCountEntity>> getDueReceiptCount({
     required String dateType,
-  }) {
-    return execute(
+  }) async {
+    final result = await execute(
       call: () => dataSource.getDueReceiptCount(dateType: dateType),
     );
+    return result.map((model) => model.toEntity());
   }
 
   @override
-  Future<Either<Failure, List<GetLedgerModel>>> getPartyStatements({
+  Future<Either<Failure, List<LedgerStatementEntity>>> getPartyStatements({
     required String fromDate,
     required String toDate,
     int? partyId,
-  }) {
-    return execute(
+  }) async {
+    final result = await execute(
       call: () => dataSource.getPartyStatements(
         fromDate: fromDate,
         toDate: toDate,
         partyId: partyId,
       ),
     );
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
   }
 
   @override
-  Future<Either<Failure, dynamic>> bankAndCashPosition() {
-    return execute(
-      call: () => dataSource.bankAndCashPosition(),
-    );
+  Future<Either<Failure, List<BankCashItemEntity>>> bankAndCashPosition() async {
+    final result = await execute(call: () => dataSource.bankAndCashPosition());
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<Failure, List<AccountListItemEntity>>> getAccountsList() async {
+    final result = await execute(call: () => dataSource.getAccountsList());
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<Failure, List<PartyListItemEntity>>> getPartyList() async {
+    final result = await execute(call: () => dataSource.getPartyList());
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
   }
 }

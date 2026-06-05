@@ -3,6 +3,9 @@ import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/constants/const_exports.dart';
 import '../models/response_models/get_ledger/get_ledger_model.dart';
 import '../models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
+import '../models/response_models/get_accounts_list/account_list_item_model.dart';
+import '../models/response_models/get_cash_and_bank_balance/bank_cash_item_model.dart';
+import '../models/response_models/get_party_list/party_list_item_model.dart';
 
 abstract interface class IRemoteAccountsDataSource {
   Future<dynamic> performAction();
@@ -23,7 +26,9 @@ abstract interface class IRemoteAccountsDataSource {
     required String toDate,
     int? partyId,
   });
-  Future<dynamic> bankAndCashPosition();
+  Future<List<BankCashItemModel>> bankAndCashPosition();
+  Future<List<AccountListItemModel>> getAccountsList();
+  Future<List<PartyListItemModel>> getPartyList();
 }
 
 class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
@@ -118,8 +123,35 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
   }
 
   @override
-  Future<dynamic> bankAndCashPosition() async {
-    // TODO: implement bankAndCashPosition API call
-    throw UnimplementedError('bankAndCashPosition not implemented');
+  Future<List<BankCashItemModel>> bankAndCashPosition() {
+    return postList<BankCashItemModel>(
+      url: ApiEndPoints.getCashAndBankBalance,
+      body: {},
+      parser: (json) =>
+          BankCashItemModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<List<AccountListItemModel>> getAccountsList() {
+    return postList<AccountListItemModel>(
+      url: ApiEndPoints.getAccountsList,
+      body: {},
+      parser: (json) =>
+          AccountListItemModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<List<PartyListItemModel>> getPartyList() {
+    return postList<PartyListItemModel>(
+      url: ApiEndPoints.getPartyList,
+      body: {},
+      parser: (json) =>
+          PartyListItemModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
   }
 }

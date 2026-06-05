@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../core/constants/app_enums.dart';
+import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -90,7 +91,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
             border: Border.all(color: context.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
+                color: AppColors.black.withValues(alpha: 0.06),
                 blurRadius: 14,
                 offset: const Offset(0, 4),
               ),
@@ -135,7 +136,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
                               ? AppConstants.hideDetails
                               : AppConstants.showDetails,
                           style: context.labelSmall.copyWith(
-                            color: Colors.white,
+                            color: AppColors.white,
                             fontWeight: .w600,
                           ),
                         ),
@@ -205,7 +206,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
                                       label: AppConstants.totalOrdersLabel,
                                       value: '$total',
                                       icon: Iconsax.bag_2,
-                                      color: const Color(0xFF1B84FF),
+                                      color: AppColors.primary,
                                     ),
                                   ),
                                   VerticalDivider(
@@ -218,7 +219,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
                                       label: AppConstants.completedLabel,
                                       value: '$completed',
                                       icon: Iconsax.tick_circle,
-                                      color: const Color(0xFF43A047),
+                                      color: AppColors.greenDark,
                                     ),
                                   ),
                                 ],
@@ -238,7 +239,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
                                           AppConstants.partialInProgressLabel,
                                       value: '$partial',
                                       icon: Iconsax.note_2,
-                                      color: const Color(0xFFFF9800),
+                                      color: AppColors.orange,
                                     ),
                                   ),
                                   VerticalDivider(
@@ -251,7 +252,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
                                       label: AppConstants.notStartedLabel,
                                       value: '$notStarted',
                                       icon: Iconsax.clock,
-                                      color: const Color(0xFF37474F),
+                                      color: AppColors.blueGreyDark,
                                     ),
                                   ),
                                 ],
@@ -354,7 +355,7 @@ class _OrdersTable extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       builder: (_) => _OrderDetailSheet(row: row),
     );
   }
@@ -404,7 +405,7 @@ class _OrdersTable extends StatelessWidget {
           final i = e.key;
           final row = e.value;
           return Material(
-            color: i.isOdd ? const Color(0xFFF9FAFB) : Colors.white,
+            color: i.isOdd ? AppColors.tableRowAlt : AppColors.white,
             child: InkWell(
               onTap: () => _showOrderDetail(context, row),
               child: Row(
@@ -475,10 +476,10 @@ class _OrderDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final lower = row.status.toLowerCase();
     final statusColor = lower.contains('complet')
-        ? const Color(0xFF43A047)
+        ? AppColors.greenDark
         : lower.contains('partial') || lower.contains('progress')
-        ? const Color(0xFFFF9800)
-        : const Color(0xFF37474F);
+        ? AppColors.orange
+        : AppColors.blueGreyDark;
     final progressFraction = (row.progress.clamp(0, 100)) / 100.0;
 
     return Container(
@@ -684,17 +685,17 @@ class _StatusBadge extends StatelessWidget {
     final lower = status.toLowerCase();
     final (bg, fg) = lower.contains('complet')
         ? (
-            const Color(0xFF43A047).withValues(alpha: 0.12),
-            const Color(0xFF43A047),
+            AppColors.greenDark.withValues(alpha: 0.12),
+            AppColors.greenDark,
           )
         : lower.contains('partial') || lower.contains('progress')
         ? (
-            const Color(0xFFFF9800).withValues(alpha: 0.12),
-            const Color(0xFFFF9800),
+            AppColors.orange.withValues(alpha: 0.12),
+            AppColors.orange,
           )
         : (
-            const Color(0xFF37474F).withValues(alpha: 0.10),
-            const Color(0xFF37474F),
+            AppColors.blueGreyDark.withValues(alpha: 0.10),
+            AppColors.blueGreyDark,
           );
 
     if (large) {
@@ -808,19 +809,19 @@ class _SemiDonut extends StatelessWidget {
                       sections: [
                         PieChartSectionData(
                           value: completedDeg,
-                          color: const Color(0xFF5C6BC0),
+                          color: AppColors.indigo,
                           showTitle: false,
                           radius: w * 0.12,
                         ),
                         PieChartSectionData(
                           value: remainingDeg,
-                          color: const Color(0xFFB3BAE8),
+                          color: AppColors.indigoLight,
                           showTitle: false,
                           radius: w * 0.12,
                         ),
                         PieChartSectionData(
                           value: 180,
-                          color: Colors.transparent,
+                          color: AppColors.transparent,
                           showTitle: false,
                           radius: w * 0.12,
                         ),
@@ -853,13 +854,13 @@ class _SemiDonut extends StatelessWidget {
                     mainAxisAlignment: .center,
                     children: [
                       _LegendItem(
-                        color: const Color(0xFF5C6BC0),
+                        color: AppColors.indigo,
                         label: AppConstants.completedLabel,
                         pct: '$completedPct %',
                       ),
                       const SizedBox(width: 24),
                       _LegendItem(
-                        color: const Color(0xFFB3BAE8),
+                        color: AppColors.indigoLight,
                         label: AppConstants.remainingLabel,
                         pct: '$remainingPct %',
                       ),

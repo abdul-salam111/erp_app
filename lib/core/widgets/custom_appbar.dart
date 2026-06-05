@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/colors.dart';
 import '../theme/theme_utils.dart';
 
 
@@ -12,7 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      iconTheme: const IconThemeData(color: Colors.white),
+      iconTheme: const IconThemeData(color: AppColors.white),
       title: Text(
         title,
         style: context.bodyLarge.copyWith(

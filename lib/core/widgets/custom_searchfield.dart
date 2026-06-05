@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../theme/theme_utils.dart';
@@ -28,7 +26,7 @@ class CustomSearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     // Default colors based on theme
     final defaultFillColor = fillColor ?? context.surface;
-    final defaultBorderColor = borderColor ?? context.grey300.withOpacity(0.6);
+    final defaultBorderColor = borderColor ?? context.grey300.withValues(alpha: 0.6);
 
     return TextField(
       autofocus: false,

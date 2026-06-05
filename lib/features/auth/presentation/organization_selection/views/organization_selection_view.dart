@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/services/session_manager.dart';
+import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../routes/route_names.dart';
@@ -144,12 +145,12 @@ class _Header extends StatelessWidget {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
+                    color: AppColors.white.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: const Icon(
                     Iconsax.buildings,
-                    color: Colors.white,
+                    color: AppColors.white,
                     size: 28,
                   ),
                 ),
@@ -158,7 +159,7 @@ class _Header extends StatelessWidget {
                   Text(
                     'Welcome, $userName',
                     style: context.bodyMedium.copyWith(
-                      color: Colors.white.withValues(alpha: 0.8),
+                      color: AppColors.white.withValues(alpha: 0.8),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -166,7 +167,7 @@ class _Header extends StatelessWidget {
                 Text(
                   'Select Organization',
                   style: context.headlineSmall.copyWith(
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontWeight: .w700,
                   ),
                 ),
@@ -174,7 +175,7 @@ class _Header extends StatelessWidget {
                 Text(
                   'Choose the organization you want to work with.',
                   style: context.bodySmall.copyWith(
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: AppColors.white.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -202,12 +203,12 @@ class _OrganizationCard extends StatelessWidget {
   });
 
   static const List<Color> _avatarColors = [
-    Color(0xFF1B84FF),
-    Color(0xFF7C3AED),
-    Color(0xFF059669),
-    Color(0xFFDC2626),
-    Color(0xFFD97706),
-    Color(0xFF0891B2),
+    AppColors.primary,
+    AppColors.deepPurple,
+    AppColors.teal,
+    AppColors.errorBright,
+    AppColors.amber,
+    AppColors.cyan,
   ];
 
   Color get _accentColor => _avatarColors[index % _avatarColors.length];

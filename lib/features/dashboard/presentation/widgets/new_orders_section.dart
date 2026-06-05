@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/const_exports.dart';
 import '../../../../core/services/current_user.dart';
+import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -70,7 +71,7 @@ class _NewOrdersShimmer extends StatelessWidget {
         border: Border.all(color: context.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: AppColors.black.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -147,7 +148,7 @@ class _OrdersList extends StatelessWidget {
         border: Border.all(color: context.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: AppColors.black.withValues(alpha: 0.06),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),

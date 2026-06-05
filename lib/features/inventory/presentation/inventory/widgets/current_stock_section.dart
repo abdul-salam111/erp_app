@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import 'inventory_models.dart';
 import 'outline_chip.dart';
@@ -12,7 +13,7 @@ class CurrentStockSection extends StatelessWidget {
     this.isLoading = false,
   });
 
-  static const _green = Color(0xFF4CAF50);
+  static const _green = AppColors.green;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class CurrentStockSection extends StatelessWidget {
             border: .all(color: context.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: AppColors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -82,7 +83,7 @@ class CurrentStockSection extends StatelessWidget {
             border: .all(color: context.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: AppColors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -94,7 +95,7 @@ class CurrentStockSection extends StatelessWidget {
               children: [
                 // ── Column headers ──
                 Container(
-                  color: const Color(0xFFF5F5F5),
+                  color: AppColors.surfaceHeader,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 10,
@@ -106,7 +107,7 @@ class CurrentStockSection extends StatelessWidget {
                         child: Text(
                           'Product',
                           style: context.labelSmall.copyWith(
-                            color: Colors.black87,
+                            color: AppColors.grey900,
                             fontWeight: .w700,
                           ),
                         ),
@@ -117,7 +118,7 @@ class CurrentStockSection extends StatelessWidget {
                           'Qty / Weight',
                           textAlign: .center,
                           style: context.labelSmall.copyWith(
-                            color: Colors.black87,
+                            color: AppColors.grey900,
                             fontWeight: .w700,
                           ),
                         ),
@@ -128,7 +129,7 @@ class CurrentStockSection extends StatelessWidget {
                           'Total',
                           textAlign: .end,
                           style: context.labelSmall.copyWith(
-                            color: Colors.black87,
+                            color: AppColors.grey900,
                             fontWeight: .w700,
                           ),
                         ),
@@ -149,7 +150,7 @@ class CurrentStockSection extends StatelessWidget {
                     child: Center(
                       child: Text(
                         'No stock data available',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: AppColors.grey400),
                       ),
                     ),
                   )
@@ -179,9 +180,9 @@ class CurrentStockTableRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final qtyColor =
-        _isNeg(item.qty) ? const Color(0xFFE53935) : context.textPrimary;
+        _isNeg(item.qty) ? AppColors.errorBright : context.textPrimary;
     final totalColor =
-        _isNeg(item.total) ? const Color(0xFFE53935) : context.textPrimary;
+        _isNeg(item.total) ? AppColors.errorBright : context.textPrimary;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),

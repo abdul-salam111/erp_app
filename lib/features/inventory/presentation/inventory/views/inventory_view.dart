@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
+import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
@@ -35,16 +36,16 @@ class _InventoryBodyState extends State<_InventoryBody> {
   static const _dateTypes = ['today', 'week', 'month'];
 
   static const _avatarColors = <Color>[
-    Color(0xFFFF9800),
-    Color(0xFF1B84FF),
-    Color(0xFFE53935),
-    Color(0xFF9C27B0),
-    Color(0xFF00BCD4),
-    Color(0xFF4CAF50),
-    Color(0xFFFF5722),
-    Color(0xFF607D8B),
-    Color(0xFF795548),
-    Color(0xFF009688),
+    AppColors.orange,
+    AppColors.primary,
+    AppColors.errorBright,
+    AppColors.purple,
+    AppColors.cyan,
+    AppColors.green,
+    AppColors.redAccent,
+    AppColors.blueGrey,
+    AppColors.brown,
+    AppColors.teal,
   ];
 
   @override
@@ -192,7 +193,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                         child: const Center(
                           child: Text(
                             'No stock data available',
-                            style: TextStyle(color: Colors.grey),
+                            style: TextStyle(color: AppColors.grey400),
                           ),
                         ),
                       ),
@@ -258,7 +259,7 @@ class _CurrentStockCardDelegate extends SliverPersistentHeaderDelegate {
   final double hPad;
   const _CurrentStockCardDelegate({required this.hPad});
 
-  static const _green = Color(0xFF4CAF50);
+  static const _green = AppColors.green;
   // 14 (top pad) + ~35 (row: text taller than icon) + 14 (bottom pad)
   // + 2 (border) + 8 (gap below card) + 3 (buffer) = 76
   static const double _height = 76.0;
@@ -281,7 +282,7 @@ class _CurrentStockCardDelegate extends SliverPersistentHeaderDelegate {
             border: Border.all(color: context.border),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: AppColors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -352,7 +353,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: hPad),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: AppColors.surfaceHeader,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(14),
           topRight: Radius.circular(14),
@@ -380,7 +381,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
                     child: Text(
                       'Product',
                       style: context.labelSmall.copyWith(
-                        color: Colors.black87,
+                        color: AppColors.grey900,
                         fontWeight: .w700,
                       ),
                     ),
@@ -391,7 +392,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
                       'Qty / Weight',
                       textAlign: .center,
                       style: context.labelSmall.copyWith(
-                        color: Colors.black87,
+                        color: AppColors.grey900,
                         fontWeight: .w700,
                       ),
                     ),
@@ -402,7 +403,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
                       'Total',
                       textAlign: .end,
                       style: context.labelSmall.copyWith(
-                        color: Colors.black87,
+                        color: AppColors.grey900,
                         fontWeight: .w700,
                       ),
                     ),

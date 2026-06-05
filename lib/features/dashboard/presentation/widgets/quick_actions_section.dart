@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../routes/route_exports.dart';
@@ -19,61 +20,61 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
     _MenuItem(
       label: AppConstants.alertsTitle,
       icon: Iconsax.notification,
-      color: Color(0xFFE53935),
+      color: AppColors.errorBright,
       routeName: RouteNames.alert_panel,
     ),
     _MenuItem(
       label: AppConstants.accountsLabel,
       icon: Iconsax.dollar_circle,
-      color: Color(0xFF1B84FF),
+      color: AppColors.primary,
       routeName: RouteNames.accounts,
     ),
     _MenuItem(
       label: AppConstants.inventoryLabel,
       icon: Iconsax.element_3,
-      color: Color(0xFF009688),
+      color: AppColors.teal,
       routeName: RouteNames.inventory,
     ),
     _MenuItem(
       label: AppConstants.purchaseLabel,
       icon: Iconsax.shopping_bag,
-      color: Color(0xFF9C27B0),
+      color: AppColors.purple,
       routeName: RouteNames.purchase_order,
     ),
     _MenuItem(
       label: AppConstants.salesLabel,
       icon: Iconsax.truck,
-      color: Color(0xFF4CAF50),
+      color: AppColors.green,
       routeName: RouteNames.sale_order,
     ),
     _MenuItem(
       label: AppConstants.productionLabel,
       icon: Iconsax.buildings_2,
-      color: Color(0xFFFF9800),
+      color: AppColors.orange,
       routeName: RouteNames.production,
     ),
     _MenuItem(
       label: AppConstants.analyticsLabel,
       icon: Iconsax.chart_2,
-      color: Color(0xFF7B1FA2),
+      color: AppColors.deepPurple,
       routeName: null,
     ),
     _MenuItem(
       label: AppConstants.securityLabel,
       icon: Iconsax.security_user,
-      color: Color(0xFF546E7A),
+      color: AppColors.blueGrey,
       routeName: null,
     ),
     _MenuItem(
       label: AppConstants.systemLabel,
       icon: Iconsax.setting_2,
-      color: Color(0xFF6D4C41),
+      color: AppColors.brown,
       routeName: null,
     ),
     _MenuItem(
       label: AppConstants.assetsLabel,
       icon: Iconsax.convert_3d_cube,
-      color: Color(0xFF00897B),
+      color: AppColors.tealDark,
       routeName: null,
     ),
   ];
@@ -170,7 +171,7 @@ class _QuickActionCard extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 shape: .circle,
                 boxShadow: [
                   BoxShadow(

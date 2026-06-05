@@ -1,17 +1,23 @@
 import 'package:bloc/bloc.dart';
 import '../../../../../core/constants/app_enums.dart';
+import '../../../../../core/shared/shared_exports.dart';
 import '../../../accounts_exports.dart';
 
 class PartyLedgerBloc extends Bloc<PartyLedgerEvent, PartyLedgerState> {
   final GetPartyStatementsUsecase getPartyStatementsUsecase;
   final GetInvoicePdfUsecase getInvoicePdfUsecase;
+  final GetPartyListUsecase getPartyListUsecase;
 
   PartyLedgerBloc({
     required this.getPartyStatementsUsecase,
     required this.getInvoicePdfUsecase,
+    required this.getPartyListUsecase,
   }) : super(const PartyLedgerState()) {
     on<PartyLedgerSubmitted>(_onSubmitted);
     on<PartyLedgerPrintRequested>(_onPrintRequested);
+    on<PartyLedgerPartiesFetched>(_onPartiesFetched);
+
+    add(const PartyLedgerPartiesFetched());
   }
 
   Future<void> _onSubmitted(
@@ -44,6 +50,24 @@ class PartyLedgerBloc extends Bloc<PartyLedgerEvent, PartyLedgerState> {
       (statements) => emit(state.copyWith(
         apiStatus: ApiStatus.SUCCESS,
         statements: statements,
+      )),
+    );
+  }
+
+  Future<void> _onPartiesFetched(
+    PartyLedgerPartiesFetched event,
+    Emitter<PartyLedgerState> emit,
+  ) async {
+    emit(state.copyWith(partiesStatus: ApiStatus.LOADING));
+    final result = await getPartyListUsecase(NoParams());
+    result.fold(
+      (failure) => emit(state.copyWith(
+        partiesStatus: ApiStatus.FAILURE,
+        message: failure.message,
+      )),
+      (parties) => emit(state.copyWith(
+        partiesStatus: ApiStatus.SUCCESS,
+        parties: parties,
       )),
     );
   }

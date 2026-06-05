@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:mantic_erp_app/core/theme/colors.dart';
 
 // ============================================================================
 // TOAST POSITION ENUM 📍
@@ -74,11 +75,11 @@ class AppToastsUtils {
       title: title ?? config.title,
       message: message,
       backgroundColor: backgroundColor ?? config.backgroundColor,
-      messageColor: textColor ?? Colors.white,
-      titleColor: textColor ?? Colors.white,
+      messageColor: textColor ?? AppColors.white,
+      titleColor: textColor ?? AppColors.white,
       icon: icon != null
-          ? Icon(icon, color: iconColor ?? Colors.white)
-          : Icon(config.icon, color: iconColor ?? Colors.white),
+          ? Icon(icon, color: iconColor ?? AppColors.white)
+          : Icon(config.icon, color: iconColor ?? AppColors.white),
       duration: duration,
       flushbarPosition: positionConfig.flushbarPosition,
       margin: positionConfig.margin,
@@ -89,14 +90,14 @@ class AppToastsUtils {
       forwardAnimationCurve: Curves.easeOutBack,
       reverseAnimationCurve: Curves.fastOutSlowIn,
       boxShadows: const [
-        BoxShadow(color: Colors.black26, offset: Offset(0, 2), blurRadius: 8),
+        BoxShadow(color: AppColors.black26, offset: Offset(0, 2), blurRadius: 8),
       ],
       mainButton: mainButton,
       onTap: onTap != null ? (_) => onTap() : null,
       showProgressIndicator: showProgressIndicator,
-      progressIndicatorBackgroundColor: Colors.white24,
+      progressIndicatorBackgroundColor: AppColors.white.withValues(alpha: 0.24),
       progressIndicatorValueColor: AlwaysStoppedAnimation<Color>(
-        textColor ?? Colors.white,
+        textColor ?? AppColors.white,
       ),
       maxWidth: maxWidth,
     )..show(context).then((_) => _currentFlushbar = null);
@@ -302,7 +303,7 @@ class AppToastsUtils {
           dismissCurrent();
           onActionPressed();
         },
-        child: Text(actionText, style: const TextStyle(color: Colors.white)),
+        child: Text(actionText, style: const TextStyle(color: AppColors.white)),
       ),
     );
   }
@@ -369,31 +370,31 @@ class AppToastsUtils {
       case ToastType.success:
         return _ToastConfig(
           title: 'Success',
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.success,
           icon: Icons.check_circle,
         );
       case ToastType.error:
         return _ToastConfig(
           title: 'Error',
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
           icon: Icons.error,
         );
       case ToastType.warning:
         return _ToastConfig(
           title: 'Warning',
-          backgroundColor: Colors.orange,
+          backgroundColor: AppColors.orange,
           icon: Icons.warning,
         );
       case ToastType.info:
         return _ToastConfig(
           title: 'Info',
-          backgroundColor: Colors.blue,
+          backgroundColor: AppColors.info,
           icon: Icons.info,
         );
       case ToastType.custom:
         return _ToastConfig(
           title: '',
-          backgroundColor: Colors.grey,
+          backgroundColor: AppColors.grey400,
           icon: Icons.notifications,
         );
     }
@@ -718,9 +719,9 @@ class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
                 context,
                 message: 'Fully customized toast!',
                 title: 'Custom',
-                backgroundColor: Colors.purple,
+                backgroundColor: AppColors.purple,
                 icon: Icons.star,
-                iconColor: Colors.amber,
+                iconColor: AppColors.amber,
                 position: ToastPosition.bottom,
                 duration: const Duration(seconds: 4),
                 onTap: () {

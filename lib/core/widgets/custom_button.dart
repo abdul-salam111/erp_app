@@ -24,14 +24,14 @@ class CustomButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.backgroundColor = AppColors.primary,
-    this.textColor = Colors.white,
+    this.textColor = AppColors.white,
     this.radius = 50.0,
     this.padding = 0.0,
     this.fontsize = 16,
     this.elevation = 4.0,
     this.icon,
     this.iconSize = 24.0,
-    this.iconColor = Colors.white,
+    this.iconColor = AppColors.white,
     this.isLoading = false,
     this.size = const Size(double.infinity, 50),
   });
@@ -41,7 +41,7 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
-        shadowColor: Colors.transparent,
+        shadowColor: AppColors.transparent,
         backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius),

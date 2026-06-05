@@ -1,15 +1,16 @@
 import 'package:bloc/bloc.dart';
-
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../accounts_exports.dart';
 
-class BankAndCashPositionBloc extends Bloc<BankAndCashPositionEvent, BankAndCashPositionState>
+class BankAndCashPositionBloc
+    extends Bloc<BankAndCashPositionEvent, BankAndCashPositionState>
     with UsecaseExecuterMixin {
   final BankAndCashPositionUsecase bankAndCashPositionUsecase;
 
   BankAndCashPositionBloc({required this.bankAndCashPositionUsecase})
       : super(const BankAndCashPositionState()) {
     on<BankAndCashPositionSubmitted>(_onBankAndCashPositionSubmitted);
+    add(const BankAndCashPositionSubmitted());
   }
 
   Future<void> _onBankAndCashPositionSubmitted(
@@ -20,8 +21,11 @@ class BankAndCashPositionBloc extends Bloc<BankAndCashPositionEvent, BankAndCash
       emit: emit,
       currentState: state,
       usecase: () => bankAndCashPositionUsecase(NoParams()),
-      stateBuilder: (status, {data, error}) =>
-          state.copyWith(apiStatus: status, data: data, message: error),
+      stateBuilder: (status, {data, error}) => state.copyWith(
+        apiStatus: status,
+        items: data ?? state.items,
+        message: error,
+      ),
     );
   }
 }

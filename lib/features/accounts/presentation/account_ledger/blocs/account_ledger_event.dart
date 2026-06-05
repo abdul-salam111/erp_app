@@ -22,6 +22,10 @@ class AccountLedgerSubmitted extends AccountLedgerEvent {
   List<Object?> get props => [fromDate, toDate, accountId];
 }
 
+class AccountLedgerAccountsFetched extends AccountLedgerEvent {
+  const AccountLedgerAccountsFetched();
+}
+
 class AccountLedgerPrintRequested extends AccountLedgerEvent {
   final int featureId;
   final int parentEntityId;

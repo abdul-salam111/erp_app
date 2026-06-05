@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/colors.dart';
 import '../theme/theme_utils.dart';
 
 class OverviewStatCard extends StatelessWidget {
@@ -26,7 +27,7 @@ class OverviewStatCard extends StatelessWidget {
 
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: AppColors.black.withValues(alpha: 0.03),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

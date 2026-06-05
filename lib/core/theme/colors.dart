@@ -142,4 +142,54 @@ class AppColors {
 
   /// Transparent
   static const Color transparent = Colors.transparent;
+
+  // ============================================
+  // MODULE / ACCENT COLORS
+  // ============================================
+
+  static const Color orange = Color(0xFFFF9800);
+  static const Color amber = Color(0xFFFFA000);
+  static const Color teal = Color(0xFF009688);
+  static const Color tealDark = Color(0xFF00897B);
+  static const Color cyan = Color(0xFF00ACC1);
+  static const Color purple = Color(0xFF9C27B0);
+  static const Color deepPurple = Color(0xFF7B1FA2);
+  static const Color violet = Color(0xFF7B61FF);
+  static const Color indigo = Color(0xFF5C6BC0);
+  static const Color indigoLight = Color(0xFFB3BAE8);
+  static const Color green = Color(0xFF4CAF50);
+  static const Color greenDark = Color(0xFF43A047);
+  static const Color blueGrey = Color(0xFF546E7A);
+  static const Color blueGreyDark = Color(0xFF37474F);
+  static const Color brown = Color(0xFF6D4C41);
+  static const Color errorBright = Color(0xFFE53935);
+  static const Color redAccent = Color(0xFFFF5252);
+
+  // ============================================
+  // FINANCIAL COLORS
+  // ============================================
+
+  static const Color debitRed = Color(0xFFD63A3A);
+  static const Color creditGreen = Color(0xFF1B8A5A);
+  static const Color creditGreenDark = Color(0xFF2E7D32);
+  static const Color debitContainer = Color(0xFFFFE8E8);
+  static const Color creditContainer = Color(0xFFDCF5E7);
+
+  // ============================================
+  // CHART COLORS
+  // ============================================
+
+  static const Color chartPrimary = Color(0xFF6366F1);
+  static const Color chartSecondary = Color(0xFFC62828);
+  static const Color chartBg = Color(0xFFEEEEFF);
+
+  // ============================================
+  // SURFACE VARIANTS
+  // ============================================
+
+  static const Color surfaceHeader = Color(0xFFF5F5F5);
+  static const Color tableRowAlt = Color(0xFFF9FAFB);
+  static const Color shimmerBase = Color(0xFFE8E8E8);
+  static const Color black26 = Color(0x42000000);
+  static const Color black54 = Color(0x8A000000);
 }

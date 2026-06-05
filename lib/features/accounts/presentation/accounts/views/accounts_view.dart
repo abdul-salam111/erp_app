@@ -40,17 +40,17 @@ class _AccountsBodyState extends State<_AccountsBody>
     OverviewItem(
       label: AppConstants.totalReceivedTodayLabel,
       icon: Icons.monetization_on_outlined,
-      color: Color(0xFF4CAF50),
+      color: AppColors.green,
     ),
     OverviewItem(
       label: AppConstants.totalPostponeLabel,
       icon: Icons.attach_money_rounded,
-      color: Color(0xFFE53935),
+      color: AppColors.errorBright,
     ),
     OverviewItem(
       label: AppConstants.totalDueTodayLabel,
       icon: Icons.credit_card_outlined,
-      color: Color(0xFFFF9800),
+      color: AppColors.orange,
     ),
   ];
 
@@ -323,7 +323,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                         const Divider(
                           height: 1,
                           thickness: 1,
-                          color: Color(0xFFEDEDED),
+                          color: AppColors.grey200,
                         ),
                         const SizedBox(height: 14),
                         BlocBuilder<AccountsBloc, AccountsState>(

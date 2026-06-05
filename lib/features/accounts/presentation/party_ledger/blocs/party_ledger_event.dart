@@ -22,6 +22,10 @@ class PartyLedgerSubmitted extends PartyLedgerEvent {
   List<Object?> get props => [fromDate, toDate, partyId];
 }
 
+class PartyLedgerPartiesFetched extends PartyLedgerEvent {
+  const PartyLedgerPartiesFetched();
+}
+
 class PartyLedgerPrintRequested extends PartyLedgerEvent {
   final int featureId;
   final int parentEntityId;

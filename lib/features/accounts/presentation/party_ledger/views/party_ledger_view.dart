@@ -34,17 +34,9 @@ class _PartyLedgerBody extends StatefulWidget {
 }
 
 class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
-  static const _parties = <_PartyItem>[
-    _PartyItem(id: 1, name: 'HR Trader & Commission', group: 'Customer'),
-    _PartyItem(id: 2, name: 'Pepsico Int',             group: 'Customer'),
-    _PartyItem(id: 3, name: 'Nawab Khan',              group: 'Customer'),
-    _PartyItem(id: 4, name: 'Hilal Retail Brands',     group: 'Customer'),
-    _PartyItem(id: 5, name: 'Al-Madina Traders',       group: 'Customer'),
-    _PartyItem(id: 6, name: 'Zafar Brothers',          group: 'Customer'),
-  ];
-
   late DateTime _fromDate;
   late DateTime _toDate;
+  int? _selectedPartyId;
   late final TextEditingController _partyController;
 
   @override
@@ -52,8 +44,7 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
     super.initState();
     _toDate = DateTime.now();
     _fromDate = _toDate.subtractMonths(1);
-    _partyController = TextEditingController(text: _parties.first.name);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
+    _partyController = TextEditingController();
   }
 
   @override
@@ -63,16 +54,24 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
   }
 
   void _fetch() {
+    if (_selectedPartyId == null) {
+      AppToastsUtils.showErrorTop(context, 'Please select a party first');
+      return;
+    }
     context.read<PartyLedgerBloc>().add(
       PartyLedgerSubmitted(
         fromDate: _fromDate.format('yyyy-MM-dd'),
         toDate: _toDate.format('yyyy-MM-dd'),
-        partyId: 206,
+        partyId: _selectedPartyId,
       ),
     );
   }
 
-  void _onPartyChanged(String _) {}
+  void _onPartyChanged(String name) {
+    final parties = context.read<PartyLedgerBloc>().state.parties;
+    final match = parties.where((p) => p.name == name).firstOrNull;
+    if (match != null) setState(() => _selectedPartyId = match.id);
+  }
 
   Future<void> _pickDate(bool isFrom) async {
     final picked = await showCompactDatePicker(
@@ -109,22 +108,31 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
         appBar: CustomAppBar(title: AppConstants.partyLedgerLabel),
         body: Column(
           children: [
-            _FilterForm(
-              fromDate: _fromDate,
-              toDate: _toDate,
-              partyItems: _parties.map((p) => p.name).toList(),
-              partySubtitles: _parties.map((p) => p.group).toList(),
-              partyController: _partyController,
-              onPartyChanged: _onPartyChanged,
-              onPickFrom: () => _pickDate(true),
-              onPickTo: () => _pickDate(false),
-              onView: _fetch,
+            BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
+              buildWhen: (p, c) =>
+                  p.parties != c.parties ||
+                  p.partiesStatus != c.partiesStatus,
+              builder: (context, state) => _FilterForm(
+                fromDate: _fromDate,
+                toDate: _toDate,
+                partyItems: state.parties.map((p) => p.name).toList(),
+                partySubtitles: state.parties.map((p) => p.partyType).toList(),
+                isLoadingParties: state.partiesStatus == ApiStatus.INITIAL ||
+                    state.partiesStatus == ApiStatus.LOADING,
+                partyController: _partyController,
+                onPartyChanged: _onPartyChanged,
+                onPickFrom: () => _pickDate(true),
+                onPickTo: () => _pickDate(false),
+                onView: _fetch,
+              ),
             ),
             Expanded(
               child: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
                 builder: (context, state) {
-                  if (state.apiStatus == ApiStatus.LOADING ||
-                      state.apiStatus == ApiStatus.INITIAL) {
+                  if (state.apiStatus == ApiStatus.INITIAL) {
+                    return const _IdleState();
+                  }
+                  if (state.apiStatus == ApiStatus.LOADING) {
                     return const _ShimmerBody();
                   }
                   if (state.apiStatus == ApiStatus.FAILURE) {
@@ -148,13 +156,6 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
   }
 }
 
-class _PartyItem {
-  final int id;
-  final String name;
-  final String group;
-  const _PartyItem({required this.id, required this.name, required this.group});
-}
-
 // ─── Filter form ──────────────────────────────────────────────────────────────
 
 class _FilterForm extends StatelessWidget {
@@ -162,6 +163,7 @@ class _FilterForm extends StatelessWidget {
   final DateTime toDate;
   final List<String> partyItems;
   final List<String>? partySubtitles;
+  final bool isLoadingParties;
   final TextEditingController partyController;
   final ValueChanged<String> onPartyChanged;
   final VoidCallback onPickFrom;
@@ -173,6 +175,7 @@ class _FilterForm extends StatelessWidget {
     required this.toDate,
     required this.partyItems,
     this.partySubtitles,
+    this.isLoadingParties = false,
     required this.partyController,
     required this.onPartyChanged,
     required this.onPickFrom,
@@ -195,13 +198,16 @@ class _FilterForm extends StatelessWidget {
         children: [
           _FormLabel(text: 'Party'),
           const SizedBox(height: 6),
-          SearchableDropdown(
-            items: partyItems,
-            subtitles: partySubtitles,
-            controller: partyController,
-            hintText: 'Select Party',
-            onChanged: onPartyChanged,
-          ),
+          if (isLoadingParties)
+            const ShimmerBox(height: 56, radius: 10)
+          else
+            SearchableDropdown(
+              items: partyItems,
+              subtitles: partySubtitles,
+              controller: partyController,
+              hintText: 'Select Party',
+              onChanged: onPartyChanged,
+            ),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -243,7 +249,7 @@ class _FilterForm extends StatelessWidget {
               onPressed: onView,
               style: ElevatedButton.styleFrom(
                 backgroundColor: context.primary,
-                foregroundColor: Colors.white,
+                foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: .circular(10),
                 ),
@@ -253,7 +259,7 @@ class _FilterForm extends StatelessWidget {
               child: Text(
                 'View',
                 style: context.bodySmall.copyWith(
-                  color: Colors.white,
+                  color: AppColors.white,
                   fontWeight: .w600,
                   fontSize: 14,
                 ),
@@ -332,7 +338,7 @@ class _FieldTile extends StatelessWidget {
 // ─── Statements body ──────────────────────────────────────────────────────────
 
 class _StatementsBody extends StatelessWidget {
-  final List<GetLedgerModel> statements;
+  final List<LedgerStatementEntity> statements;
   const _StatementsBody({required this.statements});
 
   @override
@@ -379,7 +385,7 @@ class _SectionLabel extends StatelessWidget {
 // ─── Year card ────────────────────────────────────────────────────────────────
 
 class _YearCard extends StatefulWidget {
-  final GetLedgerModel yearData;
+  final LedgerStatementEntity yearData;
   const _YearCard({required this.yearData});
 
   @override
@@ -413,7 +419,7 @@ class _YearCardState extends State<_YearCard> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
+                color: AppColors.grey50,
                 borderRadius: _expanded
                     ? const BorderRadius.vertical(top: Radius.circular(10))
                     : .circular(10),
@@ -476,7 +482,7 @@ class _YearCardState extends State<_YearCard> {
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
                       size: 20,
-                      color: Colors.grey.shade400,
+                      color: AppColors.grey400,
                     ),
                   ),
                 ],
@@ -522,7 +528,7 @@ class _YearCardState extends State<_YearCard> {
 // ─── Ledger type section ──────────────────────────────────────────────────────
 
 class _LedgerTypeSection extends StatelessWidget {
-  final LedgerType ledgerType;
+  final LedgerTypeEntity ledgerType;
   const _LedgerTypeSection({required this.ledgerType});
 
   @override
@@ -536,7 +542,7 @@ class _LedgerTypeSection extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color: AppColors.grey100,
               border: Border(top: BorderSide(color: context.border)),
             ),
             child: Text(
@@ -558,7 +564,7 @@ class _LedgerTypeSection extends StatelessWidget {
 // ─── Ledger row ───────────────────────────────────────────────────────────────
 
 class _LedgerRow extends StatelessWidget {
-  final Ledger ledger;
+  final LedgerEntryEntity ledger;
   const _LedgerRow({required this.ledger});
 
   @override
@@ -581,16 +587,16 @@ class _LedgerRow extends StatelessWidget {
     final Color iconColor;
     final IconData iconData;
     if (isOpening) {
-      iconBg = Colors.grey.shade100;
-      iconColor = Colors.grey.shade500;
+      iconBg = AppColors.grey100;
+      iconColor = AppColors.grey500;
       iconData = Icons.horizontal_rule_rounded;
     } else if (isDrOnly) {
-      iconBg = const Color(0xFFFFE8E8);
-      iconColor = const Color(0xFFD63A3A);
+      iconBg = AppColors.debitContainer;
+      iconColor = AppColors.debitRed;
       iconData = Icons.arrow_upward_rounded;
     } else if (isCrOnly) {
-      iconBg = const Color(0xFFDCF5E7);
-      iconColor = const Color(0xFF1B8A5A);
+      iconBg = AppColors.creditContainer;
+      iconColor = AppColors.creditGreen;
       iconData = Icons.arrow_downward_rounded;
     } else {
       iconBg = context.primary.withValues(alpha: 0.12);
@@ -603,13 +609,13 @@ class _LedgerRow extends StatelessWidget {
     if (isOpening) {
       final val = drAmt > 0 ? drAmt : crAmt;
       amountText = val.formatPrice();
-      amountColor = Colors.grey.shade600;
+      amountColor = AppColors.grey600;
     } else if (isDrOnly) {
       amountText = drAmt.formatPrice();
-      amountColor = const Color(0xFFD63A3A);
+      amountColor = AppColors.debitRed;
     } else if (isCrOnly) {
       amountText = crAmt.formatPrice();
-      amountColor = const Color(0xFF1B8A5A);
+      amountColor = AppColors.creditGreen;
     } else {
       amountText = '${drAmt.formatPrice()} / ${crAmt.formatPrice()}';
       amountColor = context.textPrimary;
@@ -724,7 +730,7 @@ class _LedgerRow extends StatelessWidget {
 // ─── Ledger detail dialog ─────────────────────────────────────────────────────
 
 class _LedgerDetailDialog extends StatelessWidget {
-  final Ledger ledger;
+  final LedgerEntryEntity ledger;
   final String date;
   final String dr;
   final String cr;
@@ -745,13 +751,13 @@ class _LedgerDetailDialog extends StatelessWidget {
     final Color accentColor;
     final IconData directionIcon;
     if (isOpening) {
-      accentColor = Colors.grey.shade500;
+      accentColor = AppColors.grey500;
       directionIcon = Icons.horizontal_rule_rounded;
     } else if (hasDebit && !hasCredit) {
-      accentColor = const Color(0xFFD63A3A);
+      accentColor = AppColors.debitRed;
       directionIcon = Icons.arrow_upward_rounded;
     } else if (!hasDebit && hasCredit) {
-      accentColor = const Color(0xFF1B8A5A);
+      accentColor = AppColors.creditGreen;
       directionIcon = Icons.arrow_downward_rounded;
     } else {
       accentColor = context.primary;
@@ -767,7 +773,7 @@ class _LedgerDetailDialog extends StatelessWidget {
                 : 'Dr / Cr Transaction';
 
     return Dialog(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: .circular(20)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: Padding(
@@ -817,16 +823,16 @@ class _LedgerDetailDialog extends StatelessWidget {
               _AmountCard(
                 label: 'Opening Balance',
                 amount: 'Rs. ${hasDebit ? dr : cr}',
-                bg: Colors.grey.shade100,
-                color: Colors.grey.shade700,
+                bg: AppColors.grey100,
+                color: AppColors.grey700,
               ),
             ] else ...[
               if (hasDebit) ...[
                 _AmountCard(
                   label: 'Debit',
                   amount: 'Rs. $dr',
-                  bg: const Color(0xFFFFE8E8),
-                  color: const Color(0xFFD63A3A),
+                  bg: AppColors.debitContainer,
+                  color: AppColors.debitRed,
                 ),
                 if (hasCredit) const SizedBox(height: 10),
               ],
@@ -834,8 +840,8 @@ class _LedgerDetailDialog extends StatelessWidget {
                 _AmountCard(
                   label: 'Credit',
                   amount: 'Rs. $cr',
-                  bg: const Color(0xFFDCF5E7),
-                  color: const Color(0xFF1B8A5A),
+                  bg: AppColors.creditContainer,
+                  color: AppColors.creditGreen,
                 ),
             ],
             const SizedBox(height: 16),
@@ -1010,6 +1016,37 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
+// ─── Idle state ───────────────────────────────────────────────────────────────
+
+class _IdleState extends StatelessWidget {
+  const _IdleState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: .min,
+        children: [
+          Icon(Iconsax.document_text, size: 48, color: AppColors.grey300),
+          const SizedBox(height: 12),
+          Text(
+            'No statements yet',
+            style: context.bodyMedium.copyWith(
+              fontWeight: .w500,
+              color: context.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Select a party and tap View',
+            style: context.bodySmall.copyWith(color: AppColors.grey400),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
 class _EmptyState extends StatelessWidget {
@@ -1021,7 +1058,7 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          Icon(Icons.search_off_rounded, size: 48, color: Colors.grey.shade300),
+          Icon(Icons.search_off_rounded, size: 48, color: AppColors.grey300),
           const SizedBox(height: 12),
           Text(
             'No records found',
@@ -1033,7 +1070,7 @@ class _EmptyState extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             'Try selecting a different date range',
-            style: context.bodySmall.copyWith(color: Colors.grey.shade400),
+            style: context.bodySmall.copyWith(color: AppColors.grey400),
           ),
         ],
       ),
@@ -1055,7 +1092,7 @@ class _ErrorBody extends StatelessWidget {
         mainAxisSize: .min,
         children: [
           Icon(Icons.error_outline_rounded,
-              size: 48, color: Colors.grey.shade300),
+              size: 48, color: AppColors.grey300),
           const SizedBox(height: 12),
           Text(
             message,
@@ -1067,7 +1104,7 @@ class _ErrorBody extends StatelessWidget {
             onPressed: onRetry,
             style: ElevatedButton.styleFrom(
               backgroundColor: context.primary,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.white,
               shape: RoundedRectangleBorder(borderRadius: .circular(10)),
               elevation: 0,
             ),

@@ -32,4 +32,10 @@ class ApiEndPoints {
       '$baseUrl/core/MBLDashboard/GetStockReceived';
   static const String getCurrentStock =
       '$baseUrl/core/MBLDashboard/GetCurrentStock';
+  static const String getAccountsList =
+      '$baseUrl/accounts/account/GetListV2';
+  static const String getPartyList =
+      '$baseUrl/accounts/party/GetListV2';
+  static const String getCashAndBankBalance =
+      '$baseUrl/core/MBLDashboard/GetCashAndBankBalance';
 }

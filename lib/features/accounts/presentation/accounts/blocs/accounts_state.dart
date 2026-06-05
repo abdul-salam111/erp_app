@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/const_exports.dart';
-import '../../../data/models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
+import '../../../domain/entities/due_receipt_count_entity.dart';
 
 enum FilterType { today, oldest }
 
@@ -10,7 +10,7 @@ class AccountsState extends Equatable {
   final ApiStatus apiStatus;
   final bool todayOverviewExpanded;
   final FilterType selectedFilter;
-  final DueReceiptCountModel? recoveryDue;
+  final DueReceiptCountEntity? recoveryDue;
   final ApiStatus recoveryDueStatus;
   final String? recoveryDueError;
 
@@ -31,7 +31,7 @@ class AccountsState extends Equatable {
     ApiStatus? apiStatus,
     bool? todayOverviewExpanded,
     FilterType? selectedFilter,
-    DueReceiptCountModel? recoveryDue,
+    DueReceiptCountEntity? recoveryDue,
     ApiStatus? recoveryDueStatus,
     String? recoveryDueError,
   }) {
@@ -49,7 +49,13 @@ class AccountsState extends Equatable {
 
   @override
   List<Object?> get props => [
-    data, message, apiStatus, todayOverviewExpanded,
-    selectedFilter, recoveryDue, recoveryDueStatus, recoveryDueError,
-  ];
+        data,
+        message,
+        apiStatus,
+        todayOverviewExpanded,
+        selectedFilter,
+        recoveryDue,
+        recoveryDueStatus,
+        recoveryDueError,
+      ];
 }

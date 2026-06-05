@@ -1,30 +1,30 @@
 import 'package:equatable/equatable.dart';
-
 import '../../../../../core/constants/app_enums.dart';
+import '../../../domain/entities/bank_cash_item_entity.dart';
 
 class BankAndCashPositionState extends Equatable {
-  final dynamic data;
+  final List<BankCashItemEntity> items;
   final String? message;
   final ApiStatus apiStatus;
 
   const BankAndCashPositionState({
-    this.data,
+    this.items = const [],
     this.message,
     this.apiStatus = ApiStatus.INITIAL,
   });
 
   BankAndCashPositionState copyWith({
-    dynamic data,
+    List<BankCashItemEntity>? items,
     String? message,
     ApiStatus? apiStatus,
   }) {
     return BankAndCashPositionState(
-      data: data ?? this.data,
+      items: items ?? this.items,
       message: message ?? this.message,
       apiStatus: apiStatus ?? this.apiStatus,
     );
   }
 
   @override
-  List<Object?> get props => [data, message, apiStatus];
+  List<Object?> get props => [items, message, apiStatus];
 }

@@ -12,6 +12,8 @@ import 'app_dependencies.dart';
 import '../../features/accounts/domain/usecases/get_party_statements_usecase.dart';
 import '../../features/accounts/presentation/party_ledger/blocs/party_ledger_bloc.dart';
 import '../../features/accounts/domain/usecases/bank_and_cash_position_usecase.dart';
+import '../../features/accounts/domain/usecases/get_accounts_list_usecase.dart';
+import '../../features/accounts/domain/usecases/get_party_list_usecase.dart';
 import '../../features/accounts/presentation/bank_and_cash_position/blocs/bank_and_cash_position_bloc.dart';
 
 Future<void> registerAccounts() async {
@@ -41,6 +43,12 @@ Future<void> registerAccounts() async {
   sl.registerLazySingleton<GetDueReceiptCountUsecase>(
     () => GetDueReceiptCountUsecase(repository: sl()),
   );
+  sl.registerLazySingleton<GetAccountsListUsecase>(
+    () => GetAccountsListUsecase(repository: sl()),
+  );
+  sl.registerLazySingleton<GetPartyListUsecase>(
+    () => GetPartyListUsecase(repository: sl()),
+  );
 
   // BLoCs
   sl.registerFactory<AccountsBloc>(
@@ -53,6 +61,7 @@ Future<void> registerAccounts() async {
     () => AccountLedgerBloc(
       getAccountStatementsUsecase: sl(),
       getInvoicePdfUsecase: sl(),
+      getAccountsListUsecase: sl(),
     ),
   );
   // UseCase — PartyLedger
@@ -64,6 +73,7 @@ Future<void> registerAccounts() async {
     () => PartyLedgerBloc(
       getPartyStatementsUsecase: sl(),
       getInvoicePdfUsecase: sl(),
+      getPartyListUsecase: sl(),
     ),
   );
   // UseCase — BankAndCashPosition

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../routes/route_exports.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
@@ -219,7 +220,7 @@ class _ExpandableTileState extends State<_ExpandableTile> {
             duration: const Duration(milliseconds: 250),
             color: _expanded
                 ? context.primary.withValues(alpha: 0.08)
-                : Colors.transparent,
+                : AppColors.transparent,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
               child: Row(
@@ -473,14 +474,14 @@ class _DrawerHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: .circle,
                     border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.45),
+                      color: AppColors.white.withValues(alpha: 0.45),
                       width: 2.5,
                     ),
-                    color: Colors.white.withValues(alpha: 0.15),
+                    color: AppColors.white.withValues(alpha: 0.15),
                   ),
                   child: const Icon(
                     Iconsax.profile_circle,
-                    color: Colors.white,
+                    color: AppColors.white,
                     size:  28,
                   ),
                 ),
@@ -494,7 +495,7 @@ class _DrawerHeader extends StatelessWidget {
                       Text(
                         userName,
                         style: context.titleSmall.copyWith(
-                          color:      Colors.white,
+                          color:      AppColors.white,
                           fontWeight: .w700,
                         ),
                       ),
@@ -506,7 +507,7 @@ class _DrawerHeader extends StatelessWidget {
                           vertical:   4,
                         ),
                         decoration: BoxDecoration(
-                          color:        Colors.white.withValues(alpha: 0.20),
+                          color:        AppColors.white.withValues(alpha: 0.20),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -514,14 +515,14 @@ class _DrawerHeader extends StatelessWidget {
                           children: [
                             Icon(
                               Iconsax.buildings,
-                              color: Colors.white.withValues(alpha: 0.90),
+                              color: AppColors.white.withValues(alpha: 0.90),
                               size:  11,
                             ),
                             const SizedBox(width: 5),
                             Text(
                               orgName,
                               style: context.labelSmall.copyWith(
-                                color:      Colors.white.withValues(alpha: 0.92),
+                                color:      AppColors.white.withValues(alpha: 0.92),
                                 fontWeight: .w600,
                                 fontSize:   11,
                               ),
@@ -556,7 +557,7 @@ class _Circle extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: .circle,
-        color: Colors.white.withValues(alpha: opacity),
+        color: AppColors.white.withValues(alpha: opacity),
       ),
     );
   }

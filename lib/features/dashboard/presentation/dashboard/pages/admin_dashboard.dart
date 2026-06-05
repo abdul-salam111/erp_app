@@ -5,6 +5,7 @@ import 'package:mantic_erp_app/core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/routes/route_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/services/current_user.dart';
+import '../../../../../core/theme/colors.dart';
 import '../../widgets/dashboard_widgets.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
@@ -17,7 +18,7 @@ class AdminDashboard extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         toolbarHeight: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.transparent,
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light,
@@ -30,25 +31,25 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.dashboardLabel,
             icon: Iconsax.home_2,
-            color: Color(0xFF1B84FF),
+            color: AppColors.primary,
             routeName: RouteNames.alert_panel,
           ),
           DrawerItem.tile(
             label: AppConstants.alertsTitle,
             icon: Iconsax.notification,
-            color: Color(0xFFE53935),
+            color: AppColors.errorBright,
             routeName: RouteNames.alert_panel,
           ),
           DrawerItem.tile(
             label: AppConstants.profileLabel,
             icon: Iconsax.profile_circle,
-            color: Color(0xFF00897B),
+            color: AppColors.tealDark,
             routeName: RouteNames.profile,
           ),
           DrawerItem.tile(
             label: AppConstants.scanDocumentLabel,
             icon: Iconsax.scan,
-            color: Color(0xFF546E7A),
+            color: AppColors.blueGrey,
             routeName: RouteNames.scan_document,
           ),
           DrawerItem.divider(),
@@ -56,50 +57,50 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.accountsLabel,
             icon: Iconsax.dollar_circle,
-            color: Color(0xFF1B84FF),
+            color: AppColors.primary,
             children: [
               DrawerItem.tile(
                 label: AppConstants.accountStatementsLabel,
                 icon: Iconsax.document_text,
-                color: Color(0xFF1B84FF),
+                color: AppColors.primary,
                 routeName: RouteNames.account_ledger,
               ),
               DrawerItem.tile(
                 label: AppConstants.partyStatementsLabel,
                 icon: Iconsax.people,
-                color: Color(0xFF9C27B0),
+                color: AppColors.purple,
               ),
               DrawerItem.tile(
                 label: AppConstants.bankCashPositionLabel,
                 icon: Iconsax.bank,
-                color: Color(0xFF00897B),
+                color: AppColors.tealDark,
               ),
               DrawerItem.tile(
                 label: AppConstants.cashbookLabel,
                 icon: Iconsax.book,
-                color: Color(0xFF4CAF50),
+                color: AppColors.green,
               ),
               DrawerItem.tile(
                 label: AppConstants.creditManagementLabel,
                 icon: Iconsax.card,
-                color: Color(0xFFE53935),
+                color: AppColors.errorBright,
               ),
               DrawerItem.tile(
                 label: AppConstants.customerReceivableLabel,
                 icon: Iconsax.receive_square,
-                color: Color(0xFFFF9800),
+                color: AppColors.orange,
               ),
               DrawerItem.tile(
                 label: AppConstants.vendorPayableLabel,
                 icon: Iconsax.send_square,
-                color: Color(0xFF546E7A),
+                color: AppColors.blueGrey,
               ),
             ],
           ),
           DrawerItem.expandable(
             label: AppConstants.inventoryLabel,
             icon: Iconsax.element_3,
-            color: Color(0xFF009688),
+            color: AppColors.teal,
             children: [
               DrawerItem.tile(
                 label: AppConstants.menu1Label,
@@ -118,7 +119,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.purchaseLabel,
             icon: Iconsax.shopping_bag,
-            color: Color(0xFF9C27B0),
+            color: AppColors.purple,
             children: [
               DrawerItem.tile(
                 label: AppConstants.menu1Label,
@@ -137,7 +138,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.salesLabel,
             icon: Iconsax.truck,
-            color: Color(0xFF4CAF50),
+            color: AppColors.green,
             children: [
               DrawerItem.tile(
                 label: AppConstants.menu1Label,
@@ -156,7 +157,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.productionLabel,
             icon: Iconsax.buildings_2,
-            color: Color(0xFFFF9800),
+            color: AppColors.orange,
             children: [
               DrawerItem.tile(
                 label: AppConstants.menu1Label,
@@ -175,7 +176,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.analyticsLabel,
             icon: Iconsax.chart_2,
-            color: Color(0xFF7B1FA2),
+            color: AppColors.deepPurple,
             children: [
               DrawerItem.tile(
                 label: AppConstants.menu1Label,
@@ -194,7 +195,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.securityLabel,
             icon: Iconsax.security_user,
-            color: Color(0xFF546E7A),
+            color: AppColors.blueGrey,
             children: [
               DrawerItem.tile(
                 label: AppConstants.menu1Label,
@@ -213,7 +214,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.systemLabel,
             icon: Iconsax.setting_2,
-            color: Color(0xFF6D4C41),
+            color: AppColors.brown,
             children: [
               DrawerItem.tile(
                 label: AppConstants.menu1Label,
@@ -232,7 +233,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.assetsLabel,
             icon: Iconsax.convert_3d_cube,
-            color: Color(0xFF00897B),
+            color: AppColors.tealDark,
             children: [
               DrawerItem.tile(
                 label: AppConstants.menu1Label,

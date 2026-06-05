@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
+import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../blocs/accounts_bloc.dart';
@@ -74,7 +75,7 @@ class RecoveryListSection extends StatelessWidget {
                         child: LinearProgressIndicator(
                           value: progress,
                           minHeight: 5,
-                          backgroundColor: const Color(0xFFEDEDED),
+                          backgroundColor: AppColors.grey200,
                           valueColor: AlwaysStoppedAnimation<Color>(
                             context.primary,
                           ),
@@ -172,10 +173,10 @@ class _CustomerTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.white,
         borderRadius: .circular(10),
-        border: Border.all(color: const Color(0xFFEDEDED)),
+        border: Border.all(color: AppColors.grey200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: AppColors.black.withValues(alpha: 0.03),
             blurRadius: 4,
             offset: const Offset(0, 1),
           ),
@@ -271,7 +272,7 @@ class _CustomerTile extends StatelessWidget {
                             const Icon(
                               Icons.schedule_outlined,
                               size: 16,
-                              color: Color(0xFFFF9800),
+                              color: AppColors.orange,
                             ),
                             const SizedBox(width: 8),
                             Text(
@@ -360,16 +361,16 @@ class _FilterTab extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: .symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: selected ? context.primary : Colors.transparent,
+          color: selected ? context.primary : AppColors.transparent,
           borderRadius: .circular(20),
           border: Border.all(
-            color: selected ? context.primary : const Color(0xFFDDDDDD),
+            color: selected ? context.primary : AppColors.grey200,
           ),
         ),
         child: Text(
           label,
           style: context.labelSmall.copyWith(
-            color: selected ? Colors.white : context.textSecondary,
+            color: selected ? AppColors.white : context.textSecondary,
             fontWeight: .w600,
           ),
         ),
@@ -387,7 +388,7 @@ class _StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isAction = status == CustomerStatus.actionRequired;
-    final color = isAction ? const Color(0xFFFF9800) : const Color(0xFF4CAF50);
+    final color = isAction ? AppColors.orange : AppColors.green;
     final label = isAction ? 'Action req.' : 'Partial';
     return Container(
       padding: .symmetric(horizontal: 8, vertical: 4),

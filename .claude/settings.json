@@ -8,7 +8,9 @@
       "Bash(find \"C:/Users/ABDUL\" -maxdepth 3 -name \"*.json\" 2>/dev/null | grep -i \"recovery\\\\|account\\\\|erp\\\\|api\\\\|mantic\" | head -20)",
       "Read(//c/Users/ABDUL/**)",
       "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); paths=[p for p in data.get\\('paths',{}\\) if 'recovery' in p.lower\\(\\) or 'Recovery' in p]; print\\('\\\\n'.join\\(paths\\)\\)\")",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(Get-Content \"C:\\\\Users\\\\ABDUL\\\\.claude\\\\projects\\\\d--softronix-erp-app\\\\1b83335e-b3cf-4a73-ad7d-32bc5e4ed566\\\\tool-results\\\\toolu_01To1VwJiAqcpV4e92ork4Dc.txt\" -Encoding UTF8)",
+      "Bash(Get-ChildItem -Path \"d:\\\\softronix\\\\erp_app\\\\lib\\\\features\\\\accounts\\\\\" -Recurse -File | Select-Object FullName)"
     ]
   }
 }

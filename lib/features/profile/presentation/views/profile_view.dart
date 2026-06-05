@@ -6,6 +6,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../core/di/di_exports.dart';
 import '../../../../core/services/current_user.dart';
 import '../../../../core/services/session_manager.dart';
+import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../routes/route_names.dart';
@@ -189,12 +190,12 @@ class _ProfileHeader extends StatelessWidget {
                       child: Container(
                         padding: .all(8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.15),
+                          color: AppColors.white.withValues(alpha: 0.15),
                           borderRadius: .circular(10),
                         ),
                         child: const Icon(
                           Icons.arrow_back_ios_new_rounded,
-                          color: Colors.white,
+                          color: AppColors.white,
                           size: 16,
                         ),
                       ),
@@ -208,9 +209,9 @@ class _ProfileHeader extends StatelessWidget {
                     height: 84,
                     decoration: BoxDecoration(
                       shape: .circle,
-                      color: Colors.white.withValues(alpha: 0.20),
+                      color: AppColors.white.withValues(alpha: 0.20),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.45),
+                        color: AppColors.white.withValues(alpha: 0.45),
                         width: 2.5,
                       ),
                     ),
@@ -218,7 +219,7 @@ class _ProfileHeader extends StatelessWidget {
                       child: Text(
                         initials,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
                           height: 1,
@@ -232,7 +233,7 @@ class _ProfileHeader extends StatelessWidget {
                   Text(
                     currentUser.fullName,
                     style: context.titleMedium.copyWith(
-                      color: Colors.white,
+                      color: AppColors.white,
                       fontWeight: .w700,
                     ),
                     textAlign: .center,
@@ -243,7 +244,7 @@ class _ProfileHeader extends StatelessWidget {
                   Text(
                     currentUser.email,
                     style: context.bodySmall.copyWith(
-                      color: Colors.white.withValues(alpha: 0.80),
+                      color: AppColors.white.withValues(alpha: 0.80),
                     ),
                     textAlign: .center,
                   ),
@@ -253,10 +254,10 @@ class _ProfileHeader extends StatelessWidget {
                   Container(
                     padding: .symmetric(horizontal: 14, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: AppColors.white.withValues(alpha: 0.18),
                       borderRadius: .circular(20),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.30),
+                        color: AppColors.white.withValues(alpha: 0.30),
                       ),
                     ),
                     child: Row(
@@ -264,14 +265,14 @@ class _ProfileHeader extends StatelessWidget {
                       children: [
                         Icon(
                           Iconsax.buildings,
-                          color: Colors.white.withValues(alpha: 0.90),
+                          color: AppColors.white.withValues(alpha: 0.90),
                           size: 13,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           currentUser.org.name,
                           style: context.labelSmall.copyWith(
-                            color: Colors.white.withValues(alpha: 0.95),
+                            color: AppColors.white.withValues(alpha: 0.95),
                             fontWeight: .w600,
                             fontSize: 12,
                           ),
@@ -321,7 +322,7 @@ class _SectionCard extends StatelessWidget {
         border: Border.all(color: context.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.black.withValues(alpha: 0.05),
             blurRadius: 12,
             offset: const Offset(0, 3),
           ),
@@ -455,7 +456,7 @@ class _SwitchOrgCard extends StatelessWidget {
             border: Border.all(color: context.primary.withValues(alpha: 0.30)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: AppColors.black.withValues(alpha: 0.04),
                 blurRadius: 10,
                 offset: const Offset(0, 2),
               ),
@@ -589,7 +590,7 @@ class _Circle extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: .circle,
-        color: Colors.white.withValues(alpha: opacity),
+        color: AppColors.white.withValues(alpha: opacity),
       ),
     );
   }

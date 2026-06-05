@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mantic_erp_app/core/theme/colors.dart';
 import 'dart:async';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -38,7 +39,7 @@ extension WidgetExtensions on Widget {
 
   // Add a border to a widget
   Widget withBorder({
-    Color color = Colors.black,
+    Color color = AppColors.black,
     double width = 1.0,
     BorderRadius? borderRadius,
   }) {
@@ -121,7 +122,7 @@ extension WidgetExtensions on Widget {
 
   // Add shadow to a widget
   Widget withShadow({
-    Color color = Colors.black26,
+    Color color = AppColors.black26,
     double blurRadius = 4.0,
     Offset offset = Offset.zero,
     double spreadRadius = 0.0,
@@ -454,7 +455,7 @@ class LoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: overlayColor ?? Colors.black54,
+            color: overlayColor ?? AppColors.black54,
             child: Center(
               child: loadingWidget ?? const LoadingIndicator(size: 30),
             ),
@@ -625,7 +626,7 @@ class EmptyStateWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (icon != null) Icon(icon, size: iconSize, color: Colors.grey),
+          if (icon != null) Icon(icon, size: iconSize, color: AppColors.grey400),
           const SizedBox(height: 16),
           Text(
             title,
@@ -638,7 +639,7 @@ class EmptyStateWidget extends StatelessWidget {
               subtitle!,
               style: Theme.of(
                 context,
-              ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.grey400),
               textAlign: TextAlign.center,
             ),
           ],
@@ -669,7 +670,7 @@ class ErrorStateWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 80, color: Colors.red),
+          Icon(icon, size: 80, color: AppColors.error),
           const SizedBox(height: 16),
           Text(
             message ?? 'Something went wrong',
@@ -703,8 +704,8 @@ class ShimmerLoading extends StatefulWidget {
     super.key,
     required this.child,
     required this.isLoading,
-    this.baseColor = const Color(0xFFE0E0E0),
-    this.highlightColor = const Color(0xFFF5F5F5),
+    this.baseColor = AppColors.shimmerBase,
+    this.highlightColor = AppColors.surfaceHeader,
     this.duration = const Duration(milliseconds: 1500),
   });
 
@@ -956,14 +957,14 @@ class DividerWithText extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Divider(thickness: thickness, color: color ?? Colors.grey),
+          child: Divider(thickness: thickness, color: color ?? AppColors.grey400),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: spacing),
-          child: Text(text, style: TextStyle(color: color ?? Colors.grey)),
+          child: Text(text, style: TextStyle(color: color ?? AppColors.grey400)),
         ),
         Expanded(
-          child: Divider(thickness: thickness, color: color ?? Colors.grey),
+          child: Divider(thickness: thickness, color: color ?? AppColors.grey400),
         ),
       ],
     );
@@ -1181,11 +1182,11 @@ class PlaceholderBox extends StatelessWidget {
     return Container(
       width: width ?? double.infinity,
       height: height ?? 200,
-      color: color ?? Colors.grey[300],
+      color: color ?? AppColors.grey300,
       child: Center(
         child: Text(
           text ?? 'Placeholder',
-          style: TextStyle(color: Colors.grey[600]),
+          style: TextStyle(color: AppColors.grey600),
         ),
       ),
     );
