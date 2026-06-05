@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -81,10 +83,14 @@ class _HeroCard extends StatelessWidget {
   static const _debitColor = AppColors.chartSecondary;
   static const _bgColor = AppColors.chartBg;
 
+  static double _log(double v) => v > 0 ? log(v + 1) : 0;
+
   @override
   Widget build(BuildContext context) {
-    final maxAmount =
-        items.fold(0.0, (m, b) => b.amount.abs() > m ? b.amount.abs() : m);
+    final maxLog = items.fold(
+      0.0,
+      (m, b) => _log(b.amount.abs()) > m ? _log(b.amount.abs()) : m,
+    );
 
     return Container(
       margin: const .fromLTRB(12, 12, 12, 0),
@@ -105,7 +111,7 @@ class _HeroCard extends StatelessWidget {
         BarChartData(
           backgroundColor: AppColors.transparent,
           minY: 0,
-          maxY: maxAmount > 0 ? maxAmount * 1.2 : 1,
+          maxY: maxLog > 0 ? maxLog * 1.2 : 1,
           barTouchData: BarTouchData(enabled: false),
           titlesData: const FlTitlesData(show: false),
           gridData: const FlGridData(show: false),
@@ -117,7 +123,7 @@ class _HeroCard extends StatelessWidget {
               x: i,
               barRods: [
                 BarChartRodData(
-                  toY: items[i].amount.abs(),
+                  toY: _log(items[i].amount.abs()),
                   color: items[i].isCredit ? _creditColor : _debitColor,
                   width: 14,
                   borderRadius: const BorderRadius.vertical(
