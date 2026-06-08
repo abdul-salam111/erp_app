@@ -34,6 +34,8 @@ class AccountsQuickActions extends StatelessWidget {
       label: AppConstants.cashbookLabel,
       icon: Iconsax.book,
       color: AppColors.green,
+      routeName: RouteNames.cashbook,
+
     ),
     _QAItem(
       label: AppConstants.creditManagementLabel,

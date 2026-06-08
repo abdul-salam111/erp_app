@@ -104,7 +104,6 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
         }
       },
       child: Scaffold(
-        backgroundColor: context.grey50,
         appBar: CustomAppBar(title: AppConstants.partyLedgerLabel),
         body: Column(
           children: [

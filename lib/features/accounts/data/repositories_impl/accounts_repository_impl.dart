@@ -2,6 +2,8 @@ import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../domain/entities/account_list_item_entity.dart';
 import '../../domain/entities/bank_cash_item_entity.dart';
+import '../../domain/entities/cashbook_account_item_entity.dart';
+import '../../domain/entities/cashbook_statement_entity.dart';
 import '../../domain/entities/due_receipt_count_entity.dart';
 import '../../domain/entities/ledger_statement_entity.dart';
 import '../../domain/entities/party_list_item_entity.dart';
@@ -101,5 +103,34 @@ class AccountsRepositoryImpl extends BaseRepository
   Future<Either<Failure, List<PartyListItemEntity>>> getPartyList() async {
     final result = await execute(call: () => dataSource.getPartyList());
     return result.map((models) => models.map((m) => m.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> cashbook() {
+    return execute(
+      call: () => dataSource.cashbook(),
+    );
+  }
+
+  @override
+  Future<Either<Failure, List<CashbookStatementEntity>>> getCashbookStatements({
+    required String fromDate,
+    required String toDate,
+    int? accountId,
+  }) async {
+    final result = await execute(
+      call: () => dataSource.getCashbookStatements(
+        fromDate: fromDate,
+        toDate: toDate,
+        accountId: accountId,
+      ),
+    );
+    return result.map((models) => models.map((m) => m.toCashbookEntity()).toList());
+  }
+
+  @override
+  Future<Either<Failure, List<CashbookAccountItemEntity>>> getCashbookAccounts() async {
+    final result = await execute(call: () => dataSource.getCashbookAccounts());
+    return result.map((models) => models.map((m) => m.toCashbookEntity()).toList());
   }
 }

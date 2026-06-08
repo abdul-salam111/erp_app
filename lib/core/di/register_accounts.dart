@@ -1,8 +1,9 @@
 import '../../features/accounts/data/datasources/remote_accounts_datasource.dart';
 import '../../features/accounts/data/repositories_impl/accounts_repository_impl.dart';
 import '../../features/accounts/domain/repositories/accounts_repository.dart';
-import '../../features/accounts/domain/usecases/accounts_usecase.dart';
 import '../../features/accounts/domain/usecases/get_account_statements_usecase.dart';
+import '../../features/accounts/domain/usecases/get_cashbook_accounts_usecase.dart';
+import '../../features/accounts/domain/usecases/get_cashbook_statements_usecase.dart';
 import '../../features/accounts/domain/usecases/get_invoice_pdf_usecase.dart';
 import '../../features/accounts/domain/usecases/get_printable_features_usecase.dart';
 import '../../features/accounts/domain/usecases/get_due_receipt_count_usecase.dart';
@@ -15,6 +16,7 @@ import '../../features/accounts/domain/usecases/bank_and_cash_position_usecase.d
 import '../../features/accounts/domain/usecases/get_accounts_list_usecase.dart';
 import '../../features/accounts/domain/usecases/get_party_list_usecase.dart';
 import '../../features/accounts/presentation/bank_and_cash_position/blocs/bank_and_cash_position_bloc.dart';
+import '../../features/accounts/presentation/cashbook/blocs/cashbook_bloc.dart';
 
 Future<void> registerAccounts() async {
   // DataSource
@@ -27,10 +29,6 @@ Future<void> registerAccounts() async {
     () => AccountsRepositoryImpl(dataSource: sl()),
   );
 
-  // UseCases
-  sl.registerLazySingleton<AccountsUsecase>(
-    () => AccountsUsecase(repository: sl()),
-  );
   sl.registerLazySingleton<GetAccountStatementsUsecase>(
     () => GetAccountStatementsUsecase(repository: sl()),
   );
@@ -52,10 +50,7 @@ Future<void> registerAccounts() async {
 
   // BLoCs
   sl.registerFactory<AccountsBloc>(
-    () => AccountsBloc(
-      accountsUsecase:          sl(),
-      getDueReceiptCountUsecase: sl(),
-    ),
+    () => AccountsBloc(getDueReceiptCountUsecase: sl()),
   );
   sl.registerFactory<AccountLedgerBloc>(
     () => AccountLedgerBloc(
@@ -83,5 +78,20 @@ Future<void> registerAccounts() async {
   // BLoC — BankAndCashPosition screen
   sl.registerFactory<BankAndCashPositionBloc>(
     () => BankAndCashPositionBloc(bankAndCashPositionUsecase: sl()),
+  );
+  // UseCases — Cashbook screen
+  sl.registerLazySingleton<GetCashbookStatementsUsecase>(
+    () => GetCashbookStatementsUsecase(repository: sl()),
+  );
+  sl.registerLazySingleton<GetCashbookAccountsUsecase>(
+    () => GetCashbookAccountsUsecase(repository: sl()),
+  );
+  // BLoC — Cashbook screen
+  sl.registerFactory<CashbookBloc>(
+    () => CashbookBloc(
+      getCashbookStatementsUsecase: sl(),
+      getInvoicePdfUsecase:         sl(),
+      getCashbookAccountsUsecase:   sl(),
+    ),
   );
 }

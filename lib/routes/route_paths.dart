@@ -19,4 +19,5 @@ class RoutePaths {
   static const String organizationSelection = '/organization-selection';
   static const String party_ledger = '/party_ledger';
   static const String bank_and_cash_position = '/bank_and_cash_position';
+  static const String cashbook = '/cashbook';
 }

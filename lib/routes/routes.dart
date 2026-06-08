@@ -123,6 +123,11 @@ class AppRoutes {
         name: RouteNames.bank_and_cash_position,
         builder: (context, state) => const BankAndCashPositionView(),
       ),
+      GoRoute(
+        path: RoutePaths.cashbook,
+        name: RouteNames.cashbook,
+        builder: (context, state) => const CashbookView(),
+      ),
     
      
      

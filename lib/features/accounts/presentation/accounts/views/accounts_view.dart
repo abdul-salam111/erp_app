@@ -175,6 +175,7 @@ class _AccountsBodyState extends State<_AccountsBody>
       },
       child: UnfocusWrapper(
         child: Scaffold(
+          backgroundColor: context.white,
           appBar: CustomAppBar(title: AppConstants.accountsLabel),
           body: SingleChildScrollView(
             padding: context.pagePadding,

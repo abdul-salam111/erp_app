@@ -1,6 +1,8 @@
 import '../../../../core/services/session_manager.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/constants/const_exports.dart';
+import '../models/response_models/get_cashbook/cashbook_model.dart';
+import '../models/response_models/get_cashbook_accounts/cashbook_account_model.dart';
 import '../models/response_models/get_ledger/get_ledger_model.dart';
 import '../models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
 import '../models/response_models/get_accounts_list/account_list_item_model.dart';
@@ -29,6 +31,13 @@ abstract interface class IRemoteAccountsDataSource {
   Future<List<BankCashItemModel>> bankAndCashPosition();
   Future<List<AccountListItemModel>> getAccountsList();
   Future<List<PartyListItemModel>> getPartyList();
+  Future<dynamic> cashbook();
+  Future<List<CashbookModel>> getCashbookStatements({
+    required String fromDate,
+    required String toDate,
+    int? accountId,
+  });
+  Future<List<CashbookAccountModel>> getCashbookAccounts();
 }
 
 class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
@@ -151,6 +160,42 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
       body: {},
       parser: (json) =>
           PartyListItemModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<dynamic> cashbook() async {
+    throw UnimplementedError('cashbook not implemented');
+  }
+
+  @override
+  Future<List<CashbookModel>> getCashbookStatements({
+    required String fromDate,
+    required String toDate,
+    int? accountId,
+  }) {
+    final body = <String, dynamic>{
+      'FromDate': fromDate,
+      'ToDate': toDate,
+      'AccountId': accountId,
+      'LedgerType': 'cash_ledger',
+    };
+    return postList<CashbookModel>(
+      url: ApiEndPoints.getLedger,
+      body: body,
+      parser: (json) => CashbookModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<List<CashbookAccountModel>> getCashbookAccounts() {
+    return postList<CashbookAccountModel>(
+      url: ApiEndPoints.getAccountsList,
+      body: const {},
+      parser: (json) =>
+          CashbookAccountModel.fromJson(json as Map<String, dynamic>),
       authToken: _token,
     );
   }
