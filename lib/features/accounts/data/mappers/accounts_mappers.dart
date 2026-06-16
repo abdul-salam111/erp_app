@@ -118,9 +118,9 @@ extension CashbookAccountModelX on CashbookAccountModel {
   CashbookAccountItemEntity toCashbookEntity() => CashbookAccountItemEntity(
         id: id,
         name: name,
-        group: group,
-        breadcrumb: breadcrumb,
-        sysKey: sysKey,
+        group: group?.name,
+        breadcrumb: accType?.breadcrumb,
+        sysKey: accType?.sysKey,
       );
 }
 

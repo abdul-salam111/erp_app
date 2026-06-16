@@ -1,26 +1,38 @@
-class CashbookAccountModel {
-  final int? id;
-  final String name;
-  final String? group;
-  final String? breadcrumb;
-  final String? sysKey;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const CashbookAccountModel({
-    this.id,
-    required this.name,
-    this.group,
-    this.breadcrumb,
-    this.sysKey,
-  });
+part 'cashbook_account_model.freezed.dart';
+part 'cashbook_account_model.g.dart';
 
-  factory CashbookAccountModel.fromJson(Map<String, dynamic> json) {
-    final accType = json['AccType'] as Map<String, dynamic>?;
-    return CashbookAccountModel(
-      id: json['Id'] as int?,
-      name: (json['Name'] as String?) ?? '',
-      group: (json['Group'] as Map<String, dynamic>?)?['Name'] as String?,
-      breadcrumb: accType?['Breadcrumb'] as String?,
-      sysKey: accType?['SysKey'] as String?,
-    );
-  }
+@freezed
+abstract class CashbookAccountModel with _$CashbookAccountModel {
+  const factory CashbookAccountModel({
+    @JsonKey(name: 'Id') int? id,
+    @JsonKey(name: 'Name') required String name,
+    @JsonKey(name: 'Group') CashbookAccountGroupModel? group,
+    @JsonKey(name: 'AccType') CashbookAccTypeModel? accType,
+  }) = _CashbookAccountModel;
+
+  factory CashbookAccountModel.fromJson(Map<String, dynamic> json) =>
+      _$CashbookAccountModelFromJson(json);
+}
+
+@freezed
+abstract class CashbookAccountGroupModel with _$CashbookAccountGroupModel {
+  const factory CashbookAccountGroupModel({
+    @JsonKey(name: 'Name') String? name,
+  }) = _CashbookAccountGroupModel;
+
+  factory CashbookAccountGroupModel.fromJson(Map<String, dynamic> json) =>
+      _$CashbookAccountGroupModelFromJson(json);
+}
+
+@freezed
+abstract class CashbookAccTypeModel with _$CashbookAccTypeModel {
+  const factory CashbookAccTypeModel({
+    @JsonKey(name: 'Breadcrumb') String? breadcrumb,
+    @JsonKey(name: 'SysKey') String? sysKey,
+  }) = _CashbookAccTypeModel;
+
+  factory CashbookAccTypeModel.fromJson(Map<String, dynamic> json) =>
+      _$CashbookAccTypeModelFromJson(json);
 }

@@ -1,21 +1,16 @@
-class DueReceiptCountModel {
-  final double ttlRecoveryAmount;
-  final double ttlReceivedAmount;
-  final double ttlPostponeAmount;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const DueReceiptCountModel({
-    required this.ttlRecoveryAmount,
-    required this.ttlReceivedAmount,
-    required this.ttlPostponeAmount,
-  });
+part 'due_receipt_count_model.freezed.dart';
+part 'due_receipt_count_model.g.dart';
+
+@freezed
+abstract class DueReceiptCountModel with _$DueReceiptCountModel {
+  const factory DueReceiptCountModel({
+    @JsonKey(name: 'TTLRecoveryAmount') @Default(0) double ttlRecoveryAmount,
+    @JsonKey(name: 'TTLReceivedAmount') @Default(0) double ttlReceivedAmount,
+    @JsonKey(name: 'TTLPostponeAmount') @Default(0) double ttlPostponeAmount,
+  }) = _DueReceiptCountModel;
 
   factory DueReceiptCountModel.fromJson(Map<String, dynamic> json) =>
-      DueReceiptCountModel(
-        ttlRecoveryAmount:
-            (json['TTLRecoveryAmount'] as num?)?.toDouble() ?? 0,
-        ttlReceivedAmount:
-            (json['TTLReceivedAmount'] as num?)?.toDouble() ?? 0,
-        ttlPostponeAmount:
-            (json['TTLPostponeAmount'] as num?)?.toDouble() ?? 0,
-      );
+      _$DueReceiptCountModelFromJson(json);
 }
