@@ -5,14 +5,16 @@ class CashbookAccountItemEntity extends Equatable {
   final String name;
   final String? group;
   final String? breadcrumb;
+  final String? sysKey;
 
   const CashbookAccountItemEntity({
     this.id,
     required this.name,
     this.group,
     this.breadcrumb,
+    this.sysKey,
   });
 
   @override
-  List<Object?> get props => [id, name, group, breadcrumb];
+  List<Object?> get props => [id, name, group, breadcrumb, sysKey];
 }

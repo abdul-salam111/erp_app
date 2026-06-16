@@ -120,6 +120,7 @@ extension CashbookAccountModelX on CashbookAccountModel {
         name: name,
         group: group,
         breadcrumb: breadcrumb,
+        sysKey: sysKey,
       );
 }
 

@@ -103,7 +103,10 @@ class CashbookBloc extends Bloc<CashbookEvent, CashbookState> {
       )),
       (accounts) => emit(state.copyWith(
         accountsStatus: ApiStatus.SUCCESS,
-        accounts: accounts,
+        accounts: accounts
+            .where((a) =>
+                a.sysKey == 'erp_acc_account_type_current_asset_cash')
+            .toList(),
       )),
     );
   }
