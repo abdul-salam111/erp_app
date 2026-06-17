@@ -156,7 +156,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: context.bodySmall.copyWith(color: context.textSecondary),
-            prefixIcon: Icon(Iconsax.map, color: context.grey500, size: 20),
+            prefixIcon: Icon(Iconsax.user, color: context.grey500, size: 20),
             suffixIcon: widget.controller.text.isNotEmpty
                 ? IconButton(
                     icon: Icon(Icons.close, color: context.grey500, size: 18),

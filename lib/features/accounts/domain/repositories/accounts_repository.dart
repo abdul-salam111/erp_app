@@ -9,8 +9,7 @@ import '../entities/ledger_statement_entity.dart';
 import '../entities/party_list_item_entity.dart';
 
 abstract interface class AccountsRepository {
-  Future<Either<Failure, dynamic>> performAction();
-  Future<Either<Failure, dynamic>> accountLedger();
+
   Future<Either<Failure, List<LedgerStatementEntity>>> getAccountStatements({
     required String fromDate,
     required String toDate,

@@ -29,7 +29,6 @@ export 'presentation/account_ledger/blocs/account_ledger_bloc.dart';
 export 'presentation/account_ledger/blocs/account_ledger_event.dart';
 export 'presentation/account_ledger/blocs/account_ledger_state.dart';
 export 'presentation/account_ledger/views/account_ledger_view.dart';
-export 'domain/usecases/account_ledger_usecase.dart';
 export 'domain/usecases/get_account_statements_usecase.dart';
 export 'domain/usecases/get_invoice_pdf_usecase.dart';
 export 'domain/usecases/get_printable_features_usecase.dart';

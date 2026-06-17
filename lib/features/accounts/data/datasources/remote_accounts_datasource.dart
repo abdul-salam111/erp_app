@@ -10,8 +10,6 @@ import '../models/response_models/get_cash_and_bank_balance/bank_cash_item_model
 import '../models/response_models/get_party_list/party_list_item_model.dart';
 
 abstract interface class IRemoteAccountsDataSource {
-  Future<dynamic> performAction();
-  Future<dynamic> accountLedger();
   Future<List<GetLedgerModel>> getAccountStatements({
     required String fromDate,
     required String toDate,
@@ -45,20 +43,6 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
   RemoteAccountsDataSourceImpl({required super.dioHelper});
 
   String? get _token => SessionController.instance.activeAccessToken;
-
-  @override
-  Future<dynamic> performAction() async {
-    return post(
-      url: ApiEndPoints.accounts,
-      parser: (json) => json,
-      body: {},
-    );
-  }
-
-  @override
-  Future<dynamic> accountLedger() async {
-    throw UnimplementedError('accountLedger not implemented');
-  }
 
   @override
   Future<List<GetLedgerModel>> getAccountStatements({

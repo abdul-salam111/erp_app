@@ -18,16 +18,6 @@ class AccountsRepositoryImpl extends BaseRepository
   AccountsRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Either<Failure, dynamic>> performAction() {
-    return execute(call: () => dataSource.performAction());
-  }
-
-  @override
-  Future<Either<Failure, dynamic>> accountLedger() {
-    return execute(call: () => dataSource.accountLedger());
-  }
-
-  @override
   Future<Either<Failure, List<LedgerStatementEntity>>> getAccountStatements({
     required String fromDate,
     required String toDate,
@@ -88,7 +78,8 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<BankCashItemEntity>>> bankAndCashPosition() async {
+  Future<Either<Failure, List<BankCashItemEntity>>>
+  bankAndCashPosition() async {
     final result = await execute(call: () => dataSource.bankAndCashPosition());
     return result.map((models) => models.map((m) => m.toEntity()).toList());
   }
@@ -107,9 +98,7 @@ class AccountsRepositoryImpl extends BaseRepository
 
   @override
   Future<Either<Failure, dynamic>> cashbook() {
-    return execute(
-      call: () => dataSource.cashbook(),
-    );
+    return execute(call: () => dataSource.cashbook());
   }
 
   @override
@@ -125,12 +114,17 @@ class AccountsRepositoryImpl extends BaseRepository
         accountId: accountId,
       ),
     );
-    return result.map((models) => models.map((m) => m.toCashbookEntity()).toList());
+    return result.map(
+      (models) => models.map((m) => m.toCashbookEntity()).toList(),
+    );
   }
 
   @override
-  Future<Either<Failure, List<CashbookAccountItemEntity>>> getCashbookAccounts() async {
+  Future<Either<Failure, List<CashbookAccountItemEntity>>>
+  getCashbookAccounts() async {
     final result = await execute(call: () => dataSource.getCashbookAccounts());
-    return result.map((models) => models.map((m) => m.toCashbookEntity()).toList());
+    return result.map(
+      (models) => models.map((m) => m.toCashbookEntity()).toList(),
+    );
   }
 }

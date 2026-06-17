@@ -38,6 +38,8 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
   late DateTime _toDate;
   int? _selectedPartyId;
   late final TextEditingController _partyController;
+  late final ScrollController _scrollController;
+  bool _filterCollapsed = false;
 
   @override
   void initState() {
@@ -45,12 +47,20 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
     _toDate = DateTime.now();
     _fromDate = _toDate.subtractMonths(1);
     _partyController = TextEditingController();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _partyController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    final collapsed = _scrollController.offset > 40;
+    if (collapsed != _filterCollapsed) setState(() => _filterCollapsed = collapsed);
   }
 
   void _fetch() {
@@ -58,6 +68,7 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
       AppToastsUtils.showErrorTop(context, 'Please select a party first');
       return;
     }
+    setState(() => _filterCollapsed = false);
     context.read<PartyLedgerBloc>().add(
       PartyLedgerSubmitted(
         fromDate: _fromDate.format('yyyy-MM-dd'),
@@ -107,47 +118,134 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
         appBar: CustomAppBar(title: AppConstants.partyLedgerLabel),
         body: Column(
           children: [
-            BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
-              buildWhen: (p, c) =>
-                  p.parties != c.parties ||
-                  p.partiesStatus != c.partiesStatus,
-              builder: (context, state) => _FilterForm(
-                fromDate: _fromDate,
-                toDate: _toDate,
-                partyItems: state.parties.map((p) => p.name).toList(),
-                partySubtitles: state.parties.map((p) => p.partyType).toList(),
-                isLoadingParties: state.partiesStatus == ApiStatus.INITIAL ||
-                    state.partiesStatus == ApiStatus.LOADING,
-                partyController: _partyController,
-                onPartyChanged: _onPartyChanged,
-                onPickFrom: () => _pickDate(true),
-                onPickTo: () => _pickDate(false),
-                onView: _fetch,
-              ),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 260),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: _filterCollapsed
+                  ? _CompactFilterBar(
+                      partyName: _partyController.text,
+                      fromDate: _fromDate,
+                      toDate: _toDate,
+                      onExpand: () {
+                        setState(() => _filterCollapsed = false);
+                        if (_scrollController.hasClients) {
+                          _scrollController.animateTo(
+                            0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
+                        }
+                      },
+                    )
+                  : BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
+                      buildWhen: (p, c) =>
+                          p.parties != c.parties ||
+                          p.partiesStatus != c.partiesStatus,
+                      builder: (context, state) => _FilterForm(
+                        fromDate: _fromDate,
+                        toDate: _toDate,
+                        partyItems: state.parties.map((p) => p.name).toList(),
+                        partySubtitles:
+                            state.parties.map((p) => p.partyType).toList(),
+                        isLoadingParties:
+                            state.partiesStatus == ApiStatus.INITIAL ||
+                                state.partiesStatus == ApiStatus.LOADING,
+                        partyController: _partyController,
+                        onPartyChanged: _onPartyChanged,
+                        onPickFrom: () => _pickDate(true),
+                        onPickTo: () => _pickDate(false),
+                        onView: _fetch,
+                      ),
+                    ),
             ),
             Expanded(
-              child: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
-                builder: (context, state) {
-                  if (state.apiStatus == ApiStatus.INITIAL) {
-                    return const _IdleState();
-                  }
-                  if (state.apiStatus == ApiStatus.LOADING) {
-                    return const _ShimmerBody();
-                  }
-                  if (state.apiStatus == ApiStatus.FAILURE) {
-                    return _ErrorBody(
-                      message: state.message ?? 'Something went wrong',
-                      onRetry: _fetch,
+              child: ColoredBox(
+                color: context.white,
+                child: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
+                  builder: (context, state) {
+                    if (state.apiStatus == ApiStatus.INITIAL) {
+                      return const _IdleState();
+                    }
+                    if (state.apiStatus == ApiStatus.LOADING) {
+                      return const _ShimmerBody();
+                    }
+                    if (state.apiStatus == ApiStatus.FAILURE) {
+                      return _ErrorBody(
+                        message: state.message ?? 'Something went wrong',
+                        onRetry: _fetch,
+                      );
+                    }
+                    if (state.apiStatus == ApiStatus.SUCCESS &&
+                        state.statements.isEmpty) {
+                      return const _EmptyState();
+                    }
+                    return _StatementsBody(
+                      statements: state.statements,
+                      scrollController: _scrollController,
                     );
-                  }
-                  if (state.apiStatus == ApiStatus.SUCCESS &&
-                      state.statements.isEmpty) {
-                    return const _EmptyState();
-                  }
-                  return _StatementsBody(statements: state.statements);
-                },
+                  },
+                ),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Compact filter bar (collapsed state) ────────────────────────────────────
+
+class _CompactFilterBar extends StatelessWidget {
+  final String partyName;
+  final DateTime fromDate;
+  final DateTime toDate;
+  final VoidCallback onExpand;
+
+  const _CompactFilterBar({
+    required this.partyName,
+    required this.fromDate,
+    required this.toDate,
+    required this.onExpand,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final hasParty = partyName.isNotEmpty;
+    return GestureDetector(
+      onTap: onExpand,
+      child: Container(
+        decoration: BoxDecoration(color: context.grey100),
+        padding: EdgeInsets.fromLTRB(
+          context.pagePadding.left, 10, context.pagePadding.right, 10),
+        child: Row(
+          children: [
+            Icon(Iconsax.setting_4, size: 15, color: context.primary),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                hasParty ? partyName : 'Select party…',
+                style: context.bodySmall.copyWith(
+                  color: hasParty ? context.textPrimary : context.textSecondary,
+                  fontWeight: .w500,
+                  fontSize: 13,
+                ),
+                maxLines: 1,
+                overflow: .ellipsis,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              '${fromDate.format('dd MMM yyyy')} – ${toDate.format('dd MMM yyyy')}',
+              style: context.labelSmall.copyWith(
+                color: context.textSecondary,
+                fontSize: 11,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Icon(Icons.keyboard_arrow_down_rounded,
+                size: 18, color: context.textSecondary),
           ],
         ),
       ),
@@ -338,11 +436,13 @@ class _FieldTile extends StatelessWidget {
 
 class _StatementsBody extends StatelessWidget {
   final List<LedgerStatementEntity> statements;
-  const _StatementsBody({required this.statements});
+  final ScrollController? scrollController;
+  const _StatementsBody({required this.statements, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
     return ListView(
+      controller: scrollController,
       padding: EdgeInsets.only(
         left: context.pagePadding.left,
         right: context.pagePadding.right,
@@ -353,7 +453,7 @@ class _StatementsBody extends StatelessWidget {
         const _SectionLabel(text: 'Statements'),
         const SizedBox(height: 8),
         for (final yearData in statements) ...[
-          _YearCard(yearData: yearData),
+          _YearCard(yearData: yearData, scrollController: scrollController),
           const SizedBox(height: 8),
         ],
       ],
@@ -381,11 +481,20 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
+// ─── Paged entry helper ───────────────────────────────────────────────────────
+
+class _PagedEntry {
+  final String type;
+  final LedgerEntryEntity entry;
+  const _PagedEntry({required this.type, required this.entry});
+}
+
 // ─── Year card ────────────────────────────────────────────────────────────────
 
 class _YearCard extends StatefulWidget {
   final LedgerStatementEntity yearData;
-  const _YearCard({required this.yearData});
+  final ScrollController? scrollController;
+  const _YearCard({required this.yearData, this.scrollController});
 
   @override
   State<_YearCard> createState() => _YearCardState();
@@ -393,16 +502,81 @@ class _YearCard extends StatefulWidget {
 
 class _YearCardState extends State<_YearCard> {
   bool _expanded = true;
+  int _visibleCount = _pageSize;
+  static const int _pageSize = 20;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.scrollController?.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController?.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final sc = widget.scrollController;
+    if (sc == null || !sc.hasClients) return;
+    if (sc.position.extentAfter < 300) {
+      final total = _buildFlatEntries().length;
+      if (_visibleCount < total) {
+        setState(() => _visibleCount = (_visibleCount + _pageSize).clamp(0, total));
+      }
+    }
+  }
+
+  List<_PagedEntry> _buildFlatEntries() {
+    final result = <_PagedEntry>[];
+    for (final lt in (widget.yearData.ledgerTypes ?? [])) {
+      if ((lt.ledgers ?? []).isEmpty) continue;
+      if (lt.ttlDebit == 0 && lt.ttlCredit == 0 && lt.balance == 0) continue;
+      for (final l in (lt.ledgers ?? [])) {
+        result.add(_PagedEntry(type: lt.type ?? '', entry: l));
+      }
+    }
+    return result;
+  }
+
+  List<Widget> _buildPagedRows(List<_PagedEntry> entries, BuildContext context) {
+    final widgets = <Widget>[];
+    String? lastType;
+    for (final pe in entries) {
+      if (pe.type != lastType) {
+        lastType = pe.type;
+        if (pe.type.isNotEmpty) {
+          widgets.add(Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.grey100,
+              border: Border(top: BorderSide(color: context.border)),
+            ),
+            child: Text(
+              pe.type.toUpperCase(),
+              style: context.labelSmall.copyWith(
+                fontWeight: .w600,
+                color: context.textSecondary,
+                fontSize: 10,
+                letterSpacing: 0.8,
+              ),
+            ),
+          ));
+        }
+      }
+      widgets.add(_LedgerRow(ledger: pe.entry));
+    }
+    return widgets;
+  }
 
   @override
   Widget build(BuildContext context) {
     final yearData = widget.yearData;
-    final hasContent = yearData.ledgerTypes?.any(
-          (lt) =>
-              (lt.ledgers ?? []).isNotEmpty &&
-              !(lt.ttlDebit == 0 && lt.ttlCredit == 0 && lt.balance == 0),
-        ) ??
-        false;
+    final allEntries = _buildFlatEntries();
+    final hasContent = allEntries.isNotEmpty;
+    final visibleEntries = allEntries.take(_visibleCount).toList();
 
     return Container(
       decoration: BoxDecoration(
@@ -428,8 +602,6 @@ class _YearCardState extends State<_YearCard> {
               ),
               child: Row(
                 children: [
-                  Icon(Iconsax.calendar_1, color: context.primary, size: 24),
-                  const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       yearData.finYear?.name ?? '',
@@ -496,16 +668,9 @@ class _YearCardState extends State<_YearCard> {
                 ? hasContent
                     ? Column(
                         crossAxisAlignment: .start,
-                        children: (yearData.ledgerTypes ?? [])
-                            .where(
-                              (lt) =>
-                                  (lt.ledgers ?? []).isNotEmpty &&
-                                  !(lt.ttlDebit == 0 &&
-                                      lt.ttlCredit == 0 &&
-                                      lt.balance == 0),
-                            )
-                            .map((lt) => _LedgerTypeSection(ledgerType: lt))
-                            .toList(),
+                        children: [
+                          ..._buildPagedRows(visibleEntries, context),
+                        ],
                       )
                     : Padding(
                         padding: const EdgeInsets.all(16),

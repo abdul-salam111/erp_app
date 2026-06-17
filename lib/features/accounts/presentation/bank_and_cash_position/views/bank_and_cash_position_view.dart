@@ -222,11 +222,6 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isCredit = amount < 0;
-    final typeLabel = isCredit ? 'Credit' : 'Debit';
-    final typeColor = isCredit ? AppColors.creditGreenDark : AppColors.chartSecondary;
-    final typeBg = typeColor.withValues(alpha: 0.10);
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
@@ -248,8 +243,6 @@ class _SummaryCard extends StatelessWidget {
                 ShimmerBox(height: 13, width: 60, radius: 4),
                 const SizedBox(height: 8),
                 ShimmerBox(height: 16, width: double.infinity, radius: 4),
-                const SizedBox(height: 6),
-                ShimmerBox(height: 18, width: 48, radius: 20),
               ],
             )
           : Column(
@@ -278,22 +271,6 @@ class _SummaryCard extends StatelessWidget {
                   ),
                   maxLines: 1,
                   overflow: .ellipsis,
-                ),
-                const SizedBox(height: 5),
-                Container(
-                  padding: const .symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: typeBg,
-                    borderRadius: .circular(20),
-                  ),
-                  child: Text(
-                    typeLabel,
-                    style: context.labelSmall.copyWith(
-                      color: typeColor,
-                      fontWeight: .w600,
-                      fontSize: 10,
-                    ),
-                  ),
                 ),
               ],
             ),
