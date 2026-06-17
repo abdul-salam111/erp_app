@@ -27,8 +27,36 @@ class BankAndCashPositionView extends StatelessWidget {
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
 
-class _BankAndCashPositionBody extends StatelessWidget {
+class _BankAndCashPositionBody extends StatefulWidget {
   const _BankAndCashPositionBody();
+
+  @override
+  State<_BankAndCashPositionBody> createState() =>
+      _BankAndCashPositionBodyState();
+}
+
+class _BankAndCashPositionBodyState extends State<_BankAndCashPositionBody> {
+  late final ScrollController _scrollController;
+  bool _collapsed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final collapsed = _scrollController.position.pixels > 80;
+    if (collapsed != _collapsed) setState(() => _collapsed = collapsed);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,26 +72,56 @@ class _BankAndCashPositionBody extends StatelessWidget {
             state.apiStatus == ApiStatus.INITIAL;
         final items = state.items;
 
+        final bankTotal = items
+            .where((e) => e.isBank)
+            .fold(0.0, (s, e) => s + e.amount);
+        final cashTotal = items
+            .where((e) => e.isCash)
+            .fold(0.0, (s, e) => s + e.amount);
+
         return Scaffold(
           backgroundColor: context.grey50,
           appBar: CustomAppBar(title: 'Bank & Cash Position'),
           body: Column(
             crossAxisAlignment: .stretch,
             children: [
-              ColoredBox(
-                color: context.white,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: isLoading
-                      ? _HeroCardShimmer()
-                      : _HeroCard(items: items),
-                ),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeInOut,
+                child: _collapsed
+                    ? const SizedBox.shrink()
+                    : ColoredBox(
+                        color: context.white,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: isLoading
+                              ? _HeroCardShimmer()
+                              : _HeroCard(items: items),
+                        ),
+                      ),
               ),
-              _SummaryRow(items: items, isLoading: isLoading),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeInOut,
+                child: _collapsed
+                    ? const SizedBox.shrink()
+                    : _SummaryRow(items: items, isLoading: isLoading),
+              ),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 280),
+                curve: Curves.easeInOut,
+                child: (_collapsed && !isLoading)
+                    ? _CompactTotalsBar(
+                        bankTotal: bankTotal, cashTotal: cashTotal)
+                    : const SizedBox.shrink(),
+              ),
               Expanded(
                 child: isLoading
                     ? _BankListShimmer()
-                    : _BankList(items: items),
+                    : _BankList(
+                        items: items,
+                        scrollController: _scrollController,
+                      ),
               ),
             ],
           ),
@@ -278,11 +336,55 @@ class _SummaryCard extends StatelessWidget {
   }
 }
 
+// ─── Compact totals bar (shown when hero is collapsed) ────────────────────────
+
+class _CompactTotalsBar extends StatelessWidget {
+  final double bankTotal;
+  final double cashTotal;
+  const _CompactTotalsBar({required this.bankTotal, required this.cashTotal});
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: context.white,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        child: Row(
+          children: [
+            const Icon(Icons.account_balance_outlined,
+                size: 13, color: AppColors.chartPrimary),
+            const SizedBox(width: 5),
+            Text('Bank',
+                style: context.labelSmall
+                    .copyWith(color: context.textSecondary, fontWeight: .w600)),
+            const SizedBox(width: 5),
+            Text(bankTotal.abs().withCommas,
+                style: context.labelSmall
+                    .copyWith(color: context.textPrimary, fontWeight: .w700)),
+            const SizedBox(width: 18),
+            const Icon(Icons.payments_outlined,
+                size: 13, color: AppColors.green),
+            const SizedBox(width: 5),
+            Text('Cash',
+                style: context.labelSmall
+                    .copyWith(color: context.textSecondary, fontWeight: .w600)),
+            const SizedBox(width: 5),
+            Text(cashTotal.abs().withCommas,
+                style: context.labelSmall
+                    .copyWith(color: context.textPrimary, fontWeight: .w700)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 // ─── Bank list ────────────────────────────────────────────────────────────────
 
 class _BankList extends StatelessWidget {
   final List<BankCashItemEntity> items;
-  const _BankList({required this.items});
+  final ScrollController scrollController;
+  const _BankList({required this.items, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
@@ -301,6 +403,7 @@ class _BankList extends StatelessWidget {
       ),
       clipBehavior: .hardEdge,
       child: ListView.separated(
+        controller: scrollController,
         padding: .zero,
         itemCount: items.length,
         separatorBuilder: (_, __) => Divider(
