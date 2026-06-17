@@ -13,9 +13,9 @@ extension SaleOrderSummaryMapper on SaleOrderSummaryByParty {
       docDate:         o.docDate,
       item:            o.item?.name               ?? '',
       status:          o.status                   ?? '',
-      ttlQty:          o.ttlQty                   ?? 0,
-      ttlRemainingQty: o.ttlRemainingQty           ?? 0,
-      progress:        o.orderProgressPercentage   ?? 0,
+      ttlQty:          (o.ttlQty          ?? 0).toInt(),
+      ttlRemainingQty: (o.ttlRemainingQty ?? 0).toInt(),
+      progress:        (o.orderProgressPercentage ?? 0).toInt(),
     )).toList() ?? const [],
   );
 }

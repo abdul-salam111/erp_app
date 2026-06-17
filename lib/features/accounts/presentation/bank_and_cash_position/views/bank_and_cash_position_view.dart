@@ -59,7 +59,7 @@ class _BankAndCashPositionBody extends StatelessWidget {
                       : _HeroCard(items: items),
                 ),
               ),
-              _SectionLabel(count: items.length, isLoading: isLoading),
+              _SummaryRow(items: items, isLoading: isLoading),
               Expanded(
                 child: isLoading
                     ? _BankListShimmer()
@@ -158,47 +158,145 @@ class _HeroCardShimmer extends StatelessWidget {
   }
 }
 
-// ─── Section label ────────────────────────────────────────────────────────────
+// ─── Summary row ──────────────────────────────────────────────────────────────
 
-class _SectionLabel extends StatelessWidget {
-  final int count;
+class _SummaryRow extends StatelessWidget {
+  final List<BankCashItemEntity> items;
   final bool isLoading;
-  const _SectionLabel({required this.count, required this.isLoading});
+  const _SummaryRow({required this.items, required this.isLoading});
+
+  static const _bankColor = AppColors.chartPrimary;
+  static const _cashColor = AppColors.green;
 
   @override
   Widget build(BuildContext context) {
+    final bankTotal = items
+        .where((e) => e.isBank)
+        .fold(0.0, (sum, e) => sum + e.amount);
+    final cashTotal = items
+        .where((e) => e.isCash)
+        .fold(0.0, (sum, e) => sum + e.amount);
+
     return Padding(
-      padding: const .fromLTRB(16, 16, 16, 6),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
       child: Row(
         children: [
-          Text(
-            'All Accounts',
-            style: context.bodySmall.copyWith(
-              fontWeight: .w700,
-              color: context.textPrimary,
-              fontSize: 14,
+          Expanded(
+            child: _SummaryCard(
+              label: 'Bank',
+              amount: bankTotal,
+              color: _bankColor,
+              icon: Icons.account_balance_outlined,
+              isLoading: isLoading,
             ),
           ),
-          if (!isLoading && count > 0) ...[
-            const SizedBox(width: 8),
-            Container(
-              padding: const .symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: context.primary.withValues(alpha: 0.10),
-                borderRadius: .circular(20),
-              ),
-              child: Text(
-                '$count',
-                style: context.labelSmall.copyWith(
-                  color: context.primary,
-                  fontWeight: .w700,
-                  fontSize: 11,
-                ),
-              ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: _SummaryCard(
+              label: 'Cash',
+              amount: cashTotal,
+              color: _cashColor,
+              icon: Icons.payments_outlined,
+              isLoading: isLoading,
             ),
-          ],
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _SummaryCard extends StatelessWidget {
+  final String label;
+  final double amount;
+  final Color color;
+  final IconData icon;
+  final bool isLoading;
+  const _SummaryCard({
+    required this.label,
+    required this.amount,
+    required this.color,
+    required this.icon,
+    required this.isLoading,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isCredit = amount < 0;
+    final typeLabel = isCredit ? 'Credit' : 'Debit';
+    final typeColor = isCredit ? AppColors.creditGreenDark : AppColors.chartSecondary;
+    final typeBg = typeColor.withValues(alpha: 0.10);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(14),
+        border: .all(color: context.border),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: isLoading
+          ? Column(
+              crossAxisAlignment: .start,
+              children: [
+                ShimmerBox(height: 13, width: 60, radius: 4),
+                const SizedBox(height: 8),
+                ShimmerBox(height: 16, width: double.infinity, radius: 4),
+                const SizedBox(height: 6),
+                ShimmerBox(height: 18, width: 48, radius: 20),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: .start,
+              children: [
+                Row(
+                  children: [
+                    Icon(icon, size: 13, color: color),
+                    const SizedBox(width: 4),
+                    Text(
+                      label,
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                        fontWeight: .w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  amount.abs().withCommas,
+                  style: context.bodySmall.copyWith(
+                    fontWeight: .w700,
+                    color: context.textPrimary,
+                    fontSize: 14,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+                const SizedBox(height: 5),
+                Container(
+                  padding: const .symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: typeBg,
+                    borderRadius: .circular(20),
+                  ),
+                  child: Text(
+                    typeLabel,
+                    style: context.labelSmall.copyWith(
+                      color: typeColor,
+                      fontWeight: .w600,
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

@@ -17,7 +17,7 @@ class BankCashItemEntity extends Equatable {
 
   bool get isBank => accountType.contains('bank');
   bool get isCash => accountType.contains('cash');
-  bool get isCredit => amount >= 0;
+  bool get isCredit => amount < 0;
 
   @override
   List<Object> get props => [accountId, accountTitle, accountType, accountNbr, amount];

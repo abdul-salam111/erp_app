@@ -128,26 +128,29 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
               ),
             ),
             Expanded(
-              child: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
-                builder: (context, state) {
-                  if (state.apiStatus == ApiStatus.INITIAL) {
-                    return const _IdleState();
-                  }
-                  if (state.apiStatus == ApiStatus.LOADING) {
-                    return const _ShimmerBody();
-                  }
-                  if (state.apiStatus == ApiStatus.FAILURE) {
-                    return _ErrorBody(
-                      message: state.message ?? 'Something went wrong',
-                      onRetry: _fetch,
-                    );
-                  }
-                  if (state.apiStatus == ApiStatus.SUCCESS &&
-                      state.statements.isEmpty) {
-                    return const _EmptyState();
-                  }
-                  return _StatementsBody(statements: state.statements);
-                },
+              child: ColoredBox(
+                color: context.white,
+                child: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
+                  builder: (context, state) {
+                    if (state.apiStatus == ApiStatus.INITIAL) {
+                      return const _IdleState();
+                    }
+                    if (state.apiStatus == ApiStatus.LOADING) {
+                      return const _ShimmerBody();
+                    }
+                    if (state.apiStatus == ApiStatus.FAILURE) {
+                      return _ErrorBody(
+                        message: state.message ?? 'Something went wrong',
+                        onRetry: _fetch,
+                      );
+                    }
+                    if (state.apiStatus == ApiStatus.SUCCESS &&
+                        state.statements.isEmpty) {
+                      return const _EmptyState();
+                    }
+                    return _StatementsBody(statements: state.statements);
+                  },
+                ),
               ),
             ),
           ],

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import 'inventory_models.dart';
-import 'outline_chip.dart';
 
 class CurrentStockSection extends StatelessWidget {
   final List<StockItem> items;
@@ -67,7 +66,6 @@ class CurrentStockSection extends StatelessWidget {
                     ],
                   ),
                 ),
-                InventoryOutlineChip(label: 'Open Report', onTap: () {}),
               ],
             ),
           ),

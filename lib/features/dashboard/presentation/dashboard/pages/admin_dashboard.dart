@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:mantic_erp_app/core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/routes/route_exports.dart';
@@ -27,6 +28,10 @@ class AdminDashboard extends StatelessWidget {
       drawer: AppDrawer(
         userName: currentUser.fullName,
         orgName: currentUser.org.name,
+        onOrgTap: () {
+          Navigator.pop(context);
+          context.pushNamed(RouteNames.organizationSelection);
+        },
         items: [
           DrawerItem.tile(
             label: AppConstants.dashboardLabel,

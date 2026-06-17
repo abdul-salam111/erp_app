@@ -322,7 +322,6 @@ class _CurrentStockCardDelegate extends SliverPersistentHeaderDelegate {
                     ],
                   ),
                 ),
-                InventoryOutlineChip(label: 'Open Report', onTap: () {}),
               ],
             ),
           ),

@@ -41,10 +41,9 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
       lastDate: DateTime(2100),
     );
     if (picked == null || !mounted) return;
-    final newTo = picked.addMonths(1);
     setState(() {
       _fromDate = picked;
-      _toDate = newTo;
+      if (_toDate.isBefore(_fromDate)) _toDate = _fromDate;
     });
     context.read<DashboardBloc>().add(
       SaleOrderDateRangeChanged(fromDate: _fromDate, toDate: _toDate),
@@ -55,7 +54,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
     final picked = await showCompactDatePicker(
       context: context,
       initialDate: _toDate,
-      firstDate: _fromDate.addMonths(1),
+      firstDate: _fromDate,
       lastDate: DateTime(2100),
     );
     if (picked == null || !mounted) return;

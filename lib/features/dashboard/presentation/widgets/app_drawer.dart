@@ -56,12 +56,14 @@ class AppDrawer extends StatelessWidget {
   final String           userName;
   final String           orgName;
   final List<DrawerItem> items;
+  final VoidCallback?    onOrgTap;
 
   const AppDrawer({
     super.key,
     required this.userName,
     required this.orgName,
     required this.items,
+    this.onOrgTap,
   });
 
   @override
@@ -73,7 +75,7 @@ class AppDrawer extends StatelessWidget {
       child: Column(
         children: [
           // ── Header ──
-          _DrawerHeader(userName: userName, orgName: orgName),
+          _DrawerHeader(userName: userName, orgName: orgName, onOrgTap: onOrgTap),
 
           // ── Nav items ──
           Expanded(
@@ -418,10 +420,15 @@ class _LogoutButton extends StatelessWidget {
 // ─── Drawer header ────────────────────────────────────────────────────────────
 
 class _DrawerHeader extends StatelessWidget {
-  final String userName;
-  final String orgName;
+  final String        userName;
+  final String        orgName;
+  final VoidCallback? onOrgTap;
 
-  const _DrawerHeader({required this.userName, required this.orgName});
+  const _DrawerHeader({
+    required this.userName,
+    required this.orgName,
+    this.onOrgTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -500,34 +507,45 @@ class _DrawerHeader extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      // Role badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 9,
-                          vertical:   4,
-                        ),
-                        decoration: BoxDecoration(
-                          color:        AppColors.white.withValues(alpha: 0.20),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisSize: .min,
-                          children: [
-                            Icon(
-                              Iconsax.buildings,
-                              color: AppColors.white.withValues(alpha: 0.90),
-                              size:  11,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              orgName,
-                              style: context.labelSmall.copyWith(
-                                color:      AppColors.white.withValues(alpha: 0.92),
-                                fontWeight: .w600,
-                                fontSize:   11,
+                      // Org badge — tappable to switch organisation
+                      GestureDetector(
+                        onTap: onOrgTap,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 9,
+                            vertical:   4,
+                          ),
+                          decoration: BoxDecoration(
+                            color:        AppColors.white.withValues(alpha: 0.20),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: .min,
+                            children: [
+                              Icon(
+                                Iconsax.buildings,
+                                color: AppColors.white.withValues(alpha: 0.90),
+                                size:  11,
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 5),
+                              Text(
+                                orgName,
+                                style: context.labelSmall.copyWith(
+                                  color:      AppColors.white.withValues(alpha: 0.92),
+                                  fontWeight: .w600,
+                                  fontSize:   11,
+                                ),
+                              ),
+                              if (onOrgTap != null) ...[
+                                const SizedBox(width: 5),
+                                Icon(
+                                  Icons.swap_horiz_rounded,
+                                  color: AppColors.white.withValues(alpha: 0.85),
+                                  size:  12,
+                                ),
+                              ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
