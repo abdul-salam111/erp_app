@@ -53,7 +53,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
     final body = <String, dynamic>{
       'FromDate': fromDate,
       'ToDate': toDate,
-      'AccountId': accountId ?? 281,
+      if (accountId != null) 'AccountId': accountId,
     };
     return postList<GetLedgerModel>(
       url: ApiEndPoints.getLedger,
@@ -105,7 +105,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
     final body = <String, dynamic>{
       'FromDate': fromDate,
       'ToDate': toDate,
-      'PartyId': partyId ?? 206,
+      if (partyId != null) 'PartyId': partyId,
     };
     return postList<GetLedgerModel>(
       url: ApiEndPoints.getLedger,

@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 
-// import '../core/services/session_manager.dart';
+import '../core/services/session_manager.dart';
 import '../features/auth/auth_exports.dart';
 import '../features/dashboard/dashboard_exports.dart';
 import '../features/splash/splash_view.dart';
@@ -21,19 +21,19 @@ class AppRoutes {
   static final GoRouter router = GoRouter(
     initialLocation: RoutePaths.splash,
     redirect: (context, state) {
-      // final isLoggedIn = SessionController.instance.islogin;
-      // final location = state.matchedLocation;
+      final isLoggedIn = SessionController.instance.islogin;
+      final location = state.matchedLocation;
 
-      // // Splash handles its own navigation — never redirect it.
-      // if (location == RoutePaths.splash) return null;
+      // Splash handles its own navigation — never redirect it.
+      if (location == RoutePaths.splash) return null;
 
-      // if (!isLoggedIn && location != RoutePaths.signin) {
-      //   return RoutePaths.dashboard;
-      // }
+      if (!isLoggedIn && location != RoutePaths.signin) {
+        return RoutePaths.signin;
+      }
 
-      // if (isLoggedIn && location == RoutePaths.signin) {
-      //   return RoutePaths.dashboard;
-      // }
+      if (isLoggedIn && location == RoutePaths.signin) {
+        return RoutePaths.dashboard;
+      }
 
       return null;
     },

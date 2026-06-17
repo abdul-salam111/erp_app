@@ -20,6 +20,7 @@ class CurrentUser {
   String get lastName => _user?.lastName ?? '';
   String get email => _user?.email ?? '';
   int? get id => _user?.id;
+  List<UserOrganizationEntity>? get organizations => _user?.organizations;
 
   // ── Organization ──────────────────────────────────────
   OrgAccessor get org => const OrgAccessor._();

@@ -32,6 +32,11 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
       ),
       (user) async {
         await SessionController.instance.saveUserInStorage(user);
+        // Auto-save when user belongs to a single organization.
+        if (user.organizations.length == 1) {
+          await SessionController.instance
+              .saveSelectedOrganization(user.organizations.first);
+        }
         emit(state.copyWith(apiStatus: ApiStatus.SUCCESS, user: user));
       },
     );

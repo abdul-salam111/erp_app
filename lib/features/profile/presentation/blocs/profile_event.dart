@@ -7,5 +7,6 @@ abstract class ProfileEvent extends Equatable {
   List<Object> get props => [];
 }
 
-// TODO: Define events for this screen
-// class ProfileSubmitted extends ProfileEvent {}
+class LogoutRequested extends ProfileEvent {
+  const LogoutRequested();
+}

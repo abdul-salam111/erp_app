@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../core/di/app_dependencies.dart';
 import '../../core/services/services_exports.dart';
 import '../../core/widgets/widgets.dart';
-
-
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -13,12 +12,10 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-  late final SplashServices splashServices;
   @override
   void initState() {
     super.initState();
-    splashServices = SplashServices();
-    splashServices.isLoggedIn(context);
+    sl<SplashServices>().isLoggedIn(context);
   }
 
   @override

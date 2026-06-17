@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../../../../core/constants/app_enums.dart';
 import '../../../../core/di/di_exports.dart';
 import '../../../../core/services/current_user.dart';
-import '../../../../core/services/session_manager.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
@@ -29,10 +29,16 @@ class _ProfileBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final orgs = SessionController.instance.loggedInUser?.organizations ?? [];
-    final hasMultiOrgs = orgs.length > 1;
+    final hasMultiOrgs = (currentUser.organizations?.length ?? 0) > 1;
 
-    return Scaffold(
+    return BlocListener<ProfileBloc, ProfileState>(
+      listenWhen: (p, c) => p.logoutStatus != c.logoutStatus,
+      listener: (context, state) {
+        if (state.logoutStatus == ApiStatus.SUCCESS) {
+          context.goNamed(RouteNames.signin);
+        }
+      },
+      child: Scaffold(
       backgroundColor: context.background,
       body: CustomScrollView(
         slivers: [
@@ -119,15 +125,15 @@ class _ProfileBody extends StatelessWidget {
 
                 // ── Logout ─────────────────────────────────────────
                 _LogoutCard(
-                  onTap: () async {
-                    await SessionController.instance.clearSession();
-                    if (context.mounted) context.goNamed(RouteNames.signin);
-                  },
+                  onTap: () => context.read<ProfileBloc>().add(
+                    const LogoutRequested(),
+                  ),
                 ),
               ]),
             ),
           ),
         ],
+      ),
       ),
     );
   }

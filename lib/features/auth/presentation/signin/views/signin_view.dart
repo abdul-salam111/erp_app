@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/services/session_manager.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../routes/route_names.dart';
@@ -33,13 +32,7 @@ class _SignInViewState extends State<SignInView> {
               if (state.apiStatus == ApiStatus.SUCCESS) {
                 final orgs = state.user?.organizations ?? [];
                 if (orgs.length == 1) {
-                  SessionController.instance
-                      .saveSelectedOrganization(orgs.first)
-                      .then((_) {
-                    if (context.mounted) {
-                      context.goNamed(RouteNames.dashboard);
-                    }
-                  });
+                  context.goNamed(RouteNames.dashboard);
                 } else {
                   context.goNamed(RouteNames.organizationSelection);
                 }
