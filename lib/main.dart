@@ -8,6 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupLocator();
   runApp(const MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {
