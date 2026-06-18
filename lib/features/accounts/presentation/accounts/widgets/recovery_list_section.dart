@@ -8,6 +8,7 @@ import '../blocs/accounts_bloc.dart';
 import '../blocs/accounts_event.dart';
 import '../blocs/accounts_state.dart';
 import 'accounts_models.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class RecoveryListSection extends StatelessWidget {
   final List<CustomerRow> rows;
@@ -55,7 +56,7 @@ class RecoveryListSection extends StatelessWidget {
                         mainAxisAlignment: .spaceBetween,
                         children: [
                           Text(
-                            'Recovery progress',
+                            AppConstants.recoveryProgress,
                             style: context.labelSmall.copyWith(
                               color: context.textSecondary,
                             ),
@@ -93,7 +94,7 @@ class RecoveryListSection extends StatelessWidget {
               builder: (context, state) => Row(
                 children: [
                   _FilterTab(
-                    label: 'Today',
+                    label: AppConstants.todayLabel,
                     selected: state.selectedFilter == FilterType.today,
                     onTap: () => context.read<AccountsBloc>().add(
                       const RecoveryFilterChanged(FilterType.today),
@@ -101,7 +102,7 @@ class RecoveryListSection extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   _FilterTab(
-                    label: 'Oldest',
+                    label: AppConstants.oldestLabel,
                     selected: state.selectedFilter == FilterType.oldest,
                     onTap: () => context.read<AccountsBloc>().add(
                       const RecoveryFilterChanged(FilterType.oldest),
@@ -152,7 +153,7 @@ class RecoveryListSection extends StatelessWidget {
                 .read<AccountsBloc>()
                 .add(const TodayOverviewExpansionToggled()),
             icon: const Icon(Icons.keyboard_arrow_up_rounded, size: 16),
-            label: const Text('Hide Details'),
+            label: const Text(AppConstants.hideDetailsLabel),
           ),
         ),
       ],
@@ -255,7 +256,7 @@ class _CustomerTile extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'Add Receipt',
+                              AppConstants.addReceipt,
                               style: context.bodySmall.copyWith(
                                 color: context.textPrimary,
                               ),
@@ -276,7 +277,7 @@ class _CustomerTile extends StatelessWidget {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'Postpone Invoice',
+                              AppConstants.postponeInvoice,
                               style: context.bodySmall.copyWith(
                                 color: context.textPrimary,
                               ),
@@ -389,7 +390,7 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAction = status == CustomerStatus.actionRequired;
     final color = isAction ? AppColors.orange : AppColors.green;
-    final label = isAction ? 'Action req.' : 'Partial';
+    final label = isAction ? AppConstants.actionReq : AppConstants.partial;
     return Container(
       padding: .symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(

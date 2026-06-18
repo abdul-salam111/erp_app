@@ -1,16 +1,21 @@
 import 'dart:core';
 
 class AppConstants {
-
   // ─── Auth ──────────────────────────────────────────────
   static const String signInTitle = 'Sign In';
-  static const String youHaveLoggedinSuccessfully = 'You have loggedin successfully!';
+  static const String youHaveLoggedinSuccessfully =
+      'You have loggedin successfully!';
   static const String emailLabel = 'Email';
   static const String enterYourEmailHint = 'Enter your email';
   static const String passwordLabel = 'Password';
   static const String enterYourPasswordHint = 'Enter your password';
   static const String signInBtn = 'SignIn';
-
+  static const String branchTokenUnavailable = 'Branch token unavailable';
+  static const String failedToSelectBranchErrorMsg = 'Failed to select branch';
+  static const String noOrganizationsFound = 'No organizations found.';
+  static const String selectOrganization = 'Select Organization';
+  static const String chooseTheOrganizationYouWant =
+      'Choose the organization you want to work with.';
   // ─── Dashboard ─────────────────────────────────────────
   static const String adminDashboardTitle = 'Admin Dashboard';
   static const String admin = 'Bahoo Foods';
@@ -52,18 +57,11 @@ class AppConstants {
   static const String goodEveningMsg = 'Good Evening';
   static const String eRPDashboard = 'Mantic ERP';
   static const String expensesLabel = 'Expenses';
-  static const String rs6110 = 'Rs 6,110';
-  static const String change84Percent = '84 %';
-  static const String changeMinus250Percent = '-250 %';
   static const String newClientsLabel = 'New Clients';
-  static const String changeMinus100Percent = '-100 %';
   static const String totalRevenueLabel = 'Total Revenue';
-  static const String rs503100Label = 'Rs 503,100';
   static const String totalPurchasesLabel = 'Total Purchases';
-  static const String rs6300Label = 'Rs 6,300';
   static const String recoveriesLabel = 'Recoveries';
   static const String monthOverview = 'Month Overview';
-  static const String may2026 = 'May 2026';
   static const String quickActionsTitle = 'Quick Actions';
   static const String menu1Label = 'Menu 1';
   static const String menu2Label = 'Menu 2';
@@ -93,20 +91,39 @@ class AppConstants {
   static const String notStartedLabel = 'Pending';
   static const String progress = 'Progress';
   static const String remainingLabel = 'Remaining';
+  static const String revenueLabel = 'Revenue';
+  static const String purchasesLabel = 'Purchases';
+  static const String newPartiesLabel = 'New Parties';
+  static const String noDataAvailable = 'No data available';
+  static const String noOrdersToday = 'No orders today';
+  static const String fromLabel = 'From';
+  static const String toLabel = 'To';
+  static const String status = 'Status';
+  static const String noOrdersInThisPeriod = 'No orders in this period';
+  static const String orderDetails = 'Order Details';
+  static const String orderLabel = 'Order #';
+  static const String totalQtyLabel = 'Total Qty';
   // ─── AlertPanel ────────────────────────────────────────
   static const String pendingQCTitle = 'Pending QC';
-  static const String itemsReceivedButNotYetTitle = 'Items received but not yet quality-checked.';
+  static const String itemsReceivedButNotYetTitle =
+      'Items received but not yet quality-checked.';
   static const String lowStockTitle = 'Low Stock';
-  static const String itemsBelowMinimumThresholdTitle = 'Items below minimum threshold.';
+  static const String itemsBelowMinimumThresholdTitle =
+      'Items below minimum threshold.';
   static const String overdueMaintenanceTitle = 'Overdue Maintenance';
-  static const String scheduledMaintenanceIsPastDueTitle = 'Scheduled maintenance is past due.';
-  static const String pendingAssetRegistrationTitle = 'Pending Asset Registration';
-  static const String gRNItemsAwaitingTitle = 'GRN items awaiting asset tag assignment.';
+  static const String scheduledMaintenanceIsPastDueTitle =
+      'Scheduled maintenance is past due.';
+  static const String pendingAssetRegistrationTitle =
+      'Pending Asset Registration';
+  static const String gRNItemsAwaitingTitle =
+      'GRN items awaiting asset tag assignment.';
   static const String delayedRepairTitle = 'Delayed Repair';
-  static const String twoAssetsOverdueFromRepairTitle = '2 assets overdue from repair center by 2+ days.';
+  static const String twoAssetsOverdueFromRepairTitle =
+      '2 assets overdue from repair center by 2+ days.';
   static const String resolvedSuccessfullySuccessMsg = 'Resolved successfully!';
   static const String alert = 'Alert';
-  static const String anomaliesThatCanBlockWork = 'Anomalies that can block work today';
+  static const String anomaliesThatCanBlockWork =
+      'Anomalies that can block work today';
   static const String resolve = 'Resolve';
 
   // ─── General ───────────────────────────────────────────
@@ -114,10 +131,26 @@ class AppConstants {
   static const String profileLabel = 'Profile';
   static const String successSuccessMsg = 'Success!';
   static const String submitBtn = 'Submit';
-
+  static const String todayLabel = 'Today';
+  static const String ddMMMYyyyLabel = 'dd MMM yyyy';
+  static const String dateLabel = 'Date';
+  static const String partyBtn = 'Party';
+  static const String productLabel = 'Product';
   // ─── Profile ───────────────────────────────────────────
   static const String profileView = 'Profile View';
-
+  static const String personalInformationTitle = 'Personal Information';
+  static const String fullNameLabel = 'Full Name';
+  static const String userIDLabel = 'User ID';
+  static const String organizationTitle = 'Organization';
+  static const String nameLabel = 'Name';
+  static const String tenantLabel = 'Tenant';
+  static const String countryLabel = 'Country';
+  static const String currencyLabel = 'Currency';
+  static const String switchOrganization = 'Switch Organization';
+  static const String changeToADifferentOrganization =
+      'Change to a different organization';
+  static const String logOut = 'Log Out';
+  static const String signOutOfYourAccount = 'Sign out of your account';
   // ─── PurchaseOrder ─────────────────────────────────────
   static const String purchaseOrderTitle = 'PurchaseOrder';
   static const String purchaseOrderView = 'PurchaseOrder View';
@@ -145,12 +178,71 @@ class AppConstants {
   static const String creditManagementLabel = 'Credit Management';
   static const String customerReceivableLabel = 'Customer Receivable';
   static const String vendorPayableLabel = 'Vendor Payable';
+  static const String recoveryProgress = 'Recovery progress';
+  static const String oldestLabel = 'Oldest';
+  static const String hideDetailsLabel = 'Hide Details';
+  static const String addReceipt = 'Add Receipt';
+  static const String postponeInvoice = 'Postpone Invoice';
+  static const String actionReq = 'Action req.';
+  static const String partial = 'Partial';
+  static const String pleaseSelectAnAccountFirstErrorMsg =
+      'Please select an account first';
+  static const String invoiceReadySuccessMsg = 'Invoice ready';
+  static const String somethingWentWrong = 'Something went wrong';
+  static const String selectAccount = 'Select account…';
+  static const String accountBtn = 'Account';
+  static const String selectAccountHint = 'Select Account';
+  static const String fromDateBtn = 'From Date';
+  static const String toDateBtn = 'To Date';
+  static const String view = 'View';
+  static const String statementsBtn = 'Statements';
+  static const String noLedgerDataAvailable = 'No ledger data available';
+  static const String openingBalance = 'Opening balance';
+  static const String debit = 'Debit';
+  static const String credit = 'Credit';
+  static const String drCr = 'Dr / Cr';
+  static const String openingBalance2 = 'Opening Balance';
+  static const String debitTransaction = 'Debit Transaction';
+  static const String creditTransaction = 'Credit Transaction';
+  static const String drCrTransaction = 'Dr / Cr Transaction';
+  static const String docLabel = 'Doc #';
+  static const String narrationLabel = 'Narration';
+  static const String balanceAfterLabel = 'Balance after';
+  static const String close = 'Close';
+  static const String printInvoiceLabel = 'Print Invoice';
+  static const String noStatementsYet = 'No statements yet';
+  static const String selectAnAccountAndTap = 'Select an account and tap View';
+  static const String noRecordsFound = 'No records found';
+  static const String trySelectingADifferentDate =
+      'Try selecting a different date range';
+  static const String retry = 'Retry';
+  static const String dr = 'Dr';
+  static const String cr = 'Cr';
+  static const String bankLabel = 'Bank';
+  static const String cashLabel = 'Cash';
+
+  static const String pleaseSelectAPartyFirstErrorMsg =
+      'Please select a party first';
+  static const String selectParty = 'Select party…';
+  static const String selectPartyHint = 'Select Party';
+  static const String selectAPartyAndTap = 'Select a party and tap View';
   // ─── Analytics ─────────────────────────────────────────
   static const String analyticsView = 'Analytics View';
 
   // ─── Inventory ─────────────────────────────────────────
   static const String inventoryView = 'Inventory View';
-
+  static const String nA = 'N/A';
+  static const String noStockDataAvailable = 'No stock data available';
+  static const String currentStock = 'Current Stock';
+  static const String liveInventoryByProduct = 'Live inventory by product';
+  static const String qtyWeight = 'Qty / Weight';
+  static const String total = 'Total';
+  static const String thisWeek = 'This Week';
+  static const String thisMonth = 'This Month';
+  static const String stockReceived = 'Stock Received';
+  static const String incomingStockByPartyItem =
+      'Incoming stock by party / item';
+  static const String noStockReceived = 'No stock received';
   // ─── Production ────────────────────────────────────────
   static const String productionView = 'Production View';
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import 'inventory_models.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class StockReceivedSection extends StatelessWidget {
   final List<StockRow> rows;
@@ -17,7 +18,7 @@ class StockReceivedSection extends StatelessWidget {
     this.isLoading = false,
   });
 
-  static const _filters = ['Today', 'This Week', 'This Month'];
+  static const _filters = [AppConstants.todayLabel, AppConstants.thisWeek, AppConstants.thisMonth];
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +61,12 @@ class StockReceivedSection extends StatelessWidget {
                     crossAxisAlignment: .start,
                     children: [
                       Text(
-                        'Stock Received',
+                        AppConstants.stockReceived,
                         style: context.titleSmall.copyWith(fontWeight: .w700),
                       ),
                       const SizedBox(height: 1),
                       Text(
-                        'Incoming stock by party / item',
+                        AppConstants.incomingStockByPartyItem,
                         style: TextStyle(fontSize: 10, color: context.grey400),
                       ),
                     ],
@@ -154,7 +155,7 @@ class StockReceivedSection extends StatelessWidget {
                       : rows.isEmpty
                           ? Center(
                               child: Text(
-                                'No stock received',
+                                AppConstants.noStockReceived,
                                 style: TextStyle(color: AppColors.grey400),
                               ),
                             )
@@ -270,7 +271,7 @@ class _StockReceivedTile extends StatelessWidget {
               Text(
                 row.qty,
                 style: context.labelSmall.copyWith(
-                  color: row.qty == 'N/A'
+                  color: row.qty == AppConstants.nA
                       ? context.textSecondary
                       : context.textPrimary,
                   fontWeight: .w600,

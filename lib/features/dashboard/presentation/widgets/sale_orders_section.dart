@@ -152,7 +152,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
                   children: [
                     Expanded(
                       child: _DateButton(
-                        label: 'From',
+                        label: AppConstants.fromLabel,
                         date: _fromDate,
                         onTap: _pickFrom,
                       ),
@@ -160,7 +160,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: _DateButton(
-                        label: 'To',
+                        label: AppConstants.toLabel,
                         date: _toDate,
                         onTap: _pickTo,
                       ),
@@ -347,7 +347,7 @@ class _OrdersTable extends StatelessWidget {
   final List<SaleOrderRow> orders;
   const _OrdersTable({super.key, required this.orders});
 
-  static const _cols = ['Party', 'Date', 'Product', 'Status'];
+  static const _cols = [AppConstants.partyBtn, AppConstants.dateLabel, AppConstants.productLabel, AppConstants.status];
   static const _flex = [2, 2, 2, 2];
 
   void _showOrderDetail(BuildContext context, SaleOrderRow row) {
@@ -366,7 +366,7 @@ class _OrdersTable extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 32),
         child: Center(
           child: Text(
-            'No orders in this period',
+            AppConstants.noOrdersInThisPeriod,
             style: context.bodySmall.copyWith(color: context.textSecondary),
           ),
         ),
@@ -528,7 +528,7 @@ class _OrderDetailSheet extends StatelessWidget {
                   mainAxisSize: .min,
                   children: [
                     Text(
-                      'Order Details',
+                      AppConstants.orderDetails,
                       style: context.titleSmall.copyWith(fontWeight: .w700),
                     ),
                     const SizedBox(height: 2),
@@ -550,25 +550,25 @@ class _OrderDetailSheet extends StatelessWidget {
 
           // ── Detail rows ──────────────────────────────────
           _DetailRow(
-            label: 'Party',
+            label: AppConstants.partyBtn,
             value: row.party.isEmpty ? '-' : row.party,
           ),
           _DetailRow(
-            label: 'Order #',
+            label: AppConstants.orderLabel,
             value: row.docNbr.isEmpty ? '-' : row.docNbr,
           ),
           _DetailRow(
-            label: 'Date',
+            label: AppConstants.dateLabel,
             value: row.docDate != null
-                ? row.docDate!.format('dd MMM yyyy')
+                ? row.docDate!.format(AppConstants.ddMMMYyyyLabel)
                 : '-',
           ),
           _DetailRow(
-            label: 'Product',
+            label: AppConstants.productLabel,
             value: row.item.isEmpty ? '-' : row.item,
           ),
-          _DetailRow(label: 'Total Qty', value: '${row.ttlQty}'),
-          _DetailRow(label: 'Remaining', value: '${row.ttlRemainingQty}'),
+          _DetailRow(label: AppConstants.totalQtyLabel, value: '${row.ttlQty}'),
+          _DetailRow(label: AppConstants.remainingLabel, value: '${row.ttlRemainingQty}'),
           const SizedBox(height: 16),
 
           // ── Progress bar ─────────────────────────────────
@@ -576,7 +576,7 @@ class _OrderDetailSheet extends StatelessWidget {
             mainAxisAlignment: .spaceBetween,
             children: [
               Text(
-                'Progress',
+                AppConstants.progress,
                 style: context.labelSmall.copyWith(
                   color: context.textSecondary,
                   fontWeight: .w600,

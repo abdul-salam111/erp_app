@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import 'inventory_models.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class CurrentStockSection extends StatelessWidget {
   final List<StockItem> items;
@@ -55,12 +56,12 @@ class CurrentStockSection extends StatelessWidget {
                     crossAxisAlignment: .start,
                     children: [
                       Text(
-                        'Current Stock',
+                        AppConstants.currentStock,
                         style: context.titleSmall.copyWith(fontWeight: .w700),
                       ),
                       const SizedBox(height: 1),
                       Text(
-                        'Live inventory by product',
+                        AppConstants.liveInventoryByProduct,
                         style: TextStyle(fontSize: 10, color: context.grey400),
                       ),
                     ],
@@ -103,7 +104,7 @@ class CurrentStockSection extends StatelessWidget {
                       Expanded(
                         flex: 5,
                         child: Text(
-                          'Product',
+                          AppConstants.productLabel,
                           style: context.labelSmall.copyWith(
                             color: AppColors.grey900,
                             fontWeight: .w700,
@@ -113,7 +114,7 @@ class CurrentStockSection extends StatelessWidget {
                       SizedBox(
                         width: 80,
                         child: Text(
-                          'Qty / Weight',
+                          AppConstants.qtyWeight,
                           textAlign: .center,
                           style: context.labelSmall.copyWith(
                             color: AppColors.grey900,
@@ -124,7 +125,7 @@ class CurrentStockSection extends StatelessWidget {
                       SizedBox(
                         width: 54,
                         child: Text(
-                          'Total',
+                          AppConstants.total,
                           textAlign: .end,
                           style: context.labelSmall.copyWith(
                             color: AppColors.grey900,
@@ -147,7 +148,7 @@ class CurrentStockSection extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: 32),
                     child: Center(
                       child: Text(
-                        'No stock data available',
+                        AppConstants.noStockDataAvailable,
                         style: TextStyle(color: AppColors.grey400),
                       ),
                     ),

@@ -13,12 +13,12 @@ import '../dashboard/blocs/dashboard_bloc.dart';
 // ─── Panel keys ───────────────────────────────────────────────────────────────
 
 const _panels = <_PanelMeta>[
-  _PanelMeta(key: 'revenue',      label: 'Revenue'),
-  _PanelMeta(key: 'expenses',     label: 'Expenses'),
-  _PanelMeta(key: 'purchases',    label: 'Purchases'),
-  _PanelMeta(key: 'recoveries',   label: 'Recoveries'),
-  _PanelMeta(key: 'sale_orders',  label: 'Sale Orders'),
-  _PanelMeta(key: 'new_parties',  label: 'New Parties'),
+  _PanelMeta(key: 'revenue',      label: AppConstants.revenueLabel),
+  _PanelMeta(key: 'expenses',     label: AppConstants.expensesLabel),
+  _PanelMeta(key: 'purchases',    label: AppConstants.purchasesLabel),
+  _PanelMeta(key: 'recoveries',   label: AppConstants.recoveriesLabel),
+  _PanelMeta(key: 'sale_orders',  label: AppConstants.saleOrders),
+  _PanelMeta(key: 'new_parties',  label: AppConstants.newPartiesLabel),
 ];
 
 // ─── Section ──────────────────────────────────────────────────────────────────
@@ -266,7 +266,7 @@ class MonthOverviewSection extends StatelessWidget {
     if (points.isEmpty) {
       return Center(
         child: Text(
-          'No data available',
+          AppConstants.noDataAvailable,
           style: context.bodySmall.copyWith(color: context.textSecondary),
         ),
       );

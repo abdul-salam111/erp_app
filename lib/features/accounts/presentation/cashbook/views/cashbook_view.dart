@@ -12,6 +12,7 @@ import '../../../domain/entities/cashbook_statement_entity.dart';
 import '../blocs/cashbook_bloc.dart';
 import '../blocs/cashbook_event.dart';
 import '../blocs/cashbook_state.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 // ─── View ─────────────────────────────────────────────────────────────────────
 
@@ -68,7 +69,7 @@ class _CashbookBodyState extends State<_CashbookBody> {
 
   void _fetch() {
     if (_selectedAccountId == null) {
-      AppToastsUtils.showErrorTop(context, 'Please select an account first');
+      AppToastsUtils.showErrorTop(context, AppConstants.pleaseSelectAnAccountFirstErrorMsg);
       return;
     }
     setState(() => _filterCollapsed = false);
@@ -114,7 +115,7 @@ class _CashbookBodyState extends State<_CashbookBody> {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
         if (state.pdfStatus == ApiStatus.SUCCESS && state.pdfUrl != null) {
-          AppToastsUtils.showSuccessTop(context, 'Invoice ready');
+          AppToastsUtils.showSuccessTop(context, AppConstants.invoiceReadySuccessMsg);
         }
       },
       child: Scaffold(
@@ -176,7 +177,7 @@ class _CashbookBodyState extends State<_CashbookBody> {
                     }
                     if (state.apiStatus == ApiStatus.FAILURE) {
                       return _ErrorBody(
-                        message: state.message ?? 'Something went wrong',
+                        message: state.message ?? AppConstants.somethingWentWrong,
                         onRetry: _fetch,
                       );
                     }
@@ -229,7 +230,7 @@ class _CompactFilterBar extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                hasAccount ? accountName : 'Select account…',
+                hasAccount ? accountName : AppConstants.selectAccount,
                 style: context.bodySmall.copyWith(
                   color: hasAccount ? context.textPrimary : context.textSecondary,
                   fontWeight: .w500,
@@ -241,7 +242,7 @@ class _CompactFilterBar extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              '${fromDate.format('dd MMM yyyy')} – ${toDate.format('dd MMM yyyy')}',
+              '${fromDate.format(AppConstants.ddMMMYyyyLabel)} – ${toDate.format(AppConstants.ddMMMYyyyLabel)}',
               style: context.labelSmall.copyWith(
                 color: context.textSecondary,
                 fontSize: 11,
@@ -297,7 +298,7 @@ class _FilterForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: .start,
         children: [
-          _FormLabel(text: 'Account'),
+          _FormLabel(text: AppConstants.accountBtn),
           const SizedBox(height: 6),
           if (isLoadingAccounts)
             const ShimmerBox(height: 56, radius: 10)
@@ -306,7 +307,7 @@ class _FilterForm extends StatelessWidget {
               items: accountItems,
               subtitles: accountSubtitles,
               controller: accountController,
-              hintText: 'Select Account',
+              hintText: AppConstants.selectAccountHint,
               onChanged: onAccountChanged,
             ),
           const SizedBox(height: 10),
@@ -316,11 +317,11 @@ class _FilterForm extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: .start,
                   children: [
-                    _FormLabel(text: 'From Date'),
+                    _FormLabel(text: AppConstants.fromDateBtn),
                     const SizedBox(height: 6),
                     _FieldTile(
                       icon: Iconsax.calendar_1,
-                      label: fromDate.format('dd MMM yyyy'),
+                      label: fromDate.format(AppConstants.ddMMMYyyyLabel),
                       onTap: onPickFrom,
                     ),
                   ],
@@ -331,11 +332,11 @@ class _FilterForm extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: .start,
                   children: [
-                    _FormLabel(text: 'To Date'),
+                    _FormLabel(text: AppConstants.toDateBtn),
                     const SizedBox(height: 6),
                     _FieldTile(
                       icon: Iconsax.calendar_1,
-                      label: toDate.format('dd MMM yyyy'),
+                      label: toDate.format(AppConstants.ddMMMYyyyLabel),
                       onTap: onPickTo,
                     ),
                   ],
@@ -358,7 +359,7 @@ class _FilterForm extends StatelessWidget {
                 elevation: 0,
               ),
               child: Text(
-                'View',
+                AppConstants.view,
                 style: context.bodySmall.copyWith(
                   color: AppColors.white,
                   fontWeight: .w600,
@@ -456,7 +457,7 @@ class _StatementsBody extends StatelessWidget {
         bottom: 16,
       ),
       children: [
-        const _SectionLabel(text: 'Statements'),
+        const _SectionLabel(text: AppConstants.statementsBtn),
         const SizedBox(height: 8),
         for (final yearData in statements) ...[
           _YearCard(yearData: yearData, scrollController: scrollController),
@@ -682,7 +683,7 @@ class _YearCardState extends State<_YearCard> {
                     : Padding(
                         padding: const EdgeInsets.all(16),
                         child: Text(
-                          'No ledger data available',
+                          AppConstants.noLedgerDataAvailable,
                           style: context.bodySmall.copyWith(
                             color: context.textSecondary,
                           ),
@@ -748,7 +749,7 @@ class _LedgerRow extends StatelessWidget {
 
     final docDate = ledger.docDate;
     final date = (!isOpening && docDate != null && docDate.year > 1)
-        ? DateFormat('dd MMM yyyy').format(docDate)
+        ? DateFormat(AppConstants.ddMMMYyyyLabel).format(docDate)
         : '';
 
     final dr = drAmt == 0 ? '0.0' : drAmt.formatPrice();
@@ -793,7 +794,7 @@ class _LedgerRow extends StatelessWidget {
     }
 
     final title = isOpening
-        ? 'Opening balance'
+        ? AppConstants.openingBalance
         : [
             if (ledger.featureName?.isNotEmpty == true) ledger.featureName!,
             if (ledger.docNbr?.isNotEmpty == true) ledger.docNbr!,
@@ -851,7 +852,7 @@ class _LedgerRow extends StatelessWidget {
               children: [
                 if (!isOpening)
                   Text(
-                    isDrOnly ? 'Debit' : isCrOnly ? 'Credit' : 'Dr / Cr',
+                    isDrOnly ? AppConstants.debit : isCrOnly ? AppConstants.credit : AppConstants.drCr,
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
                       fontSize: 10,
@@ -936,12 +937,12 @@ class _LedgerDetailDialog extends StatelessWidget {
     }
 
     final String typeLabel = isOpening
-        ? 'Opening Balance'
+        ? AppConstants.openingBalance2
         : hasDebit && !hasCredit
-            ? 'Debit Transaction'
+            ? AppConstants.debitTransaction
             : !hasDebit && hasCredit
-                ? 'Credit Transaction'
-                : 'Dr / Cr Transaction';
+                ? AppConstants.creditTransaction
+                : AppConstants.drCrTransaction;
 
     return Dialog(
       backgroundColor: AppColors.white,
@@ -978,13 +979,13 @@ class _LedgerDetailDialog extends StatelessWidget {
             const SizedBox(height: 10),
 
             if (!isOpening && ledger.docNbr != null) ...[
-              _InfoRow(label: 'Doc #', value: ledger.docNbr!),
+              _InfoRow(label: AppConstants.docLabel, value: ledger.docNbr!),
               const SizedBox(height: 12),
               Divider(color: context.border, height: 1),
               const SizedBox(height: 12),
             ],
             if (!isOpening && date.isNotEmpty) ...[
-              _InfoRow(label: 'Date', value: date),
+              _InfoRow(label: AppConstants.dateLabel, value: date),
               const SizedBox(height: 12),
               Divider(color: context.border, height: 1),
               const SizedBox(height: 12),
@@ -992,7 +993,7 @@ class _LedgerDetailDialog extends StatelessWidget {
 
             if (isOpening) ...[
               _AmountCard(
-                label: 'Opening Balance',
+                label: AppConstants.openingBalance2,
                 amount: 'Rs. ${hasDebit ? dr : cr}',
                 bg: AppColors.grey100,
                 color: AppColors.grey700,
@@ -1000,7 +1001,7 @@ class _LedgerDetailDialog extends StatelessWidget {
             ] else ...[
               if (hasDebit) ...[
                 _AmountCard(
-                  label: 'Debit',
+                  label: AppConstants.debit,
                   amount: 'Rs. $dr',
                   bg: AppColors.debitContainer,
                   color: AppColors.debitRed,
@@ -1009,7 +1010,7 @@ class _LedgerDetailDialog extends StatelessWidget {
               ],
               if (hasCredit)
                 _AmountCard(
-                  label: 'Credit',
+                  label: AppConstants.credit,
                   amount: 'Rs. $cr',
                   bg: AppColors.creditContainer,
                   color: AppColors.creditGreen,
@@ -1020,13 +1021,13 @@ class _LedgerDetailDialog extends StatelessWidget {
             const SizedBox(height: 14),
 
             if (!isOpening && (ledger.narration?.isNotEmpty ?? false)) ...[
-              _InfoRow(label: 'Narration', value: ledger.narration!),
+              _InfoRow(label: AppConstants.narrationLabel, value: ledger.narration!),
               const SizedBox(height: 12),
               Divider(color: context.border, height: 1),
               const SizedBox(height: 12),
             ],
             _InfoRow(
-              label: 'Balance after',
+              label: AppConstants.balanceAfterLabel,
               value: _formatBalance(
                   context, (ledger.balance ?? 0).toDouble()),
             ),
@@ -1053,7 +1054,7 @@ class _LedgerDetailDialog extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: Text('Close', style: context.bodySmall),
+                        child: Text(AppConstants.close, style: context.bodySmall),
                       ),
                     ),
                     if (canPrint) ...[
@@ -1082,7 +1083,7 @@ class _LedgerDetailDialog extends StatelessWidget {
                                 )
                               : const Icon(Icons.print_outlined, size: 16),
                           label:
-                              Text('Print Invoice', style: context.bodySmall),
+                              Text(AppConstants.printInvoiceLabel, style: context.bodySmall),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: context.textPrimary,
                             side: BorderSide(color: context.border),
@@ -1203,7 +1204,7 @@ class _IdleState extends StatelessWidget {
           Icon(Iconsax.document_text, size: 48, color: AppColors.grey300),
           const SizedBox(height: 12),
           Text(
-            'No statements yet',
+            AppConstants.noStatementsYet,
             style: context.bodyMedium.copyWith(
               fontWeight: .w500,
               color: context.textSecondary,
@@ -1211,7 +1212,7 @@ class _IdleState extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Select an account and tap View',
+            AppConstants.selectAnAccountAndTap,
             style: context.bodySmall.copyWith(color: AppColors.grey400),
           ),
         ],
@@ -1234,7 +1235,7 @@ class _EmptyState extends StatelessWidget {
           Icon(Icons.search_off_rounded, size: 48, color: AppColors.grey300),
           const SizedBox(height: 12),
           Text(
-            'No records found',
+            AppConstants.noRecordsFound,
             style: context.bodyMedium.copyWith(
               fontWeight: .w500,
               color: context.textSecondary,
@@ -1242,7 +1243,7 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Try selecting a different date range',
+            AppConstants.trySelectingADifferentDate,
             style: context.bodySmall.copyWith(color: AppColors.grey400),
           ),
         ],
@@ -1280,7 +1281,7 @@ class _ErrorBody extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: .circular(10)),
               elevation: 0,
             ),
-            child: const Text('Retry'),
+            child: const Text(AppConstants.retry),
           ),
         ],
       ),
@@ -1389,6 +1390,6 @@ class _ShimmerYearCard extends StatelessWidget {
 
 String _formatBalance(BuildContext context, double balance) {
   final abs = balance.abs();
-  final suffix = balance >= 0 ? 'Dr' : 'Cr';
+  final suffix = balance >= 0 ? AppConstants.dr : AppConstants.cr;
   return 'Rs. ${abs.formatPrice()} $suffix';
 }

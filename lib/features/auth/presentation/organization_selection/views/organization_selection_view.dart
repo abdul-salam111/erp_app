@@ -10,6 +10,7 @@ import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../routes/route_names.dart';
 import '../../../auth_exports.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class OrganizationSelectionView extends StatelessWidget {
   const OrganizationSelectionView({super.key});
@@ -54,7 +55,7 @@ class _OrganizationSelectionBodyState
           context.pushNamed(RouteNames.dashboard);
         }
         if (state.status == ApiStatus.FAILURE) {
-          AppToastsUtils.showErrorTop(context, state.message ?? 'Failed to select branch');
+          AppToastsUtils.showErrorTop(context, state.message ?? AppConstants.failedToSelectBranchErrorMsg);
         }
       },
       builder: (context, state) => Scaffold(
@@ -75,7 +76,7 @@ class _OrganizationSelectionBodyState
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'No organizations found.',
+                      AppConstants.noOrganizationsFound,
                       style: context.bodyMedium.copyWith(
                         color: context.textSecondary,
                       ),
@@ -165,7 +166,7 @@ class _Header extends StatelessWidget {
                   const SizedBox(height: 4),
                 ],
                 Text(
-                  'Select Organization',
+                  AppConstants.selectOrganization,
                   style: context.headlineSmall.copyWith(
                     color: AppColors.white,
                     fontWeight: .w700,
@@ -173,7 +174,7 @@ class _Header extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Choose the organization you want to work with.',
+                  AppConstants.chooseTheOrganizationYouWant,
                   style: context.bodySmall.copyWith(
                     color: AppColors.white.withValues(alpha: 0.7),
                   ),

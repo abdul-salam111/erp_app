@@ -11,6 +11,7 @@ import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../routes/route_names.dart';
 import '../../profile_exports.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -49,23 +50,23 @@ class _ProfileBody extends StatelessWidget {
               delegate: SliverChildListDelegate([
                 // ── Personal Info ──────────────────────────────────
                 _SectionCard(
-                  title: 'Personal Information',
+                  title: AppConstants.personalInformationTitle,
                   iconData: Iconsax.profile_circle,
                   children: [
                     _InfoRow(
                       icon: Iconsax.user,
-                      label: 'Full Name',
+                      label: AppConstants.fullNameLabel,
                       value: currentUser.fullName,
                     ),
                     _InfoRow(
                       icon: Iconsax.sms,
-                      label: 'Email',
+                      label: AppConstants.emailLabel,
                       value: currentUser.email,
                     ),
                     if (currentUser.id != null)
                       _InfoRow(
                         icon: Iconsax.tag,
-                        label: 'User ID',
+                        label: AppConstants.userIDLabel,
                         value: '#${currentUser.id}',
                         isLast: true,
                       ),
@@ -76,35 +77,35 @@ class _ProfileBody extends StatelessWidget {
 
                 // ── Organization Info ──────────────────────────────
                 _SectionCard(
-                  title: 'Organization',
+                  title: AppConstants.organizationTitle,
                   iconData: Iconsax.buildings,
                   children: [
                     _InfoRow(
                       icon: Iconsax.building_3,
-                      label: 'Name',
+                      label: AppConstants.nameLabel,
                       value: currentUser.org.name,
                     ),
                     if (currentUser.org.tenantName.isNotEmpty)
                       _InfoRow(
                         icon: Iconsax.building_4,
-                        label: 'Tenant',
+                        label: AppConstants.tenantLabel,
                         value: currentUser.org.tenantName,
                       ),
                     if (currentUser.org.productName.isNotEmpty)
                       _InfoRow(
                         icon: Iconsax.box,
-                        label: 'Product',
+                        label: AppConstants.productLabel,
                         value: currentUser.org.productName,
                       ),
                     if (currentUser.org.countryName.isNotEmpty)
                       _InfoRow(
                         icon: Iconsax.global,
-                        label: 'Country',
+                        label: AppConstants.countryLabel,
                         value: currentUser.org.countryName,
                       ),
                     _InfoRow(
                       icon: Iconsax.money,
-                      label: 'Currency',
+                      label: AppConstants.currencyLabel,
                       value:
                           '${currentUser.org.currencyCode}  (${currentUser.org.currencySymbol})',
                       isLast: true,
@@ -484,7 +485,7 @@ class _SwitchOrgCard extends StatelessWidget {
                   crossAxisAlignment: .start,
                   children: [
                     Text(
-                      'Switch Organization',
+                      AppConstants.switchOrganization,
                       style: context.bodySmall.copyWith(
                         fontWeight: .w700,
                         color: context.primary,
@@ -493,7 +494,7 @@ class _SwitchOrgCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Change to a different organization',
+                      AppConstants.changeToADifferentOrganization,
                       style: context.labelSmall.copyWith(
                         color: context.textSecondary,
                         fontSize: 11,
@@ -551,7 +552,7 @@ class _LogoutCard extends StatelessWidget {
                   crossAxisAlignment: .start,
                   children: [
                     Text(
-                      'Log Out',
+                      AppConstants.logOut,
                       style: context.bodySmall.copyWith(
                         fontWeight: .w700,
                         color: context.error,
@@ -560,7 +561,7 @@ class _LogoutCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Sign out of your account',
+                      AppConstants.signOutOfYourAccount,
                       style: context.labelSmall.copyWith(
                         color: context.textSecondary,
                         fontSize: 11,

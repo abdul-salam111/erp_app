@@ -8,6 +8,7 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../inventory_exports.dart';
 import '../widgets/inventory_widgets.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class InventoryView extends StatelessWidget {
   const InventoryView({super.key});
@@ -93,7 +94,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
         itemCount: hasGroup ? '${e.itemCount ?? 0} Items' : null,
         itemName: hasGroup ? null : (e.itemName ?? ''),
         category: hasGroup ? null : '',
-        qty: hasGroup ? 'N/A' : _fmt(e.qty),
+        qty: hasGroup ? AppConstants.nA : _fmt(e.qty),
         weight: e.weight > 0 ? _fmt(e.weight) : '',
       );
     });
@@ -192,7 +193,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                         padding: const EdgeInsets.symmetric(vertical: 32),
                         child: const Center(
                           child: Text(
-                            'No stock data available',
+                            AppConstants.noStockDataAvailable,
                             style: TextStyle(color: AppColors.grey400),
                           ),
                         ),
@@ -311,12 +312,12 @@ class _CurrentStockCardDelegate extends SliverPersistentHeaderDelegate {
                     mainAxisAlignment: .center,
                     children: [
                       Text(
-                        'Current Stock',
+                        AppConstants.currentStock,
                         style: context.titleSmall.copyWith(fontWeight: .w700),
                       ),
                       const SizedBox(height: 1),
                       Text(
-                        'Live inventory by product',
+                        AppConstants.liveInventoryByProduct,
                         style: TextStyle(fontSize: 10, color: context.grey400),
                       ),
                     ],
@@ -378,7 +379,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
                   Expanded(
                     flex: 5,
                     child: Text(
-                      'Product',
+                      AppConstants.productLabel,
                       style: context.labelSmall.copyWith(
                         color: AppColors.grey900,
                         fontWeight: .w700,
@@ -388,7 +389,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
                   SizedBox(
                     width: 80,
                     child: Text(
-                      'Qty / Weight',
+                      AppConstants.qtyWeight,
                       textAlign: .center,
                       style: context.labelSmall.copyWith(
                         color: AppColors.grey900,
@@ -399,7 +400,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
                   SizedBox(
                     width: 54,
                     child: Text(
-                      'Total',
+                      AppConstants.total,
                       textAlign: .end,
                       style: context.labelSmall.copyWith(
                         color: AppColors.grey900,

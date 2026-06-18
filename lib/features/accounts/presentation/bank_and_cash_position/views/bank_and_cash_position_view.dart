@@ -10,6 +10,7 @@ import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../accounts_exports.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 // ─── View ─────────────────────────────────────────────────────────────────────
 
@@ -64,7 +65,7 @@ class _BankAndCashPositionBodyState extends State<_BankAndCashPositionBody> {
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(
-              context, state.message ?? 'Something went wrong');
+              context, state.message ?? AppConstants.somethingWentWrong);
         }
       },
       builder: (context, state) {
@@ -81,7 +82,7 @@ class _BankAndCashPositionBodyState extends State<_BankAndCashPositionBody> {
 
         return Scaffold(
           backgroundColor: context.grey50,
-          appBar: CustomAppBar(title: 'Bank & Cash Position'),
+          appBar: CustomAppBar(title: AppConstants.bankCashPositionLabel),
           body: Column(
             crossAxisAlignment: .stretch,
             children: [
@@ -241,7 +242,7 @@ class _SummaryRow extends StatelessWidget {
         children: [
           Expanded(
             child: _SummaryCard(
-              label: 'Bank',
+              label: AppConstants.bankLabel,
               amount: bankTotal,
               color: _bankColor,
               icon: Icons.account_balance_outlined,
@@ -251,7 +252,7 @@ class _SummaryRow extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: _SummaryCard(
-              label: 'Cash',
+              label: AppConstants.cashLabel,
               amount: cashTotal,
               color: _cashColor,
               icon: Icons.payments_outlined,
@@ -354,7 +355,7 @@ class _CompactTotalsBar extends StatelessWidget {
             const Icon(Icons.account_balance_outlined,
                 size: 13, color: AppColors.chartPrimary),
             const SizedBox(width: 5),
-            Text('Bank',
+            Text(AppConstants.bankLabel,
                 style: context.labelSmall
                     .copyWith(color: context.textSecondary, fontWeight: .w600)),
             const SizedBox(width: 5),
@@ -365,7 +366,7 @@ class _CompactTotalsBar extends StatelessWidget {
             const Icon(Icons.payments_outlined,
                 size: 13, color: AppColors.green),
             const SizedBox(width: 5),
-            Text('Cash',
+            Text(AppConstants.cashLabel,
                 style: context.labelSmall
                     .copyWith(color: context.textSecondary, fontWeight: .w600)),
             const SizedBox(width: 5),
@@ -531,7 +532,7 @@ class _BankTile extends StatelessWidget {
                   borderRadius: .circular(20),
                 ),
                 child: Text(
-                  isCredit ? 'Credit' : 'Debit',
+                  isCredit ? AppConstants.credit : AppConstants.debit,
                   style: context.labelSmall.copyWith(
                     color: typeColor,
                     fontWeight: .w600,

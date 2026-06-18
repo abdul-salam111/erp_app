@@ -8,6 +8,7 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../accounts_exports.dart';
 import '../widgets/accounts_widgets.dart';
+import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class AccountsView extends StatelessWidget {
   const AccountsView({super.key});
@@ -54,68 +55,7 @@ class _AccountsBodyState extends State<_AccountsBody>
     ),
   ];
 
-  static const _rows = <CustomerRow>[
-    CustomerRow(
-      initials: 'HT',
-      name: 'HR Trader & Comission',
-      city: 'Bahawalpur',
-      invoiceNo: 'SI-0370',
-      date: '01 Jul 2025',
-      paid: '0.00',
-      total: '98,750',
-      status: CustomerStatus.actionRequired,
-    ),
-    CustomerRow(
-      initials: 'PI',
-      name: 'Pepsico Int',
-      city: 'Lahore',
-      invoiceNo: 'SI-0002',
-      date: '02 Jul 2025',
-      paid: '0.00',
-      total: '1,683,588',
-      status: CustomerStatus.actionRequired,
-    ),
-    CustomerRow(
-      initials: 'NK',
-      name: 'Nawab Khan',
-      city: 'Peshawar',
-      invoiceNo: 'SI-0004',
-      date: '03 Jul 2025',
-      paid: '0.00',
-      total: '2,765,000',
-      status: CustomerStatus.actionRequired,
-    ),
-    CustomerRow(
-      initials: 'HR',
-      name: 'Hilal Retail Brands Pvt Ltd',
-      city: 'Lahore',
-      invoiceNo: 'SI-0006',
-      date: '04 Jul 2025',
-      paid: '37,878',
-      total: '120,000',
-      status: CustomerStatus.partial,
-    ),
-    CustomerRow(
-      initials: 'AM',
-      name: 'Al-Madina Traders',
-      city: 'Karachi',
-      invoiceNo: 'SI-0010',
-      date: '05 Jul 2025',
-      paid: '0.00',
-      total: '540,000',
-      status: CustomerStatus.actionRequired,
-    ),
-    CustomerRow(
-      initials: 'ZB',
-      name: 'Zafar Brothers',
-      city: 'Multan',
-      invoiceNo: 'SI-0014',
-      date: '06 Jul 2025',
-      paid: '15,000',
-      total: '75,000',
-      status: CustomerStatus.partial,
-    ),
-  ];
+  static const _rows = <CustomerRow>[];
 
   Animation<double> _fade(double start, double end) => CurvedAnimation(
     parent: _entryCtrl,
@@ -247,8 +187,9 @@ class _AccountsBodyState extends State<_AccountsBody>
                             state.recoveryDueStatus == ApiStatus.INITIAL ||
                             state.recoveryDueStatus == ApiStatus.LOADING;
                         final rd = state.recoveryDue;
-                        String fmt(double? v) =>
-                            v == null ? 'Rs 0' : 'Rs ${v.formatPrice()}';
+                        String fmt(double? v) => v == null
+                            ? AppConstants.rs0
+                            : 'Rs ${v.formatPrice()}';
 
                         if (isLoading) {
                           return Column(
