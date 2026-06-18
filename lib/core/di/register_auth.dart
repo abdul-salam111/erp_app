@@ -1,6 +1,4 @@
 import '../../features/auth/auth_exports.dart';
-import '../../features/auth/domain/usecases/select_branch_usecase.dart';
-import '../../features/auth/presentation/organization_selection/blocs/branch_selection_bloc.dart';
 import 'app_dependencies.dart';
 
 Future<void> registerAuth() async {

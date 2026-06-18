@@ -42,3 +42,31 @@ class AccountLedgerPrintRequested extends AccountLedgerEvent {
   @override
   List<Object?> get props => [featureId, parentEntityId];
 }
+
+class AccountLedgerFromDateChanged extends AccountLedgerEvent {
+  final DateTime date;
+  const AccountLedgerFromDateChanged(this.date);
+  @override
+  List<Object?> get props => [date];
+}
+
+class AccountLedgerToDateChanged extends AccountLedgerEvent {
+  final DateTime date;
+  const AccountLedgerToDateChanged(this.date);
+  @override
+  List<Object?> get props => [date];
+}
+
+class AccountLedgerAccountSelected extends AccountLedgerEvent {
+  final int accountId;
+  const AccountLedgerAccountSelected(this.accountId);
+  @override
+  List<Object?> get props => [accountId];
+}
+
+class AccountLedgerFilterCollapsed extends AccountLedgerEvent {
+  final bool collapsed;
+  const AccountLedgerFilterCollapsed(this.collapsed);
+  @override
+  List<Object?> get props => [collapsed];
+}

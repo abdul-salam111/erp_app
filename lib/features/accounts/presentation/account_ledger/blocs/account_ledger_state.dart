@@ -13,8 +13,10 @@ class AccountLedgerState extends Equatable {
   final String? message;
   final String? pdfUrl;
   final bool isPrinting;
-  final String fromDateDisplay;
-  final String toDateDisplay;
+  final DateTime fromDate;
+  final DateTime toDate;
+  final int? selectedAccountId;
+  final bool filterCollapsed;
 
   const AccountLedgerState({
     this.statements = const [],
@@ -26,8 +28,10 @@ class AccountLedgerState extends Equatable {
     this.message,
     this.pdfUrl,
     this.isPrinting = false,
-    this.fromDateDisplay = '',
-    this.toDateDisplay = '',
+    required this.fromDate,
+    required this.toDate,
+    this.selectedAccountId,
+    this.filterCollapsed = false,
   });
 
   AccountLedgerState copyWith({
@@ -40,8 +44,10 @@ class AccountLedgerState extends Equatable {
     String? message,
     String? pdfUrl,
     bool? isPrinting,
-    String? fromDateDisplay,
-    String? toDateDisplay,
+    DateTime? fromDate,
+    DateTime? toDate,
+    int? selectedAccountId,
+    bool? filterCollapsed,
   }) {
     return AccountLedgerState(
       statements:          statements          ?? this.statements,
@@ -53,8 +59,10 @@ class AccountLedgerState extends Equatable {
       message:             message             ?? this.message,
       pdfUrl:              pdfUrl              ?? this.pdfUrl,
       isPrinting:          isPrinting          ?? this.isPrinting,
-      fromDateDisplay:     fromDateDisplay     ?? this.fromDateDisplay,
-      toDateDisplay:       toDateDisplay       ?? this.toDateDisplay,
+      fromDate:            fromDate            ?? this.fromDate,
+      toDate:              toDate              ?? this.toDate,
+      selectedAccountId:   selectedAccountId   ?? this.selectedAccountId,
+      filterCollapsed:     filterCollapsed     ?? this.filterCollapsed,
     );
   }
 
@@ -71,7 +79,9 @@ class AccountLedgerState extends Equatable {
         message,
         pdfUrl,
         isPrinting,
-        fromDateDisplay,
-        toDateDisplay,
+        fromDate,
+        toDate,
+        selectedAccountId,
+        filterCollapsed,
       ];
 }

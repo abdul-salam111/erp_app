@@ -309,6 +309,7 @@ class _FilterForm extends StatelessWidget {
               controller: accountController,
               hintText: AppConstants.selectAccountHint,
               onChanged: onAccountChanged,
+              fieldHeight: 40,
             ),
           const SizedBox(height: 10),
           Row(
@@ -344,29 +345,14 @@ class _FilterForm extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onView,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.primary,
-                foregroundColor: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: .circular(10),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 13),
-                elevation: 0,
-              ),
-              child: Text(
-                AppConstants.view,
-                style: context.bodySmall.copyWith(
-                  color: AppColors.white,
-                  fontWeight: .w600,
-                  fontSize: 14,
-                ),
-              ),
-            ),
+          const SizedBox(height: 6),
+          CustomButton(
+            text: AppConstants.view,
+            onPressed: onView,
+            radius: 6,
+            elevation: 0,
+            fontsize: 14,
+            size: const Size.fromHeight(40),
           ),
         ],
       ),
@@ -697,41 +683,6 @@ class _YearCardState extends State<_YearCard> {
   }
 }
 
-// ─── Ledger type section ──────────────────────────────────────────────────────
-
-class _LedgerTypeSection extends StatelessWidget {
-  final CashbookTypeEntity ledgerType;
-  const _LedgerTypeSection({required this.ledgerType});
-
-  @override
-  Widget build(BuildContext context) {
-    final type = ledgerType.type ?? '';
-    return Column(
-      crossAxisAlignment: .start,
-      children: [
-        if (type.isNotEmpty)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.grey100,
-              border: Border(top: BorderSide(color: context.border)),
-            ),
-            child: Text(
-              type.toUpperCase(),
-              style: context.labelSmall.copyWith(
-                fontWeight: .w600,
-                color: context.textSecondary,
-                fontSize: 10,
-                letterSpacing: 0.8,
-              ),
-            ),
-          ),
-        ...(ledgerType.ledgers ?? []).map((l) => _LedgerRow(ledger: l)),
-      ],
-    );
-  }
-}
 
 // ─── Ledger row ───────────────────────────────────────────────────────────────
 

@@ -8,7 +8,6 @@ import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../accounts_exports.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 // ─── View ─────────────────────────────────────────────────────────────────────
 
@@ -34,18 +33,12 @@ class _AccountLedgerBody extends StatefulWidget {
 }
 
 class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
-  late DateTime _fromDate;
-  late DateTime _toDate;
-  int? _selectedAccountId;
   late final TextEditingController _accountController;
   late final ScrollController _scrollController;
-  bool _filterCollapsed = false;
 
   @override
   void initState() {
     super.initState();
-    _toDate = DateTime.now();
-    _fromDate = _toDate.subtractMonths(1);
     _accountController = TextEditingController();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
@@ -59,46 +52,49 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
   }
 
   void _onScroll() {
+    final bloc = context.read<AccountLedgerBloc>();
     final collapsed = _scrollController.offset > 40;
-    if (collapsed != _filterCollapsed) setState(() => _filterCollapsed = collapsed);
+    if (collapsed != bloc.state.filterCollapsed) {
+      bloc.add(AccountLedgerFilterCollapsed(collapsed));
+    }
   }
 
   void _fetch() {
-    if (_selectedAccountId == null) {
-      AppToastsUtils.showErrorTop(context, AppConstants.pleaseSelectAnAccountFirstErrorMsg);
+    final bloc = context.read<AccountLedgerBloc>();
+    if (bloc.state.selectedAccountId == null) {
+      AppToastsUtils.showErrorTop(
+        context,
+        AppConstants.pleaseSelectAnAccountFirstErrorMsg,
+      );
       return;
     }
-    setState(() => _filterCollapsed = false);
-    context.read<AccountLedgerBloc>().add(
-      AccountLedgerSubmitted(
-        fromDate: _fromDate.format('yyyy-MM-dd'),
-        toDate: _toDate.format('yyyy-MM-dd'),
-        accountId: _selectedAccountId,
-      ),
-    );
+    bloc.add(AccountLedgerSubmitted(
+      fromDate: bloc.state.fromDate.format('yyyy-MM-dd'),
+      toDate: bloc.state.toDate.format('yyyy-MM-dd'),
+      accountId: bloc.state.selectedAccountId,
+    ));
   }
 
   void _onAccountChanged(String name) {
-    final accounts = context.read<AccountLedgerBloc>().state.accounts;
-    final match = accounts.where((a) => a.name == name).firstOrNull;
-    if (match != null) setState(() => _selectedAccountId = match.id);
+    final bloc = context.read<AccountLedgerBloc>();
+    final match = bloc.state.accounts.where((a) => a.name == name).firstOrNull;
+    if (match != null) bloc.add(AccountLedgerAccountSelected(match.id));
   }
 
   Future<void> _pickDate(bool isFrom) async {
+    final bloc = context.read<AccountLedgerBloc>();
     final picked = await showCompactDatePicker(
       context: context,
-      initialDate: isFrom ? _fromDate : _toDate,
+      initialDate: isFrom ? bloc.state.fromDate : bloc.state.toDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      setState(() {
-        if (isFrom) {
-          _fromDate = picked;
-        } else {
-          _toDate = picked;
-        }
-      });
+      bloc.add(
+        isFrom
+            ? AccountLedgerFromDateChanged(picked)
+            : AccountLedgerToDateChanged(picked),
+      );
     }
   }
 
@@ -111,7 +107,10 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
         if (state.pdfStatus == ApiStatus.SUCCESS && state.pdfUrl != null) {
-          AppToastsUtils.showSuccessTop(context, AppConstants.invoiceReadySuccessMsg);
+          AppToastsUtils.showSuccessTop(
+            context,
+            AppConstants.invoiceReadySuccessMsg,
+          );
         }
       },
       child: Scaffold(
@@ -119,47 +118,52 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
         appBar: CustomAppBar(title: AppConstants.accountLedgerLabel),
         body: Column(
           children: [
-            AnimatedSize(
-              duration: const Duration(milliseconds: 260),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              child: _filterCollapsed
-                  ? _CompactFilterBar(
-                      accountName: _accountController.text,
-                      fromDate: _fromDate,
-                      toDate: _toDate,
-                      onExpand: () {
-                        setState(() => _filterCollapsed = false);
-                        if (_scrollController.hasClients) {
-                          _scrollController.animateTo(
-                            0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                        }
-                      },
-                    )
-                  : BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
-                      buildWhen: (p, c) =>
-                          p.accounts != c.accounts ||
-                          p.accountsStatus != c.accountsStatus,
-                      builder: (context, state) => _FilterForm(
-                        fromDate: _fromDate,
-                        toDate: _toDate,
+            BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
+              buildWhen: (p, c) =>
+                  p.filterCollapsed != c.filterCollapsed ||
+                  p.fromDate != c.fromDate ||
+                  p.toDate != c.toDate ||
+                  p.accounts != c.accounts ||
+                  p.accountsStatus != c.accountsStatus,
+              builder: (context, state) => AnimatedSize(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeInOut,
+                alignment: Alignment.topCenter,
+                child: state.filterCollapsed
+                    ? _CompactFilterBar(
+                        accountName: _accountController.text,
+                        fromDate: state.fromDate,
+                        toDate: state.toDate,
+                        onExpand: () {
+                          context
+                              .read<AccountLedgerBloc>()
+                              .add(const AccountLedgerFilterCollapsed(false));
+                          if (_scrollController.hasClients) {
+                            _scrollController.animateTo(
+                              0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
+                          }
+                        },
+                      )
+                    : _FilterForm(
+                        fromDate: state.fromDate,
+                        toDate: state.toDate,
                         accountItems:
                             state.accounts.map((a) => a.name).toList(),
                         accountSubtitles:
                             state.accounts.map((a) => a.group).toList(),
                         isLoadingAccounts:
                             state.accountsStatus == ApiStatus.INITIAL ||
-                                state.accountsStatus == ApiStatus.LOADING,
+                            state.accountsStatus == ApiStatus.LOADING,
                         accountController: _accountController,
                         onAccountChanged: _onAccountChanged,
                         onPickFrom: () => _pickDate(true),
                         onPickTo: () => _pickDate(false),
                         onView: _fetch,
                       ),
-                    ),
+              ),
             ),
             Expanded(
               child: ColoredBox(
@@ -174,7 +178,8 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                     }
                     if (state.apiStatus == ApiStatus.FAILURE) {
                       return _ErrorBody(
-                        message: state.message ?? AppConstants.somethingWentWrong,
+                        message:
+                            state.message ?? AppConstants.somethingWentWrong,
                         onRetry: _fetch,
                       );
                     }
@@ -218,11 +223,13 @@ class _CompactFilterBar extends StatelessWidget {
     return GestureDetector(
       onTap: onExpand,
       child: Container(
-        decoration: BoxDecoration(
-          color: context.grey100,
-        ),
+        decoration: BoxDecoration(color: context.grey100),
         padding: EdgeInsets.fromLTRB(
-          context.pagePadding.left, 10, context.pagePadding.right, 10),
+          context.pagePadding.left,
+          10,
+          context.pagePadding.right,
+          10,
+        ),
         child: Row(
           children: [
             Icon(Iconsax.setting_4, size: 15, color: context.primary),
@@ -231,7 +238,9 @@ class _CompactFilterBar extends StatelessWidget {
               child: Text(
                 hasAccount ? accountName : AppConstants.selectAccount,
                 style: context.bodySmall.copyWith(
-                  color: hasAccount ? context.textPrimary : context.textSecondary,
+                  color: hasAccount
+                      ? context.textPrimary
+                      : context.textSecondary,
                   fontWeight: .w500,
                   fontSize: 13,
                 ),
@@ -248,8 +257,11 @@ class _CompactFilterBar extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 6),
-            Icon(Icons.keyboard_arrow_down_rounded,
-                size: 18, color: context.textSecondary),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              size: 18,
+              color: context.textSecondary,
+            ),
           ],
         ),
       ),
@@ -309,6 +321,7 @@ class _FilterForm extends StatelessWidget {
               controller: accountController,
               hintText: AppConstants.selectAccountHint,
               onChanged: onAccountChanged,
+              fieldHeight: 40
             ),
           const SizedBox(height: 10),
           // ── Date row ──────────────────────────────────────────
@@ -345,30 +358,15 @@ class _FilterForm extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           // ── View button ───────────────────────────────────────
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onView,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: context.primary,
-                foregroundColor: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: .circular(10),
-                ),
-                padding: const .symmetric(vertical: 13),
-                elevation: 0,
-              ),
-              child: Text(
-                AppConstants.view,
-                style: context.bodySmall.copyWith(
-                  color: AppColors.white,
-                  fontWeight: .w600,
-                  fontSize: 14,
-                ),
-              ),
-            ),
+          CustomButton(
+            text: AppConstants.view,
+            onPressed: onView,
+            radius: 6,
+            elevation: 0,
+            fontsize: 14,
+            size: const Size.fromHeight(40),
           ),
         ],
       ),
@@ -409,10 +407,10 @@ class _FieldTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
           color: context.grey50,
-          borderRadius: .circular(8),
+          borderRadius: .circular(6),
           border: Border.all(color: context.border),
         ),
         child: Row(
@@ -423,15 +421,20 @@ class _FieldTile extends StatelessWidget {
               child: Text(
                 label,
                 style: context.bodySmall.copyWith(
-                  color: onTap != null ? context.textPrimary : context.textSecondary,
+                  color: onTap != null
+                      ? context.textPrimary
+                      : context.textSecondary,
                   fontSize: 13,
                 ),
                 overflow: .ellipsis,
               ),
             ),
             if (onTap != null)
-              Icon(Icons.keyboard_arrow_down_rounded,
-                  size: 18, color: context.textSecondary),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 18,
+                color: context.textSecondary,
+              ),
           ],
         ),
       ),
@@ -530,7 +533,9 @@ class _YearCardState extends State<_YearCard> {
     if (sc.position.extentAfter < 300) {
       final total = _buildFlatEntries().length;
       if (_visibleCount < total) {
-        setState(() => _visibleCount = (_visibleCount + _pageSize).clamp(0, total));
+        setState(
+          () => _visibleCount = (_visibleCount + _pageSize).clamp(0, total),
+        );
       }
     }
   }
@@ -547,30 +552,35 @@ class _YearCardState extends State<_YearCard> {
     return result;
   }
 
-  List<Widget> _buildPagedRows(List<_PagedEntry> entries, BuildContext context) {
+  List<Widget> _buildPagedRows(
+    List<_PagedEntry> entries,
+    BuildContext context,
+  ) {
     final widgets = <Widget>[];
     String? lastType;
     for (final pe in entries) {
       if (pe.type != lastType) {
         lastType = pe.type;
         if (pe.type.isNotEmpty) {
-          widgets.add(Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.grey100,
-              border: Border(top: BorderSide(color: context.border)),
-            ),
-            child: Text(
-              pe.type.toUpperCase(),
-              style: context.labelSmall.copyWith(
-                fontWeight: .w600,
-                color: context.textSecondary,
-                fontSize: 10,
-                letterSpacing: 0.8,
+          widgets.add(
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.grey100,
+                border: Border(top: BorderSide(color: context.border)),
+              ),
+              child: Text(
+                pe.type.toUpperCase(),
+                style: context.labelSmall.copyWith(
+                  fontWeight: .w600,
+                  color: context.textSecondary,
+                  fontSize: 10,
+                  letterSpacing: 0.8,
+                ),
               ),
             ),
-          ));
+          );
         }
       }
       widgets.add(_LedgerRow(ledger: pe.entry));
@@ -589,7 +599,7 @@ class _YearCardState extends State<_YearCard> {
       decoration: BoxDecoration(
         color: context.white,
         borderRadius: .circular(10),
-        border: Border.all(color: context.border),
+        border: .all(color: context.border),
       ),
       child: Column(
         children: [
@@ -624,7 +634,10 @@ class _YearCardState extends State<_YearCard> {
                     crossAxisAlignment: .end,
                     children: [
                       Text(
-                        _formatBalance(context, (yearData.balance ?? 0).toDouble()),
+                        _formatBalance(
+                          context,
+                          (yearData.balance ?? 0).toDouble(),
+                        ),
                         style: context.bodySmall.copyWith(
                           fontWeight: .w700,
                           color: context.textPrimary,
@@ -676,61 +689,25 @@ class _YearCardState extends State<_YearCard> {
             alignment: .topCenter,
             child: _expanded
                 ? hasContent
-                    ? Column(
-                        crossAxisAlignment: .start,
-                        children: [
-                          ..._buildPagedRows(visibleEntries, context),
-                        ],
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          AppConstants.noLedgerDataAvailable,
-                          style: context.bodySmall.copyWith(
-                            color: context.textSecondary,
+                      ? Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            ..._buildPagedRows(visibleEntries, context),
+                          ],
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            AppConstants.noLedgerDataAvailable,
+                            style: context.bodySmall.copyWith(
+                              color: context.textSecondary,
+                            ),
                           ),
-                        ),
-                      )
+                        )
                 : const SizedBox.shrink(),
           ),
         ],
       ),
-    );
-  }
-}
-
-// ─── Ledger type section ──────────────────────────────────────────────────────
-
-class _LedgerTypeSection extends StatelessWidget {
-  final LedgerTypeEntity ledgerType;
-  const _LedgerTypeSection({required this.ledgerType});
-
-  @override
-  Widget build(BuildContext context) {
-    final type = ledgerType.type ?? '';
-    return Column(
-      crossAxisAlignment: .start,
-      children: [
-        if (type.isNotEmpty)
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: AppColors.grey100,
-              border: Border(top: BorderSide(color: context.border)),
-            ),
-            child: Text(
-              type.toUpperCase(),
-              style: context.labelSmall.copyWith(
-                fontWeight: .w600,
-                color: context.textSecondary,
-                fontSize: 10,
-                letterSpacing: 0.8,
-              ),
-            ),
-          ),
-        ...(ledgerType.ledgers ?? []).map((l) => _LedgerRow(ledger: l)),
-      ],
     );
   }
 }
@@ -862,7 +839,11 @@ class _LedgerRow extends StatelessWidget {
               children: [
                 if (!isOpening)
                   Text(
-                    isDrOnly ? AppConstants.debit : isCrOnly ? AppConstants.credit : AppConstants.drCr,
+                    isDrOnly
+                        ? AppConstants.debit
+                        : isCrOnly
+                        ? AppConstants.credit
+                        : AppConstants.drCr,
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
                       fontSize: 10,
@@ -898,12 +879,7 @@ class _LedgerRow extends StatelessWidget {
       context: context,
       builder: (ctx) => BlocProvider.value(
         value: context.read<AccountLedgerBloc>(),
-        child: _LedgerDetailDialog(
-          ledger: ledger,
-          date: date,
-          dr: dr,
-          cr: cr,
-        ),
+        child: _LedgerDetailDialog(ledger: ledger, date: date, dr: dr, cr: cr),
       ),
     );
   }
@@ -949,10 +925,10 @@ class _LedgerDetailDialog extends StatelessWidget {
     final String typeLabel = isOpening
         ? AppConstants.openingBalance2
         : hasDebit && !hasCredit
-            ? AppConstants.debitTransaction
-            : !hasDebit && hasCredit
-                ? AppConstants.creditTransaction
-                : AppConstants.drCrTransaction;
+        ? AppConstants.debitTransaction
+        : !hasDebit && hasCredit
+        ? AppConstants.creditTransaction
+        : AppConstants.drCrTransaction;
 
     return Dialog(
       backgroundColor: AppColors.white,
@@ -1033,7 +1009,10 @@ class _LedgerDetailDialog extends StatelessWidget {
             const SizedBox(height: 14),
 
             if (!isOpening && (ledger.narration?.isNotEmpty ?? false)) ...[
-              _InfoRow(label: AppConstants.narrationLabel, value: ledger.narration!),
+              _InfoRow(
+                label: AppConstants.narrationLabel,
+                value: ledger.narration!,
+              ),
               const SizedBox(height: 12),
               Divider(color: context.border, height: 1),
               const SizedBox(height: 12),
@@ -1066,7 +1045,10 @@ class _LedgerDetailDialog extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
-                        child: Text(AppConstants.close, style: context.bodySmall),
+                        child: Text(
+                          AppConstants.close,
+                          style: context.bodySmall,
+                        ),
                       ),
                     ),
                     if (canPrint) ...[
@@ -1076,14 +1058,13 @@ class _LedgerDetailDialog extends StatelessWidget {
                           onPressed: loading
                               ? null
                               : () => context.read<AccountLedgerBloc>().add(
-                                    AccountLedgerPrintRequested(
-                                      featureId: ledger.featureId ?? 0,
-                                      parentEntityId:
-                                          ledger.parentEntityId ?? 0,
-                                      featureName: ledger.featureName,
-                                      docNbr: ledger.docNbr,
-                                    ),
+                                  AccountLedgerPrintRequested(
+                                    featureId: ledger.featureId ?? 0,
+                                    parentEntityId: ledger.parentEntityId ?? 0,
+                                    featureName: ledger.featureName,
+                                    docNbr: ledger.docNbr,
                                   ),
+                                ),
                           icon: loading
                               ? SizedBox(
                                   width: 14,
@@ -1094,7 +1075,10 @@ class _LedgerDetailDialog extends StatelessWidget {
                                   ),
                                 )
                               : const Icon(Icons.print_outlined, size: 16),
-                          label: Text(AppConstants.printInvoiceLabel, style: context.bodySmall),
+                          label: Text(
+                            AppConstants.printInvoiceLabel,
+                            style: context.bodySmall,
+                          ),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: context.textPrimary,
                             side: BorderSide(color: context.border),
@@ -1201,7 +1185,6 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-
 // ─── Idle state ───────────────────────────────────────────────────────────────
 
 class _IdleState extends StatelessWidget {
@@ -1277,8 +1260,7 @@ class _ErrorBody extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          Icon(Icons.error_outline_rounded,
-              size: 48, color: AppColors.grey300),
+          Icon(Icons.error_outline_rounded, size: 48, color: AppColors.grey300),
           const SizedBox(height: 12),
           Text(
             message,
@@ -1286,15 +1268,11 @@ class _ErrorBody extends StatelessWidget {
             textAlign: .center,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
+          CustomButton(
+            text: AppConstants.retry,
             onPressed: onRetry,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.primary,
-              foregroundColor: AppColors.white,
-              shape: RoundedRectangleBorder(borderRadius: .circular(10)),
-              elevation: 0,
-            ),
-            child: const Text(AppConstants.retry),
+            radius: 10,
+            elevation: 0,
           ),
         ],
       ),
@@ -1374,7 +1352,10 @@ class _ShimmerYearCard extends StatelessWidget {
                       crossAxisAlignment: .start,
                       children: [
                         ShimmerBox(
-                            height: 12, width: double.infinity, radius: 4),
+                          height: 12,
+                          width: double.infinity,
+                          radius: 4,
+                        ),
                         const SizedBox(height: 5),
                         ShimmerBox(height: 10, width: 80, radius: 4),
                       ],

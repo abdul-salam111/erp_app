@@ -8,7 +8,7 @@ import '../blocs/accounts_bloc.dart';
 import '../blocs/accounts_event.dart';
 import '../blocs/accounts_state.dart';
 import 'accounts_models.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
+
 
 class RecoveryListSection extends StatelessWidget {
   final List<CustomerRow> rows;

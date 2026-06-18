@@ -8,7 +8,7 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../accounts_exports.dart';
 import '../widgets/accounts_widgets.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
+
 
 class AccountsView extends StatelessWidget {
   const AccountsView({super.key});

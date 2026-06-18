@@ -12,12 +12,28 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
     required this.getAccountStatementsUsecase,
     required this.getInvoicePdfUsecase,
     required this.getAccountsListUsecase,
-  }) : super(const AccountLedgerState()) {
+  }) : super(_initialState()) {
     on<AccountLedgerSubmitted>(_onSubmitted);
     on<AccountLedgerPrintRequested>(_onPrintRequested);
     on<AccountLedgerAccountsFetched>(_onAccountsFetched);
+    on<AccountLedgerFromDateChanged>(
+        (e, emit) => emit(state.copyWith(fromDate: e.date)));
+    on<AccountLedgerToDateChanged>(
+        (e, emit) => emit(state.copyWith(toDate: e.date)));
+    on<AccountLedgerAccountSelected>(
+        (e, emit) => emit(state.copyWith(selectedAccountId: e.accountId)));
+    on<AccountLedgerFilterCollapsed>(
+        (e, emit) => emit(state.copyWith(filterCollapsed: e.collapsed)));
 
     add(const AccountLedgerAccountsFetched());
+  }
+
+  static AccountLedgerState _initialState() {
+    final now = DateTime.now();
+    return AccountLedgerState(
+      toDate: now,
+      fromDate: DateTime(now.year, now.month - 1, now.day),
+    );
   }
 
   Future<void> _onSubmitted(
@@ -27,10 +43,8 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
     emit(state.copyWith(
       apiStatus: ApiStatus.LOADING,
       pdfStatus: ApiStatus.INITIAL,
-      pdfUrl: null,
       message: null,
-      fromDateDisplay: event.fromDate,
-      toDateDisplay: event.toDate,
+      filterCollapsed: false,
     ));
 
     final result = await getAccountStatementsUsecase(
@@ -58,7 +72,7 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
     AccountLedgerPrintRequested event,
     Emitter<AccountLedgerState> emit,
   ) async {
-    emit(state.copyWith(isPrinting: true, pdfStatus: ApiStatus.LOADING, pdfUrl: null));
+    emit(state.copyWith(isPrinting: true, pdfStatus: ApiStatus.LOADING));
 
     final result = await getInvoicePdfUsecase(
       GetInvoicePdfParams(
