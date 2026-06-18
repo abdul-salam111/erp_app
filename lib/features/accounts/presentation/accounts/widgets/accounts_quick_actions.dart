@@ -38,12 +38,6 @@ class AccountsQuickActions extends StatelessWidget {
 
     ),
     _QAItem(
-      label: AppConstants.creditManagementLabel,
-      icon: Iconsax.card,
-      color: AppColors.errorBright,
-      routeName: RouteNames.credit_management,
-    ),
-    _QAItem(
       label: AppConstants.customerReceivableLabel,
       icon: Iconsax.receive_square,
       color: AppColors.orange,

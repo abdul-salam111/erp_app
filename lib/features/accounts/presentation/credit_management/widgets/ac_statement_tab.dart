@@ -290,6 +290,13 @@ class _YearCardState extends State<_YearCard> {
         color: context.white,
         borderRadius: .circular(10),
         border: .all(color: context.border),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -300,7 +307,7 @@ class _YearCardState extends State<_YearCard> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
               decoration: BoxDecoration(
-                color: AppColors.grey50,
+                color: context.white,
                 borderRadius: _expanded
                     ? const BorderRadius.vertical(top: Radius.circular(10))
                     : .circular(10),

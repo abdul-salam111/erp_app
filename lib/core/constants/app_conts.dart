@@ -175,7 +175,7 @@ class AppConstants {
   static const String partyStatementsLabel = 'Party Ledger';
   static const String bankCashPositionLabel = 'Bank & Cash Position';
   static const String cashbookLabel = 'Cashbook';
-  static const String creditManagementLabel = 'Credit Management';
+  static const String creditManagementLabel = 'Credit Mgt';
   static const String customerReceivableLabel = 'Customer Receivable';
   static const String vendorPayableLabel = 'Vendor Payable';
   static const String recoveryProgress = 'Recovery progress';

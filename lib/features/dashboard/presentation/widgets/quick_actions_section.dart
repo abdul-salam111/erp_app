@@ -30,6 +30,12 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
       routeName: RouteNames.accounts,
     ),
     _MenuItem(
+      label: AppConstants.creditManagementLabel,
+      icon: Iconsax.card,
+      color: AppColors.errorBright,
+      routeName: RouteNames.credit_management,
+    ),
+    _MenuItem(
       label: AppConstants.inventoryLabel,
       icon: Iconsax.element_3,
       color: AppColors.teal,
