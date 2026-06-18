@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
-import '../repositories/accounts_repository.dart';
+import '../repositories/i_accounts_repository.dart';
 
 class GetPrintableFeaturesUsecase implements Usecase<List<int>, NoParams> {
-  final AccountsRepository repository;
+  final IAccountsRepository repository;
 
   GetPrintableFeaturesUsecase({required this.repository});
 

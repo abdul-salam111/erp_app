@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
-import '../repositories/accounts_repository.dart';
+import '../repositories/i_accounts_repository.dart';
 
 class GetInvoicePdfParams {
   final int featureId;
@@ -12,7 +12,7 @@ class GetInvoicePdfParams {
 }
 
 class GetInvoicePdfUsecase implements Usecase<String, GetInvoicePdfParams> {
-  final AccountsRepository repository;
+  final IAccountsRepository repository;
 
   GetInvoicePdfUsecase({required this.repository});
 

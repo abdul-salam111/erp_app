@@ -1,42 +1,7 @@
 import '../../../../core/services/session_manager.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/constants/const_exports.dart';
-import '../models/response_models/get_cashbook/cashbook_model.dart';
-import '../models/response_models/get_cashbook_accounts/cashbook_account_model.dart';
-import '../models/response_models/get_ledger/get_ledger_model.dart';
-import '../models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
-import '../models/response_models/get_accounts_list/account_list_item_model.dart';
-import '../models/response_models/get_cash_and_bank_balance/bank_cash_item_model.dart';
-import '../models/response_models/get_party_list/party_list_item_model.dart';
-
-abstract interface class IRemoteAccountsDataSource {
-  Future<List<GetLedgerModel>> getAccountStatements({
-    required String fromDate,
-    required String toDate,
-    int? accountId,
-  });
-  Future<String> getInvoicePdf({
-    required int featureId,
-    required int parentEntityId,
-  });
-  Future<List<int>> getPrintableFeatures();
-  Future<DueReceiptCountModel> getDueReceiptCount({required String dateType});
-  Future<List<GetLedgerModel>> getPartyStatements({
-    required String fromDate,
-    required String toDate,
-    int? partyId,
-  });
-  Future<List<BankCashItemModel>> bankAndCashPosition();
-  Future<List<AccountListItemModel>> getAccountsList();
-  Future<List<PartyListItemModel>> getPartyList();
-  Future<dynamic> cashbook();
-  Future<List<CashbookModel>> getCashbookStatements({
-    required String fromDate,
-    required String toDate,
-    int? accountId,
-  });
-  Future<List<CashbookAccountModel>> getCashbookAccounts();
-}
+import '../../accounts_exports.dart';
 
 class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
     implements IRemoteAccountsDataSource {
@@ -182,5 +147,10 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
           CashbookAccountModel.fromJson(json as Map<String, dynamic>),
       authToken: _token,
     );
+  }
+
+  @override
+  Future<dynamic> creditManagement() async {
+    throw UnimplementedError('creditManagement not implemented');
   }
 }

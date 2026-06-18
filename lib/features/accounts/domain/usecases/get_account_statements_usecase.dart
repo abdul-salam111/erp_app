@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../entities/ledger_statement_entity.dart';
-import '../repositories/accounts_repository.dart';
+import '../repositories/i_accounts_repository.dart';
 
 class GetAccountStatementsParams {
   final String fromDate;
@@ -16,7 +16,7 @@ class GetAccountStatementsParams {
 
 class GetAccountStatementsUsecase
     implements Usecase<List<LedgerStatementEntity>, GetAccountStatementsParams> {
-  final AccountsRepository repository;
+  final IAccountsRepository repository;
 
   GetAccountStatementsUsecase({required this.repository});
 

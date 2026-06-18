@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../entities/due_receipt_count_entity.dart';
-import '../repositories/accounts_repository.dart';
+import '../repositories/i_accounts_repository.dart';
 
 class GetDueReceiptCountParams {
   final String dateType;
@@ -10,7 +10,7 @@ class GetDueReceiptCountParams {
 
 class GetDueReceiptCountUsecase
     implements Usecase<DueReceiptCountEntity, GetDueReceiptCountParams> {
-  final AccountsRepository repository;
+  final IAccountsRepository repository;
 
   GetDueReceiptCountUsecase({required this.repository});
 

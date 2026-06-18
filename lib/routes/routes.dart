@@ -128,6 +128,11 @@ class AppRoutes {
         name: RouteNames.cashbook,
         builder: (context, state) => const CashbookView(),
       ),
+      GoRoute(
+        path: RoutePaths.credit_management,
+        name: RouteNames.credit_management,
+        builder: (context, state) => const CreditManagementView(),
+      ),
     
      
      

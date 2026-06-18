@@ -1,11 +1,11 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../entities/party_list_item_entity.dart';
-import '../repositories/accounts_repository.dart';
+import '../repositories/i_accounts_repository.dart';
 
 class GetPartyListUsecase
     implements Usecase<List<PartyListItemEntity>, NoParams> {
-  final AccountsRepository repository;
+  final IAccountsRepository repository;
 
   GetPartyListUsecase({required this.repository});
 

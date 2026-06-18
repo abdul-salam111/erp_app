@@ -1,18 +1,10 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
-import '../../domain/entities/account_list_item_entity.dart';
-import '../../domain/entities/bank_cash_item_entity.dart';
-import '../../domain/entities/cashbook_account_item_entity.dart';
-import '../../domain/entities/cashbook_statement_entity.dart';
-import '../../domain/entities/due_receipt_count_entity.dart';
-import '../../domain/entities/ledger_statement_entity.dart';
-import '../../domain/entities/party_list_item_entity.dart';
-import '../../domain/repositories/accounts_repository.dart';
-import '../datasources/remote_accounts_datasource.dart';
-import '../mappers/accounts_mappers.dart';
+import '../../accounts_exports.dart';
+
 
 class AccountsRepositoryImpl extends BaseRepository
-    implements AccountsRepository {
+    implements IAccountsRepository {
   final IRemoteAccountsDataSource dataSource;
 
   AccountsRepositoryImpl({required this.dataSource});
@@ -126,5 +118,10 @@ class AccountsRepositoryImpl extends BaseRepository
     return result.map(
       (models) => models.map((m) => m.toCashbookEntity()).toList(),
     );
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> creditManagement() {
+    return execute(call: () => dataSource.creditManagement());
   }
 }

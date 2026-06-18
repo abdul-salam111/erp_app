@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../entities/cashbook_statement_entity.dart';
-import '../repositories/accounts_repository.dart';
+import '../repositories/i_accounts_repository.dart';
 
 class GetCashbookStatementsParams {
   final String fromDate;
@@ -18,7 +18,7 @@ class GetCashbookStatementsParams {
 class GetCashbookStatementsUsecase
     implements
         Usecase<List<CashbookStatementEntity>, GetCashbookStatementsParams> {
-  final AccountsRepository repository;
+  final IAccountsRepository repository;
 
   GetCashbookStatementsUsecase({required this.repository});
 

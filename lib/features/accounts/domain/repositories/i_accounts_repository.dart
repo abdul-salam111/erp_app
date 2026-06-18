@@ -8,7 +8,7 @@ import '../entities/due_receipt_count_entity.dart';
 import '../entities/ledger_statement_entity.dart';
 import '../entities/party_list_item_entity.dart';
 
-abstract interface class AccountsRepository {
+abstract interface class IAccountsRepository {
 
   Future<Either<Failure, List<LedgerStatementEntity>>> getAccountStatements({
     required String fromDate,
@@ -38,4 +38,5 @@ abstract interface class AccountsRepository {
     int? accountId,
   });
   Future<Either<Failure, List<CashbookAccountItemEntity>>> getCashbookAccounts();
+  Future<Either<Failure, dynamic>> creditManagement();
 }
