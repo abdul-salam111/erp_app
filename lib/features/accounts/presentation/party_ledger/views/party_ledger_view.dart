@@ -305,6 +305,7 @@ class _FilterForm extends StatelessWidget {
               controller: partyController,
               hintText: AppConstants.selectPartyHint,
               onChanged: onPartyChanged,
+              fieldHeight: 40,
             ),
           const SizedBox(height: 10),
           Row(
@@ -340,13 +341,14 @@ class _FilterForm extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 6),
           CustomButton(
             text: AppConstants.view,
             onPressed: onView,
-            radius: 10,
+            radius: 6,
             elevation: 0,
             fontsize: 14,
+            size: const Size.fromHeight(40),
           ),
         ],
       ),
@@ -387,10 +389,10 @@ class _FieldTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
           color: context.grey50,
-          borderRadius: .circular(8),
+          borderRadius: .circular(6),
           border: Border.all(color: context.border),
         ),
         child: Row(

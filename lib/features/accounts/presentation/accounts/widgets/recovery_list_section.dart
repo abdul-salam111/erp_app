@@ -241,7 +241,7 @@ class _CustomerTile extends StatelessWidget {
                       borderRadius: .circular(10),
                     ),
                     onSelected: (action) {
-                      // TODO: wire up actions
+                    
                     },
                     itemBuilder: (_) => [
                       PopupMenuItem(

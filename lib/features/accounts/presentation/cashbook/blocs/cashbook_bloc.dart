@@ -17,12 +17,28 @@ class CashbookBloc extends Bloc<CashbookEvent, CashbookState> {
     required this.getCashbookStatementsUsecase,
     required this.getInvoicePdfUsecase,
     required this.getCashbookAccountsUsecase,
-  }) : super(const CashbookState()) {
+  }) : super(_initialState()) {
     on<CashbookSubmitted>(_onSubmitted);
     on<CashbookPrintRequested>(_onPrintRequested);
     on<CashbookAccountsFetched>(_onAccountsFetched);
+    on<CashbookFromDateChanged>(
+        (e, emit) => emit(state.copyWith(fromDate: e.date)));
+    on<CashbookToDateChanged>(
+        (e, emit) => emit(state.copyWith(toDate: e.date)));
+    on<CashbookAccountSelected>(
+        (e, emit) => emit(state.copyWith(selectedAccountId: e.accountId)));
+    on<CashbookFilterCollapsed>(
+        (e, emit) => emit(state.copyWith(filterCollapsed: e.collapsed)));
 
     add(const CashbookAccountsFetched());
+  }
+
+  static CashbookState _initialState() {
+    final now = DateTime.now();
+    return CashbookState(
+      toDate: now,
+      fromDate: DateTime(now.year, now.month - 1, now.day),
+    );
   }
 
   Future<void> _onSubmitted(
@@ -34,8 +50,7 @@ class CashbookBloc extends Bloc<CashbookEvent, CashbookState> {
       pdfStatus: ApiStatus.INITIAL,
       pdfUrl: null,
       message: null,
-      fromDateDisplay: event.fromDate,
-      toDateDisplay: event.toDate,
+      filterCollapsed: false,
     ));
 
     final result = await getCashbookStatementsUsecase(

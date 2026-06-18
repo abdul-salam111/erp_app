@@ -35,7 +35,10 @@ class _AnalyticsBodyState extends State<_AnalyticsBody> {
     return BlocConsumer<AnalyticsBloc, AnalyticsState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(context, AppConstants.successSuccessMsg);
+          AppToastsUtils.showSuccessTop(
+            context,
+            AppConstants.successSuccessMsg,
+          );
         }
         if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
@@ -52,7 +55,6 @@ class _AnalyticsBodyState extends State<_AnalyticsBody> {
                   key: _formKey,
                   child: ListView(
                     children: [
-                      // TODO: Add your UI widgets here
                       const Text(AppConstants.analyticsView),
                       heightBox(context.screenHeight * 0.05),
                       BlocBuilder<AnalyticsBloc, AnalyticsState>(
@@ -63,9 +65,9 @@ class _AnalyticsBodyState extends State<_AnalyticsBody> {
                             text: AppConstants.submitBtn,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                context
-                                    .read<AnalyticsBloc>()
-                                    .add(AnalyticsSubmitted());
+                                context.read<AnalyticsBloc>().add(
+                                  AnalyticsSubmitted(),
+                                );
                               }
                             },
                             radius: 10,

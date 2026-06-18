@@ -6,7 +6,6 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../security_exports.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class SecurityView extends StatelessWidget {
   const SecurityView({super.key});
@@ -35,7 +34,10 @@ class _SecurityBodyState extends State<_SecurityBody> {
     return BlocConsumer<SecurityBloc, SecurityState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(context, AppConstants.successSuccessMsg);
+          AppToastsUtils.showSuccessTop(
+            context,
+            AppConstants.successSuccessMsg,
+          );
         }
         if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
@@ -52,7 +54,6 @@ class _SecurityBodyState extends State<_SecurityBody> {
                   key: _formKey,
                   child: ListView(
                     children: [
-                      // TODO: Add your UI widgets here
                       const Text(AppConstants.securityView),
                       heightBox(context.screenHeight * 0.05),
                       BlocBuilder<SecurityBloc, SecurityState>(
@@ -63,9 +64,9 @@ class _SecurityBodyState extends State<_SecurityBody> {
                             text: AppConstants.submitBtn,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                context
-                                    .read<SecurityBloc>()
-                                    .add(SecuritySubmitted());
+                                context.read<SecurityBloc>().add(
+                                  SecuritySubmitted(),
+                                );
                               }
                             },
                             radius: 10,

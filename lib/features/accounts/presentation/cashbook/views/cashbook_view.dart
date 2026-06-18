@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
-
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
@@ -12,7 +11,7 @@ import '../../../domain/entities/cashbook_statement_entity.dart';
 import '../blocs/cashbook_bloc.dart';
 import '../blocs/cashbook_event.dart';
 import '../blocs/cashbook_state.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
+
 
 // ─── View ─────────────────────────────────────────────────────────────────────
 
@@ -38,18 +37,12 @@ class _CashbookBody extends StatefulWidget {
 }
 
 class _CashbookBodyState extends State<_CashbookBody> {
-  late DateTime _fromDate;
-  late DateTime _toDate;
-  int? _selectedAccountId;
   late final TextEditingController _accountController;
   late final ScrollController _scrollController;
-  bool _filterCollapsed = false;
 
   @override
   void initState() {
     super.initState();
-    _toDate = DateTime.now();
-    _fromDate = _toDate.subtractMonths(1);
     _accountController = TextEditingController();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
@@ -63,46 +56,44 @@ class _CashbookBodyState extends State<_CashbookBody> {
   }
 
   void _onScroll() {
+    final bloc = context.read<CashbookBloc>();
     final collapsed = _scrollController.offset > 40;
-    if (collapsed != _filterCollapsed) setState(() => _filterCollapsed = collapsed);
+    if (collapsed != bloc.state.filterCollapsed) {
+      bloc.add(CashbookFilterCollapsed(collapsed));
+    }
   }
 
   void _fetch() {
-    if (_selectedAccountId == null) {
+    final bloc = context.read<CashbookBloc>();
+    if (bloc.state.selectedAccountId == null) {
       AppToastsUtils.showErrorTop(context, AppConstants.pleaseSelectAnAccountFirstErrorMsg);
       return;
     }
-    setState(() => _filterCollapsed = false);
-    context.read<CashbookBloc>().add(
-      CashbookSubmitted(
-        fromDate: _fromDate.format('yyyy-MM-dd'),
-        toDate: _toDate.format('yyyy-MM-dd'),
-        accountId: _selectedAccountId,
-      ),
-    );
+    bloc.add(CashbookSubmitted(
+      fromDate: bloc.state.fromDate.format('yyyy-MM-dd'),
+      toDate: bloc.state.toDate.format('yyyy-MM-dd'),
+      accountId: bloc.state.selectedAccountId,
+    ));
   }
 
   void _onAccountChanged(String name) {
-    final accounts = context.read<CashbookBloc>().state.accounts;
-    final match = accounts.where((a) => a.name == name).firstOrNull;
-    if (match != null) setState(() => _selectedAccountId = match.id);
+    final bloc = context.read<CashbookBloc>();
+    final match = bloc.state.accounts.where((a) => a.name == name).firstOrNull;
+    if (match != null && match.id != null) bloc.add(CashbookAccountSelected(match.id!));
   }
 
   Future<void> _pickDate(bool isFrom) async {
+    final bloc = context.read<CashbookBloc>();
     final picked = await showCompactDatePicker(
       context: context,
-      initialDate: isFrom ? _fromDate : _toDate,
+      initialDate: isFrom ? bloc.state.fromDate : bloc.state.toDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      setState(() {
-        if (isFrom) {
-          _fromDate = picked;
-        } else {
-          _toDate = picked;
-        }
-      });
+      bloc.add(isFrom
+          ? CashbookFromDateChanged(picked)
+          : CashbookToDateChanged(picked));
     }
   }
 
@@ -122,33 +113,38 @@ class _CashbookBodyState extends State<_CashbookBody> {
         appBar: CustomAppBar(title: AppConstants.cashbookLabel),
         body: Column(
           children: [
-            AnimatedSize(
-              duration: const Duration(milliseconds: 260),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              child: _filterCollapsed
-                  ? _CompactFilterBar(
-                      accountName: _accountController.text,
-                      fromDate: _fromDate,
-                      toDate: _toDate,
-                      onExpand: () {
-                        setState(() => _filterCollapsed = false);
-                        if (_scrollController.hasClients) {
-                          _scrollController.animateTo(
-                            0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                        }
-                      },
-                    )
-                  : BlocBuilder<CashbookBloc, CashbookState>(
-                      buildWhen: (p, c) =>
-                          p.accounts != c.accounts ||
-                          p.accountsStatus != c.accountsStatus,
-                      builder: (context, state) => _FilterForm(
-                        fromDate: _fromDate,
-                        toDate: _toDate,
+            BlocBuilder<CashbookBloc, CashbookState>(
+              buildWhen: (p, c) =>
+                  p.filterCollapsed != c.filterCollapsed ||
+                  p.fromDate != c.fromDate ||
+                  p.toDate != c.toDate ||
+                  p.accounts != c.accounts ||
+                  p.accountsStatus != c.accountsStatus,
+              builder: (context, state) => AnimatedSize(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeInOut,
+                alignment: .topCenter,
+                child: state.filterCollapsed
+                    ? _CompactFilterBar(
+                        accountName: _accountController.text,
+                        fromDate: state.fromDate,
+                        toDate: state.toDate,
+                        onExpand: () {
+                          context
+                              .read<CashbookBloc>()
+                              .add(const CashbookFilterCollapsed(false));
+                          if (_scrollController.hasClients) {
+                            _scrollController.animateTo(
+                              0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
+                          }
+                        },
+                      )
+                    : _FilterForm(
+                        fromDate: state.fromDate,
+                        toDate: state.toDate,
                         accountItems:
                             state.accounts.map((a) => a.name).toList(),
                         accountSubtitles:
@@ -162,7 +158,7 @@ class _CashbookBodyState extends State<_CashbookBody> {
                         onPickTo: () => _pickDate(false),
                         onView: _fetch,
                       ),
-                    ),
+              ),
             ),
             Expanded(
               child: ColoredBox(
@@ -393,10 +389,10 @@ class _FieldTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
           color: context.grey50,
-          borderRadius: .circular(8),
+          borderRadius: .circular(6),
           border: Border.all(color: context.border),
         ),
         child: Row(

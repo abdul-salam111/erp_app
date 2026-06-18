@@ -8,7 +8,7 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../inventory_exports.dart';
 import '../widgets/inventory_widgets.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
+
 
 class InventoryView extends StatelessWidget {
   const InventoryView({super.key});

@@ -21,7 +21,6 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState>
       emit: emit,
       currentState: state,
       usecase: () => securityUsecase.call(
-        // TODO: Pass your parameters here
         NoParams(),
       ),
       stateBuilder: (status, {data, error}) =>

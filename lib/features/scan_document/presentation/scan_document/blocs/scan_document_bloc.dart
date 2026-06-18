@@ -9,7 +9,7 @@ class ScanDocumentBloc extends Bloc<ScanDocumentEvent, ScanDocumentState>
   final ScanDocumentUsecase scandocumentUsecase;
 
   ScanDocumentBloc({required this.scandocumentUsecase})
-      : super(const ScanDocumentState()) {
+    : super(const ScanDocumentState()) {
     on<ScanDocumentSubmitted>(_onScanDocumentSubmitted);
   }
 
@@ -20,10 +20,7 @@ class ScanDocumentBloc extends Bloc<ScanDocumentEvent, ScanDocumentState>
     await executeUsecase(
       emit: emit,
       currentState: state,
-      usecase: () => scandocumentUsecase.call(
-        // TODO: Pass your parameters here
-        NoParams(),
-      ),
+      usecase: () => scandocumentUsecase.call(NoParams()),
       stateBuilder: (status, {data, error}) =>
           state.copyWith(apiStatus: status, data: data, message: error),
     );

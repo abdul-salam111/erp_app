@@ -42,3 +42,31 @@ class CashbookPrintRequested extends CashbookEvent {
   @override
   List<Object?> get props => [featureId, parentEntityId];
 }
+
+class CashbookFromDateChanged extends CashbookEvent {
+  final DateTime date;
+  const CashbookFromDateChanged(this.date);
+  @override
+  List<Object?> get props => [date];
+}
+
+class CashbookToDateChanged extends CashbookEvent {
+  final DateTime date;
+  const CashbookToDateChanged(this.date);
+  @override
+  List<Object?> get props => [date];
+}
+
+class CashbookAccountSelected extends CashbookEvent {
+  final int accountId;
+  const CashbookAccountSelected(this.accountId);
+  @override
+  List<Object?> get props => [accountId];
+}
+
+class CashbookFilterCollapsed extends CashbookEvent {
+  final bool collapsed;
+  const CashbookFilterCollapsed(this.collapsed);
+  @override
+  List<Object?> get props => [collapsed];
+}

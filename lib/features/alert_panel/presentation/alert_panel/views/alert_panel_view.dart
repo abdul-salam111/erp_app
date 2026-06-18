@@ -8,7 +8,7 @@ import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../alert_panel_exports.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
+
 
 class AlertPanelView extends StatelessWidget {
   const AlertPanelView({super.key});

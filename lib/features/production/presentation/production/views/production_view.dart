@@ -6,7 +6,7 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../production_exports.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
+
 
 class ProductionView extends StatelessWidget {
   const ProductionView({super.key});

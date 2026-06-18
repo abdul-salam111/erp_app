@@ -5,7 +5,6 @@ import '../../../data/models/request_models/select_branch_request_model/select_b
 import '../../../domain/usecases/select_branch_usecase.dart';
 import 'branch_selection_event.dart';
 import 'branch_selection_state.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionState> {
   final SelectBranchUsecase selectBranchUsecase;

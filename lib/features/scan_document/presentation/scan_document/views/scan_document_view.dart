@@ -6,7 +6,6 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../scan_document_exports.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class ScanDocumentView extends StatelessWidget {
   const ScanDocumentView({super.key});
@@ -35,7 +34,10 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
     return BlocConsumer<ScanDocumentBloc, ScanDocumentState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(context, AppConstants.successSuccessMsg);
+          AppToastsUtils.showSuccessTop(
+            context,
+            AppConstants.successSuccessMsg,
+          );
         }
         if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
@@ -52,7 +54,6 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
                   key: _formKey,
                   child: ListView(
                     children: [
-                      // TODO: Add your UI widgets here
                       const Text(AppConstants.scanDocumentView),
                       heightBox(context.screenHeight * 0.05),
                       BlocBuilder<ScanDocumentBloc, ScanDocumentState>(
@@ -63,9 +64,9 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
                             text: AppConstants.submitBtn,
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                context
-                                    .read<ScanDocumentBloc>()
-                                    .add(ScanDocumentSubmitted());
+                                context.read<ScanDocumentBloc>().add(
+                                  ScanDocumentSubmitted(),
+                                );
                               }
                             },
                             radius: 10,
