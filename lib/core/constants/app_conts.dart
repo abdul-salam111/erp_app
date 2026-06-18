@@ -194,7 +194,7 @@ class AppConstants {
   static const String selectAccountHint = 'Select Account';
   static const String fromDateBtn = 'From Date';
   static const String toDateBtn = 'To Date';
-  static const String view = 'View';
+  static const String view = 'Apply';
   static const String statementsBtn = 'Statements';
   static const String noLedgerDataAvailable = 'No ledger data available';
   static const String openingBalance = 'Opening balance';
