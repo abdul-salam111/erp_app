@@ -4,7 +4,7 @@ import '../../constants/const_exports.dart';
 import '../../theme/theme_exports.dart';
 import '../../utils/utils_exports.dart';
 import '../../../features/accounts/domain/entities/ledger_entry_base.dart';
-import 'accounts_helpers.dart';
+import 'ledger_formate_balance.dart';
 
 class AccountsLedgerRow extends StatelessWidget {
   final LedgerEntryBase ledger;

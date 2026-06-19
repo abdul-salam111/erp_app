@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/di/app_dependencies.dart';
 import 'core/theme/theme_exports.dart';
+import 'core/utils/utils_exports.dart';
 import 'routes/route_exports.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = AppBlocObserver();
   await setupLocator();
   runApp(const MyApp());
-  
 }
 
 class MyApp extends StatelessWidget {
