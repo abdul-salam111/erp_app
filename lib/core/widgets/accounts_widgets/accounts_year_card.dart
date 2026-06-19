@@ -49,9 +49,9 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
   }
 
   void _onScroll() {
-    final sc = widget.scrollController;
-    if (sc == null || !sc.hasClients) return;
-    if (sc.position.extentAfter < 300) {
+    final scrollController = widget.scrollController;
+    if (scrollController == null || !scrollController.hasClients) return;
+    if (scrollController.position.extentAfter < 300) {
       final total = _flatEntries.length;
       if (_visibleCount < total) {
         setState(() => _visibleCount = (_visibleCount + _pageSize).clamp(0, total));
@@ -61,9 +61,9 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
 
   List<_PagedEntry> get _flatEntries {
     final result = <_PagedEntry>[];
-    for (final g in widget.groups) {
-      for (final e in g.entries) {
-        result.add(_PagedEntry(type: g.type, entry: e));
+    for (final ledgerGroup in widget.groups) {
+      for (final ledgerEntry in ledgerGroup.entries) {
+        result.add(_PagedEntry(type: ledgerGroup.type, entry: ledgerEntry));
       }
     }
     return result;
@@ -72,10 +72,10 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
   List<Widget> _buildPagedRows(List<_PagedEntry> entries, BuildContext context) {
     final rows = <Widget>[];
     String? lastType;
-    for (final pe in entries) {
-      if (pe.type != lastType) {
-        lastType = pe.type;
-        if (pe.type.isNotEmpty) {
+    for (final pagedEntry in entries) {
+      if (pagedEntry.type != lastType) {
+        lastType = pagedEntry.type;
+        if (pagedEntry.type.isNotEmpty) {
           rows.add(
             Container(
               width: double.infinity,
@@ -85,7 +85,7 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
                 border: Border(top: BorderSide(color: context.border)),
               ),
               child: Text(
-                pe.type.toUpperCase(),
+                pagedEntry.type.toUpperCase(),
                 style: context.labelSmall.copyWith(
                   fontWeight: .w600,
                   color: context.textSecondary,
@@ -97,7 +97,7 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
           );
         }
       }
-      rows.add(widget.rowBuilder(pe.entry));
+      rows.add(widget.rowBuilder(pagedEntry.entry));
     }
     return rows;
   }

@@ -52,7 +52,7 @@ class DrawerItem {
 
 // ─── App Drawer ───────────────────────────────────────────────────────────────
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
   final String           userName;
   final String           orgName;
   final List<DrawerItem> items;
@@ -67,6 +67,29 @@ class AppDrawer extends StatelessWidget {
   });
 
   @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 520),
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: context.white,
@@ -74,18 +97,17 @@ class AppDrawer extends StatelessWidget {
       width: 272,
       child: Column(
         children: [
-          // ── Header ──
-          _DrawerHeader(userName: userName, orgName: orgName, onOrgTap: onOrgTap),
-
-          // ── Nav items ──
+          _DrawerHeader(
+            userName: widget.userName,
+            orgName:  widget.orgName,
+            onOrgTap: widget.onOrgTap,
+          ),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.only(top: 6, bottom: 8),
               children: _buildItems(context),
             ),
           ),
-
-          // ── Logout ──
           _LogoutButton(
             onTap: () {
               Navigator.pop(context);
@@ -100,28 +122,35 @@ class AppDrawer extends StatelessWidget {
 
   List<Widget> _buildItems(BuildContext context) {
     final result = <Widget>[];
-    for (int i = 0; i < items.length; i++) {
-      final item = items[i];
-      final next = i + 1 < items.length ? items[i + 1] : null;
+    int animIndex = 0;
+
+    void addAnimated(Widget w, {bool increment = true}) {
+      result.add(_AnimatedDrawerItem(
+        controller: _controller,
+        index: animIndex,
+        child: w,
+      ));
+      if (increment) animIndex++;
+    }
+
+    for (int i = 0; i < widget.items.length; i++) {
+      final item = widget.items[i];
+      final next = i + 1 < widget.items.length ? widget.items[i + 1] : null;
       final nextIsNavItem = next != null &&
           (next._type == _DrawerItemType.tile ||
            next._type == _DrawerItemType.expandable);
 
       switch (item._type) {
         case _DrawerItemType.tile:
-          result.add(_DrawerTile(item: item));
-          if (nextIsNavItem) {
-            result.add(_tileDivider(context));
-          }
+          addAnimated(_DrawerTile(item: item));
+          if (nextIsNavItem) addAnimated(_tileDivider(context), increment: false);
         case _DrawerItemType.expandable:
-          result.add(_ExpandableTile(item: item));
-          if (nextIsNavItem) {
-            result.add(_tileDivider(context));
-          }
+          addAnimated(_ExpandableTile(item: item));
+          if (nextIsNavItem) addAnimated(_tileDivider(context), increment: false);
         case _DrawerItemType.category:
-          result.add(_CategoryLabel(label: item.label!));
+          addAnimated(_CategoryLabel(label: item.label!));
         case _DrawerItemType.divider:
-          result.add(const _ItemDivider());
+          addAnimated(const _ItemDivider(), increment: false);
       }
     }
     return result;
@@ -134,6 +163,40 @@ class AppDrawer extends StatelessWidget {
         endIndent: 16,
         color:     context.border,
       );
+}
+
+// ─── Animated drawer item ─────────────────────────────────────────────────────
+
+class _AnimatedDrawerItem extends StatelessWidget {
+  final AnimationController controller;
+  final int                 index;
+  final Widget              child;
+
+  const _AnimatedDrawerItem({
+    required this.controller,
+    required this.index,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final start = (index * 0.07).clamp(0.0, 0.65);
+    final end   = (start + 0.45).clamp(start + 0.1, 1.0);
+    final curve = CurvedAnimation(
+      parent: controller,
+      curve:  Interval(start, end, curve: Curves.easeOut),
+    );
+    return FadeTransition(
+      opacity: curve,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(-0.12, 0),
+          end:   Offset.zero,
+        ).animate(curve),
+        child: child,
+      ),
+    );
+  }
 }
 
 // ─── Drawer tile (leaf) ───────────────────────────────────────────────────────
