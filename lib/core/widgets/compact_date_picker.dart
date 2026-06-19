@@ -9,8 +9,8 @@ Future<DateTime?> showCompactDatePicker({
   final clamped = initialDate.isBefore(firstDate)
       ? firstDate
       : initialDate.isAfter(lastDate)
-          ? lastDate
-          : initialDate;
+      ? lastDate
+      : initialDate;
   return showDialog<DateTime>(
     context: context,
     builder: (_) => _CompactDatePickerDialog(
@@ -60,7 +60,11 @@ class _CompactDatePickerDialogState extends State<_CompactDatePickerDialog> {
             lastDate: widget.lastDate,
             onDateChanged: (d) => setState(() => _selected = d),
           ),
-          Divider(height: 1, thickness: 1, color: Theme.of(context).dividerColor),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: Theme.of(context).dividerColor,
+          ),
           Row(
             mainAxisAlignment: .end,
             children: [

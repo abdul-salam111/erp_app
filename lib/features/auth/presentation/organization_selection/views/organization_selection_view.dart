@@ -42,8 +42,8 @@ class _OrganizationSelectionBodyState
 
   void _selectOrganization(UserOrganizationEntity org, int index) {
     context.read<BranchSelectionBloc>().add(
-          BranchSelectedEvent(org: org, orgIndex: index),
-        );
+      BranchSelectedEvent(org: org, orgIndex: index),
+    );
   }
 
   @override
@@ -55,57 +55,60 @@ class _OrganizationSelectionBodyState
           context.pushNamed(RouteNames.dashboard);
         }
         if (state.status == ApiStatus.FAILURE) {
-          AppToastsUtils.showErrorTop(context, state.message ?? AppConstants.failedToSelectBranchErrorMsg);
+          AppToastsUtils.showErrorTop(
+            context,
+            state.message ?? AppConstants.failedToSelectBranchErrorMsg,
+          );
         }
       },
       builder: (context, state) => Scaffold(
-      backgroundColor: context.background,
-      body: CustomScrollView(
-        slivers: [
-          _Header(userName: _userName),
-          if (_organizations.isEmpty)
-            SliverFillRemaining(
-              child: Center(
-                child: Column(
-                  mainAxisSize: .min,
-                  children: [
-                    Icon(
-                      Iconsax.building_3,
-                      size: 56,
-                      color: context.textDisabled,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      AppConstants.noOrganizationsFound,
-                      style: context.bodyMedium.copyWith(
-                        color: context.textSecondary,
+        backgroundColor: context.background,
+        body: CustomScrollView(
+          slivers: [
+            _Header(userName: _userName),
+            if (_organizations.isEmpty)
+              SliverFillRemaining(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: .min,
+                    children: [
+                      Icon(
+                        Iconsax.building_3,
+                        size: 56,
+                        color: context.textDisabled,
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 16),
+                      Text(
+                        AppConstants.noOrganizationsFound,
+                        style: context.bodyMedium.copyWith(
+                          color: context.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else
+              SliverPadding(
+                padding: context.pagePadding.copyWith(bottom: 32),
+                sliver: SliverList.separated(
+                  itemCount: _organizations.length,
+                  separatorBuilder: (_, __) =>
+                      SizedBox(height: context.gridSpacing + 4),
+                  itemBuilder: (context, index) {
+                    final org = _organizations[index];
+                    return _OrganizationCard(
+                      org: org,
+                      index: index,
+                      isLoading: state.loadingOrgIndex == index,
+                      isDisabled: state.loadingOrgIndex != null,
+                      onTap: () => _selectOrganization(org, index),
+                    );
+                  },
                 ),
               ),
-            )
-          else
-            SliverPadding(
-              padding: context.pagePadding.copyWith(bottom: 32),
-              sliver: SliverList.separated(
-                itemCount: _organizations.length,
-                separatorBuilder: (_, __) =>
-                    SizedBox(height: context.gridSpacing + 4),
-                itemBuilder: (context, index) {
-                  final org = _organizations[index];
-                  return _OrganizationCard(
-                    org: org,
-                    index: index,
-                    isLoading: state.loadingOrgIndex == index,
-                    isDisabled: state.loadingOrgIndex != null,
-                    onTap: () => _selectOrganization(org, index),
-                  );
-                },
-              ),
-            ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -122,10 +125,7 @@ class _Header extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              context.primary,
-              context.primary.withValues(alpha: 0.75),
-            ],
+            colors: [context.primary, context.primary.withValues(alpha: 0.75)],
             begin: .topLeft,
             end: .bottomRight,
           ),
@@ -133,7 +133,7 @@ class _Header extends StatelessWidget {
         child: SafeArea(
           bottom: false,
           child: Padding(
-            padding: EdgeInsets.fromLTRB(
+            padding: .fromLTRB(
               context.pagePadding.left,
               24,
               context.pagePadding.right,
@@ -216,7 +216,7 @@ class _OrganizationCard extends StatelessWidget {
 
   String get _initials {
     final name = org.name ?? '';
-    final parts = name.trim().split(' ');
+    final parts = name.trim().split(RegExp(r'\s+'));
     if (parts.length >= 2) {
       return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
     } else if (name.isNotEmpty) {
@@ -225,151 +225,195 @@ class _OrganizationCard extends StatelessWidget {
     return '?';
   }
 
+  bool get _isActive =>
+      SessionController.instance.selectedOrganization?.name == org.name;
+
   @override
   Widget build(BuildContext context) {
-    final branchCount = org.branches.length;
+    final active = _isActive;
 
     return AnimatedOpacity(
       opacity: isDisabled && !isLoading ? 0.5 : 1.0,
       duration: const Duration(milliseconds: 200),
-      child: Material(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          onTap: isDisabled ? null : onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: context.border),
-              boxShadow: [
-                BoxShadow(
-                  color: context.shadow,
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: .circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: _accentColor.withValues(alpha: 0.12),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
             ),
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
+            const BoxShadow(
+              color: AppColors.shadow,
+              blurRadius: 4,
+              offset: Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Material(
+          color: context.surface,
+          borderRadius: BorderRadius.circular(16),
+          child: InkWell(
+            onTap: isDisabled ? null : onTap,
+            borderRadius: BorderRadius.circular(16),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: active
+                        ? _accentColor.withValues(alpha: 0.5)
+                        : _accentColor.withValues(alpha: 0.18),
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: IntrinsicHeight(
                   child: Row(
+                    crossAxisAlignment: .stretch,
                     children: [
+                      // Left accent bar
                       Container(
-                        width: 52,
-                        height: 52,
+                        width: 4,
                         decoration: BoxDecoration(
-                          color: _accentColor.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Center(
-                          child: Text(
-                            _initials,
-                            style: context.titleMedium.copyWith(
-                              color: _accentColor,
-                              fontWeight: .w700,
-                            ),
+                          gradient: LinearGradient(
+                            colors: [
+                              _accentColor,
+                              _accentColor.withValues(alpha: 0.4),
+                            ],
+                            begin: .topCenter,
+                            end: .bottomCenter,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: .start,
                           children: [
-                            Text(
-                              org.name ?? '',
-                              style: context.titleSmall.copyWith(
-                                fontWeight: .w600,
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                              child: Row(
+                                children: [
+                                  // Gradient avatar
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          _accentColor,
+                                          _accentColor.withValues(alpha: 0.65),
+                                        ],
+                                        begin: .topLeft,
+                                        end: .bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(13),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: _accentColor.withValues(alpha: 0.35),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        _initials,
+                                        style: context.titleMedium.copyWith(
+                                          color: AppColors.white,
+                                          fontWeight: .w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 14),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: .start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                org.name ?? '',
+                                                style: context.titleSmall.copyWith(
+                                                  fontWeight: .w600,
+                                                ),
+                                                maxLines: 1,
+                                                overflow: .ellipsis,
+                                              ),
+                                            ),
+                                            if (active) ...[
+                                              const SizedBox(width: 8),
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 3,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: _accentColor.withValues(alpha: 0.12),
+                                                  borderRadius: BorderRadius.circular(20),
+                                                ),
+                                                child: Text(
+                                                  'Active',
+                                                  style: context.labelSmall.copyWith(
+                                                    color: _accentColor,
+                                                    fontWeight: .w600,
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                        if (org.tenantName != null) ...[
+                                          const SizedBox(height: 3),
+                                          Text(
+                                            org.tenantName!,
+                                            style: context.bodySmall.copyWith(
+                                              color: context.textSecondary,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: .ellipsis,
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  if (isLoading)
+                                    SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.5,
+                                        valueColor: AlwaysStoppedAnimation(_accentColor),
+                                      ),
+                                    )
+                                  else
+                                    Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                        color: _accentColor.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Icon(
+                                        Iconsax.arrow_right_3,
+                                        color: _accentColor,
+                                        size: 16,
+                                      ),
+                                    ),
+                                ],
                               ),
-                              maxLines: 1,
-                              overflow: .ellipsis,
                             ),
-                            if (org.tenantName != null) ...[
-                              const SizedBox(height: 3),
-                              Text(
-                                org.tenantName!,
-                                style: context.bodySmall.copyWith(
-                                  color: context.textSecondary,
-                                ),
-                                maxLines: 1,
-                                overflow: .ellipsis,
-                              ),
-                            ],
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      if (isLoading)
-                        SizedBox(
-                          width: 22,
-                          height: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            valueColor:
-                                AlwaysStoppedAnimation(_accentColor),
-                          ),
-                        )
-                      else
-                        Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: _accentColor.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Iconsax.arrow_right_3,
-                            color: _accentColor,
-                            size: 16,
-                          ),
-                        ),
                     ],
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: context.background,
-                    borderRadius: const BorderRadius.vertical(
-                      bottom: Radius.circular(16),
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-                  child: Row(
-                    children: [
-                      if (org.productName != null)
-                        _Chip(
-                          icon: Iconsax.box,
-                          label: org.productName!,
-                          color: _accentColor,
-                        ),
-                      if (org.productName != null &&
-                          (org.countryName != null || branchCount > 0))
-                        const SizedBox(width: 8),
-                      if (org.countryName != null)
-                        _Chip(
-                          icon: Iconsax.global,
-                          label: org.countryName!,
-                          color: context.textSecondary,
-                        ),
-                      if (org.countryName != null && branchCount > 0)
-                        const SizedBox(width: 8),
-                      if (branchCount > 0)
-                        _Chip(
-                          icon: Iconsax.location,
-                          label:
-                              '$branchCount ${branchCount == 1 ? 'Branch' : 'Branches'}',
-                          color: context.textSecondary,
-                        ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -378,31 +422,3 @@ class _OrganizationCard extends StatelessWidget {
   }
 }
 
-class _Chip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-
-  const _Chip({
-    required this.icon,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: .min,
-      children: [
-        Icon(icon, size: 12, color: color),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: context.labelSmall.copyWith(color: color),
-          maxLines: 1,
-          overflow: .ellipsis,
-        ),
-      ],
-    );
-  }
-}

@@ -97,8 +97,9 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
       },
       child: UnfocusWrapper(
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor: context.grey50,
-          appBar: CustomAppBar(title: AppConstants.creditManagementLabel),
+          appBar: CustomAppBar(title: AppConstants.creditManagmentTitle),
           body: Column(
             children: [
               BlocBuilder<CreditManagementBloc, CreditManagementState>(

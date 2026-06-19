@@ -48,134 +48,137 @@ class CreditTrendChart extends StatelessWidget {
           const SizedBox(height: 14),
           SizedBox(
             height: 160,
-            child: LineChart(
-              LineChartData(
-                minX: 0,
-                maxX: 2,
-                minY: 0,
-                maxY: maxY,
-                lineTouchData: LineTouchData(
-                  enabled: true,
-                  touchTooltipData: LineTouchTooltipData(
-                    getTooltipColor: (_) => lineColor.withValues(alpha: 0.92),
-                    tooltipRoundedRadius: 6,
-                    getTooltipItems: (spots) => spots
-                        .map(
-                          (s) => LineTooltipItem(
-                            'Rs ${s.y.toStringAsFixed(0)}',
-                            context.labelSmall.copyWith(
-                              color: context.white,
-                              fontSize: 10,
-                              fontWeight: .w600,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: LineChart(
+                LineChartData(
+                  minX: 0,
+                  maxX: 2,
+                  minY: 0,
+                  maxY: maxY,
+                  lineTouchData: LineTouchData(
+                    enabled: true,
+                    touchTooltipData: LineTouchTooltipData(
+                      getTooltipColor: (_) => lineColor.withValues(alpha: 0.92),
+                      tooltipRoundedRadius: 6,
+                      getTooltipItems: (spots) => spots
+                          .map(
+                            (s) => LineTooltipItem(
+                              'Rs ${s.y.toStringAsFixed(0)}',
+                              context.labelSmall.copyWith(
+                                color: context.white,
+                                fontSize: 10,
+                                fontWeight: .w600,
+                              ),
                             ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 20,
-                      interval: yInterval,
-                      getTitlesWidget: (value, _) {
-                        final label = value >= 1000
-                            ? '${(value / 1000).toStringAsFixed(value % 1000 == 0 ? 0 : 1)}K'
-                            : value.toInt().toString();
-                        return Text(
-                          label,
-                          style: context.labelSmall.copyWith(
-                            fontSize: 9,
-                            color: context.textSecondary,
-                          ),
-                          textAlign: .center,
-                        );
-                      },
+                          )
+                          .toList(),
                     ),
                   ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      interval: 1,
-                      getTitlesWidget: (value, _) {
-                        final i = value.toInt();
-                        if (value != i.toDouble() || i < 0 || i >= _points.length) {
-                          return const SizedBox.shrink();
-                        }
-                        final pt = _points[i];
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Column(
-                            mainAxisSize: .min,
-                            children: [
-                              Text(
-                                pt.day,
-                                style: context.labelSmall.copyWith(
-                                  fontSize: 9,
-                                  color: context.textSecondary,
-                                ),
-                              ),
-                              Text(
-                                pt.label,
-                                style: context.labelSmall.copyWith(
-                                  fontSize: 9,
-                                  color: context.textSecondary,
-                                  fontWeight: .w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                gridData: FlGridData(
-                  drawVerticalLine: false,
-                  horizontalInterval: yInterval,
-                  getDrawingHorizontalLine: (_) => FlLine(
-                    color: AppColors.grey100,
-                    strokeWidth: 1,
-                  ),
-                ),
-                borderData: FlBorderData(show: false),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: _points.map((p) => FlSpot(p.x, p.y)).toList(),
-                    isCurved: true,
-                    curveSmoothness: 0.35,
-                    color: lineColor,
-                    barWidth: 2.5,
-                    dotData: FlDotData(
-                      show: true,
-                      getDotPainter: (spot, _, __, ___) => FlDotCirclePainter(
-                        radius: 3,
-                        color: lineColor,
-                        strokeWidth: 1.5,
-                        strokeColor: Colors.white,
+                  titlesData: FlTitlesData(
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 20,
+                        interval: yInterval,
+                        getTitlesWidget: (value, _) {
+                          final label = value >= 1000
+                              ? '${(value / 1000).toStringAsFixed(value % 1000 == 0 ? 0 : 1)}K'
+                              : value.toInt().toString();
+                          return Text(
+                            label,
+                            style: context.labelSmall.copyWith(
+                              fontSize: 9,
+                              color: context.textSecondary,
+                            ),
+                            textAlign: .start,
+                          );
+                        },
                       ),
                     ),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        begin: .topCenter,
-                        end: .bottomCenter,
-                        colors: [
-                          lineColor.withValues(alpha: 0.22),
-                          lineColor.withValues(alpha: 0.0),
-                        ],
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 30,
+                        interval: 1,
+                        getTitlesWidget: (value, _) {
+                          final i = value.toInt();
+                          if (value != i.toDouble() || i < 0 || i >= _points.length) {
+                            return const SizedBox.shrink();
+                          }
+                          final pt = _points[i];
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Column(
+                              mainAxisSize: .min,
+                              children: [
+                                Text(
+                                  pt.day,
+                                  style: context.labelSmall.copyWith(
+                                    fontSize: 9,
+                                    color: context.textSecondary,
+                                  ),
+                                ),
+                                Text(
+                                  pt.label,
+                                  style: context.labelSmall.copyWith(
+                                    fontSize: 9,
+                                    color: context.textSecondary,
+                                    fontWeight: .w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
-                ],
+                  gridData: FlGridData(
+                    drawVerticalLine: false,
+                    horizontalInterval: yInterval,
+                    getDrawingHorizontalLine: (_) => FlLine(
+                      color: AppColors.grey100,
+                      strokeWidth: 1,
+                    ),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: _points.map((p) => FlSpot(p.x, p.y)).toList(),
+                      isCurved: true,
+                      curveSmoothness: 0.35,
+                      color: lineColor,
+                      barWidth: 2.5,
+                      dotData: FlDotData(
+                        show: true,
+                        getDotPainter: (spot, _, __, ___) => FlDotCirclePainter(
+                          radius: 3,
+                          color: lineColor,
+                          strokeWidth: 1.5,
+                          strokeColor: Colors.white,
+                        ),
+                      ),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        gradient: LinearGradient(
+                          begin: .topCenter,
+                          end: .bottomCenter,
+                          colors: [
+                            lineColor.withValues(alpha: 0.22),
+                            lineColor.withValues(alpha: 0.0),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -120,25 +120,7 @@ class _StatCard extends StatelessWidget {
                             overflow: .ellipsis,
                           ),
                         ),
-                        Row(
-                          mainAxisSize: .min,
-                          children: [
-                            Icon(
-                              Icons.arrow_upward_rounded,
-                              size: 9,
-                              color: AppColors.greenDark,
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              '5.39%',
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.greenDark,
-                              ),
-                            ),
-                          ],
-                        ),
+                       
                       ],
                     ),
                     const SizedBox(height: 4),

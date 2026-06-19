@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/get_utils.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
@@ -83,7 +84,7 @@ class _FilterFormState extends State<FilterForm> {
                     mainAxisSize: .min,
                     children: [
                       Text(
-                        _showMore ? 'Show Less' : 'Show More',
+                        _showMore ? 'Hide Filters' : 'Show Filters',
                         style: context.labelSmall.copyWith(
                           color: context.primary,
                           fontWeight: .w500,
@@ -150,15 +151,46 @@ class _FilterFormState extends State<FilterForm> {
                       crossAxisAlignment: .start,
                       children: [
                         const SizedBox(height: 10),
-                        _FormLabel(text: AppConstants.partyBtn),
-                        const SizedBox(height: 6),
-                        SearchableDropdown(
-                          items: const [],
-                          controller: widget.partyController,
-                          hintText: AppConstants.selectPartyHint,
-                          onChanged: widget.onPartyChanged,
-                          fieldHeight: 40,
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+
+                                crossAxisAlignment: .start,
+                                children: [
+                                  _FormLabel(text: AppConstants.partyBtn),
+                                  const SizedBox(height: 6),
+                                  SearchableDropdown(
+                                    items: const [],
+                                    controller: widget.partyController,
+                                    hintText: AppConstants.selectPartyHint,
+                                    onChanged: widget.onPartyChanged,
+                                    fieldHeight: 35,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                crossAxisAlignment: .start,
+                                children: [
+                                  _FormLabel(text: 'Rating'),
+                                  const SizedBox(height: 6),
+                                  _SimpleDropdown(
+                                    items: widget.creditRatingOptions,
+                                    value: widget.creditRating,
+                                    hint: 'Select',
+                                    onChanged: widget.onCreditRatingChanged,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
+
                         const SizedBox(height: 10),
                         Row(
                           crossAxisAlignment: .end,
@@ -190,22 +222,6 @@ class _FilterFormState extends State<FilterForm> {
                                     value: widget.groupOn,
                                     hint: 'Select',
                                     onChanged: widget.onGroupOnChanged,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  _FormLabel(text: 'Credit Rating'),
-                                  const SizedBox(height: 6),
-                                  _SimpleDropdown(
-                                    items: widget.creditRatingOptions,
-                                    value: widget.creditRating,
-                                    hint: 'Select',
-                                    onChanged: widget.onCreditRatingChanged,
                                   ),
                                 ],
                               ),
@@ -263,7 +279,7 @@ class _DateTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 40,
+        height: 35,
         padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
           color: context.surface,
@@ -313,7 +329,7 @@ class _SimpleDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final borderColor = context.border.withAlpha(50);
     return Container(
-      height: 40,
+      height: 35,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
         color: context.surface,

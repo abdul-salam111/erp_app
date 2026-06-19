@@ -152,15 +152,18 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.primary,
-      padding: EdgeInsets.symmetric(
-        horizontal:5,
-        vertical: 10,
+      decoration: BoxDecoration(
+        color: context.primary,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
       ),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: Row(
         children: [
           Expanded(
-            flex: 4,
+            flex: 6,
             child: Text(
               'Customer',
               style: context.labelSmall.copyWith(
@@ -172,38 +175,11 @@ class _TableHeader extends StatelessWidget {
               overflow: .ellipsis,
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              'CR',
-              style: context.labelSmall.copyWith(
-                color: Colors.white,
-                fontWeight: .w600,
-                fontSize: 11,
-              ),
-              textAlign: .center,
-              maxLines: 1,
-              overflow: .ellipsis,
-            ),
-          ),
+          const Expanded(flex: 1, child: SizedBox()),
           Expanded(
             flex: 3,
             child: Text(
               'Balance',
-              style: context.labelSmall.copyWith(
-                color: Colors.white,
-                fontWeight: .w600,
-                fontSize: 11,
-              ),
-              textAlign: .end,
-              maxLines: 1,
-              overflow: .ellipsis,
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              'Avg Days',
               style: context.labelSmall.copyWith(
                 color: Colors.white,
                 fontWeight: .w600,
@@ -251,7 +227,7 @@ class _CreditTableRowState extends State<_CreditTableRow> {
               child: Row(
                 children: [
                   Expanded(
-                    flex: 4,
+                    flex: 6,
                     child: Column(
                       crossAxisAlignment: .start,
                       children: [
@@ -289,27 +265,30 @@ class _CreditTableRowState extends State<_CreditTableRow> {
                   ),
                   Expanded(
                     flex: 3,
-                    child: Text(
-                      widget.item.balance,
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w600,
-                        fontSize: 12,
-                        color: context.textPrimary,
-                      ),
-                      textAlign: .end,
-                      maxLines: 1,
-                      overflow: .ellipsis,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      '${widget.item.avgDays}',
-                      style: context.bodySmall.copyWith(
-                        color: context.textSecondary,
-                        fontSize: 12,
-                      ),
-                      textAlign: .end,
+                    child: Column(
+                      crossAxisAlignment: .end,
+                      children: [
+                        Text(
+                          widget.item.balance,
+                          style: context.bodySmall.copyWith(
+                            fontWeight: .w600,
+                            fontSize: 12,
+                            color: context.textPrimary,
+                          ),
+                          textAlign: .end,
+                          maxLines: 1,
+                          overflow: .ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${widget.item.avgDays} D',
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 11,
+                          ),
+                          textAlign: .end,
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(
