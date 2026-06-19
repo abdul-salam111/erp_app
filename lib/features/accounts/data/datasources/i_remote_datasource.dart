@@ -21,7 +21,7 @@ abstract interface class IRemoteAccountsDataSource {
   Future<List<AccountListItemModel>> getAccountsList();
   Future<List<PartyListItemModel>> getPartyList();
   Future<dynamic> cashbook();
-  Future<List<CashbookModel>> getCashbookStatements({
+  Future<List<GetLedgerModel>> getCashbookStatements({
     required String fromDate,
     required String toDate,
     int? accountId,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/get_utils.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';

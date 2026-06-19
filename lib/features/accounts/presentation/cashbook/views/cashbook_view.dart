@@ -8,10 +8,6 @@ import '../../../../../core/widgets/widgets.dart';
 import '../blocs/cashbook_bloc.dart';
 import '../blocs/cashbook_event.dart';
 import '../blocs/cashbook_state.dart';
-import '../widgets/cashbook_compact_filter_bar.dart';
-import '../widgets/cashbook_empty_states.dart';
-import '../widgets/cashbook_filter_form.dart';
-import '../widgets/cashbook_shimmer.dart';
 import '../widgets/cashbook_statements_body.dart';
 
 // ─── View ─────────────────────────────────────────────────────────────────────
@@ -128,8 +124,9 @@ class _CashbookBodyState extends State<_CashbookBody> {
                 curve: Curves.easeInOut,
                 alignment: .topCenter,
                 child: state.filterCollapsed
-                    ? CashbookCompactFilterBar(
-                        accountName: _accountController.text,
+                    ? AccountsCompactFilterBar(
+                        label: _accountController.text,
+                        placeholder: AppConstants.selectAccount,
                         fromDate: state.fromDate,
                         toDate: state.toDate,
                         onExpand: () {
@@ -145,18 +142,19 @@ class _CashbookBodyState extends State<_CashbookBody> {
                           }
                         },
                       )
-                    : CashbookFilterForm(
+                    : AccountsFilterForm(
+                        label: AppConstants.accountBtn,
+                        hintText: AppConstants.selectAccountHint,
                         fromDate: state.fromDate,
                         toDate: state.toDate,
-                        accountItems:
-                            state.accounts.map((a) => a.name).toList(),
-                        accountSubtitles:
+                        items: state.accounts.map((a) => a.name).toList(),
+                        subtitles:
                             state.accounts.map((a) => a.group ?? '').toList(),
-                        isLoadingAccounts:
+                        isLoading:
                             state.accountsStatus == ApiStatus.INITIAL ||
                                 state.accountsStatus == ApiStatus.LOADING,
-                        accountController: _accountController,
-                        onAccountChanged: _onAccountChanged,
+                        controller: _accountController,
+                        onItemChanged: _onAccountChanged,
                         onPickFrom: () => _pickDate(true),
                         onPickTo: () => _pickDate(false),
                         onView: _fetch,
@@ -169,13 +167,15 @@ class _CashbookBodyState extends State<_CashbookBody> {
                 child: BlocBuilder<CashbookBloc, CashbookState>(
                   builder: (context, state) {
                     if (state.apiStatus == ApiStatus.INITIAL) {
-                      return const CashbookIdleState();
+                      return const AccountsIdleState(
+                        subtitle: AppConstants.selectAnAccountAndTap,
+                      );
                     }
                     if (state.apiStatus == ApiStatus.LOADING) {
-                      return const CashbookShimmerBody();
+                      return const AccountsShimmerBody();
                     }
                     if (state.apiStatus == ApiStatus.FAILURE) {
-                      return CashbookErrorBody(
+                      return AccountsErrorBody(
                         message:
                             state.message ?? AppConstants.somethingWentWrong,
                         onRetry: _fetch,
@@ -183,7 +183,7 @@ class _CashbookBodyState extends State<_CashbookBody> {
                     }
                     if (state.apiStatus == ApiStatus.SUCCESS &&
                         state.statements.isEmpty) {
-                      return const CashbookEmptyState();
+                      return const AccountsEmptyState();
                     }
                     return CashbookStatementsBody(
                       statements: state.statements,

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/theme/theme_exports.dart';
-import '../../../../../core/utils/utils_exports.dart';
+import '../../theme/theme_exports.dart';
+import '../../utils/utils_exports.dart';
+import '../../constants/const_exports.dart';
 
-class LedgerCompactFilterBar extends StatelessWidget {
-  final String accountName;
+class AccountsCompactFilterBar extends StatelessWidget {
+  final String label;
+  final String placeholder;
   final DateTime fromDate;
   final DateTime toDate;
   final VoidCallback onExpand;
 
-  const LedgerCompactFilterBar({
+  const AccountsCompactFilterBar({
     super.key,
-    required this.accountName,
+    required this.label,
+    required this.placeholder,
     required this.fromDate,
     required this.toDate,
     required this.onExpand,
@@ -20,7 +22,7 @@ class LedgerCompactFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasAccount = accountName.isNotEmpty;
+    final hasLabel = label.isNotEmpty;
     return GestureDetector(
       onTap: onExpand,
       child: Container(
@@ -37,11 +39,9 @@ class LedgerCompactFilterBar extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                hasAccount ? accountName : AppConstants.selectAccount,
+                hasLabel ? label : placeholder,
                 style: context.bodySmall.copyWith(
-                  color: hasAccount
-                      ? context.textPrimary
-                      : context.textSecondary,
+                  color: hasLabel ? context.textPrimary : context.textSecondary,
                   fontWeight: .w500,
                   fontSize: 13,
                 ),

@@ -6,10 +6,6 @@ import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../accounts_exports.dart';
-import '../widgets/party_compact_filter_bar.dart';
-import '../widgets/party_empty_states.dart';
-import '../widgets/party_filter_form.dart';
-import '../widgets/party_shimmer.dart';
 import '../widgets/party_statements_body.dart';
 
 // ─── View ─────────────────────────────────────────────────────────────────────
@@ -127,8 +123,9 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
               curve: Curves.easeInOut,
               alignment: Alignment.topCenter,
               child: _filterCollapsed
-                  ? PartyCompactFilterBar(
-                      partyName: _partyController.text,
+                  ? AccountsCompactFilterBar(
+                      label: _partyController.text,
+                      placeholder: AppConstants.selectParty,
                       fromDate: _fromDate,
                       toDate: _toDate,
                       onExpand: () {
@@ -146,17 +143,19 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
                       buildWhen: (p, c) =>
                           p.parties != c.parties ||
                           p.partiesStatus != c.partiesStatus,
-                      builder: (context, state) => PartyFilterForm(
+                      builder: (context, state) => AccountsFilterForm(
+                        label: AppConstants.partyBtn,
+                        hintText: AppConstants.selectPartyHint,
                         fromDate: _fromDate,
                         toDate: _toDate,
-                        partyItems: state.parties.map((p) => p.name).toList(),
-                        partySubtitles:
+                        items: state.parties.map((p) => p.name).toList(),
+                        subtitles:
                             state.parties.map((p) => p.partyType).toList(),
-                        isLoadingParties:
+                        isLoading:
                             state.partiesStatus == ApiStatus.INITIAL ||
                                 state.partiesStatus == ApiStatus.LOADING,
-                        partyController: _partyController,
-                        onPartyChanged: _onPartyChanged,
+                        controller: _partyController,
+                        onItemChanged: _onPartyChanged,
                         onPickFrom: () => _pickDate(true),
                         onPickTo: () => _pickDate(false),
                         onView: _fetch,
@@ -169,13 +168,15 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
                 child: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
                   builder: (context, state) {
                     if (state.apiStatus == ApiStatus.INITIAL) {
-                      return const PartyIdleState();
+                      return const AccountsIdleState(
+                        subtitle: AppConstants.selectAPartyAndTap,
+                      );
                     }
                     if (state.apiStatus == ApiStatus.LOADING) {
-                      return const PartyShimmerBody();
+                      return const AccountsShimmerBody();
                     }
                     if (state.apiStatus == ApiStatus.FAILURE) {
-                      return PartyErrorBody(
+                      return AccountsErrorBody(
                         message:
                             state.message ?? AppConstants.somethingWentWrong,
                         onRetry: _fetch,
@@ -183,7 +184,7 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
                     }
                     if (state.apiStatus == ApiStatus.SUCCESS &&
                         state.statements.isEmpty) {
-                      return const PartyEmptyState();
+                      return const AccountsEmptyState();
                     }
                     return PartyStatementsBody(
                       statements: state.statements,

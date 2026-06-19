@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/theme/theme_exports.dart';
-import '../../../../../core/widgets/widgets.dart';
+import '../../constants/const_exports.dart';
+import '../../theme/theme_exports.dart';
 
-class LedgerIdleState extends StatelessWidget {
-  const LedgerIdleState({super.key});
+class AccountsIdleState extends StatelessWidget {
+  final String subtitle;
+  const AccountsIdleState({super.key, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class LedgerIdleState extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            AppConstants.selectAnAccountAndTap,
+            subtitle,
             style: context.bodySmall.copyWith(color: AppColors.grey400),
           ),
         ],
@@ -33,8 +33,8 @@ class LedgerIdleState extends StatelessWidget {
   }
 }
 
-class LedgerEmptyState extends StatelessWidget {
-  const LedgerEmptyState({super.key});
+class AccountsEmptyState extends StatelessWidget {
+  const AccountsEmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +62,14 @@ class LedgerEmptyState extends StatelessWidget {
   }
 }
 
-class LedgerErrorBody extends StatelessWidget {
+class AccountsErrorBody extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
-  const LedgerErrorBody({super.key, required this.message, required this.onRetry});
+  const AccountsErrorBody({
+    super.key,
+    required this.message,
+    required this.onRetry,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -81,11 +85,15 @@ class LedgerErrorBody extends StatelessWidget {
             textAlign: .center,
           ),
           const SizedBox(height: 16),
-          CustomButton(
-            text: AppConstants.retry,
+          ElevatedButton(
             onPressed: onRetry,
-            radius: 10,
-            elevation: 0,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: context.primary,
+              foregroundColor: AppColors.white,
+              shape: RoundedRectangleBorder(borderRadius: .circular(10)),
+              elevation: 0,
+            ),
+            child: const Text(AppConstants.retry),
           ),
         ],
       ),

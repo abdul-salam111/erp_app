@@ -1,13 +1,7 @@
-// Accounts feature barrel — public API of this feature.
-// Import this from outside the feature instead of individual file paths.
-// Data layer and domain internals (datasources, repository impls, repository
-// interfaces, usecases) are intentionally excluded — imported directly by DI.
-
 // Domain — entities
 export 'domain/entities/account_list_item_entity.dart';
 export 'domain/entities/bank_cash_item_entity.dart';
 export 'domain/entities/cashbook_account_item_entity.dart';
-export 'domain/entities/cashbook_statement_entity.dart';
 export 'domain/entities/party_list_item_entity.dart';
 export 'domain/entities/due_receipt_count_entity.dart';
 export 'domain/entities/ledger_statement_entity.dart';
@@ -19,7 +13,6 @@ export 'data/models/response_models/get_due_receipt_count/due_receipt_count_mode
 export 'data/models/response_models/get_accounts_list/account_list_item_model.dart';
 export 'data/models/response_models/get_party_list/party_list_item_model.dart';
 export 'data/models/response_models/get_cash_and_bank_balance/bank_cash_item_model.dart';
-export 'data/models/response_models/get_cashbook/cashbook_model.dart';
 export 'data/models/response_models/get_cashbook_accounts/cashbook_account_model.dart';
 export 'data/mappers/accounts_mappers.dart';
 // Presentation — accounts screen
@@ -68,6 +61,3 @@ export './presentation/credit_management/blocs/credit_management_event.dart';
 export './presentation/credit_management/blocs/credit_management_state.dart';
 export './presentation/credit_management/views/credit_management_view.dart';
 export './domain/usecases/credit_management_usecase.dart';
-
-
-

@@ -94,7 +94,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<CashbookStatementEntity>>> getCashbookStatements({
+  Future<Either<Failure, List<LedgerStatementEntity>>> getCashbookStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
@@ -106,9 +106,7 @@ class AccountsRepositoryImpl extends BaseRepository
         accountId: accountId,
       ),
     );
-    return result.map(
-      (models) => models.map((m) => m.toCashbookEntity()).toList(),
-    );
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
   }
 
   @override

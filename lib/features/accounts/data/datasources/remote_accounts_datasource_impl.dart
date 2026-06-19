@@ -119,7 +119,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
   }
 
   @override
-  Future<List<CashbookModel>> getCashbookStatements({
+  Future<List<GetLedgerModel>> getCashbookStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
@@ -130,10 +130,10 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
       'AccountId': accountId,
       'LedgerType': 'cash_ledger',
     };
-    return postList<CashbookModel>(
+    return postList<GetLedgerModel>(
       url: ApiEndPoints.getLedger,
       body: body,
-      parser: (json) => CashbookModel.fromJson(json as Map<String, dynamic>),
+      parser: (json) => GetLedgerModel.fromJson(json as Map<String, dynamic>),
       authToken: _token,
     );
   }

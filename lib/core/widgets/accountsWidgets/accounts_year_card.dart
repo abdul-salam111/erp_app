@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/theme/theme_exports.dart';
-import '../../../../../core/utils/utils_exports.dart';
-import '../../../accounts_exports.dart';
-import 'party_ledger_helpers.dart';
-import 'party_ledger_row.dart';
+import '../../constants/const_exports.dart';
+import '../../theme/theme_exports.dart';
+import '../../utils/utils_exports.dart';
+import '../../../features/accounts/domain/entities/accounts_entry_base.dart';
+import 'accounts_helpers.dart';
 
-class PartyYearCard extends StatefulWidget {
-  final LedgerStatementEntity yearData;
+typedef AccountsLedgerGroup = ({String type, List<LedgerEntryBase> entries});
+
+class AccountsYearCard extends StatefulWidget {
+  final String finYearName;
+  final double balance;
+  final double ttlDebit;
+  final double ttlCredit;
+  final List<AccountsLedgerGroup> groups;
+  final Widget Function(LedgerEntryBase) rowBuilder;
   final ScrollController? scrollController;
-  const PartyYearCard({super.key, required this.yearData, this.scrollController});
+
+  const AccountsYearCard({
+    super.key,
+    required this.finYearName,
+    required this.balance,
+    required this.ttlDebit,
+    required this.ttlCredit,
+    required this.groups,
+    required this.rowBuilder,
+    this.scrollController,
+  });
 
   @override
-  State<PartyYearCard> createState() => _PartyYearCardState();
+  State<AccountsYearCard> createState() => _AccountsYearCardState();
 }
 
-class _PartyYearCardState extends State<PartyYearCard> {
+class _AccountsYearCardState extends State<AccountsYearCard> {
   bool _expanded = true;
   int _visibleCount = _pageSize;
   static const int _pageSize = 20;
@@ -36,35 +52,31 @@ class _PartyYearCardState extends State<PartyYearCard> {
     final sc = widget.scrollController;
     if (sc == null || !sc.hasClients) return;
     if (sc.position.extentAfter < 300) {
-      final total = _buildFlatEntries().length;
+      final total = _flatEntries.length;
       if (_visibleCount < total) {
-        setState(
-          () => _visibleCount = (_visibleCount + _pageSize).clamp(0, total),
-        );
+        setState(() => _visibleCount = (_visibleCount + _pageSize).clamp(0, total));
       }
     }
   }
 
-  List<_PagedEntry> _buildFlatEntries() {
+  List<_PagedEntry> get _flatEntries {
     final result = <_PagedEntry>[];
-    for (final lt in (widget.yearData.ledgerTypes ?? [])) {
-      if ((lt.ledgers ?? []).isEmpty) continue;
-      if (lt.ttlDebit == 0 && lt.ttlCredit == 0 && lt.balance == 0) continue;
-      for (final l in (lt.ledgers ?? [])) {
-        result.add(_PagedEntry(type: lt.type ?? '', entry: l));
+    for (final g in widget.groups) {
+      for (final e in g.entries) {
+        result.add(_PagedEntry(type: g.type, entry: e));
       }
     }
     return result;
   }
 
   List<Widget> _buildPagedRows(List<_PagedEntry> entries, BuildContext context) {
-    final widgets = <Widget>[];
+    final rows = <Widget>[];
     String? lastType;
     for (final pe in entries) {
       if (pe.type != lastType) {
         lastType = pe.type;
         if (pe.type.isNotEmpty) {
-          widgets.add(
+          rows.add(
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -85,15 +97,14 @@ class _PartyYearCardState extends State<PartyYearCard> {
           );
         }
       }
-      widgets.add(PartyLedgerRow(ledger: pe.entry));
+      rows.add(widget.rowBuilder(pe.entry));
     }
-    return widgets;
+    return rows;
   }
 
   @override
   Widget build(BuildContext context) {
-    final yearData = widget.yearData;
-    final allEntries = _buildFlatEntries();
+    final allEntries = _flatEntries;
     final hasContent = allEntries.isNotEmpty;
     final visibleEntries = allEntries.take(_visibleCount).toList();
 
@@ -123,7 +134,7 @@ class _PartyYearCardState extends State<PartyYearCard> {
                 children: [
                   Expanded(
                     child: Text(
-                      yearData.finYear?.name ?? '',
+                      widget.finYearName,
                       style: context.bodySmall.copyWith(
                         fontWeight: .w600,
                         color: context.textPrimary,
@@ -135,8 +146,7 @@ class _PartyYearCardState extends State<PartyYearCard> {
                     crossAxisAlignment: .end,
                     children: [
                       Text(
-                        formatPartyLedgerBalance(
-                            (yearData.balance ?? 0).toDouble()),
+                        formatAccountsBalance(widget.balance),
                         style: context.bodySmall.copyWith(
                           fontWeight: .w700,
                           color: context.textPrimary,
@@ -147,7 +157,7 @@ class _PartyYearCardState extends State<PartyYearCard> {
                       Row(
                         children: [
                           Text(
-                            'Rs. ${(yearData.ttlDebit ?? 0).toDouble().formatPrice()} Dr',
+                            'Rs. ${widget.ttlDebit.formatPrice()} Dr',
                             style: context.labelSmall.copyWith(
                               color: context.textSecondary,
                               fontSize: 11,
@@ -155,7 +165,7 @@ class _PartyYearCardState extends State<PartyYearCard> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Rs. ${(yearData.ttlCredit ?? 0).toDouble().formatPrice()} Cr',
+                            'Rs. ${widget.ttlCredit.formatPrice()} Cr',
                             style: context.labelSmall.copyWith(
                               color: context.textSecondary,
                               fontSize: 11,
@@ -188,9 +198,7 @@ class _PartyYearCardState extends State<PartyYearCard> {
                 ? hasContent
                       ? Column(
                           crossAxisAlignment: .start,
-                          children: [
-                            ..._buildPagedRows(visibleEntries, context),
-                          ],
+                          children: _buildPagedRows(visibleEntries, context),
                         )
                       : Padding(
                           padding: const EdgeInsets.all(16),
@@ -211,6 +219,6 @@ class _PartyYearCardState extends State<PartyYearCard> {
 
 class _PagedEntry {
   final String type;
-  final LedgerEntryEntity entry;
+  final LedgerEntryBase entry;
   const _PagedEntry({required this.type, required this.entry});
 }

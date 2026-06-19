@@ -6,10 +6,6 @@ import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../accounts_exports.dart';
-import '../widgets/compact_filter_bar.dart';
-import '../widgets/filter_form.dart';
-import '../widgets/ledger_empty_states.dart';
-import '../widgets/ledger_shimmer.dart';
 import '../widgets/statements_body.dart';
 
 // ─── View ─────────────────────────────────────────────────────────────────────
@@ -133,8 +129,9 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                 curve: Curves.easeInOut,
                 alignment: Alignment.topCenter,
                 child: state.filterCollapsed
-                    ? LedgerCompactFilterBar(
-                        accountName: _accountController.text,
+                    ? AccountsCompactFilterBar(
+                        label: _accountController.text,
+                        placeholder: AppConstants.selectAccount,
                         fromDate: state.fromDate,
                         toDate: state.toDate,
                         onExpand: () {
@@ -150,18 +147,19 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                           }
                         },
                       )
-                    : LedgerFilterForm(
+                    : AccountsFilterForm(
+                        label: AppConstants.accountBtn,
+                        hintText: AppConstants.selectAccountHint,
                         fromDate: state.fromDate,
                         toDate: state.toDate,
-                        accountItems:
-                            state.accounts.map((a) => a.name).toList(),
-                        accountSubtitles:
+                        items: state.accounts.map((a) => a.name).toList(),
+                        subtitles:
                             state.accounts.map((a) => a.group).toList(),
-                        isLoadingAccounts:
+                        isLoading:
                             state.accountsStatus == ApiStatus.INITIAL ||
                             state.accountsStatus == ApiStatus.LOADING,
-                        accountController: _accountController,
-                        onAccountChanged: _onAccountChanged,
+                        controller: _accountController,
+                        onItemChanged: _onAccountChanged,
                         onPickFrom: () => _pickDate(true),
                         onPickTo: () => _pickDate(false),
                         onView: _fetch,
@@ -174,13 +172,15 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                 child: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
                   builder: (context, state) {
                     if (state.apiStatus == ApiStatus.INITIAL) {
-                      return const LedgerIdleState();
+                      return const AccountsIdleState(
+                        subtitle: AppConstants.selectAnAccountAndTap,
+                      );
                     }
                     if (state.apiStatus == ApiStatus.LOADING) {
-                      return const LedgerShimmerBody();
+                      return const AccountsShimmerBody();
                     }
                     if (state.apiStatus == ApiStatus.FAILURE) {
-                      return LedgerErrorBody(
+                      return AccountsErrorBody(
                         message:
                             state.message ?? AppConstants.somethingWentWrong,
                         onRetry: _fetch,
@@ -188,7 +188,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                     }
                     if (state.apiStatus == ApiStatus.SUCCESS &&
                         state.statements.isEmpty) {
-                      return const LedgerEmptyState();
+                      return const AccountsEmptyState();
                     }
                     return LedgerStatementsBody(
                       statements: state.statements,

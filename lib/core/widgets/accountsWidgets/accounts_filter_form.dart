@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/theme/theme_exports.dart';
-import '../../../../../core/utils/utils_exports.dart';
-import '../../../../../core/widgets/widgets.dart';
+import '../../constants/const_exports.dart';
+import '../../theme/theme_exports.dart';
+import '../../utils/utils_exports.dart';
+import '../shimmer_box.dart';
+import '../custom_dropdown_textfield.dart';
+import '../custom_button.dart';
 
-class CashbookFilterForm extends StatelessWidget {
+class AccountsFilterForm extends StatelessWidget {
+  final String label;
+  final String hintText;
   final DateTime fromDate;
   final DateTime toDate;
-  final List<String> accountItems;
-  final List<String>? accountSubtitles;
-  final bool isLoadingAccounts;
-  final TextEditingController accountController;
-  final ValueChanged<String> onAccountChanged;
+  final List<String> items;
+  final List<String>? subtitles;
+  final bool isLoading;
+  final TextEditingController controller;
+  final ValueChanged<String> onItemChanged;
   final VoidCallback onPickFrom;
   final VoidCallback onPickTo;
   final VoidCallback onView;
 
-  const CashbookFilterForm({
+  const AccountsFilterForm({
     super.key,
+    required this.label,
+    required this.hintText,
     required this.fromDate,
     required this.toDate,
-    required this.accountItems,
-    this.accountSubtitles,
-    this.isLoadingAccounts = false,
-    required this.accountController,
-    required this.onAccountChanged,
+    required this.items,
+    this.subtitles,
+    this.isLoading = false,
+    required this.controller,
+    required this.onItemChanged,
     required this.onPickFrom,
     required this.onPickTo,
     required this.onView,
@@ -44,17 +50,17 @@ class CashbookFilterForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: .start,
         children: [
-          _FormLabel(text: AppConstants.accountBtn),
+          _FormLabel(text: label),
           const SizedBox(height: 6),
-          if (isLoadingAccounts)
+          if (isLoading)
             const ShimmerBox(height: 56, radius: 10)
           else
             SearchableDropdown(
-              items: accountItems,
-              subtitles: accountSubtitles,
-              controller: accountController,
-              hintText: AppConstants.selectAccountHint,
-              onChanged: onAccountChanged,
+              items: items,
+              subtitles: subtitles,
+              controller: controller,
+              hintText: hintText,
+              onChanged: onItemChanged,
               fieldHeight: 40,
             ),
           const SizedBox(height: 10),
@@ -153,15 +159,20 @@ class _FieldTile extends StatelessWidget {
               child: Text(
                 label,
                 style: context.bodySmall.copyWith(
-                  color: onTap != null ? context.textPrimary : context.textSecondary,
+                  color: onTap != null
+                      ? context.textPrimary
+                      : context.textSecondary,
                   fontSize: 13,
                 ),
                 overflow: .ellipsis,
               ),
             ),
             if (onTap != null)
-              Icon(Icons.keyboard_arrow_down_rounded,
-                  size: 18, color: context.textSecondary),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 18,
+                color: context.textSecondary,
+              ),
           ],
         ),
       ),

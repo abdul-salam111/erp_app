@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/theme_exports.dart';
-import '../../../../../core/utils/utils_exports.dart';
-import '../../../../../core/widgets/widgets.dart';
+import '../../theme/theme_exports.dart';
+import '../../utils/utils_exports.dart';
+import '../shimmer_box.dart';
 
-class LedgerShimmerBody extends StatelessWidget {
-  const LedgerShimmerBody({super.key});
+class AccountsShimmerBody extends StatelessWidget {
+  const AccountsShimmerBody({super.key});
 
   @override
   Widget build(BuildContext context) {

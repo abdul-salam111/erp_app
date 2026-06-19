@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/theme/theme_exports.dart';
-import '../../../../../core/utils/utils_exports.dart';
-import '../../../accounts_exports.dart';
-import 'ledger_detail_dialog.dart';
-import 'ledger_helpers.dart';
+import '../../constants/const_exports.dart';
+import '../../theme/theme_exports.dart';
+import '../../utils/utils_exports.dart';
+import '../../../features/accounts/domain/entities/accounts_entry_base.dart';
+import 'accounts_helpers.dart';
 
-class LedgerRow extends StatelessWidget {
-  final LedgerEntryEntity ledger;
-  const LedgerRow({super.key, required this.ledger});
+class AccountsLedgerRow extends StatelessWidget {
+  final LedgerEntryBase ledger;
+  final void Function(BuildContext ctx, String date, String dr, String cr) onTap;
+
+  const AccountsLedgerRow({super.key, required this.ledger, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +74,7 @@ class LedgerRow extends StatelessWidget {
           ].join(' • ');
 
     return InkWell(
-      onTap: () => _openDetail(context, date, dr, cr),
+      onTap: () => onTap(context, date, dr, cr),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
@@ -128,8 +128,8 @@ class LedgerRow extends StatelessWidget {
                     isDrOnly
                         ? AppConstants.debit
                         : isCrOnly
-                        ? AppConstants.credit
-                        : AppConstants.drCr,
+                            ? AppConstants.credit
+                            : AppConstants.drCr,
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
                       fontSize: 10,
@@ -146,7 +146,7 @@ class LedgerRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  formatLedgerBalance((ledger.balance ?? 0).toDouble()),
+                  formatAccountsBalance((ledger.balance ?? 0).toDouble()),
                   style: context.labelSmall.copyWith(
                     color: context.textSecondary,
                     fontSize: 11,
@@ -156,16 +156,6 @@ class LedgerRow extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _openDetail(BuildContext context, String date, String dr, String cr) {
-    showDialog(
-      context: context,
-      builder: (ctx) => BlocProvider.value(
-        value: context.read<AccountLedgerBloc>(),
-        child: LedgerDetailDialog(ledger: ledger, date: date, dr: dr, cr: cr),
       ),
     );
   }

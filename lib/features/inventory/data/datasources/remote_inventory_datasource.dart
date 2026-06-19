@@ -1,13 +1,4 @@
-import '../../../../core/shared/shared_exports.dart';
-import '../../../../core/constants/const_exports.dart';
-import '../../../../core/services/session_manager.dart';
-import '../models/response_models/get_current_stock/current_stock_model.dart';
-import '../models/response_models/get_stock_recieved/stock_recieved_model.dart';
-
-abstract interface class IRemoteInventoryDataSource {
-  Future<List<StockRecievedModel>> getStockReceived(String dateType);
-  Future<List<CurrentStockModel>> getCurrentStock();
-}
+import '../../inventory_exports.dart';
 
 class RemoteInventoryDataSourceImpl extends BaseRemoteDatasource
     implements IRemoteInventoryDataSource {

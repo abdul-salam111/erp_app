@@ -2,10 +2,10 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../domain/entities/cashbook_account_item_entity.dart';
-import '../../../domain/entities/cashbook_statement_entity.dart';
+import '../../../domain/entities/ledger_statement_entity.dart';
 
 class CashbookState extends Equatable {
-  final List<CashbookStatementEntity> statements;
+  final List<LedgerStatementEntity> statements;
   final List<int> printableFeatureIds;
   final List<CashbookAccountItemEntity> accounts;
   final ApiStatus apiStatus;
@@ -36,7 +36,7 @@ class CashbookState extends Equatable {
   });
 
   CashbookState copyWith({
-    List<CashbookStatementEntity>? statements,
+    List<LedgerStatementEntity>? statements,
     List<int>? printableFeatureIds,
     List<CashbookAccountItemEntity>? accounts,
     ApiStatus? apiStatus,

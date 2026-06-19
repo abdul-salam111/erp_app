@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'accounts_entry_base.dart';
 
 class LedgerStatementEntity extends Equatable {
   final int? finYearId;
@@ -66,25 +67,25 @@ class LedgerTypeEntity extends Equatable {
   List<Object?> get props => [type, ttlDebit, ttlCredit, balance, ledgers];
 }
 
-class LedgerEntryEntity extends Equatable {
+class LedgerEntryEntity extends Equatable implements LedgerEntryBase {
   final String? type;
-  final int? featureId;
-  final DateTime? docDate;
+  @override final int? featureId;
+  @override final DateTime? docDate;
   final int? accountId;
   final int? finYearId;
   final int? currencyId;
-  final int? drAmount;
-  final int? crAmount;
-  final String? narration;
-  final bool? isOpening;
-  final int? balance;
+  @override final int? drAmount;
+  @override final int? crAmount;
+  @override final String? narration;
+  @override final bool? isOpening;
+  @override final int? balance;
   final int? id;
-  final String? docNbr;
+  @override final String? docNbr;
   final int? toAccountId;
   final int? partyId;
   final LedgerPartyEntity? party;
-  final String? featureName;
-  final int? parentEntityId;
+  @override final String? featureName;
+  @override final int? parentEntityId;
   final int? childEntityId;
 
   const LedgerEntryEntity({

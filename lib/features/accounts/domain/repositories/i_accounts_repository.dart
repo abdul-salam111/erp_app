@@ -3,7 +3,6 @@ import '../../../../core/shared/shared_exports.dart';
 import '../entities/account_list_item_entity.dart';
 import '../entities/bank_cash_item_entity.dart';
 import '../entities/cashbook_account_item_entity.dart';
-import '../entities/cashbook_statement_entity.dart';
 import '../entities/due_receipt_count_entity.dart';
 import '../entities/ledger_statement_entity.dart';
 import '../entities/party_list_item_entity.dart';
@@ -32,7 +31,7 @@ abstract interface class IAccountsRepository {
   Future<Either<Failure, List<AccountListItemEntity>>> getAccountsList();
   Future<Either<Failure, List<PartyListItemEntity>>> getPartyList();
   Future<Either<Failure, dynamic>> cashbook();
-  Future<Either<Failure, List<CashbookStatementEntity>>> getCashbookStatements({
+  Future<Either<Failure, List<LedgerStatementEntity>>> getCashbookStatements({
     required String fromDate,
     required String toDate,
     int? accountId,

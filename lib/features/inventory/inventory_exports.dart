@@ -12,3 +12,14 @@ export 'presentation/inventory/blocs/inventory_bloc.dart';
 export 'presentation/inventory/blocs/inventory_event.dart';
 export 'presentation/inventory/blocs/inventory_state.dart';
 export 'presentation/inventory/views/inventory_view.dart';
+
+export 'data/models/response_models/get_current_stock/current_stock_model.dart';
+export 'data/models/response_models/get_stock_recieved/stock_recieved_model.dart';
+
+export '../../../../core/shared/shared_exports.dart';
+export '../../../../core/constants/const_exports.dart';
+export '../../../../core/services/session_manager.dart';
+export 'data/datasources/remote_inventory_datasource.dart';
+export 'data/datasources/i_remote_inventory_datasource.dart';
+export 'domain/repositories/inventory_repository.dart';
+export 'data/repositories_impl/inventory_repository_impl.dart';
