@@ -8,8 +8,16 @@ import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../routes/route_exports.dart';
 
-class AccountsQuickActions extends StatelessWidget {
+class AccountsQuickActions extends StatefulWidget {
   const AccountsQuickActions({super.key});
+
+  @override
+  State<AccountsQuickActions> createState() => _AccountsQuickActionsState();
+}
+
+class _AccountsQuickActionsState extends State<AccountsQuickActions>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
 
   static const _items = <_QAItem>[
     _QAItem(
@@ -35,7 +43,6 @@ class AccountsQuickActions extends StatelessWidget {
       icon: Iconsax.book,
       color: AppColors.green,
       routeName: RouteNames.cashbook,
-
     ),
     _QAItem(
       label: AppConstants.customerReceivableLabel,
@@ -48,6 +55,21 @@ class AccountsQuickActions extends StatelessWidget {
       color: AppColors.blueGrey,
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    )..forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +96,24 @@ class AccountsQuickActions extends StatelessWidget {
             mainAxisSpacing: context.gridSpacing,
             crossAxisSpacing: context.gridSpacing,
           ),
-          itemBuilder: (_, i) => _QACard(item: _items[i]),
+          itemBuilder: (_, i) {
+            final start = (i * 0.1).clamp(0.0, 0.55);
+            final end   = (start + 0.5).clamp(0.0, 1.0);
+            final curve = CurvedAnimation(
+              parent: _controller,
+              curve:  Interval(start, end, curve: Curves.easeOut),
+            );
+            return FadeTransition(
+              opacity: curve,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(-0.22, 0),
+                  end:   Offset.zero,
+                ).animate(curve),
+                child: _QACard(item: _items[i]),
+              ),
+            );
+          },
         ),
       ],
     );

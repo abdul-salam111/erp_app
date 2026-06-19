@@ -20,10 +20,14 @@ class SaleOrdersSection extends StatefulWidget {
   State<SaleOrdersSection> createState() => _SaleOrdersSectionState();
 }
 
-class _SaleOrdersSectionState extends State<SaleOrdersSection> {
+class _SaleOrdersSectionState extends State<SaleOrdersSection>
+    with SingleTickerProviderStateMixin {
   late DateTime _fromDate;
   late DateTime _toDate;
   bool _showDetails = false;
+
+  late final AnimationController _chartCtrl;
+  late final Animation<double> _chartAnim;
 
   @override
   void initState() {
@@ -31,6 +35,20 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
     final bloc = context.read<DashboardBloc>();
     _fromDate = bloc.state.saleOrderFromDate;
     _toDate = bloc.state.saleOrderToDate;
+    _chartCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _chartAnim = CurvedAnimation(parent: _chartCtrl, curve: Curves.easeOutCubic);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _chartCtrl.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _chartCtrl.dispose();
+    super.dispose();
   }
 
   Future<void> _pickFrom() async {
@@ -66,7 +84,11 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DashboardBloc, DashboardState>(
+    return BlocConsumer<DashboardBloc, DashboardState>(
+      listenWhen: (p, c) =>
+          p.saleOrderSummaryStatus != ApiStatus.SUCCESS &&
+          c.saleOrderSummaryStatus == ApiStatus.SUCCESS,
+      listener: (_, __) => _chartCtrl.forward(from: 0),
       buildWhen: (p, c) =>
           p.saleOrderSummaryStatus != c.saleOrderSummaryStatus ||
           p.saleOrderSummary != c.saleOrderSummary,
@@ -81,7 +103,6 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
         final partial = summary?.ttlPartialOrders ?? 0;
         final notStarted = summary?.ttlNotStartedOrders ?? 0;
         final completedDeg = total > 0 ? (completed / total) * 180.0 : 0.0;
-        final remainingDeg = 180.0 - completedDeg;
 
         return Container(
           decoration: BoxDecoration(
@@ -265,11 +286,17 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection> {
                             // ── Semi-donut chart ─────────────────────
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: _SemiDonut(
-                                completed: completed,
-                                total: total,
-                                completedDeg: completedDeg,
-                                remainingDeg: remainingDeg,
+                              child: AnimatedBuilder(
+                                animation: _chartAnim,
+                                builder: (context, _) {
+                                  final p = _chartAnim.value;
+                                  return _SemiDonut(
+                                    completed: completed,
+                                    total: total,
+                                    completedDeg: completedDeg * p,
+                                    remainingDeg: 180.0 - completedDeg * p,
+                                  );
+                                },
                               ),
                             ),
                           ],

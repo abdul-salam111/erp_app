@@ -79,8 +79,12 @@ class _AppDrawerState extends State<AppDrawer>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 520),
-    )..forward();
+      duration: const Duration(milliseconds: 600),
+    );
+    // Delay until after the drawer slide-in (~246 ms) has finished.
+    Future.delayed(const Duration(milliseconds: 260), () {
+      if (mounted) _controller.forward();
+    });
   }
 
   @override
@@ -190,7 +194,7 @@ class _AnimatedDrawerItem extends StatelessWidget {
       opacity: curve,
       child: SlideTransition(
         position: Tween<Offset>(
-          begin: const Offset(-0.12, 0),
+          begin: const Offset(-0.22, 0),
           end:   Offset.zero,
         ).animate(curve),
         child: child,
@@ -270,8 +274,34 @@ class _ExpandableTile extends StatefulWidget {
   State<_ExpandableTile> createState() => _ExpandableTileState();
 }
 
-class _ExpandableTileState extends State<_ExpandableTile> {
+class _ExpandableTileState extends State<_ExpandableTile>
+    with SingleTickerProviderStateMixin {
   bool _expanded = false;
+  late final AnimationController _childController;
+
+  @override
+  void initState() {
+    super.initState();
+    _childController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 380),
+    );
+  }
+
+  @override
+  void dispose() {
+    _childController.dispose();
+    super.dispose();
+  }
+
+  void _toggle() {
+    setState(() => _expanded = !_expanded);
+    if (_expanded) {
+      _childController.forward(from: 0);
+    } else {
+      _childController.reset();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -280,7 +310,7 @@ class _ExpandableTileState extends State<_ExpandableTile> {
       children: [
         // ── Parent row ──
         InkWell(
-          onTap: () => setState(() => _expanded = !_expanded),
+          onTap: _toggle,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
             color: _expanded
@@ -345,7 +375,7 @@ class _ExpandableTileState extends State<_ExpandableTile> {
       mainAxisSize: .min,
       children: [
         for (int i = 0; i < tiles.length; i++) ...[
-          _ChildTile(item: tiles[i]),
+          _animatedChild(_ChildTile(item: tiles[i]), i, tiles.length),
           if (i < tiles.length - 1)
             Divider(
               height:    1,
@@ -357,6 +387,26 @@ class _ExpandableTileState extends State<_ExpandableTile> {
         ],
         const SizedBox(height: 4),
       ],
+    );
+  }
+
+  Widget _animatedChild(Widget child, int index, int total) {
+    final stagger = total > 1 ? 0.55 / total : 0.0;
+    final start   = (index * stagger).clamp(0.0, 0.55);
+    final end     = (start + 0.55).clamp(start + 0.1, 1.0);
+    final curve   = CurvedAnimation(
+      parent: _childController,
+      curve:  Interval(start, end, curve: Curves.easeOut),
+    );
+    return FadeTransition(
+      opacity: curve,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(-0.18, 0),
+          end:   Offset.zero,
+        ).animate(curve),
+        child: child,
+      ),
     );
   }
 }

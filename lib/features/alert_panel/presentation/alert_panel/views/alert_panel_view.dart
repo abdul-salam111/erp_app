@@ -22,8 +22,20 @@ class AlertPanelView extends StatelessWidget {
   }
 }
 
-class _AlertPanelBody extends StatelessWidget {
+class _AlertPanelBody extends StatefulWidget {
   const _AlertPanelBody();
+
+  @override
+  State<_AlertPanelBody> createState() => _AlertPanelBodyState();
+}
+
+class _AlertPanelBodyState extends State<_AlertPanelBody>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final List<Animation<double>>  _fades;
+  late final List<Animation<Offset>>  _slides;
+
+  static const _offscreen = Offset(0, 0.06);
 
   static const _alerts = <_AlertItem>[
     _AlertItem(
@@ -58,6 +70,46 @@ class _AlertPanelBody extends StatelessWidget {
     ),
   ];
 
+  Animation<double> _fade(double start, double end) => CurvedAnimation(
+    parent: _ctrl,
+    curve: Interval(start, end, curve: Curves.easeOut),
+  );
+
+  Animation<Offset> _slide(double start, double end) =>
+      Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
+        CurvedAnimation(
+          parent: _ctrl,
+          curve: Interval(start, end, curve: Curves.easeOutCubic),
+        ),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 750),
+    )..forward();
+
+    // index 0 = summary card, indices 1‥N = alert tiles
+    _fades = [
+      _fade(0.00, 0.45),
+      for (int i = 0; i < _alerts.length; i++)
+        _fade(0.20 + i * 0.07, 0.55 + i * 0.07),
+    ];
+    _slides = [
+      _slide(0.00, 0.45),
+      for (int i = 0; i < _alerts.length; i++)
+        _slide(0.20 + i * 0.07, 0.55 + i * 0.07),
+    ];
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AlertPanelBloc, AlertPanelState>(
@@ -77,10 +129,16 @@ class _AlertPanelBody extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
             children: [
               // ── Summary header card ──
-              _SummaryCard(
-                totalCount: _alerts.fold(0, (sum, a) => sum + a.count),
-                onResolve: () => context.read<AlertPanelBloc>().add(AlertPanelSubmitted()),
-                isLoading: state.apiStatus == ApiStatus.LOADING,
+              FadeTransition(
+                opacity: _fades[0],
+                child: SlideTransition(
+                  position: _slides[0],
+                  child: _SummaryCard(
+                    totalCount: _alerts.fold(0, (sum, a) => sum + a.count),
+                    onResolve: () => context.read<AlertPanelBloc>().add(AlertPanelSubmitted()),
+                    isLoading: state.apiStatus == ApiStatus.LOADING,
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -105,8 +163,13 @@ class _AlertPanelBody extends StatelessWidget {
                   itemCount:   _alerts.length,
                   separatorBuilder: (_, __) =>
                       Divider(height: 1, thickness: 1, color: context.border),
-                  itemBuilder: (context, index) =>
-                      _AlertTile(item: _alerts[index]),
+                  itemBuilder: (context, index) => FadeTransition(
+                    opacity: _fades[index + 1],
+                    child: SlideTransition(
+                      position: _slides[index + 1],
+                      child: _AlertTile(item: _alerts[index]),
+                    ),
+                  ),
                 ),
               ),
             ],

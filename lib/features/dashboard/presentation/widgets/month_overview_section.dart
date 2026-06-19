@@ -23,8 +23,17 @@ const _panels = <_PanelMeta>[
 
 // ─── Section ──────────────────────────────────────────────────────────────────
 
-class MonthOverviewSection extends StatelessWidget {
+class MonthOverviewSection extends StatefulWidget {
   const MonthOverviewSection({super.key});
+
+  @override
+  State<MonthOverviewSection> createState() => _MonthOverviewSectionState();
+}
+
+class _MonthOverviewSectionState extends State<MonthOverviewSection>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _chartCtrl;
+  late final Animation<double> _chartAnim;
 
   static const _monthNames = [
     AppConstants.jan, AppConstants.feb, AppConstants.mar, AppConstants.apr,
@@ -34,6 +43,26 @@ class MonthOverviewSection extends StatelessWidget {
 
   static String _monthLabel(DateTime d) =>
       '${_monthNames[d.month - 1]} ${d.year}';
+
+  @override
+  void initState() {
+    super.initState();
+    _chartCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _chartAnim = CurvedAnimation(parent: _chartCtrl, curve: Curves.easeOutCubic);
+    // Animate on first render if data is already available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _chartCtrl.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _chartCtrl.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickMonth(BuildContext context, DateTime current) async {
     final picked = await showDialog<DateTime>(
@@ -47,7 +76,12 @@ class MonthOverviewSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DashboardBloc, DashboardState>(
+    return BlocConsumer<DashboardBloc, DashboardState>(
+      listenWhen: (p, c) =>
+          p.selectedPanelKey != c.selectedPanelKey ||
+          (p.monthlyStatsDetailStatus != ApiStatus.SUCCESS &&
+           c.monthlyStatsDetailStatus == ApiStatus.SUCCESS),
+      listener: (_, __) => _chartCtrl.forward(from: 0),
       buildWhen: (p, c) =>
           p.selectedMonth             != c.selectedMonth             ||
           p.monthlyStatsStatus        != c.monthlyStatsStatus        ||
@@ -280,71 +314,81 @@ class MonthOverviewSection extends StatelessWidget {
     final maxY      = maxAmount == 0 ? 100.0 : (maxAmount * 1.3).ceilToDouble();
     final interval  = (maxY / 4).ceilToDouble().clamp(1.0, double.infinity);
 
-    return LineChart(
-      LineChartData(
-        gridData: FlGridData(
-          show:             true,
-          drawVerticalLine: false,
-          horizontalInterval: interval,
-          getDrawingHorizontalLine: (_) =>
-              FlLine(color: context.border, strokeWidth: 0.8),
-        ),
-        titlesData: FlTitlesData(
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles:   true,
-              reservedSize: 46,
-              interval:     interval,
-              getTitlesWidget: (v, _) {
-                final label = v >= 1000000
-                    ? '${(v / 1000000).toStringAsFixed(1)}M'
-                    : v >= 1000
-                        ? '${(v / 1000).toStringAsFixed(0)}k'
-                        : v.toStringAsFixed(0);
-                return Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 2),
-                  child: Text(
-                    label,
-                    style: TextStyle(
-                      fontSize:   8.5,
-                      fontWeight: FontWeight.w700,
-                      color:      context.textSecondary,
-                    ),
-                  ),
-                );
-              },
+    return AnimatedBuilder(
+      animation: _chartAnim,
+      builder: (context, _) {
+        final progress = _chartAnim.value;
+        final animSpots = spots
+            .map((s) => FlSpot(s.x, s.y * progress))
+            .toList();
+
+        return LineChart(
+          LineChartData(
+            gridData: FlGridData(
+              show:             true,
+              drawVerticalLine: false,
+              horizontalInterval: interval,
+              getDrawingHorizontalLine: (_) =>
+                  FlLine(color: context.border, strokeWidth: 0.8),
             ),
-          ),
-          bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles:  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          topTitles:    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        ),
-        borderData: FlBorderData(show: false),
-        minY: 0,
-        maxY: maxY,
-        lineTouchData: LineTouchData(
-          touchTooltipData: LineTouchTooltipData(
-            getTooltipColor: (_) => context.primary.withValues(alpha: 0.85),
-            getTooltipItems: (spots) => spots.map((s) => LineTooltipItem(
-              '${currentUser.org.currencySymbol} ${s.y.toStringAsFixed(0)}',
-              const TextStyle(color: AppColors.white, fontSize: 11, fontWeight: FontWeight.w600),
-            )).toList(),
-          ),
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots:    spots,
-            isCurved: true,
-            color:    context.primary,
-            barWidth: 2.2,
-            dotData:  const FlDotData(show: false),
-            belowBarData: BarAreaData(
-              show:  true,
-              color: context.primary.withValues(alpha: 0.10),
+            titlesData: FlTitlesData(
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles:   true,
+                  reservedSize: 46,
+                  interval:     interval,
+                  getTitlesWidget: (v, _) {
+                    final label = v >= 1000000
+                        ? '${(v / 1000000).toStringAsFixed(1)}M'
+                        : v >= 1000
+                            ? '${(v / 1000).toStringAsFixed(0)}k'
+                            : v.toStringAsFixed(0);
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 2),
+                      child: Text(
+                        label,
+                        style: TextStyle(
+                          fontSize:   8.5,
+                          fontWeight: FontWeight.w700,
+                          color:      context.textSecondary,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles:  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              topTitles:    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             ),
+            borderData: FlBorderData(show: false),
+            minY: 0,
+            maxY: maxY,
+            lineTouchData: LineTouchData(
+              touchTooltipData: LineTouchTooltipData(
+                getTooltipColor: (_) => context.primary.withValues(alpha: 0.85),
+                getTooltipItems: (spots) => spots.map((s) => LineTooltipItem(
+                  '${currentUser.org.currencySymbol} ${s.y.toStringAsFixed(0)}',
+                  const TextStyle(color: AppColors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                )).toList(),
+              ),
+            ),
+            lineBarsData: [
+              LineChartBarData(
+                spots:    animSpots,
+                isCurved: true,
+                color:    context.primary,
+                barWidth: 2.2,
+                dotData:  const FlDotData(show: false),
+                belowBarData: BarAreaData(
+                  show:  true,
+                  color: context.primary.withValues(alpha: 0.10),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

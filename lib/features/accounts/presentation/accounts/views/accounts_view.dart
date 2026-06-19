@@ -82,13 +82,11 @@ class _AccountsBodyState extends State<_AccountsBody>
       _fade(0.00, 0.45), // section header
       _fade(0.15, 0.55), // stat cards
       _fade(0.30, 0.65), // divider + list section
-      _fade(0.50, 0.90), // quick actions
     ];
     _slides = [
       _slide(0.00, 0.45),
       _slide(0.15, 0.55),
       _slide(0.30, 0.65),
-      _slide(0.50, 0.90),
     ];
   }
 
@@ -287,13 +285,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                 ),
                 const SizedBox(height: 16),
                 // [3] ── Quick actions ────────────────────────────────────────
-                FadeTransition(
-                  opacity: _fades[3],
-                  child: SlideTransition(
-                    position: _slides[3],
-                    child: const AccountsQuickActions(),
-                  ),
-                ),
+                const AccountsQuickActions(),
                 const SizedBox(height: 8),
               ],
             ),

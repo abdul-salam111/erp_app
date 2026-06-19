@@ -1,12 +1,6 @@
 import 'package:mantic_erp_app/features/auth/auth_exports.dart';
 import 'session_manager.dart';
 
-/// Top-level singleton accessor for the current user and organization.
-/// Usage:
-///   currentUser.fullName
-///   currentUser.email
-///   currentUser.org.name
-///   currentUser.org.currencySymbol
 const currentUser = CurrentUser._();
 
 class CurrentUser {
