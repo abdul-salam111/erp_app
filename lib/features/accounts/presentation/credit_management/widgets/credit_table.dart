@@ -220,10 +220,7 @@ class _CreditTableRowState extends State<_CreditTableRow> {
           InkWell(
             onTap: () => setState(() => _expanded = !_expanded),
             child: Padding(
-              padding: .symmetric(
-                horizontal:5,
-                vertical: 6,
-              ),
+              padding: .symmetric(horizontal: 5, vertical: 6),
               child: Row(
                 children: [
                   Expanded(
@@ -314,19 +311,17 @@ class _CreditTableRowState extends State<_CreditTableRow> {
             child: _expanded
                 ? Container(
                     color: Colors.transparent,
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 5,
+                    ),
                     child: Row(
                       children: [
+                        _DayColumn(label: '30 Days', value: widget.item.days30),
+                        _DayColumn(label: '60 Days', value: widget.item.days60),
+                        _DayColumn(label: '90 Days', value: widget.item.days90),
                         _DayColumn(
-                          label: '30 Days',
-                          value: widget.item.days30,
-                        ),
-                        _DayColumn(
-                          label: '60 Days',
-                          value: widget.item.days60,
-                        ),
-                        _DayColumn(
-                          label: '90 Days',
+                          label: '90+ Days',
                           value: widget.item.days90,
                         ),
                         IconButton(

@@ -17,12 +17,12 @@ class CreditStatCards extends StatelessWidget {
       accentColor: AppColors.primary,
     ),
     _StatCardData(
-      label: '90+ Days Total',
+      label: '90 Days Total',
       value: '266,794,381.52',
       accentColor: Color(0xFFFF9800),
     ),
     _StatCardData(
-      label: 'Total',
+      label: '90+ Days Total',
       value: '266,796,381.52',
       accentColor: AppColors.primary,
     ),

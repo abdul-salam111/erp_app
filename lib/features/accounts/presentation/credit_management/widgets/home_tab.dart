@@ -9,7 +9,8 @@ import 'recent_payments_section.dart';
 import 'revenue_recovery_section.dart';
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+  final String balance;
+  const HomeTab({super.key, required this.balance});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,8 @@ class HomeTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: .start,
         children: [
+          _CurrentBalanceCard(balance: balance),
+          const SizedBox(height: 8),
           DayStatsGrid(),
           SizedBox(height: 8),
           CreditTrendChart(),
@@ -45,6 +48,69 @@ class HomeTab extends StatelessWidget {
           SizedBox(height: 12),
           RevenueRecoverySection(),
         ],
+      ),
+    );
+  }
+}
+
+class _CurrentBalanceCard extends StatelessWidget {
+  final String balance;
+  const _CurrentBalanceCard({required this.balance});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      clipBehavior: .hardEdge,
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(10),
+        border: Border.all(color: AppColors.grey200),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.07),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: .stretch,
+          children: [
+            Container(width: 4, color: AppColors.primary),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Text(
+                      balance,
+                      style: context.titleMedium.copyWith(
+                        fontWeight: .w700,
+                        color: context.textPrimary,
+                        fontSize: 16,
+                        height: 1,
+                      ),
+                      maxLines: 1,
+                      overflow: .ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Current Balance',
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                        fontSize: 11,
+                        height: 1.1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
