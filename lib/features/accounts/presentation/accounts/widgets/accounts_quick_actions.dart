@@ -48,6 +48,7 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
       label: AppConstants.customerReceivableLabel,
       icon: Iconsax.receive_square,
       color: AppColors.orange,
+      routeName: RouteNames.customer_recievables,
     ),
     _QAItem(
       label: AppConstants.vendorPayableLabel,

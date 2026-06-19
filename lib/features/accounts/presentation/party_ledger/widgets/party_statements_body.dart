@@ -8,8 +8,9 @@ import '../../../accounts_exports.dart';
 class PartyStatementsBody extends StatelessWidget {
   final List<LedgerStatementEntity> statements;
   final ScrollController? scrollController;
+  final String? partyName;
 
-  const PartyStatementsBody({super.key, required this.statements, this.scrollController});
+  const PartyStatementsBody({super.key, required this.statements, this.scrollController, this.partyName});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +38,7 @@ class PartyStatementsBody extends StatelessWidget {
                   context: ctx,
                   builder: (_) => BlocProvider.value(
                     value: bloc,
-                    child: _PartyDialog(ledger: entry, date: date, dr: dr, cr: cr),
+                    child: _PartyDialog(ledger: entry, date: date, dr: dr, cr: cr, partyName: partyName),
                   ),
                 );
               },
@@ -53,8 +54,9 @@ class _PartyDialog extends StatelessWidget {
   final String date;
   final String dr;
   final String cr;
+  final String? partyName;
 
-  const _PartyDialog({required this.ledger, required this.date, required this.dr, required this.cr});
+  const _PartyDialog({required this.ledger, required this.date, required this.dr, required this.cr, this.partyName});
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +66,8 @@ class _PartyDialog extends StatelessWidget {
       date: date,
       dr: dr,
       cr: cr,
+      subjectLabel: AppConstants.partyBtn,
+      subjectName: partyName,
       bottomSection: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
         buildWhen: (p, c) =>
             p.isPrinting != c.isPrinting || p.printableFeatureIds != c.printableFeatureIds,

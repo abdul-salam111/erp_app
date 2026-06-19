@@ -227,6 +227,15 @@ class AppConstants {
   static const String selectParty = 'Select party…';
   static const String selectPartyHint = 'Select Party';
   static const String selectAPartyAndTap = 'Select a party and tap View';
+  static const String customerBtn = 'Customer';
+  static const String selectCustomer = 'Select customer…';
+  static const String selectCustomerHint = 'Select Customer';
+  static const String selectACustomerAndTap = 'Select a customer and tap View';
+  static const String pleaseSelectACustomerFirstErrorMsg =
+      'Please select a customer first';
+  static const String openingLabel = 'Opening';
+  static const String balanceLabel = 'Balance';
+  static const String locationLabel = 'Location';
   // ─── Analytics ─────────────────────────────────────────
   static const String analyticsView = 'Analytics View';
 

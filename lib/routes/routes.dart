@@ -133,6 +133,11 @@ class AppRoutes {
         name: RouteNames.credit_management,
         builder: (context, state) => const CreditManagementView(),
       ),
+      GoRoute(
+        path: RoutePaths.customer_recievables,
+        name: RouteNames.customer_recievables,
+        builder: (context, state) => const CustomerRecievablesView(),
+      ),
     
      
      

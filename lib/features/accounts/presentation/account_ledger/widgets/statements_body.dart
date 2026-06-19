@@ -84,6 +84,8 @@ class _LedgerDialog extends StatelessWidget {
       date: date,
       dr: dr,
       cr: cr,
+      subjectLabel: AppConstants.partyBtn,
+      subjectName: ledger.partyFullName,
       bottomSection: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
         buildWhen: (p, c) =>
             p.isPrinting != c.isPrinting ||

@@ -87,6 +87,7 @@ class LedgerEntryEntity extends Equatable implements LedgerEntryBase {
   @override final String? featureName;
   @override final int? parentEntityId;
   final int? childEntityId;
+  @override String? get partyFullName => party?.fullName;
 
   const LedgerEntryEntity({
     this.type,

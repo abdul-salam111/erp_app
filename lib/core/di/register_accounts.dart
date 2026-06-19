@@ -84,4 +84,12 @@ Future<void> registerAccounts() async {
   sl.registerFactory<CreditManagementBloc>(
     () => CreditManagementBloc(),
   );
+  // UseCase — CustomerRecievables
+  sl.registerLazySingleton<CustomerRecievablesUsecase>(
+    () => CustomerRecievablesUsecase(repository: sl()),
+  );
+  // BLoC — CustomerRecievables screen
+  sl.registerFactory<CustomerRecievablesBloc>(
+    () => CustomerRecievablesBloc(customerRecievablesUsecase: sl()),
+  );
 }

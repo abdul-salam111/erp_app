@@ -9,4 +9,5 @@ abstract interface class LedgerEntryBase {
   int? get featureId;
   int? get parentEntityId;
   String? get narration;
+  String? get partyFullName;
 }

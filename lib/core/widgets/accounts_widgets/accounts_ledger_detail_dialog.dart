@@ -12,6 +12,8 @@ class AccountsLedgerDetailDialog extends StatelessWidget {
   final String dr;
   final String cr;
   final Widget bottomSection;
+  final String? subjectLabel;
+  final String? subjectName;
 
   const AccountsLedgerDetailDialog({
     super.key,
@@ -20,6 +22,8 @@ class AccountsLedgerDetailDialog extends StatelessWidget {
     required this.dr,
     required this.cr,
     required this.bottomSection,
+    this.subjectLabel,
+    this.subjectName,
   });
 
   @override
@@ -87,6 +91,12 @@ class AccountsLedgerDetailDialog extends StatelessWidget {
             const SizedBox(height: 10),
             if (!isOpening && ledger.docNbr != null) ...[
               AccountsInfoRow(label: AppConstants.docLabel, value: ledger.docNbr!),
+              const SizedBox(height: 12),
+              Divider(color: context.border, height: 1),
+              const SizedBox(height: 12),
+            ],
+            if (subjectLabel != null && subjectName != null && subjectName!.isNotEmpty) ...[
+              AccountsInfoRow(label: subjectLabel!, value: subjectName!),
               const SizedBox(height: 12),
               Divider(color: context.border, height: 1),
               const SizedBox(height: 12),

@@ -21,4 +21,5 @@ class RoutePaths {
   static const String bank_and_cash_position = '/bank_and_cash_position';
   static const String cashbook = '/cashbook';
   static const String credit_management = '/credit_management';
+  static const String customer_recievables = '/customer_recievables';
 }

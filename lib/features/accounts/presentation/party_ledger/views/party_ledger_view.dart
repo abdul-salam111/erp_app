@@ -189,6 +189,7 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
                     return PartyStatementsBody(
                       statements: state.statements,
                       scrollController: _scrollController,
+                      partyName: _partyController.text,
                     );
                   },
                 ),
