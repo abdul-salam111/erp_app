@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'accounts_entry_base.dart';
+import 'ledger_entry_base.dart';
 
 class LedgerStatementEntity extends Equatable {
   final int? finYearId;

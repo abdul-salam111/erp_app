@@ -152,9 +152,9 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                         hintText: AppConstants.selectAccountHint,
                         fromDate: state.fromDate,
                         toDate: state.toDate,
-                        items: state.accounts.map((a) => a.name).toList(),
+                        items: state.accounts.map((item) => item.name).toList(),
                         subtitles:
-                            state.accounts.map((a) => a.group).toList(),
+                            state.accounts.map((item) => item.group).toList(),
                         isLoading:
                             state.accountsStatus == ApiStatus.INITIAL ||
                             state.accountsStatus == ApiStatus.LOADING,

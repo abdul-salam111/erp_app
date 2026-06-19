@@ -1,41 +1,54 @@
 import 'package:fpdart/fpdart.dart';
+
 import '../../../../core/shared/shared_exports.dart';
-import '../entities/account_list_item_entity.dart';
-import '../entities/bank_cash_item_entity.dart';
-import '../entities/cashbook_account_item_entity.dart';
-import '../entities/due_receipt_count_entity.dart';
-import '../entities/ledger_statement_entity.dart';
-import '../entities/party_list_item_entity.dart';
+import '../../accounts_exports.dart';
 
 abstract interface class IAccountsRepository {
+  //! ─── Account Ledger ─────────────────────────────────────────────────────────
 
   Future<Either<Failure, List<LedgerStatementEntity>>> getAccountStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
   });
-  Future<Either<Failure, String>> getInvoicePdf({
-    required int featureId,
-    required int parentEntityId,
-  });
-  Future<Either<Failure, List<int>>> getPrintableFeatures();
-  Future<Either<Failure, DueReceiptCountEntity>> getDueReceiptCount({
-    required String dateType,
-  });
+
+  Future<Either<Failure, List<AccountListItemEntity>>> getAccountsList();
+
+  //! ─── Party Ledger ───────────────────────────────────────────────────────────
+
   Future<Either<Failure, List<LedgerStatementEntity>>> getPartyStatements({
     required String fromDate,
     required String toDate,
     int? partyId,
   });
-  Future<Either<Failure, List<BankCashItemEntity>>> bankAndCashPosition();
-  Future<Either<Failure, List<AccountListItemEntity>>> getAccountsList();
+
   Future<Either<Failure, List<PartyListItemEntity>>> getPartyList();
-  Future<Either<Failure, dynamic>> cashbook();
+
+  //! ─── Cashbook ───────────────────────────────────────────────────────────────
+
   Future<Either<Failure, List<LedgerStatementEntity>>> getCashbookStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
   });
-  Future<Either<Failure, List<CashbookAccountItemEntity>>> getCashbookAccounts();
-  Future<Either<Failure, dynamic>> creditManagement();
+
+  Future<Either<Failure, List<CashbookAccountItemEntity>>>
+  getCashbookAccounts();
+
+  //! ─── Position ───────────────────────────────────────────────────────────────
+
+  Future<Either<Failure, List<BankCashItemEntity>>> bankAndCashPosition();
+
+  Future<Either<Failure, DueReceiptCountEntity>> getDueReceiptCount({
+    required String dateType,
+  });
+
+  //! ─── Utilities ──────────────────────────────────────────────────────────────
+
+  Future<Either<Failure, String>> getInvoicePdf({
+    required int featureId,
+    required int parentEntityId,
+  });
+
+  Future<Either<Failure, List<int>>> getPrintableFeatures();
 }

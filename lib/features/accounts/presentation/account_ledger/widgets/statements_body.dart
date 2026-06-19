@@ -9,26 +9,35 @@ class LedgerStatementsBody extends StatelessWidget {
   final List<LedgerStatementEntity> statements;
   final ScrollController? scrollController;
 
-  const LedgerStatementsBody({super.key, required this.statements, this.scrollController});
+  const LedgerStatementsBody({
+    super.key,
+    required this.statements,
+    this.scrollController,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AccountsStatementsBody(
       scrollController: scrollController,
       yearCards: [
-        for (final s in statements)
+        for (final statement in statements)
           AccountsYearCard(
-            finYearName: s.finYear?.name ?? '',
-            balance: (s.balance ?? 0).toDouble(),
-            ttlDebit: (s.ttlDebit ?? 0).toDouble(),
-            
-            ttlCredit: (s.ttlCredit ?? 0).toDouble(),
+            finYearName: statement.finYear?.name ?? '',
+            balance: (statement.balance ?? 0).toDouble(),
+            ttlDebit: (statement.ttlDebit ?? 0).toDouble(),
+
+            ttlCredit: (statement.ttlCredit ?? 0).toDouble(),
             scrollController: scrollController,
             groups: [
-              for (final lt in (s.ledgerTypes ?? []))
-                if ((lt.ledgers ?? []).isNotEmpty &&
-                    !(lt.ttlDebit == 0 && lt.ttlCredit == 0 && lt.balance == 0))
-                  (type: lt.type ?? '', entries: (lt.ledgers ?? []).cast<LedgerEntryBase>()),
+              for (final ledgerType in (statement.ledgerTypes ?? []))
+                if ((ledgerType.ledgers ?? []).isNotEmpty &&
+                    !(ledgerType.ttlDebit == 0 &&
+                        ledgerType.ttlCredit == 0 &&
+                        ledgerType.balance == 0))
+                  (
+                    type: ledgerType.type ?? '',
+                    entries: (ledgerType.ledgers ?? []).cast<LedgerEntryBase>(),
+                  ),
             ],
             rowBuilder: (entry) => AccountsLedgerRow(
               ledger: entry,
@@ -38,7 +47,12 @@ class LedgerStatementsBody extends StatelessWidget {
                   context: ctx,
                   builder: (_) => BlocProvider.value(
                     value: bloc,
-                    child: _LedgerDialog(ledger: entry, date: date, dr: dr, cr: cr),
+                    child: _LedgerDialog(
+                      ledger: entry,
+                      date: date,
+                      dr: dr,
+                      cr: cr,
+                    ),
                   ),
                 );
               },
@@ -55,7 +69,12 @@ class _LedgerDialog extends StatelessWidget {
   final String dr;
   final String cr;
 
-  const _LedgerDialog({required this.ledger, required this.date, required this.dr, required this.cr});
+  const _LedgerDialog({
+    required this.ledger,
+    required this.date,
+    required this.dr,
+    required this.cr,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +86,8 @@ class _LedgerDialog extends StatelessWidget {
       cr: cr,
       bottomSection: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
         buildWhen: (p, c) =>
-            p.isPrinting != c.isPrinting || p.printableFeatureIds != c.printableFeatureIds,
+            p.isPrinting != c.isPrinting ||
+            p.printableFeatureIds != c.printableFeatureIds,
         builder: (context, state) {
           final loading = state.isPrinting;
           final canPrint = !isOpening && state.canPrint(ledger.featureId ?? 0);
@@ -92,27 +112,34 @@ class _LedgerDialog extends StatelessWidget {
                     onPressed: loading
                         ? null
                         : () => context.read<AccountLedgerBloc>().add(
-                              AccountLedgerPrintRequested(
-                                featureId: ledger.featureId ?? 0,
-                                parentEntityId: ledger.parentEntityId ?? 0,
-                                featureName: ledger.featureName,
-                                docNbr: ledger.docNbr,
-                              ),
+                            AccountLedgerPrintRequested(
+                              featureId: ledger.featureId ?? 0,
+                              parentEntityId: ledger.parentEntityId ?? 0,
+                              featureName: ledger.featureName,
+                              docNbr: ledger.docNbr,
                             ),
+                          ),
                     icon: loading
                         ? SizedBox(
                             width: 14,
                             height: 14,
                             child: CircularProgressIndicator(
-                                strokeWidth: 2, color: context.textSecondary),
+                              strokeWidth: 2,
+                              color: context.textSecondary,
+                            ),
                           )
                         : const Icon(Icons.print_outlined, size: 16),
-                    label: Text(AppConstants.printInvoiceLabel, style: context.bodySmall),
+                    label: Text(
+                      AppConstants.printInvoiceLabel,
+                      style: context.bodySmall,
+                    ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: context.textPrimary,
                       side: BorderSide(color: context.border),
-                      shape: RoundedRectangleBorder(borderRadius: .circular(10)),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: .circular(10),
+                      ),
+                      padding: const .symmetric(vertical: 12),
                     ),
                   ),
                 ),

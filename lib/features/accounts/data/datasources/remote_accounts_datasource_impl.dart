@@ -9,6 +9,8 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
 
   String? get _token => SessionController.instance.activeAccessToken;
 
+  //! ─── Account Ledger ─────────────────────────────────────────────────────────
+
   @override
   Future<List<GetLedgerModel>> getAccountStatements({
     required String fromDate,
@@ -29,37 +31,17 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
   }
 
   @override
-  Future<String> getInvoicePdf({
-    required int featureId,
-    required int parentEntityId,
-  }) {
-    return post<String>(
-      url: ApiEndPoints.getInvoicePdf,
-      body: {'FeatureId': featureId, 'ParentEntityId': parentEntityId},
-      parser: (json) => (json as Map<String, dynamic>)['URL'] as String,
-      authToken: _token,
-    );
-  }
-
-  @override
-  Future<List<int>> getPrintableFeatures() {
-    return getList<int>(
-      url: ApiEndPoints.getPrintableFeatures,
-      parser: (json) => json as int,
-      authToken: _token,
-    );
-  }
-
-  @override
-  Future<DueReceiptCountModel> getDueReceiptCount({required String dateType}) {
-    return post<DueReceiptCountModel>(
-      url: ApiEndPoints.getDueReceiptCount,
-      body: {'DateType': dateType},
+  Future<List<AccountListItemModel>> getAccountsList() {
+    return postList<AccountListItemModel>(
+      url: ApiEndPoints.getAccountsList,
+      body: {},
       parser: (json) =>
-          DueReceiptCountModel.fromJson(json as Map<String, dynamic>),
+          AccountListItemModel.fromJson(json as Map<String, dynamic>),
       authToken: _token,
     );
   }
+
+  //! ─── Party Ledger ───────────────────────────────────────────────────────────
 
   @override
   Future<List<GetLedgerModel>> getPartyStatements({
@@ -81,28 +63,6 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
   }
 
   @override
-  Future<List<BankCashItemModel>> bankAndCashPosition() {
-    return postList<BankCashItemModel>(
-      url: ApiEndPoints.getCashAndBankBalance,
-      body: {},
-      parser: (json) =>
-          BankCashItemModel.fromJson(json as Map<String, dynamic>),
-      authToken: _token,
-    );
-  }
-
-  @override
-  Future<List<AccountListItemModel>> getAccountsList() {
-    return postList<AccountListItemModel>(
-      url: ApiEndPoints.getAccountsList,
-      body: {},
-      parser: (json) =>
-          AccountListItemModel.fromJson(json as Map<String, dynamic>),
-      authToken: _token,
-    );
-  }
-
-  @override
   Future<List<PartyListItemModel>> getPartyList() {
     return postList<PartyListItemModel>(
       url: ApiEndPoints.getPartyList,
@@ -113,11 +73,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
     );
   }
 
-  @override
-  Future<dynamic> cashbook() async {
-    throw UnimplementedError('cashbook not implemented');
-  }
-
+  //! ─── Cashbook ───────────────────────────────────────────────────────────────
   @override
   Future<List<GetLedgerModel>> getCashbookStatements({
     required String fromDate,
@@ -149,8 +105,51 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
     );
   }
 
+  //! ─── Position ───────────────────────────────────────────────────────────────
+
   @override
-  Future<dynamic> creditManagement() async {
-    throw UnimplementedError('creditManagement not implemented');
+  Future<List<BankCashItemModel>> bankAndCashPosition() {
+    return postList<BankCashItemModel>(
+      url: ApiEndPoints.getCashAndBankBalance,
+      body: {},
+      parser: (json) =>
+          BankCashItemModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<DueReceiptCountModel> getDueReceiptCount({required String dateType}) {
+    return post<DueReceiptCountModel>(
+      url: ApiEndPoints.getDueReceiptCount,
+      body: {'DateType': dateType},
+      parser: (json) =>
+          DueReceiptCountModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  //! ─── Utilities ──────────────────────────────────────────────────────────────
+
+  @override
+  Future<String> getInvoicePdf({
+    required int featureId,
+    required int parentEntityId,
+  }) {
+    return post<String>(
+      url: ApiEndPoints.getInvoicePdf,
+      body: {'FeatureId': featureId, 'ParentEntityId': parentEntityId},
+      parser: (json) => (json as Map<String, dynamic>)['URL'] as String,
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<List<int>> getPrintableFeatures() {
+    return getList<int>(
+      url: ApiEndPoints.getPrintableFeatures,
+      parser: (json) => json as int,
+      authToken: _token,
+    );
   }
 }

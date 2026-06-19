@@ -79,12 +79,9 @@ Future<void> registerAccounts() async {
       getCashbookAccountsUsecase: sl(),
     ),
   );
-  // UseCase — CreditManagement
-  sl.registerLazySingleton<CreditManagementUsecase>(
-    () => CreditManagementUsecase(repository: sl()),
-  );
+
   // BLoC — CreditManagement screen
   sl.registerFactory<CreditManagementBloc>(
-    () => CreditManagementBloc(creditManagementUsecase: sl()),
+    () => CreditManagementBloc(),
   );
 }
