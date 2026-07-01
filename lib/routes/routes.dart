@@ -138,6 +138,11 @@ class AppRoutes {
         name: RouteNames.customer_recievables,
         builder: (context, state) => const CustomerRecievablesView(),
       ),
+      GoRoute(
+        path: RoutePaths.vendor_payable,
+        name: RouteNames.vendor_payable,
+        builder: (context, state) => const VendorPayableView(),
+      ),
     
      
      

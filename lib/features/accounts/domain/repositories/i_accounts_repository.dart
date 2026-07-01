@@ -51,4 +51,6 @@ abstract interface class IAccountsRepository {
   });
 
   Future<Either<Failure, List<int>>> getPrintableFeatures();
+  Future<Either<Failure, List<CustomerReceivableItemEntity>>> vendorPayable();
+
 }

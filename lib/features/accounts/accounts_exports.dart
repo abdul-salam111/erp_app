@@ -70,4 +70,12 @@ export './presentation/customer_recievables/blocs/customer_recievables_state.dar
 export './presentation/customer_recievables/views/customer_recievables_view.dart';
 export './domain/usecases/customer_recievables_usecase.dart';
 
+// Presentation — vendor_payable screen
+export './presentation/vendor_payable/blocs/vendor_payable_bloc.dart';
+export './presentation/vendor_payable/blocs/vendor_payable_event.dart';
+export './presentation/vendor_payable/blocs/vendor_payable_state.dart';
+export './presentation/vendor_payable/views/vendor_payable_view.dart';
+export './domain/usecases/vendor_payable_usecase.dart';
+
+
 

@@ -123,4 +123,35 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
 
+
+  @override
+  Future<Either<Failure, List<CustomerReceivableItemEntity>>> vendorPayable() {
+    return execute(
+      call: () => Future.delayed(
+        const Duration(seconds: 1),
+        () => <CustomerReceivableItemEntity>[
+          const CustomerReceivableItemEntity(
+            partyName: 'Alpha Suppliers',
+            location: 'Karachi',
+            opening: 15000,
+            openingIsDr: false,
+            debit: 5000,
+            credit: 20000,
+            balance: 10000,
+            balanceIsDr: false,
+          ),
+          const CustomerReceivableItemEntity(
+            partyName: 'Beta Trading Co.',
+            location: 'Lahore',
+            opening: 8000,
+            openingIsDr: false,
+            debit: 2000,
+            credit: 12000,
+            balance: 2000,
+            balanceIsDr: false,
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -54,6 +54,7 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
       label: AppConstants.vendorPayableLabel,
       icon: Iconsax.send_square,
       color: AppColors.blueGrey,
+      routeName: RouteNames.vendor_payable,
     ),
   ];
 

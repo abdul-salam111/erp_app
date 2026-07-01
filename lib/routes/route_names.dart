@@ -22,4 +22,5 @@ class RouteNames {
   static const String cashbook = 'cashbook';
   static const String credit_management = 'credit_management';
   static const String customer_recievables = 'customer_recievables';
+  static const String vendor_payable = 'vendor_payable';
 }
