@@ -94,7 +94,7 @@ class CreditDetailsAppBar extends StatelessWidget
         child: ColoredBox(
           color: AppColors.primaryDark,
           child: TabBar(
-            indicatorColor: Colors.white,
+            indicatorColor: context.primary,
             indicatorWeight: 3,
             indicatorSize: .tab,
             labelColor: Colors.white,

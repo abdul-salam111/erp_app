@@ -84,6 +84,10 @@ Future<void> registerAccounts() async {
   sl.registerFactory<CreditManagementBloc>(
     () => CreditManagementBloc(),
   );
+  // Cubit — AcStatement tab (credit management details)
+  sl.registerFactory<AcStatementCubit>(
+    () => AcStatementCubit(sl<GetAccountStatementsUsecase>()),
+  );
   // UseCase — CustomerRecievables
   sl.registerLazySingleton<CustomerRecievablesUsecase>(
     () => CustomerRecievablesUsecase(repository: sl()),
