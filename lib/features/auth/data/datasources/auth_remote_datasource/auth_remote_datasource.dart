@@ -22,7 +22,7 @@ class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
     required LoginRequestModel loginRequestModel,
   }) async {
     return post(
-      url: ApiEndPoints.loginUser,
+      url: ApiEndPoints.auth.login,
       parser: (json) => LoggedInUserModel.fromJson(json),
       body: loginRequestModel.toJson(),
     );
@@ -33,7 +33,7 @@ class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
     required SelectBranchRequestModel request,
   }) async {
     return post(
-      url: ApiEndPoints.selectBranch,
+      url: ApiEndPoints.auth.selectBranch,
       parser: (json) => AuthToken.fromJson(json),
       body: request.toJson(),
     );

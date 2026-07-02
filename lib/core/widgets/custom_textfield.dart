@@ -98,6 +98,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         SizedBox(
           height: widget.fieldHeight,
           child: TextFormField(
+          
           autofocus: false,
           textCapitalization: TextCapitalization.words,
           readOnly: widget.readOnly,
@@ -107,6 +108,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           keyboardType: widget.keyboardType,
           maxLines: widget.obscureText ? 1 : widget.maxLines,
           decoration: InputDecoration(
+            
             hintText: widget.hintText,
             hintStyle: context.bodySmall.copyWith(color: context.textSecondary),
             prefixIcon: widget.prefixIcon != null

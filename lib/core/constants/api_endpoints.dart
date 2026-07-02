@@ -1,41 +1,72 @@
 class ApiEndPoints {
-  static const baseUrl = "https://erpstagingapi.manticapps.com/api";
-  static const String loginUser = "$baseUrl/mis/auth/Authlogin";
-  static const String selectBranch = '$baseUrl/mis/Auth/SelectBranch';
-  static const String signupUser = "${baseUrl}user/signinUid";
-  static const String alertPanel = '${baseUrl}alert_panel';
-  static const String purchaseOrder = '${baseUrl}purchase_order';
-  static const String saleOrder = '${baseUrl}sale_order';
-  static const String scanDocument = '${baseUrl}scan_document';
-  static const String accounts = '${baseUrl}accounts';
-  static const String inventory = '${baseUrl}inventory';
-  static const String production = '${baseUrl}production';
-  static const String analytics = '${baseUrl}analytics';
-  static const String security = '${baseUrl}security';
-  static const String dashboard = '${baseUrl}dashboard';
-  static const String getDailyStats = '$baseUrl/core/MBLDashboard/GetDailyStatistics';
-  static const String getMonthlyStats =
-      '$baseUrl/core/MBLDashboard/GetMonthlyStatistics';
-  static const String getMonthlyStatsDetail =
-      '$baseUrl/core/MBLDashboard/GetMonthlyStatisticsDetail';
-  static const String getSalesOrderSummaryByParty = '$baseUrl/core/MBLDashboard/GetSaleOrderSummaryByParty';
-  // Account / Party Statements
-  static const String getLedger = '$baseUrl/accounts/MBLAccount/GetLedger';
-  static const String getAccountStatements =
-      '$baseUrl/AccountStatement/GetAccountStatements';
-  static const String getInvoicePdf = '$baseUrl/AccountStatement/GetInvoicePdf';
-  static const String getPrintableFeatures =
-      '$baseUrl/AccountStatement/GetPrintableFeatures';
-  static const String getDueReceiptCount =
-      '$baseUrl/core/MBLDashboard/GetDueReceiptCount';
-  static const String getStockReceived =
-      '$baseUrl/core/MBLDashboard/GetStockReceived';
-  static const String getCurrentStock =
-      '$baseUrl/core/MBLDashboard/GetCurrentStock';
-  static const String getAccountsList =
-      '$baseUrl/accounts/account/GetListV2';
-  static const String getPartyList =
-      '$baseUrl/accounts/party/GetListV2';
-  static const String getCashAndBankBalance =
-      '$baseUrl/core/MBLDashboard/GetCashAndBankBalance';
+  static const String _base = 'https://erpstagingapi.manticapps.com/api';
+
+  static const auth       = _Auth();
+  static const dashboard  = _Dashboard();
+  static const accounts   = _Accounts();
+  static const modules    = _Modules();
+}
+
+// ─── Auth ───────────────────────────────────────────────────────────────────
+
+final class _Auth {
+  const _Auth();
+
+  static const String _base = '${ApiEndPoints._base}/mis';
+
+  String get login        => '$_base/auth/Authlogin';
+  String get selectBranch => '$_base/Auth/SelectBranch';
+  String get signup       => '${ApiEndPoints._base}/user/signinUid';
+}
+
+// ─── Dashboard ──────────────────────────────────────────────────────────────
+
+final class _Dashboard {
+  const _Dashboard();
+
+  static const String _base = '${ApiEndPoints._base}/ExecutiveApp/dashboard';
+
+  String get dailyStats               => '$_base/GetDailyStatistics';
+  String get monthlyStats             => '$_base/GetMonthlyStatistics';
+  String get monthlyStatsDetail       => '$_base/GetMonthlyStatisticsDetail';
+  String get salesOrderSummaryByParty => '$_base/GetSaleOrderSummaryByParty';
+  String get dueReceiptCount          => '$_base/GetDueReceipts';
+  String get stockReceived            => '$_base/GetStockReceived';
+  String get currentStock             => '$_base/GetCurrentStock';
+  String get cashAndBankBalance       => '$_base/GetCashAndBankBalance';
+}
+
+// ─── Accounts / Party ───────────────────────────────────────────────────────
+
+final class _Accounts {
+  const _Accounts();
+
+  static const String _execBase      = '${ApiEndPoints._base}/ExecutiveApp';
+  static const String _statementsBase = '${ApiEndPoints._base}/AccountStatement';
+
+  String get accountList              => '$_execBase/accounts/GetList';
+  String get accountLedger            => '$_execBase/accounts/GetLedger';
+  String get partyList         => '$_execBase/party/GetList';
+  String get statements        => '$_statementsBase/GetAccountStatements';
+  String get invoicePdf        => '$_statementsBase/GetInvoicePdf';
+  String get printableFeatures => '$_statementsBase/GetPrintableFeatures';
+}
+
+// ─── Modules (legacy placeholders) ──────────────────────────────────────────
+
+final class _Modules {
+  const _Modules();
+
+  static const String _base = ApiEndPoints._base;
+
+  String get alertPanel    => '${_base}alert_panel';
+  String get purchaseOrder => '${_base}purchase_order';
+  String get saleOrder     => '${_base}sale_order';
+  String get scanDocument  => '${_base}scan_document';
+  String get accounts      => '${_base}accounts';
+  String get inventory     => '${_base}inventory';
+  String get production    => '${_base}production';
+  String get analytics     => '${_base}analytics';
+  String get security      => '${_base}security';
+  String get dashboard     => '${_base}dashboard';
 }

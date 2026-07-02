@@ -180,6 +180,8 @@ class AppConstants {
   static const String customerReceivableLabel = 'Customer Receivable';
   static const String vendorPayableLabel = 'Vendor Payable';
   static const String recoveryProgress = 'Recovery progress';
+  static const String weekLabel   = 'Week';
+  static const String monthLabel  = 'Month';
   static const String oldestLabel = 'Oldest';
   static const String hideDetailsLabel = 'Hide Details';
   static const String addReceipt = 'Add Receipt';

@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
+import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
+import '../../../domain/entities/recovery_invoice_entity.dart';
 import '../blocs/accounts_bloc.dart';
 import '../blocs/accounts_event.dart';
 import '../blocs/accounts_state.dart';
@@ -11,111 +13,82 @@ import 'accounts_models.dart';
 
 
 class RecoveryListSection extends StatelessWidget {
-  final List<CustomerRow> rows;
-  const RecoveryListSection({super.key, required this.rows});
+  const RecoveryListSection({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: .start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: BlocBuilder<AccountsBloc, AccountsState>(
-                buildWhen: (p, c) =>
-                    p.recoveryDueStatus != c.recoveryDueStatus ||
-                    p.recoveryDue != c.recoveryDue,
-                builder: (context, state) {
-                  final isLoading =
-                      state.recoveryDueStatus == ApiStatus.INITIAL ||
-                      state.recoveryDueStatus == ApiStatus.LOADING;
+        BlocBuilder<AccountsBloc, AccountsState>(
+          buildWhen: (p, c) =>
+              p.recoveryDueStatus != c.recoveryDueStatus ||
+              p.recoveryDue != c.recoveryDue,
+          builder: (context, state) {
+            final isLoading =
+                state.recoveryDueStatus == ApiStatus.INITIAL ||
+                state.recoveryDueStatus == ApiStatus.LOADING;
 
-                  if (isLoading) {
-                    return Column(
-                      crossAxisAlignment: .start,
-                      children: [
-                        ShimmerBox(height: 11, radius: 4),
-                        const SizedBox(height: 5),
-                        ShimmerBox(height: 5, radius: 4),
-                      ],
-                    );
-                  }
-
-                  final rd       = state.recoveryDue;
-                  final total    = rd?.ttlRecoveryAmount ?? 0;
-                  final received = rd?.ttlReceivedAmount ?? 0;
-                  final progress = total > 0
-                      ? (received / total).clamp(0.0, 1.0)
-                      : 0.0;
-                  final pct = (progress * 100).round();
-                  return Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: .spaceBetween,
-                        children: [
-                          Text(
-                            AppConstants.recoveryProgress,
-                            style: context.labelSmall.copyWith(
-                              color: context.textSecondary,
-                            ),
-                          ),
-                          Text(
-                            '$pct%',
-                            style: context.labelSmall.copyWith(
-                              color: context.textSecondary,
-                              fontWeight: .w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      ClipRRect(
-                        borderRadius: .circular(4),
-                        child: LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 5,
-                          backgroundColor: AppColors.grey200,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            context.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            const SizedBox(width: 12),
-            BlocBuilder<AccountsBloc, AccountsState>(
-              buildWhen: (prev, curr) =>
-                  prev.selectedFilter != curr.selectedFilter,
-              builder: (context, state) => Row(
+            if (isLoading) {
+              return Column(
+                crossAxisAlignment: .start,
                 children: [
-                  _FilterTab(
-                    label: AppConstants.todayLabel,
-                    selected: state.selectedFilter == FilterType.today,
-                    onTap: () => context.read<AccountsBloc>().add(
-                      const RecoveryFilterChanged(FilterType.today),
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  _FilterTab(
-                    label: AppConstants.oldestLabel,
-                    selected: state.selectedFilter == FilterType.oldest,
-                    onTap: () => context.read<AccountsBloc>().add(
-                      const RecoveryFilterChanged(FilterType.oldest),
-                    ),
-                  ),
+                  ShimmerBox(height: 11, radius: 4),
+                  const SizedBox(height: 5),
+                  ShimmerBox(height: 5, radius: 4),
                 ],
-              ),
-            ),
-          ],
+              );
+            }
+
+            final rd       = state.recoveryDue;
+            final total    = rd?.ttlRecoveryAmount ?? 0;
+            final received = rd?.ttlReceivedAmount ?? 0;
+            final progress = total > 0
+                ? (received / total).clamp(0.0, 1.0)
+                : 0.0;
+            final pct = (progress * 100).round();
+            return Column(
+              crossAxisAlignment: .start,
+              children: [
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  children: [
+                    Text(
+                      AppConstants.recoveryProgress,
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                      ),
+                    ),
+                    Text(
+                      '$pct%',
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                        fontWeight: .w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                ClipRRect(
+                  borderRadius: .circular(4),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 5,
+                    backgroundColor: AppColors.grey200,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      context.primary,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
         const SizedBox(height: 10),
         BlocBuilder<AccountsBloc, AccountsState>(
-          buildWhen: (p, c) => p.recoveryDueStatus != c.recoveryDueStatus,
+          buildWhen: (p, c) =>
+              p.recoveryDueStatus != c.recoveryDueStatus ||
+              p.recoveryDue != c.recoveryDue,
           builder: (context, state) {
             final isLoading =
                 state.recoveryDueStatus == ApiStatus.INITIAL ||
@@ -133,15 +106,31 @@ class RecoveryListSection extends StatelessWidget {
               );
             }
 
+            final invoices = state.recoveryDue?.invoices ?? const [];
+
+            if (invoices.isEmpty) {
+              return Center(
+                child: Padding(
+                  padding: .symmetric(vertical: 24),
+                  child: Text(
+                    AppConstants.noDataAvailable,
+                    style: context.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ),
+              );
+            }
+
             return SizedBox(
               height: MediaQuery.sizeOf(context).height * 0.5,
               child: ListView.separated(
                 padding: EdgeInsets.zero,
                 physics: const ClampingScrollPhysics(),
-                itemCount: rows.length,
+                itemCount: invoices.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 8),
                 itemBuilder: (context, index) =>
-                    _CustomerTile(row: rows[index]),
+                    _CustomerTile(invoice: invoices[index]),
               ),
             );
           },
@@ -164,11 +153,20 @@ class RecoveryListSection extends StatelessWidget {
 // ─── Customer tile ────────────────────────────────────────────────────────────
 
 class _CustomerTile extends StatelessWidget {
-  final CustomerRow row;
-  const _CustomerTile({required this.row});
+  final RecoveryInvoiceEntity invoice;
+  const _CustomerTile({required this.invoice});
+
+  CustomerStatus get _status {
+    if (invoice.flgPostpone) return CustomerStatus.partial;
+    if (invoice.isPartiallyPaid) return CustomerStatus.partial;
+    return CustomerStatus.actionRequired;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final remaining = invoice.remainingAmount;
+    final total     = invoice.docAmount;
+
     return Container(
       padding: .all(8),
       decoration: BoxDecoration(
@@ -192,7 +190,7 @@ class _CustomerTile extends StatelessWidget {
                 radius: 15,
                 backgroundColor: context.primary.withValues(alpha: 0.12),
                 child: Text(
-                  row.initials,
+                  invoice.initials,
                   style: context.labelMedium.copyWith(
                     color: context.primary,
                     fontWeight: .w700,
@@ -201,31 +199,19 @@ class _CustomerTile extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      row.name,
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w700,
-                        color: context.textPrimary,
-                      ),
-                      maxLines: 1,
-                      overflow: .ellipsis,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      row.city,
-                      style: context.labelSmall.copyWith(
-                        color: context.textSecondary,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  invoice.party.fullName,
+                  style: context.bodySmall.copyWith(
+                    fontWeight: .w700,
+                    color: context.textPrimary,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
                 ),
               ),
               const SizedBox(width: 8),
-              _StatusBadge(status: row.status),
-              if (row.status == CustomerStatus.actionRequired) ...[
+              _StatusBadge(status: _status),
+              if (_status == CustomerStatus.actionRequired) ...[
                 const SizedBox(width: 2),
                 SizedBox(
                   width: 24,
@@ -240,9 +226,7 @@ class _CustomerTile extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: .circular(10),
                     ),
-                    onSelected: (action) {
-                    
-                    },
+                    onSelected: (action) {},
                     itemBuilder: (_) => [
                       PopupMenuItem(
                         value: TileAction.addReceipt,
@@ -298,7 +282,7 @@ class _CustomerTile extends StatelessWidget {
                 crossAxisAlignment: .start,
                 children: [
                   Text(
-                    row.invoiceNo,
+                    invoice.docNbr,
                     style: context.labelSmall.copyWith(
                       color: context.primary,
                       fontWeight: .w600,
@@ -306,7 +290,7 @@ class _CustomerTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    row.date,
+                    invoice.docDate,
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
                     ),
@@ -318,7 +302,7 @@ class _CustomerTile extends StatelessWidget {
                 crossAxisAlignment: .end,
                 children: [
                   Text(
-                    'Rs ${row.paid}',
+                    'Rs ${remaining.formatPrice()}',
                     style: context.labelMedium.copyWith(
                       color: context.primary,
                       fontWeight: .w700,
@@ -326,7 +310,7 @@ class _CustomerTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'of Rs ${row.total}',
+                    'of Rs ${total.formatPrice()}',
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
                     ),
@@ -336,45 +320,6 @@ class _CustomerTile extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ─── Filter tab ───────────────────────────────────────────────────────────────
-
-class _FilterTab extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _FilterTab({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: .symmetric(horizontal: 10, vertical: 4),
-        decoration: BoxDecoration(
-          color: selected ? context.primary : AppColors.transparent,
-          borderRadius: .circular(20),
-          border: Border.all(
-            color: selected ? context.primary : AppColors.grey200,
-          ),
-        ),
-        child: Text(
-          label,
-          style: context.labelSmall.copyWith(
-            color: selected ? AppColors.white : context.textSecondary,
-            fontWeight: .w600,
-          ),
-        ),
       ),
     );
   }

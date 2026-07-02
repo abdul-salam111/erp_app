@@ -5,12 +5,14 @@ export 'domain/entities/bank_cash_item_entity.dart';
 export 'domain/entities/cashbook_account_item_entity.dart';
 export 'domain/entities/party_list_item_entity.dart';
 export 'domain/entities/due_receipt_count_entity.dart';
+export 'domain/entities/recovery_invoice_entity.dart';
 export 'domain/entities/ledger_statement_entity.dart';
 export 'data/datasources/i_remote_datasource.dart';
 export 'domain/repositories/i_accounts_repository.dart';
 // Data — models (JSON parsing; kept for datasource layer)
 export 'data/models/response_models/get_ledger/get_ledger_model.dart';
 export 'data/models/response_models/get_due_receipt_count/due_receipt_count_model.dart';
+export 'data/models/response_models/get_due_receipt_count/recovery_invoice_model.dart';
 export 'data/models/response_models/get_accounts_list/account_list_item_model.dart';
 export 'data/models/response_models/get_party_list/party_list_item_model.dart';
 export 'data/models/response_models/get_cash_and_bank_balance/bank_cash_item_model.dart';

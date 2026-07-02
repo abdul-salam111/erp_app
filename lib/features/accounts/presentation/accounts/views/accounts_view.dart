@@ -55,7 +55,6 @@ class _AccountsBodyState extends State<_AccountsBody>
     ),
   ];
 
-  static const _rows = <CustomerRow>[];
 
   Animation<double> _fade(double start, double end) => CurvedAnimation(
     parent: _entryCtrl,
@@ -171,6 +170,49 @@ class _AccountsBodyState extends State<_AccountsBody>
                   ),
                 ),
                 const SizedBox(height: 10),
+                // [0b] ── Filter badges ──────────────────────────────────────
+                BlocBuilder<AccountsBloc, AccountsState>(
+                  buildWhen: (p, c) => p.selectedFilter != c.selectedFilter,
+                  builder: (context, state) => SingleChildScrollView(
+                    scrollDirection: .horizontal,
+                    child: Row(
+                      children: [
+                        _RecoveryFilterBadge(
+                          label: AppConstants.todayLabel,
+                          selected: state.selectedFilter == FilterType.today,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.today),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        _RecoveryFilterBadge(
+                          label: AppConstants.weekLabel,
+                          selected: state.selectedFilter == FilterType.week,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.week),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        _RecoveryFilterBadge(
+                          label: AppConstants.monthLabel,
+                          selected: state.selectedFilter == FilterType.month,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.month),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        _RecoveryFilterBadge(
+                          label: AppConstants.oldestLabel,
+                          selected: state.selectedFilter == FilterType.oldest,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.oldest),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 // [1] ── Stat cards ───────────────────────────────────────────
                 FadeTransition(
                   opacity: _fades[1],
@@ -275,7 +317,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                             curve: Curves.easeInOutCubic,
                             alignment: .topCenter,
                             child: state.todayOverviewExpanded
-                                ? RecoveryListSection(rows: _rows)
+                                ? const RecoveryListSection()
                                 : const SizedBox.shrink(),
                           ),
                         ),

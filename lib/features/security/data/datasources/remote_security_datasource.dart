@@ -13,7 +13,7 @@ class RemoteSecurityDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<dynamic> performAction() async {
     return post(
-      url: ApiEndPoints.security,
+      url: ApiEndPoints.modules.security,
       parser: (json) => json, // TODO: Replace with your model parser
       body: {}, // TODO: Add your request body
     );

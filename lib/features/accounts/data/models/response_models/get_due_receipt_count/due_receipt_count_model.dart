@@ -1,16 +1,33 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'recovery_invoice_model.dart';
 
-part 'due_receipt_count_model.freezed.dart';
-part 'due_receipt_count_model.g.dart';
+class DueReceiptCountModel {
+  final double ttlRecoveryAmount;
+  final double ttlReceivedAmount;
+  final double ttlPostponeAmount;
+  final List<RecoveryInvoiceModel> invoices;
 
-@freezed
-abstract class DueReceiptCountModel with _$DueReceiptCountModel {
-  const factory DueReceiptCountModel({
-    @JsonKey(name: 'TTLRecoveryAmount') @Default(0) double ttlRecoveryAmount,
-    @JsonKey(name: 'TTLReceivedAmount') @Default(0) double ttlReceivedAmount,
-    @JsonKey(name: 'TTLPostponeAmount') @Default(0) double ttlPostponeAmount,
-  }) = _DueReceiptCountModel;
+  const DueReceiptCountModel({
+    this.ttlRecoveryAmount = 0,
+    this.ttlReceivedAmount = 0,
+    this.ttlPostponeAmount = 0,
+    this.invoices = const [],
+  });
 
   factory DueReceiptCountModel.fromJson(Map<String, dynamic> json) =>
-      _$DueReceiptCountModelFromJson(json);
+      DueReceiptCountModel(
+        ttlRecoveryAmount:
+            (json['TTLRecoveryAmount'] as num?)?.toDouble() ?? 0,
+        ttlReceivedAmount:
+            (json['TTLReceivedAmount'] as num?)?.toDouble() ?? 0,
+        ttlPostponeAmount:
+            (json['TTLPostponeAmount'] as num?)?.toDouble() ?? 0,
+        invoices: (json['Invoices'] as List<dynamic>?)
+                ?.map(
+                  (e) => RecoveryInvoiceModel.fromJson(
+                    e as Map<String, dynamic>,
+                  ),
+                )
+                .toList() ??
+            const [],
+      );
 }

@@ -16,6 +16,26 @@ extension DueReceiptCountModelX on DueReceiptCountModel {
     ttlRecoveryAmount: ttlRecoveryAmount,
     ttlReceivedAmount: ttlReceivedAmount,
     ttlPostponeAmount: ttlPostponeAmount,
+    invoices: invoices.map((i) => i.toEntity()).toList(),
+  );
+}
+
+extension RecoveryInvoiceModelX on RecoveryInvoiceModel {
+  RecoveryInvoiceEntity toEntity() => RecoveryInvoiceEntity(
+    id: id,
+    docNbr: docNbr,
+    docDate: docDate,
+    docAmount: docAmount,
+    remainingAmount: remainingAmount,
+    party: RecoveryInvoicePartyEntity(
+      id: party.id,
+      fullName: party.fullName,
+      partyTypeId: party.partyTypeId,
+      locationId: party.locationId,
+    ),
+    status: status,
+    overDueDays: overDueDays,
+    flgPostpone: flgPostpone,
   );
 }
 

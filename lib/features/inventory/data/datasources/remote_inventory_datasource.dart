@@ -9,7 +9,7 @@ class RemoteInventoryDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<List<StockRecievedModel>> getStockReceived(String dateType) async {
     return postList(
-      url: ApiEndPoints.getStockReceived,
+      url: ApiEndPoints.dashboard.stockReceived,
       body: {'DateType': dateType},
       parser: (json) => StockRecievedModel.fromJson(json),
       authToken: _token,
@@ -19,7 +19,7 @@ class RemoteInventoryDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<List<CurrentStockModel>> getCurrentStock() async {
     return postList(
-      url: ApiEndPoints.getCurrentStock,
+      url: ApiEndPoints.dashboard.currentStock,
       body: {},
       parser: (json) => CurrentStockModel.fromJson(json),
       authToken: _token,

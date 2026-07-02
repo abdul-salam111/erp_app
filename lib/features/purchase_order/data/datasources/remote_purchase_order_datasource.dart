@@ -13,7 +13,7 @@ class RemotePurchaseOrderDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<dynamic> performAction() async {
     return post(
-      url: ApiEndPoints.purchaseOrder,
+      url: ApiEndPoints.modules.purchaseOrder,
       parser: (json) => json, // TODO: Replace with your model parser
       body: {}, // TODO: Add your request body
     );

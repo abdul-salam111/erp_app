@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../domain/entities/due_receipt_count_entity.dart';
 
-enum FilterType { today, oldest }
+enum FilterType { today, week, month, oldest }
 
 class AccountsState extends Equatable {
   final dynamic data;

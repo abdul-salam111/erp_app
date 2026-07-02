@@ -13,7 +13,7 @@ class RemoteScanDocumentDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<dynamic> performAction() async {
     return post(
-      url: ApiEndPoints.scanDocument,
+      url: ApiEndPoints.modules.scanDocument,
       parser: (json) => json, // TODO: Replace with your model parser
       body: {}, // TODO: Add your request body
     );

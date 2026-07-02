@@ -39,7 +39,12 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
     Emitter<AccountsState> emit,
   ) async {
     emit(state.copyWith(recoveryDueStatus: ApiStatus.LOADING));
-    final dateType = event.filter == FilterType.today ? 'today' : 'oldest';
+    final dateType = switch (event.filter) {
+      FilterType.today  => 'today',
+      FilterType.week   => 'week',
+      FilterType.month  => 'month',
+      FilterType.oldest => 'oldest',
+    };
     final result = await getDueReceiptCountUsecase.call(
       GetDueReceiptCountParams(dateType: dateType),
     );

@@ -21,7 +21,7 @@ class RemoteDashboardDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<DailyStatsModel> getDailyStats({required String date}) async {
     return post(
-      url:      ApiEndPoints.getDailyStats,
+      url:      ApiEndPoints.dashboard.dailyStats,
       body:     {'Date': date},
       parser:   (json) => DailyStatsModel.fromJson(json),
       authToken: _token,
@@ -31,7 +31,7 @@ class RemoteDashboardDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<MonthlyStatsModel> getMonthlyStats({required String date}) async {
     return post(
-      url:      ApiEndPoints.getMonthlyStats,
+      url:      ApiEndPoints.dashboard.monthlyStats,
       body:     {'Date': date},
       parser:   (json) => MonthlyStatsModel.fromJson(json),
       authToken: _token,
@@ -44,7 +44,7 @@ class RemoteDashboardDataSourceImpl extends BaseRemoteDatasource
     required String panelKey,
   }) async {
     return postList(
-      url:      ApiEndPoints.getMonthlyStatsDetail,
+      url:      ApiEndPoints.dashboard.monthlyStatsDetail,
       body:     {'Date': date, 'PanelKey': panelKey},
       parser:   (json) => MonthlyStatDetailModel.fromJson(json),
       authToken: _token,
@@ -54,7 +54,7 @@ class RemoteDashboardDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<SaleOrderSummaryByParty> getSalesOrderSummaryByParty({required String fromDate, required String toDate}) async {
     return post(
-      url:      ApiEndPoints.getSalesOrderSummaryByParty,
+      url:      ApiEndPoints.dashboard.salesOrderSummaryByParty,
       body:     {'FromDate': fromDate, 'ToDate': toDate},
       parser:   (json) => SaleOrderSummaryByParty.fromJson(json),
       authToken: _token,
