@@ -119,6 +119,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
         appBar: CustomAppBar(title: AppConstants.accountLedgerLabel),
         body: Column(
           children: [
+        
             BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
               buildWhen: (p, c) =>
                   p.filterCollapsed != c.filterCollapsed ||
@@ -168,6 +169,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                       ),
               ),
             ),
+
             Expanded(
               child: ColoredBox(
                 color: context.white,

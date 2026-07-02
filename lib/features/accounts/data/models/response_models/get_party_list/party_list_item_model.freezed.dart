@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PartyListItemModel {
 
-@JsonKey(name: 'Id') int get id;@JsonKey(name: 'FullName', defaultValue: '') String get name;@JsonKey(name: 'PartyType', fromJson: _partyTypeName) String get partyType;
+@JsonKey(name: 'Id') int get id;@JsonKey(name: 'FullName', defaultValue: '') String get name;
 /// Create a copy of PartyListItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PartyListItemModelCopyWith<PartyListItemModel> get copyWith => _$PartyListItemM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PartyListItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.partyType, partyType) || other.partyType == partyType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PartyListItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,partyType);
+int get hashCode => Object.hash(runtimeType,id,name);
 
 @override
 String toString() {
-  return 'PartyListItemModel(id: $id, name: $name, partyType: $partyType)';
+  return 'PartyListItemModel(id: $id, name: $name)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PartyListItemModelCopyWith<$Res>  {
   factory $PartyListItemModelCopyWith(PartyListItemModel value, $Res Function(PartyListItemModel) _then) = _$PartyListItemModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'Id') int id,@JsonKey(name: 'FullName', defaultValue: '') String name,@JsonKey(name: 'PartyType', fromJson: _partyTypeName) String partyType
+@JsonKey(name: 'Id') int id,@JsonKey(name: 'FullName', defaultValue: '') String name
 });
 
 
@@ -65,11 +65,10 @@ class _$PartyListItemModelCopyWithImpl<$Res>
 
 /// Create a copy of PartyListItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? partyType = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,partyType: null == partyType ? _self.partyType : partyType // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -155,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String name, @JsonKey(name: 'PartyType', fromJson: _partyTypeName)  String partyType)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String name)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PartyListItemModel() when $default != null:
-return $default(_that.id,_that.name,_that.partyType);case _:
+return $default(_that.id,_that.name);case _:
   return orElse();
 
 }
@@ -176,10 +175,10 @@ return $default(_that.id,_that.name,_that.partyType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String name, @JsonKey(name: 'PartyType', fromJson: _partyTypeName)  String partyType)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String name)  $default,) {final _that = this;
 switch (_that) {
 case _PartyListItemModel():
-return $default(_that.id,_that.name,_that.partyType);case _:
+return $default(_that.id,_that.name);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +195,10 @@ return $default(_that.id,_that.name,_that.partyType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String name, @JsonKey(name: 'PartyType', fromJson: _partyTypeName)  String partyType)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String name)?  $default,) {final _that = this;
 switch (_that) {
 case _PartyListItemModel() when $default != null:
-return $default(_that.id,_that.name,_that.partyType);case _:
+return $default(_that.id,_that.name);case _:
   return null;
 
 }
@@ -211,12 +210,11 @@ return $default(_that.id,_that.name,_that.partyType);case _:
 @JsonSerializable()
 
 class _PartyListItemModel implements PartyListItemModel {
-  const _PartyListItemModel({@JsonKey(name: 'Id') required this.id, @JsonKey(name: 'FullName', defaultValue: '') required this.name, @JsonKey(name: 'PartyType', fromJson: _partyTypeName) required this.partyType});
+  const _PartyListItemModel({@JsonKey(name: 'Id') required this.id, @JsonKey(name: 'FullName', defaultValue: '') required this.name});
   factory _PartyListItemModel.fromJson(Map<String, dynamic> json) => _$PartyListItemModelFromJson(json);
 
 @override@JsonKey(name: 'Id') final  int id;
 @override@JsonKey(name: 'FullName', defaultValue: '') final  String name;
-@override@JsonKey(name: 'PartyType', fromJson: _partyTypeName) final  String partyType;
 
 /// Create a copy of PartyListItemModel
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +229,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PartyListItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.partyType, partyType) || other.partyType == partyType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PartyListItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,partyType);
+int get hashCode => Object.hash(runtimeType,id,name);
 
 @override
 String toString() {
-  return 'PartyListItemModel(id: $id, name: $name, partyType: $partyType)';
+  return 'PartyListItemModel(id: $id, name: $name)';
 }
 
 
@@ -251,7 +249,7 @@ abstract mixin class _$PartyListItemModelCopyWith<$Res> implements $PartyListIte
   factory _$PartyListItemModelCopyWith(_PartyListItemModel value, $Res Function(_PartyListItemModel) _then) = __$PartyListItemModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'Id') int id,@JsonKey(name: 'FullName', defaultValue: '') String name,@JsonKey(name: 'PartyType', fromJson: _partyTypeName) String partyType
+@JsonKey(name: 'Id') int id,@JsonKey(name: 'FullName', defaultValue: '') String name
 });
 
 
@@ -268,11 +266,10 @@ class __$PartyListItemModelCopyWithImpl<$Res>
 
 /// Create a copy of PartyListItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? partyType = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,}) {
   return _then(_PartyListItemModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,partyType: null == partyType ? _self.partyType : partyType // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

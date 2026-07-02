@@ -8,7 +8,6 @@ abstract class CashbookAccountModel with _$CashbookAccountModel {
   const factory CashbookAccountModel({
     @JsonKey(name: 'Id') int? id,
     @JsonKey(name: 'Name') required String name,
-    @JsonKey(name: 'Group') CashbookAccountGroupModel? group,
     @JsonKey(name: 'AccType') CashbookAccTypeModel? accType,
   }) = _CashbookAccountModel;
 
@@ -17,19 +16,9 @@ abstract class CashbookAccountModel with _$CashbookAccountModel {
 }
 
 @freezed
-abstract class CashbookAccountGroupModel with _$CashbookAccountGroupModel {
-  const factory CashbookAccountGroupModel({
-    @JsonKey(name: 'Name') String? name,
-  }) = _CashbookAccountGroupModel;
-
-  factory CashbookAccountGroupModel.fromJson(Map<String, dynamic> json) =>
-      _$CashbookAccountGroupModelFromJson(json);
-}
-
-@freezed
 abstract class CashbookAccTypeModel with _$CashbookAccTypeModel {
   const factory CashbookAccTypeModel({
-    @JsonKey(name: 'Breadcrumb') String? breadcrumb,
+    @JsonKey(name: 'Name') String? name,
     @JsonKey(name: 'SysKey') String? sysKey,
   }) = _CashbookAccTypeModel;
 

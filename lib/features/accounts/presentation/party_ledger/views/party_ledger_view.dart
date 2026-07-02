@@ -149,8 +149,6 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
                         fromDate: _fromDate,
                         toDate: _toDate,
                         items: state.parties.map((p) => p.name).toList(),
-                        subtitles:
-                            state.parties.map((p) => p.partyType).toList(),
                         isLoading:
                             state.partiesStatus == ApiStatus.INITIAL ||
                                 state.partiesStatus == ApiStatus.LOADING,

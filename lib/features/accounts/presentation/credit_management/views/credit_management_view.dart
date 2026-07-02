@@ -38,11 +38,6 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
   late final TextEditingController _partyController;
   late final ScrollController _scrollController;
 
-  static const _financialYearOptions = ['2023-2024', '2024-2025', '2025-2026'];
-  static const _customerTypeOptions = ['Retailer', 'Wholesaler', 'Distributor'];
-  static const _groupOnOptions = ['Party', 'City', 'Category'];
-  static const _creditRatingOptions = ['A', 'B', 'C'];
-
   @override
   void initState() {
     super.initState();
@@ -68,6 +63,12 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
 
   void _fetch() {
     context.read<CreditManagementBloc>().add(const CreditManagementSubmitted());
+  }
+
+  void _onPartyChanged(String name) {
+    final bloc = context.read<CreditManagementBloc>();
+    final match = bloc.state.parties.where((p) => p.name == name).firstOrNull;
+    if (match != null) bloc.add(CreditManagementPartySelected(match.id));
   }
 
   Future<void> _pickDate() async {
@@ -106,10 +107,8 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                 buildWhen: (p, c) =>
                     p.filterCollapsed != c.filterCollapsed ||
                     p.date != c.date ||
-                    p.financialYear != c.financialYear ||
-                    p.customerType != c.customerType ||
-                    p.groupOn != c.groupOn ||
-                    p.creditRating != c.creditRating,
+                    p.parties != c.parties ||
+                    p.partiesStatus != c.partiesStatus,
                 builder: (context, state) => AnimatedSize(
                   duration: const Duration(milliseconds: 260),
                   curve: Curves.easeInOut,
@@ -134,27 +133,9 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                       : FilterForm(
                           date: state.date,
                           partyController: _partyController,
-                          financialYear: state.financialYear,
-                          customerType: state.customerType,
-                          groupOn: state.groupOn,
-                          creditRating: state.creditRating,
-                          financialYearOptions: _financialYearOptions,
-                          customerTypeOptions: _customerTypeOptions,
-                          groupOnOptions: _groupOnOptions,
-                          creditRatingOptions: _creditRatingOptions,
-                          onPartyChanged: (_) {},
-                          onFinancialYearChanged: (val) => context
-                              .read<CreditManagementBloc>()
-                              .add(CreditManagementFinancialYearChanged(val)),
-                          onCustomerTypeChanged: (val) => context
-                              .read<CreditManagementBloc>()
-                              .add(CreditManagementCustomerTypeChanged(val)),
-                          onGroupOnChanged: (val) => context
-                              .read<CreditManagementBloc>()
-                              .add(CreditManagementGroupOnChanged(val)),
-                          onCreditRatingChanged: (val) => context
-                              .read<CreditManagementBloc>()
-                              .add(CreditManagementCreditRatingChanged(val)),
+                          parties: state.parties,
+                          partiesStatus: state.partiesStatus,
+                          onPartyChanged: _onPartyChanged,
                           onPickDate: _pickDate,
                           onView: _fetch,
                         ),
@@ -164,32 +145,31 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
               Expanded(
                 child: ColoredBox(
                   color: context.white,
-                  child:
-                      BlocBuilder<CreditManagementBloc, CreditManagementState>(
-                        buildWhen: (p, c) =>
-                            p.apiStatus != c.apiStatus ||
-                            p.message != c.message,
-                        builder: (context, state) {
-                          if (state.apiStatus == ApiStatus.LOADING) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          if (state.apiStatus == ApiStatus.FAILURE) {
-                            return Center(
-                              child: Text(
-                                state.message ??
-                                    AppConstants.somethingWentWrong,
-                                style: context.bodySmall.copyWith(
-                                  color: context.textSecondary,
-                                ),
-                                textAlign: .center,
-                              ),
-                            );
-                          }
-                          return CreditTable(scrollController: _scrollController);
-                        },
-                      ),
+                  child: BlocBuilder<CreditManagementBloc, CreditManagementState>(
+                    buildWhen: (p, c) =>
+                        p.apiStatus != c.apiStatus ||
+                        p.message != c.message,
+                    builder: (context, state) {
+                      if (state.apiStatus == ApiStatus.LOADING) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (state.apiStatus == ApiStatus.FAILURE) {
+                        return Center(
+                          child: Text(
+                            state.message ?? AppConstants.somethingWentWrong,
+                            style: context.bodySmall.copyWith(
+                              color: context.textSecondary,
+                            ),
+                            textAlign: .center,
+                          ),
+                        );
+                      }
+                      return CreditTable(
+                          scrollController: _scrollController);
+                    },
+                  ),
                 ),
               ),
             ],

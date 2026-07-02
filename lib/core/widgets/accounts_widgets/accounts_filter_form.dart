@@ -45,7 +45,8 @@ class AccountsFilterForm extends StatelessWidget {
         context.pagePadding.left,
         12,
         context.pagePadding.right,
-        12,
+        
+        0,
       ),
       child: Column(
         crossAxisAlignment: .start,

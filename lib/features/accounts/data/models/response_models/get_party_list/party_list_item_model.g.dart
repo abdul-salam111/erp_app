@@ -10,12 +10,7 @@ _PartyListItemModel _$PartyListItemModelFromJson(Map<String, dynamic> json) =>
     _PartyListItemModel(
       id: (json['Id'] as num).toInt(),
       name: json['FullName'] as String? ?? '',
-      partyType: _partyTypeName(json['PartyType']),
     );
 
 Map<String, dynamic> _$PartyListItemModelToJson(_PartyListItemModel instance) =>
-    <String, dynamic>{
-      'Id': instance.id,
-      'FullName': instance.name,
-      'PartyType': instance.partyType,
-    };
+    <String, dynamic>{'Id': instance.id, 'FullName': instance.name};

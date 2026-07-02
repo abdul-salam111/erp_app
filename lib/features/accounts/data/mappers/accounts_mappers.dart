@@ -50,7 +50,7 @@ extension AccountListItemModelX on AccountListItemModel {
 
 extension PartyListItemModelX on PartyListItemModel {
   PartyListItemEntity toEntity() =>
-      PartyListItemEntity(id: id, name: name, partyType: partyType);
+      PartyListItemEntity(id: id, name: name);
 }
 
 extension PartyX on Party {
@@ -136,7 +136,7 @@ extension CashbookAccountModelX on CashbookAccountModel {
   CashbookAccountItemEntity toCashbookEntity() => CashbookAccountItemEntity(
     id: id,
     name: name,
-    group: group?.name,
+    group: accType?.name,
     sysKey: accType?.sysKey,
   );
 }

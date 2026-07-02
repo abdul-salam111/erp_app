@@ -176,23 +176,23 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
             contentPadding:
                 widget.contentPadding ?? const EdgeInsets.only(left: 10),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(6),
               borderSide: BorderSide(color: defaultBorderColor),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(6),
               borderSide: BorderSide(color: defaultBorderColor),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(6),
               borderSide: BorderSide(color: context.primary, width: 2),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(6),
               borderSide: BorderSide(color: context.error),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(6),
               borderSide: BorderSide(color: context.error, width: 2),
             ),
           ),
@@ -223,7 +223,7 @@ class _DropdownList extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         border: Border.all(color: context.border),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
             color: context.shadow,

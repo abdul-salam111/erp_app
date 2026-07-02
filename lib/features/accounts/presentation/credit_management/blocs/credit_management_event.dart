@@ -18,32 +18,15 @@ class CreditManagementDateChanged extends CreditManagementEvent {
   List<Object?> get props => [date];
 }
 
-class CreditManagementFinancialYearChanged extends CreditManagementEvent {
-  final String? value;
-  const CreditManagementFinancialYearChanged(this.value);
-  @override
-  List<Object?> get props => [value];
+class CreditManagementPartiesFetched extends CreditManagementEvent {
+  const CreditManagementPartiesFetched();
 }
 
-class CreditManagementCustomerTypeChanged extends CreditManagementEvent {
-  final String? value;
-  const CreditManagementCustomerTypeChanged(this.value);
+class CreditManagementPartySelected extends CreditManagementEvent {
+  final int partyId;
+  const CreditManagementPartySelected(this.partyId);
   @override
-  List<Object?> get props => [value];
-}
-
-class CreditManagementGroupOnChanged extends CreditManagementEvent {
-  final String? value;
-  const CreditManagementGroupOnChanged(this.value);
-  @override
-  List<Object?> get props => [value];
-}
-
-class CreditManagementCreditRatingChanged extends CreditManagementEvent {
-  final String? value;
-  const CreditManagementCreditRatingChanged(this.value);
-  @override
-  List<Object?> get props => [value];
+  List<Object?> get props => [partyId];
 }
 
 class CreditManagementFilterCollapsed extends CreditManagementEvent {

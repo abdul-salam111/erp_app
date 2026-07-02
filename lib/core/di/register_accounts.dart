@@ -82,7 +82,7 @@ Future<void> registerAccounts() async {
 
   // BLoC — CreditManagement screen
   sl.registerFactory<CreditManagementBloc>(
-    () => CreditManagementBloc(),
+    () => CreditManagementBloc(getPartyListUsecase: sl()),
   );
   // Cubit — AcStatement tab (credit management details)
   sl.registerFactory<AcStatementCubit>(

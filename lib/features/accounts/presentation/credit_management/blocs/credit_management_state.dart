@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/constants/app_enums.dart';
+import '../../../domain/entities/party_list_item_entity.dart';
 
 class CreditManagementState extends Equatable {
   final dynamic data;
   final String? message;
   final ApiStatus apiStatus;
   final DateTime date;
-  final String? financialYear;
-  final String? customerType;
-  final String? groupOn;
-  final String? creditRating;
+  final List<PartyListItemEntity> parties;
+  final ApiStatus partiesStatus;
+  final int? selectedPartyId;
   final bool filterCollapsed;
 
   const CreditManagementState({
@@ -18,10 +18,9 @@ class CreditManagementState extends Equatable {
     this.message,
     this.apiStatus = ApiStatus.INITIAL,
     required this.date,
-    this.financialYear,
-    this.customerType,
-    this.groupOn,
-    this.creditRating,
+    this.parties = const [],
+    this.partiesStatus = ApiStatus.INITIAL,
+    this.selectedPartyId,
     this.filterCollapsed = false,
   });
 
@@ -30,22 +29,20 @@ class CreditManagementState extends Equatable {
     String? message,
     ApiStatus? apiStatus,
     DateTime? date,
-    String? financialYear,
-    String? customerType,
-    String? groupOn,
-    String? creditRating,
+    List<PartyListItemEntity>? parties,
+    ApiStatus? partiesStatus,
+    int? selectedPartyId,
     bool? filterCollapsed,
   }) {
     return CreditManagementState(
-      data:             data             ?? this.data,
-      message:          message          ?? this.message,
-      apiStatus:        apiStatus        ?? this.apiStatus,
-      date:             date             ?? this.date,
-      financialYear:    financialYear    ?? this.financialYear,
-      customerType:     customerType     ?? this.customerType,
-      groupOn:          groupOn          ?? this.groupOn,
-      creditRating:     creditRating     ?? this.creditRating,
-      filterCollapsed:  filterCollapsed  ?? this.filterCollapsed,
+      data:            data            ?? this.data,
+      message:         message         ?? this.message,
+      apiStatus:       apiStatus       ?? this.apiStatus,
+      date:            date            ?? this.date,
+      parties:         parties         ?? this.parties,
+      partiesStatus:   partiesStatus   ?? this.partiesStatus,
+      selectedPartyId: selectedPartyId ?? this.selectedPartyId,
+      filterCollapsed: filterCollapsed ?? this.filterCollapsed,
     );
   }
 
@@ -55,10 +52,9 @@ class CreditManagementState extends Equatable {
         message,
         apiStatus,
         date,
-        financialYear,
-        customerType,
-        groupOn,
-        creditRating,
+        parties,
+        partiesStatus,
+        selectedPartyId,
         filterCollapsed,
       ];
 }

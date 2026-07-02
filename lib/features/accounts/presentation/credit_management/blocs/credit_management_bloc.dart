@@ -1,46 +1,56 @@
 import 'package:bloc/bloc.dart';
 
+import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../accounts_exports.dart';
 
 class CreditManagementBloc
     extends Bloc<CreditManagementEvent, CreditManagementState>
     with UsecaseExecuterMixin {
-  CreditManagementBloc() : super(_initialState()) {
-    on<CreditManagementSubmitted>(_onCreditManagementSubmitted);
+  final GetPartyListUsecase getPartyListUsecase;
+
+  CreditManagementBloc({required this.getPartyListUsecase})
+      : super(_initialState()) {
+    on<CreditManagementSubmitted>(_onSubmitted);
     on<CreditManagementDateChanged>(
       (e, emit) => emit(state.copyWith(date: e.date)),
     );
-    on<CreditManagementFinancialYearChanged>(
-      (e, emit) => emit(state.copyWith(financialYear: e.value)),
+    on<CreditManagementPartySelected>(
+      (e, emit) => emit(state.copyWith(selectedPartyId: e.partyId)),
     );
-    on<CreditManagementCustomerTypeChanged>(
-      (e, emit) => emit(state.copyWith(customerType: e.value)),
-    );
-    on<CreditManagementGroupOnChanged>(
-      (e, emit) => emit(state.copyWith(groupOn: e.value)),
-    );
-    on<CreditManagementCreditRatingChanged>(
-      (e, emit) => emit(state.copyWith(creditRating: e.value)),
-    );
+    on<CreditManagementPartiesFetched>(_onPartiesFetched);
     on<CreditManagementFilterCollapsed>(
       (e, emit) => emit(state.copyWith(filterCollapsed: e.collapsed)),
     );
+
+    add(const CreditManagementPartiesFetched());
   }
 
   static CreditManagementState _initialState() =>
       CreditManagementState(date: DateTime.now());
 
-  Future<void> _onCreditManagementSubmitted(
+  Future<void> _onPartiesFetched(
+    CreditManagementPartiesFetched event,
+    Emitter<CreditManagementState> emit,
+  ) async {
+    emit(state.copyWith(partiesStatus: ApiStatus.LOADING));
+    final result = await getPartyListUsecase(NoParams());
+    result.fold(
+      (failure) => emit(state.copyWith(
+        partiesStatus: ApiStatus.FAILURE,
+        message: failure.message,
+      )),
+      (parties) => emit(state.copyWith(
+        partiesStatus: ApiStatus.SUCCESS,
+        parties: parties,
+      )),
+    );
+  }
+
+  Future<void> _onSubmitted(
     CreditManagementSubmitted event,
     Emitter<CreditManagementState> emit,
   ) async {
-    // await executeUsecase(
-    //   emit: emit,
-    //   currentState: state,
-    //   usecase: () => creditManagementUsecase(NoParams()),
-    //   stateBuilder: (status, {data, error}) =>
-    //       state.copyWith(apiStatus: status, data: data, message: error),
-    // );
+    // TODO: wire up usecase when API is ready
   }
 }
