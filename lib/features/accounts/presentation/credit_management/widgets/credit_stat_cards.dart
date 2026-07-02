@@ -3,33 +3,44 @@ import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 
 class CreditStatCards extends StatelessWidget {
-  const CreditStatCards({super.key});
+  final double firstSegmentAmount;
+  final double secondSegmentAmount;
+  final double thirdSegmentAmount;
+  final double fourthSegmentAmount;
 
-  static const _items = [
-    _StatCardData(
-      label: '30 Days Total',
-      value: '0',
-      accentColor: AppColors.grey400,
-    ),
-    _StatCardData(
-      label: '60 Days Total',
-      value: '2,000',
-      accentColor: AppColors.primary,
-    ),
-    _StatCardData(
-      label: '90 Days Total',
-      value: '266,794,381.52',
-      accentColor: Color(0xFFFF9800),
-    ),
-    _StatCardData(
-      label: '90+ Days Total',
-      value: '266,796,381.52',
-      accentColor: AppColors.primary,
-    ),
-  ];
+  const CreditStatCards({
+    super.key,
+    required this.firstSegmentAmount,
+    required this.secondSegmentAmount,
+    required this.thirdSegmentAmount,
+    required this.fourthSegmentAmount,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final items = [
+      _StatCardData(
+        label: '30 Days Total',
+        value: firstSegmentAmount.asPrice,
+        accentColor: AppColors.grey400,
+      ),
+      _StatCardData(
+        label: '60 Days Total',
+        value: secondSegmentAmount.asPrice,
+        accentColor: AppColors.primary,
+      ),
+      _StatCardData(
+        label: '90 Days Total',
+        value: thirdSegmentAmount.asPrice,
+        accentColor: const Color(0xFFFF9800),
+      ),
+      _StatCardData(
+        label: '90+ Days Total',
+        value: fourthSegmentAmount.asPrice,
+        accentColor: const Color(0xFFE53935),
+      ),
+    ];
+
     return Padding(
       padding: EdgeInsets.fromLTRB(
         context.pagePadding.left,
@@ -41,17 +52,17 @@ class CreditStatCards extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: _StatCard(data: _items[0])),
+              Expanded(child: _StatCard(data: items[0])),
               const SizedBox(width: 6),
-              Expanded(child: _StatCard(data: _items[1])),
+              Expanded(child: _StatCard(data: items[1])),
             ],
           ),
           const SizedBox(height: 6),
           Row(
             children: [
-              Expanded(child: _StatCard(data: _items[2])),
+              Expanded(child: _StatCard(data: items[2])),
               const SizedBox(width: 6),
-              Expanded(child: _StatCard(data: _items[3])),
+              Expanded(child: _StatCard(data: items[3])),
             ],
           ),
         ],
@@ -104,24 +115,16 @@ class _StatCard extends StatelessWidget {
                   crossAxisAlignment: .start,
                   mainAxisAlignment: .center,
                   children: [
-                    Row(
-                      crossAxisAlignment: .start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            data.value,
-                            style: context.bodyMedium.copyWith(
-                              fontWeight: .w700,
-                              color: context.textPrimary,
-                              fontSize: 13,
-                              height: 1,
-                            ),
-                            maxLines: 1,
-                            overflow: .ellipsis,
-                          ),
-                        ),
-                       
-                      ],
+                    Text(
+                      data.value,
+                      style: context.bodyMedium.copyWith(
+                        fontWeight: .w700,
+                        color: context.textPrimary,
+                        fontSize: 13,
+                        height: 1,
+                      ),
+                      maxLines: 1,
+                      overflow: .ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(

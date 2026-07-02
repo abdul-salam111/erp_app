@@ -2,129 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../domain/entities/customer_receivable_aging_entity.dart';
 import '../views/credit_management_details_view.dart';
-
-class CreditItem {
-  final String customer;
-  final String city;
-  final String creditRating;
-  final Color ratingColor;
-  final String balance;
-  final int avgDays;
-  final String days30;
-  final String days60;
-  final String days90;
-
-  const CreditItem({
-    required this.customer,
-    required this.city,
-    required this.creditRating,
-    required this.ratingColor,
-    required this.balance,
-    required this.avgDays,
-    required this.days30,
-    required this.days60,
-    required this.days90,
-  });
-}
 
 class CreditTable extends StatelessWidget {
   final ScrollController? scrollController;
-  const CreditTable({super.key, this.scrollController});
+  final List<PartyCreditEntity> items;
 
-  static const _items = [
-    CreditItem(
-      customer: 'Ajwa KP Foods Bannu',
-      city: 'Bannu',
-      creditRating: 'D',
-      ratingColor: Color(0xFFE53935),
-      balance: '1,000 Dr',
-      avgDays: 41,
-      days30: '0',
-      days60: '1,000',
-      days90: '0',
-    ),
-    CreditItem(
-      customer: 'Al Majara Foods Pvt Ltd',
-      city: 'Islamabad',
-      creditRating: 'D',
-      ratingColor: Color(0xFFE53935),
-      balance: '761,550 Dr',
-      avgDays: 196,
-      days30: '0',
-      days60: '1,000',
-      days90: '760,550',
-    ),
-    CreditItem(
-      customer: 'AM Foods (Karachi)',
-      city: 'Karachi',
-      creditRating: 'D',
-      ratingColor: Color(0xFFE53935),
-      balance: '123,720 Dr',
-      avgDays: 352,
-      days30: '0',
-      days60: '0',
-      days90: '123,720',
-    ),
-    CreditItem(
-      customer: 'Anees Brocker Karachi',
-      city: 'Haydrabad',
-      creditRating: 'D',
-      ratingColor: Color(0xFFE53935),
-      balance: '524,285.19 Dr',
-      avgDays: 352,
-      days30: '0',
-      days60: '0',
-      days90: '524,285.19',
-    ),
-    CreditItem(
-      customer: 'Badar Muneer Lahore',
-      city: 'Lahore',
-      creditRating: 'D',
-      ratingColor: Color(0xFFE53935),
-      balance: '125 Dr',
-      avgDays: 352,
-      days30: '0',
-      days60: '0',
-      days90: '125',
-    ),
-    CreditItem(
-      customer: 'Darm Trading Company Doha',
-      city: 'Doha Qatar',
-      creditRating: 'D',
-      ratingColor: Color(0xFFE53935),
-      balance: '11,989 Dr',
-      avgDays: 352,
-      days30: '0',
-      days60: '0',
-      days90: '11,989',
-    ),
-    CreditItem(
-      customer: 'Fauji Foods Limited',
-      city: 'Islamabad',
-      creditRating: 'D',
-      ratingColor: Color(0xFFE53935),
-      balance: '6,553,720 Dr',
-      avgDays: 263,
-      days30: '0',
-      days60: '0',
-      days90: '6,553,720',
-    ),
-    CreditItem(
-      customer: 'Gold Foods Multan',
-      city: 'Multan',
-      creditRating: 'D',
-      ratingColor: Color(0xFFE53935),
-      balance: '1,098,690 Dr',
-      avgDays: 352,
-      days30: '0',
-      days60: '0',
-      days90: '1,098,690',
-    ),
-  ];
+  const CreditTable({
+    super.key,
+    this.scrollController,
+    required this.items,
+  });
 
   @override
   Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return Center(
+        child: Text(
+          'No data found',
+          style: context.bodySmall.copyWith(color: context.textSecondary),
+        ),
+      );
+    }
+
     return Padding(
       padding: .symmetric(horizontal: context.pagePadding.left),
       child: Column(
@@ -134,10 +35,10 @@ class CreditTable extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               controller: scrollController,
-              itemCount: _items.length,
+              itemCount: items.length,
               separatorBuilder: (_, __) =>
                   Divider(height: 1, thickness: 1, color: AppColors.grey100),
-              itemBuilder: (_, i) => _CreditTableRow(item: _items[i]),
+              itemBuilder: (_, i) => _CreditTableRow(item: items[i]),
             ),
           ),
         ],
@@ -198,7 +99,7 @@ class _TableHeader extends StatelessWidget {
 }
 
 class _CreditTableRow extends StatefulWidget {
-  final CreditItem item;
+  final PartyCreditEntity item;
   const _CreditTableRow({required this.item});
 
   @override
@@ -208,8 +109,23 @@ class _CreditTableRow extends StatefulWidget {
 class _CreditTableRowState extends State<_CreditTableRow> {
   bool _expanded = false;
 
+  Color get _ratingColor {
+    switch (widget.item.creditRating.toUpperCase()) {
+      case 'A':
+        return const Color(0xFF4CAF50);
+      case 'B':
+        return const Color(0xFFFF9800);
+      case 'C':
+        return const Color(0xFFFFC107);
+      default:
+        return const Color(0xFFE53935);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final item = widget.item;
+
     return ColoredBox(
       color: _expanded
           ? context.primary.withValues(alpha: 0.06)
@@ -225,38 +141,23 @@ class _CreditTableRowState extends State<_CreditTableRow> {
                 children: [
                   Expanded(
                     flex: 6,
-                    child: Column(
-                      crossAxisAlignment: .start,
-                      children: [
-                        Text(
-                          widget.item.customer,
-                          style: context.bodySmall.copyWith(
-                            fontWeight: .w600,
-                            fontSize: 13,
-                            color: context.textPrimary,
-                          ),
-                          maxLines: 1,
-                          overflow: .ellipsis,
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          widget.item.city,
-                          style: context.labelSmall.copyWith(
-                            color: context.textSecondary,
-                            fontSize: 11,
-                          ),
-                          maxLines: 1,
-                          overflow: .ellipsis,
-                        ),
-                      ],
+                    child: Text(
+                      item.partyName,
+                      style: context.bodySmall.copyWith(
+                        fontWeight: .w600,
+                        fontSize: 13,
+                        color: context.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: .ellipsis,
                     ),
                   ),
                   Expanded(
                     flex: 1,
                     child: Center(
                       child: _CrBadge(
-                        rating: widget.item.creditRating,
-                        color: widget.item.ratingColor,
+                        rating: item.creditRating,
+                        color: _ratingColor,
                       ),
                     ),
                   ),
@@ -266,7 +167,7 @@ class _CreditTableRowState extends State<_CreditTableRow> {
                       crossAxisAlignment: .end,
                       children: [
                         Text(
-                          widget.item.balance,
+                          item.totalAmount.asPrice,
                           style: context.bodySmall.copyWith(
                             fontWeight: .w600,
                             fontSize: 12,
@@ -278,7 +179,7 @@ class _CreditTableRowState extends State<_CreditTableRow> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          '${widget.item.avgDays} D',
+                          '${item.avgDays.toInt()} D',
                           style: context.labelSmall.copyWith(
                             color: context.textSecondary,
                             fontSize: 11,
@@ -317,23 +218,32 @@ class _CreditTableRowState extends State<_CreditTableRow> {
                     ),
                     child: Row(
                       children: [
-                        _DayColumn(label: '30 Days', value: widget.item.days30),
-                        _DayColumn(label: '60 Days', value: widget.item.days60),
-                        _DayColumn(label: '90 Days', value: widget.item.days90),
+                        _DayColumn(
+                          label: '30 Days',
+                          value: item.firstSegmentAmount.asPrice,
+                        ),
+                        _DayColumn(
+                          label: '60 Days',
+                          value: item.secondSegmentAmount.asPrice,
+                        ),
+                        _DayColumn(
+                          label: '90 Days',
+                          value: item.thirdSegmentAmount.asPrice,
+                        ),
                         _DayColumn(
                           label: '90+ Days',
-                          value: widget.item.days90,
+                          value: item.fourthSegmentAmount.asPrice,
                         ),
                         IconButton(
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => CreditManagementDetailsView(
-                                customer: widget.item.customer,
-                                city: widget.item.city,
-                                creditRating: widget.item.creditRating,
-                                ratingColor: widget.item.ratingColor,
-                                balance: widget.item.balance,
+                                customer: item.partyName,
+                                creditRating: item.creditRating,
+                                ratingColor: _ratingColor,
+                                balance: item.totalAmount.asPrice,
+                                partyId: item.partyId,
                               ),
                             ),
                           ),

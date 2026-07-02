@@ -8,15 +8,21 @@ class CreditManagementBloc
     extends Bloc<CreditManagementEvent, CreditManagementState>
     with UsecaseExecuterMixin {
   final GetPartyListUsecase getPartyListUsecase;
+  final GetCustomerReceivableAgingUsecase getCustomerReceivableAgingUsecase;
 
-  CreditManagementBloc({required this.getPartyListUsecase})
-      : super(_initialState()) {
+  CreditManagementBloc({
+    required this.getPartyListUsecase,
+    required this.getCustomerReceivableAgingUsecase,
+  }) : super(_initialState()) {
     on<CreditManagementSubmitted>(_onSubmitted);
     on<CreditManagementDateChanged>(
       (e, emit) => emit(state.copyWith(date: e.date)),
     );
     on<CreditManagementPartySelected>(
       (e, emit) => emit(state.copyWith(selectedPartyId: e.partyId)),
+    );
+    on<CreditManagementPartyCleared>(
+      (e, emit) => emit(state.copyWith(clearSelectedPartyId: true)),
     );
     on<CreditManagementPartiesFetched>(_onPartiesFetched);
     on<CreditManagementFilterCollapsed>(
@@ -51,6 +57,22 @@ class CreditManagementBloc
     CreditManagementSubmitted event,
     Emitter<CreditManagementState> emit,
   ) async {
-    // TODO: wire up usecase when API is ready
+    emit(state.copyWith(apiStatus: ApiStatus.LOADING));
+    final result = await getCustomerReceivableAgingUsecase(
+      GetCustomerReceivableAgingParams(
+        toDate: state.date.toIso8601String(),
+        partyId: state.selectedPartyId,
+      ),
+    );
+    result.fold(
+      (failure) => emit(state.copyWith(
+        apiStatus: ApiStatus.FAILURE,
+        message: failure.message,
+      )),
+      (data) => emit(state.copyWith(
+        apiStatus: ApiStatus.SUCCESS,
+        agingData: data,
+      )),
+    );
   }
 }

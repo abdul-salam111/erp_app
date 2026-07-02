@@ -44,4 +44,11 @@ abstract interface class IRemoteAccountsDataSource {
   });
 
   Future<List<int>> getPrintableFeatures();
+
+  //! ─── Credit Management ──────────────────────────────────────────────────────
+
+  Future<CustomerReceivableAgingModel> getCustomerReceivableAging({
+    required String toDate,
+    int? partyId,
+  });
 }

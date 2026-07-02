@@ -46,7 +46,8 @@ final class _Accounts {
 
   String get accountList              => '$_execBase/accounts/GetList';
   String get accountLedger            => '$_execBase/accounts/GetLedger';
-  String get partyList         => '$_execBase/party/GetList';
+  String get partyList                => '$_execBase/party/GetList';
+  String get customerReceivableAging  => '$_execBase/creditmanagement/GetCustomerReceivableAging';
   String get statements        => '$_statementsBase/GetAccountStatements';
   String get invoicePdf        => '$_statementsBase/GetInvoicePdf';
   String get printableFeatures => '$_statementsBase/GetPrintableFeatures';

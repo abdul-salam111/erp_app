@@ -1,10 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/constants/app_enums.dart';
+import '../../../domain/entities/customer_receivable_aging_entity.dart';
 import '../../../domain/entities/party_list_item_entity.dart';
 
 class CreditManagementState extends Equatable {
-  final dynamic data;
+  final CustomerReceivableAgingEntity? agingData;
   final String? message;
   final ApiStatus apiStatus;
   final DateTime date;
@@ -14,7 +15,7 @@ class CreditManagementState extends Equatable {
   final bool filterCollapsed;
 
   const CreditManagementState({
-    this.data,
+    this.agingData,
     this.message,
     this.apiStatus = ApiStatus.INITIAL,
     required this.date,
@@ -25,30 +26,31 @@ class CreditManagementState extends Equatable {
   });
 
   CreditManagementState copyWith({
-    dynamic data,
+    CustomerReceivableAgingEntity? agingData,
     String? message,
     ApiStatus? apiStatus,
     DateTime? date,
     List<PartyListItemEntity>? parties,
     ApiStatus? partiesStatus,
     int? selectedPartyId,
+    bool clearSelectedPartyId = false,
     bool? filterCollapsed,
   }) {
     return CreditManagementState(
-      data:            data            ?? this.data,
+      agingData:       agingData       ?? this.agingData,
       message:         message         ?? this.message,
       apiStatus:       apiStatus       ?? this.apiStatus,
       date:            date            ?? this.date,
       parties:         parties         ?? this.parties,
       partiesStatus:   partiesStatus   ?? this.partiesStatus,
-      selectedPartyId: selectedPartyId ?? this.selectedPartyId,
+      selectedPartyId: clearSelectedPartyId ? null : (selectedPartyId ?? this.selectedPartyId),
       filterCollapsed: filterCollapsed ?? this.filterCollapsed,
     );
   }
 
   @override
   List<Object?> get props => [
-        data,
+        agingData,
         message,
         apiStatus,
         date,

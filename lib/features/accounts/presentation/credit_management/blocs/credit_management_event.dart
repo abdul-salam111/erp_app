@@ -29,6 +29,10 @@ class CreditManagementPartySelected extends CreditManagementEvent {
   List<Object?> get props => [partyId];
 }
 
+class CreditManagementPartyCleared extends CreditManagementEvent {
+  const CreditManagementPartyCleared();
+}
+
 class CreditManagementFilterCollapsed extends CreditManagementEvent {
   final bool collapsed;
   const CreditManagementFilterCollapsed(this.collapsed);

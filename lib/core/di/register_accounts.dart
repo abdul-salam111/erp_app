@@ -80,13 +80,20 @@ Future<void> registerAccounts() async {
     ),
   );
 
+  // UseCase — CreditManagement
+  sl.registerLazySingleton<GetCustomerReceivableAgingUsecase>(
+    () => GetCustomerReceivableAgingUsecase(repository: sl()),
+  );
   // BLoC — CreditManagement screen
   sl.registerFactory<CreditManagementBloc>(
-    () => CreditManagementBloc(getPartyListUsecase: sl()),
+    () => CreditManagementBloc(
+      getPartyListUsecase: sl(),
+      getCustomerReceivableAgingUsecase: sl(),
+    ),
   );
   // Cubit — AcStatement tab (credit management details)
   sl.registerFactory<AcStatementCubit>(
-    () => AcStatementCubit(sl<GetAccountStatementsUsecase>()),
+    () => AcStatementCubit(sl<GetPartyStatementsUsecase>()),
   );
   // UseCase — CustomerRecievables
   sl.registerLazySingleton<CustomerRecievablesUsecase>(

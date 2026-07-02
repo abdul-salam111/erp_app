@@ -53,4 +53,8 @@ abstract interface class IAccountsRepository {
   Future<Either<Failure, List<int>>> getPrintableFeatures();
   Future<Either<Failure, List<CustomerReceivableItemEntity>>> vendorPayable();
 
+  //! ─── Credit Management ──────────────────────────────────────────────────────
+
+  Future<Either<Failure, CustomerReceivableAgingEntity>>
+  getCustomerReceivableAging({required String toDate, int? partyId});
 }

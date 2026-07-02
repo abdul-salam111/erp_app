@@ -10,16 +10,16 @@ class CreditManagementDetailsView extends StatelessWidget {
   final String creditRating;
   final Color ratingColor;
   final String balance;
-  final int? accountId;
+  final int? partyId;
 
   const CreditManagementDetailsView({
     super.key,
     required this.customer,
-    required this.city,
+    this.city = '',
     required this.creditRating,
     required this.ratingColor,
     required this.balance,
-    this.accountId,
+    this.partyId,
   });
 
   @override
@@ -35,7 +35,7 @@ class CreditManagementDetailsView extends StatelessWidget {
           ratingColor: ratingColor,
         ),
         body: TabBarView(
-          children: [HomeTab(balance: balance), AcStatementTab(accountId: accountId)],
+          children: [HomeTab(balance: balance), AcStatementTab(partyId: partyId)],
         ),
       ),
     );

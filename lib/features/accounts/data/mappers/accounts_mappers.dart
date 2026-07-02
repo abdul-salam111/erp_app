@@ -140,3 +140,30 @@ extension CashbookAccountModelX on CashbookAccountModel {
     sysKey: accType?.sysKey,
   );
 }
+
+//! ─── Credit Management Mappers ──────────────────────────────────────────────
+
+extension CustomerReceivableAgingModelX on CustomerReceivableAgingModel {
+  CustomerReceivableAgingEntity toEntity() => CustomerReceivableAgingEntity(
+    firstSegmentAmount: firstSegmentAmount,
+    secondSegmentAmount: secondSegmentAmount,
+    thirdSegmentAmount: thirdSegmentAmount,
+    fourthSegmentAmount: fourthSegmentAmount,
+    totalAmount: totalAmount,
+    partyCredits: partyCredits.map((p) => p.toEntity()).toList(),
+  );
+}
+
+extension PartyCreditModelX on PartyCreditModel {
+  PartyCreditEntity toEntity() => PartyCreditEntity(
+    partyId: partyId ?? 0,
+    partyName: party?.fullName ?? '',
+    creditRating: creditRating,
+    firstSegmentAmount: firstSegmentAmount,
+    secondSegmentAmount: secondSegmentAmount,
+    thirdSegmentAmount: thirdSegmentAmount,
+    fourthSegmentAmount: fourthSegmentAmount,
+    totalAmount: totalAmount,
+    avgDays: avgDays,
+  );
+}

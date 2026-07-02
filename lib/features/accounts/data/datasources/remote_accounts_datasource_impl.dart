@@ -152,4 +152,24 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
       authToken: _token,
     );
   }
+
+  //! ─── Credit Management ──────────────────────────────────────────────────────
+
+  @override
+  Future<CustomerReceivableAgingModel> getCustomerReceivableAging({
+    required String toDate,
+    int? partyId,
+  }) {
+    final body = <String, dynamic>{
+      'ToDate': toDate,
+      if (partyId != null) 'PartyId': partyId,
+    };
+    return post<CustomerReceivableAgingModel>(
+      url: ApiEndPoints.accounts.customerReceivableAging,
+      body: body,
+      parser: (json) =>
+          CustomerReceivableAgingModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
 }

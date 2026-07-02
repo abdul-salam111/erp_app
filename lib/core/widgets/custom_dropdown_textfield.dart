@@ -65,6 +65,19 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
   }
 
   @override
+  void didUpdateWidget(SearchableDropdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.items != widget.items ||
+        oldWidget.subtitles != widget.subtitles) {
+      _filteredNotifier.value = _buildPairs(
+        filter: widget.controller.text.trim().isEmpty
+            ? null
+            : widget.controller.text.trim(),
+      );
+    }
+  }
+
+  @override
   void dispose() {
     _overlayEntry?.remove();
     _overlayEntry = null;

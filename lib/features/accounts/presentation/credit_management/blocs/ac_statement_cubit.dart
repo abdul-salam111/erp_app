@@ -2,26 +2,26 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../domain/entities/ledger_statement_entity.dart';
-import '../../../domain/usecases/get_account_statements_usecase.dart';
+import '../../../domain/usecases/get_party_statements_usecase.dart';
 
 part 'ac_statement_state.dart';
 
 class AcStatementCubit extends Cubit<AcStatementState> {
-  final GetAccountStatementsUsecase _usecase;
+  final GetPartyStatementsUsecase _usecase;
 
   AcStatementCubit(this._usecase) : super(const AcStatementState());
 
   Future<void> fetch({
     required String fromDate,
     required String toDate,
-    int? accountId,
+    int? partyId,
   }) async {
     emit(state.copyWith(status: ApiStatus.LOADING));
     final result = await _usecase(
-      GetAccountStatementsParams(
+      GetPartyStatementsParams(
         fromDate: fromDate,
         toDate: toDate,
-        accountId: accountId,
+        partyId: partyId,
       ),
     );
     result.fold(

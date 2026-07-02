@@ -124,6 +124,23 @@ class AccountsRepositoryImpl extends BaseRepository
 
 
 
+  //! ─── Credit Management ──────────────────────────────────────────────────────
+
+  @override
+  Future<Either<Failure, CustomerReceivableAgingEntity>>
+  getCustomerReceivableAging({
+    required String toDate,
+    int? partyId,
+  }) async {
+    final result = await execute(
+      call: () => dataSource.getCustomerReceivableAging(
+        toDate: toDate,
+        partyId: partyId,
+      ),
+    );
+    return result.map((m) => m.toEntity());
+  }
+
   @override
   Future<Either<Failure, List<CustomerReceivableItemEntity>>> vendorPayable() {
     return execute(
