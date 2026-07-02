@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../accounts_exports.dart';
@@ -56,15 +57,21 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
     );
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        apiStatus: ApiStatus.FAILURE,
-        message: failure.message,
-        statements: [],
-      )),
-      (statements) => emit(state.copyWith(
-        apiStatus: ApiStatus.SUCCESS,
-        statements: statements,
-      )),
+      (failure) {
+        debugPrint('[AccountLedger] _onSubmitted FAILURE: ${failure.message}');
+        emit(state.copyWith(
+          apiStatus: ApiStatus.FAILURE,
+          message: failure.message,
+          statements: [],
+        ));
+      },
+      (statements) {
+        debugPrint('[AccountLedger] _onSubmitted SUCCESS: ${statements.length} statement(s)');
+        emit(state.copyWith(
+          apiStatus: ApiStatus.SUCCESS,
+          statements: statements,
+        ));
+      },
     );
   }
 
@@ -82,16 +89,22 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
     );
 
     result.fold(
-      (failure) => emit(state.copyWith(
-        isPrinting: false,
-        pdfStatus: ApiStatus.FAILURE,
-        message: failure.message,
-      )),
-      (url) => emit(state.copyWith(
-        isPrinting: false,
-        pdfStatus: ApiStatus.SUCCESS,
-        pdfUrl: url,
-      )),
+      (failure) {
+        debugPrint('[AccountLedger] _onPrintRequested FAILURE: ${failure.message}');
+        emit(state.copyWith(
+          isPrinting: false,
+          pdfStatus: ApiStatus.FAILURE,
+          message: failure.message,
+        ));
+      },
+      (url) {
+        debugPrint('[AccountLedger] _onPrintRequested SUCCESS: $url');
+        emit(state.copyWith(
+          isPrinting: false,
+          pdfStatus: ApiStatus.SUCCESS,
+          pdfUrl: url,
+        ));
+      },
     );
   }
 
@@ -102,14 +115,20 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
     emit(state.copyWith(accountsStatus: ApiStatus.LOADING));
     final result = await getAccountsListUsecase(NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(
-        accountsStatus: ApiStatus.FAILURE,
-        message: failure.message,
-      )),
-      (accounts) => emit(state.copyWith(
-        accountsStatus: ApiStatus.SUCCESS,
-        accounts: accounts,
-      )),
+      (failure) {
+        debugPrint('[AccountLedger] _onAccountsFetched FAILURE: ${failure.message}');
+        emit(state.copyWith(
+          accountsStatus: ApiStatus.FAILURE,
+          message: failure.message,
+        ));
+      },
+      (accounts) {
+        debugPrint('[AccountLedger] _onAccountsFetched SUCCESS: ${accounts.length} account(s)');
+        emit(state.copyWith(
+          accountsStatus: ApiStatus.SUCCESS,
+          accounts: accounts,
+        ));
+      },
     );
   }
 }

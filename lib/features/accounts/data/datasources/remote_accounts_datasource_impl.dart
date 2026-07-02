@@ -12,7 +12,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
   //! ─── Account Ledger ─────────────────────────────────────────────────────────
 
   @override
-  Future<List<GetLedgerModel>> getAccountStatements({
+  Future<GetLedgerModel> getAccountStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
@@ -22,7 +22,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
       'ToDate': toDate,
       if (accountId != null) 'AccountId': accountId,
     };
-    return postList<GetLedgerModel>(
+    return post<GetLedgerModel>(
       url: ApiEndPoints.accounts.accountLedger,
       body: body,
       parser: (json) => GetLedgerModel.fromJson(json as Map<String, dynamic>),
@@ -44,7 +44,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
   //! ─── Party Ledger ───────────────────────────────────────────────────────────
 
   @override
-  Future<List<GetLedgerModel>> getPartyStatements({
+  Future<GetLedgerModel> getPartyStatements({
     required String fromDate,
     required String toDate,
     int? partyId,
@@ -54,7 +54,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
       'ToDate': toDate,
       if (partyId != null) 'PartyId': partyId,
     };
-    return postList<GetLedgerModel>(
+    return post<GetLedgerModel>(
       url: ApiEndPoints.accounts.accountLedger,
       body: body,
       parser: (json) => GetLedgerModel.fromJson(json as Map<String, dynamic>),
@@ -75,7 +75,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
 
   //! ─── Cashbook ───────────────────────────────────────────────────────────────
   @override
-  Future<List<GetLedgerModel>> getCashbookStatements({
+  Future<GetLedgerModel> getCashbookStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
@@ -86,7 +86,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
       'AccountId': accountId,
       'LedgerType': 'cash_ledger',
     };
-    return postList<GetLedgerModel>(
+    return post<GetLedgerModel>(
       url: ApiEndPoints.accounts.accountLedger,
       body: body,
       parser: (json) => GetLedgerModel.fromJson(json as Map<String, dynamic>),

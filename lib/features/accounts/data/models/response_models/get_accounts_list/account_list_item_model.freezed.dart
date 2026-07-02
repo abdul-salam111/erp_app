@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AccountListItemModel {
 
-@JsonKey(name: 'Id') int get id;@JsonKey(name: 'Name', defaultValue: '') String get name;@JsonKey(name: 'Group', fromJson: _groupName) String get group;@JsonKey(name: 'AccType', fromJson: _breadcrumb) String get breadcrumb;
+@JsonKey(name: 'Id') int get id;@JsonKey(name: 'Name', defaultValue: '') String get name;@JsonKey(name: 'AccType', fromJson: _groupName) String get group;
 /// Create a copy of AccountListItemModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AccountListItemModelCopyWith<AccountListItemModel> get copyWith => _$AccountLis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AccountListItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.group, group) || other.group == group)&&(identical(other.breadcrumb, breadcrumb) || other.breadcrumb == breadcrumb));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AccountListItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.group, group) || other.group == group));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,group,breadcrumb);
+int get hashCode => Object.hash(runtimeType,id,name,group);
 
 @override
 String toString() {
-  return 'AccountListItemModel(id: $id, name: $name, group: $group, breadcrumb: $breadcrumb)';
+  return 'AccountListItemModel(id: $id, name: $name, group: $group)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AccountListItemModelCopyWith<$Res>  {
   factory $AccountListItemModelCopyWith(AccountListItemModel value, $Res Function(AccountListItemModel) _then) = _$AccountListItemModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'Id') int id,@JsonKey(name: 'Name', defaultValue: '') String name,@JsonKey(name: 'Group', fromJson: _groupName) String group,@JsonKey(name: 'AccType', fromJson: _breadcrumb) String breadcrumb
+@JsonKey(name: 'Id') int id,@JsonKey(name: 'Name', defaultValue: '') String name,@JsonKey(name: 'AccType', fromJson: _groupName) String group
 });
 
 
@@ -65,12 +65,11 @@ class _$AccountListItemModelCopyWithImpl<$Res>
 
 /// Create a copy of AccountListItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? group = null,Object? breadcrumb = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? group = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
-as String,breadcrumb: null == breadcrumb ? _self.breadcrumb : breadcrumb // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -156,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'Name', defaultValue: '')  String name, @JsonKey(name: 'Group', fromJson: _groupName)  String group, @JsonKey(name: 'AccType', fromJson: _breadcrumb)  String breadcrumb)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'Name', defaultValue: '')  String name, @JsonKey(name: 'AccType', fromJson: _groupName)  String group)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AccountListItemModel() when $default != null:
-return $default(_that.id,_that.name,_that.group,_that.breadcrumb);case _:
+return $default(_that.id,_that.name,_that.group);case _:
   return orElse();
 
 }
@@ -177,10 +176,10 @@ return $default(_that.id,_that.name,_that.group,_that.breadcrumb);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'Name', defaultValue: '')  String name, @JsonKey(name: 'Group', fromJson: _groupName)  String group, @JsonKey(name: 'AccType', fromJson: _breadcrumb)  String breadcrumb)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'Name', defaultValue: '')  String name, @JsonKey(name: 'AccType', fromJson: _groupName)  String group)  $default,) {final _that = this;
 switch (_that) {
 case _AccountListItemModel():
-return $default(_that.id,_that.name,_that.group,_that.breadcrumb);case _:
+return $default(_that.id,_that.name,_that.group);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +196,10 @@ return $default(_that.id,_that.name,_that.group,_that.breadcrumb);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'Name', defaultValue: '')  String name, @JsonKey(name: 'Group', fromJson: _groupName)  String group, @JsonKey(name: 'AccType', fromJson: _breadcrumb)  String breadcrumb)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'Name', defaultValue: '')  String name, @JsonKey(name: 'AccType', fromJson: _groupName)  String group)?  $default,) {final _that = this;
 switch (_that) {
 case _AccountListItemModel() when $default != null:
-return $default(_that.id,_that.name,_that.group,_that.breadcrumb);case _:
+return $default(_that.id,_that.name,_that.group);case _:
   return null;
 
 }
@@ -212,13 +211,12 @@ return $default(_that.id,_that.name,_that.group,_that.breadcrumb);case _:
 @JsonSerializable()
 
 class _AccountListItemModel implements AccountListItemModel {
-  const _AccountListItemModel({@JsonKey(name: 'Id') required this.id, @JsonKey(name: 'Name', defaultValue: '') required this.name, @JsonKey(name: 'Group', fromJson: _groupName) required this.group, @JsonKey(name: 'AccType', fromJson: _breadcrumb) required this.breadcrumb});
+  const _AccountListItemModel({@JsonKey(name: 'Id') required this.id, @JsonKey(name: 'Name', defaultValue: '') required this.name, @JsonKey(name: 'AccType', fromJson: _groupName) required this.group});
   factory _AccountListItemModel.fromJson(Map<String, dynamic> json) => _$AccountListItemModelFromJson(json);
 
 @override@JsonKey(name: 'Id') final  int id;
 @override@JsonKey(name: 'Name', defaultValue: '') final  String name;
-@override@JsonKey(name: 'Group', fromJson: _groupName) final  String group;
-@override@JsonKey(name: 'AccType', fromJson: _breadcrumb) final  String breadcrumb;
+@override@JsonKey(name: 'AccType', fromJson: _groupName) final  String group;
 
 /// Create a copy of AccountListItemModel
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccountListItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.group, group) || other.group == group)&&(identical(other.breadcrumb, breadcrumb) || other.breadcrumb == breadcrumb));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccountListItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.group, group) || other.group == group));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,group,breadcrumb);
+int get hashCode => Object.hash(runtimeType,id,name,group);
 
 @override
 String toString() {
-  return 'AccountListItemModel(id: $id, name: $name, group: $group, breadcrumb: $breadcrumb)';
+  return 'AccountListItemModel(id: $id, name: $name, group: $group)';
 }
 
 
@@ -253,7 +251,7 @@ abstract mixin class _$AccountListItemModelCopyWith<$Res> implements $AccountLis
   factory _$AccountListItemModelCopyWith(_AccountListItemModel value, $Res Function(_AccountListItemModel) _then) = __$AccountListItemModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'Id') int id,@JsonKey(name: 'Name', defaultValue: '') String name,@JsonKey(name: 'Group', fromJson: _groupName) String group,@JsonKey(name: 'AccType', fromJson: _breadcrumb) String breadcrumb
+@JsonKey(name: 'Id') int id,@JsonKey(name: 'Name', defaultValue: '') String name,@JsonKey(name: 'AccType', fromJson: _groupName) String group
 });
 
 
@@ -270,12 +268,11 @@ class __$AccountListItemModelCopyWithImpl<$Res>
 
 /// Create a copy of AccountListItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? group = null,Object? breadcrumb = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? group = null,}) {
   return _then(_AccountListItemModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,group: null == group ? _self.group : group // ignore: cast_nullable_to_non_nullable
-as String,breadcrumb: null == breadcrumb ? _self.breadcrumb : breadcrumb // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

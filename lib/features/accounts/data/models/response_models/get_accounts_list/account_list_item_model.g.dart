@@ -11,8 +11,7 @@ _AccountListItemModel _$AccountListItemModelFromJson(
 ) => _AccountListItemModel(
   id: (json['Id'] as num).toInt(),
   name: json['Name'] as String? ?? '',
-  group: _groupName(json['Group']),
-  breadcrumb: _breadcrumb(json['AccType']),
+  group: _groupName(json['AccType']),
 );
 
 Map<String, dynamic> _$AccountListItemModelToJson(
@@ -20,6 +19,5 @@ Map<String, dynamic> _$AccountListItemModelToJson(
 ) => <String, dynamic>{
   'Id': instance.id,
   'Name': instance.name,
-  'Group': instance.group,
-  'AccType': instance.breadcrumb,
+  'AccType': instance.group,
 };

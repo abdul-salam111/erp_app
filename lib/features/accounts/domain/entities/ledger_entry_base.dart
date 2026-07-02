@@ -1,11 +1,11 @@
 abstract interface class LedgerEntryBase {
   bool? get isOpening;
-  int? get drAmount;
-  int? get crAmount;
+  double? get drAmount;
+  double? get crAmount;
   DateTime? get docDate;
   String? get featureName;
   String? get docNbr;
-  int? get balance;
+  double? get balance;
   int? get featureId;
   int? get parentEntityId;
   String? get narration;

@@ -7,7 +7,6 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../domain/entities/recovery_invoice_entity.dart';
 import '../blocs/accounts_bloc.dart';
-import '../blocs/accounts_event.dart';
 import '../blocs/accounts_state.dart';
 import 'accounts_models.dart';
 
@@ -122,28 +121,16 @@ class RecoveryListSection extends StatelessWidget {
               );
             }
 
-            return SizedBox(
-              height: MediaQuery.sizeOf(context).height * 0.5,
-              child: ListView.separated(
-                padding: EdgeInsets.zero,
-                physics: const ClampingScrollPhysics(),
-                itemCount: invoices.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (context, index) =>
-                    _CustomerTile(invoice: invoices[index]),
-              ),
+            return ListView.separated(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: invoices.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, index) =>
+                  _CustomerTile(invoice: invoices[index]),
             );
           },
-        ),
-        Align(
-          alignment: .centerRight,
-          child: TextButton.icon(
-            onPressed: () => context
-                .read<AccountsBloc>()
-                .add(const TodayOverviewExpansionToggled()),
-            icon: const Icon(Icons.keyboard_arrow_up_rounded, size: 16),
-            label: const Text(AppConstants.hideDetailsLabel),
-          ),
         ),
       ],
     );

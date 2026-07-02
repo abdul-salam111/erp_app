@@ -168,7 +168,7 @@ class AppConstants {
   static const String totalReceivedTodayLabel = 'Total Received Today';
   static const String totalPostponeLabel = 'Total Postpone';
   static const String totalDueTodayLabel = 'Total Due Today';
-  static const String recoveryDueTodayTitle = 'Recovery Due Today';
+  static const String recoveryDueTodayTitle = 'Recovery Due';
   static const String hideDetails = 'Hide List';
   static const String showDetails = 'Show List';
   static const String accountStatementsLabel = 'Account Ledger';

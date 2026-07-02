@@ -103,9 +103,11 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
       listenWhen: (p, c) => p.pdfStatus != c.pdfStatus,
       listener: (context, state) {
         if (state.pdfStatus == ApiStatus.FAILURE) {
+          debugPrint('[AccountLedger] pdfStatus FAILURE: ${state.message}');
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
         if (state.pdfStatus == ApiStatus.SUCCESS && state.pdfUrl != null) {
+          debugPrint('[AccountLedger] pdfStatus SUCCESS: ${state.pdfUrl}');
           AppToastsUtils.showSuccessTop(
             context,
             AppConstants.invoiceReadySuccessMsg,

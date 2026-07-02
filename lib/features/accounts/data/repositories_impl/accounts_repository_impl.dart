@@ -23,7 +23,7 @@ class AccountsRepositoryImpl extends BaseRepository
         accountId: accountId,
       ),
     );
-    return result.map((models) => models.map((m) => m.toEntity()).toList());
+    return result.map((model) => [model.toEntity()]);
   }
 
   @override
@@ -47,7 +47,7 @@ class AccountsRepositoryImpl extends BaseRepository
         partyId: partyId,
       ),
     );
-    return result.map((models) => models.map((m) => m.toEntity()).toList());
+    return result.map((model) => [model.toEntity()]);
   }
 
   @override
@@ -71,7 +71,7 @@ class AccountsRepositoryImpl extends BaseRepository
         accountId: accountId,
       ),
     );
-    return result.map((models) => models.map((m) => m.toEntity()).toList());
+    return result.map((model) => [model.toEntity()]);
   }
 
   @override

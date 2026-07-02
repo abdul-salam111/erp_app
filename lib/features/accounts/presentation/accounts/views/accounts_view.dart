@@ -23,7 +23,6 @@ class AccountsView extends StatelessWidget {
 }
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
-
 class _AccountsBody extends StatefulWidget {
   const _AccountsBody();
   @override
@@ -114,6 +113,7 @@ class _AccountsBodyState extends State<_AccountsBody>
         child: Scaffold(
           backgroundColor: context.white,
           appBar: CustomAppBar(title: AppConstants.accountsLabel),
+        
           body: SingleChildScrollView(
             padding: context.pagePadding,
             child: Column(
@@ -173,43 +173,48 @@ class _AccountsBodyState extends State<_AccountsBody>
                 // [0b] ── Filter badges ──────────────────────────────────────
                 BlocBuilder<AccountsBloc, AccountsState>(
                   buildWhen: (p, c) => p.selectedFilter != c.selectedFilter,
-                  builder: (context, state) => SingleChildScrollView(
-                    scrollDirection: .horizontal,
-                    child: Row(
-                      children: [
-                        _RecoveryFilterBadge(
+                  builder: (context, state) => Row(
+                    children: [
+                      Expanded(
+                        child: _RecoveryFilterBadge(
                           label: AppConstants.todayLabel,
                           selected: state.selectedFilter == FilterType.today,
                           onTap: () => context.read<AccountsBloc>().add(
                             const RecoveryFilterChanged(FilterType.today),
                           ),
                         ),
-                        const SizedBox(width: 6),
-                        _RecoveryFilterBadge(
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _RecoveryFilterBadge(
                           label: AppConstants.weekLabel,
                           selected: state.selectedFilter == FilterType.week,
                           onTap: () => context.read<AccountsBloc>().add(
                             const RecoveryFilterChanged(FilterType.week),
                           ),
                         ),
-                        const SizedBox(width: 6),
-                        _RecoveryFilterBadge(
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _RecoveryFilterBadge(
                           label: AppConstants.monthLabel,
                           selected: state.selectedFilter == FilterType.month,
                           onTap: () => context.read<AccountsBloc>().add(
                             const RecoveryFilterChanged(FilterType.month),
                           ),
                         ),
-                        const SizedBox(width: 6),
-                        _RecoveryFilterBadge(
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _RecoveryFilterBadge(
                           label: AppConstants.oldestLabel,
                           selected: state.selectedFilter == FilterType.oldest,
                           onTap: () => context.read<AccountsBloc>().add(
                             const RecoveryFilterChanged(FilterType.oldest),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -331,6 +336,46 @@ class _AccountsBodyState extends State<_AccountsBody>
                 const SizedBox(height: 8),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Filter badge ─────────────────────────────────────────────────────────────
+
+class _RecoveryFilterBadge extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _RecoveryFilterBadge({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: .symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: selected ? context.primary : AppColors.transparent,
+          borderRadius: .circular(20),
+          border: Border.all(
+            color: selected ? context.primary : AppColors.grey200,
+          ),
+        ),
+        child: Text(
+          label,
+          textAlign: .center,
+          style: context.labelSmall.copyWith(
+            color: selected ? AppColors.white : context.textSecondary,
+            fontWeight: .w600,
           ),
         ),
       ),

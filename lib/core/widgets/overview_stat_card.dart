@@ -27,9 +27,10 @@ class OverviewStatCard extends StatelessWidget {
 
           boxShadow: [
             BoxShadow(
-              color: AppColors.black.withValues(alpha: 0.03),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+              color: AppColors.black.withValues(alpha: 0.08),
+              blurRadius: 10,
+              spreadRadius: 0,
+              offset: const Offset(0, 3),
             ),
           ],
         ),

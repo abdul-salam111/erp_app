@@ -3,7 +3,7 @@ import '../../accounts_exports.dart';
 abstract interface class IRemoteAccountsDataSource {
   //! ─── Account Ledger ─────────────────────────────────────────────────────────
 
-  Future<List<GetLedgerModel>> getAccountStatements({
+  Future<GetLedgerModel> getAccountStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
@@ -13,7 +13,7 @@ abstract interface class IRemoteAccountsDataSource {
 
   //! ─── Party Ledger ───────────────────────────────────────────────────────────
 
-  Future<List<GetLedgerModel>> getPartyStatements({
+  Future<GetLedgerModel> getPartyStatements({
     required String fromDate,
     required String toDate,
     int? partyId,
@@ -22,7 +22,7 @@ abstract interface class IRemoteAccountsDataSource {
   Future<List<PartyListItemModel>> getPartyList();
 
   //! ─── Cashbook ───────────────────────────────────────────────────────────────
-  Future<List<GetLedgerModel>> getCashbookStatements({
+  Future<GetLedgerModel> getCashbookStatements({
     required String fromDate,
     required String toDate,
     int? accountId,

@@ -3,9 +3,9 @@ import 'ledger_entry_base.dart';
 
 class LedgerStatementEntity extends Equatable {
   final int? finYearId;
-  final int? ttlDebit;
-  final int? ttlCredit;
-  final int? balance;
+  final double? ttlDebit;
+  final double? ttlCredit;
+  final double? balance;
   final LedgerFinYearEntity? finYear;
   final List<LedgerTypeEntity>? ledgerTypes;
 
@@ -50,9 +50,9 @@ class LedgerFinYearEntity extends Equatable {
 
 class LedgerTypeEntity extends Equatable {
   final String? type;
-  final int? ttlDebit;
-  final int? ttlCredit;
-  final int? balance;
+  final double? ttlDebit;
+  final double? ttlCredit;
+  final double? balance;
   final List<LedgerEntryEntity>? ledgers;
 
   const LedgerTypeEntity({
@@ -70,15 +70,17 @@ class LedgerTypeEntity extends Equatable {
 class LedgerEntryEntity extends Equatable implements LedgerEntryBase {
   final String? type;
   @override final int? featureId;
+  final LedgerFeatureEntity? feature;
   @override final DateTime? docDate;
   final int? accountId;
   final int? finYearId;
   final int? currencyId;
-  @override final int? drAmount;
-  @override final int? crAmount;
+  @override final double? drAmount;
+  @override final double? crAmount;
+  final double? taxAmount;
   @override final String? narration;
   @override final bool? isOpening;
-  @override final int? balance;
+  @override final double? balance;
   final int? id;
   @override final String? docNbr;
   final int? toAccountId;
@@ -92,12 +94,14 @@ class LedgerEntryEntity extends Equatable implements LedgerEntryBase {
   const LedgerEntryEntity({
     this.type,
     this.featureId,
+    this.feature,
     this.docDate,
     this.accountId,
     this.finYearId,
     this.currencyId,
     this.drAmount,
     this.crAmount,
+    this.taxAmount,
     this.narration,
     this.isOpening,
     this.balance,
@@ -115,12 +119,14 @@ class LedgerEntryEntity extends Equatable implements LedgerEntryBase {
   List<Object?> get props => [
         type,
         featureId,
+        feature,
         docDate,
         accountId,
         finYearId,
         currencyId,
         drAmount,
         crAmount,
+        taxAmount,
         narration,
         isOpening,
         balance,
@@ -133,6 +139,23 @@ class LedgerEntryEntity extends Equatable implements LedgerEntryBase {
         parentEntityId,
         childEntityId,
       ];
+}
+
+class LedgerFeatureEntity extends Equatable {
+  final int? id;
+  final String? name;
+  final String? sysKey;
+  final bool? flgLandingPage;
+
+  const LedgerFeatureEntity({
+    this.id,
+    this.name,
+    this.sysKey,
+    this.flgLandingPage,
+  });
+
+  @override
+  List<Object?> get props => [id, name, sysKey, flgLandingPage];
 }
 
 class LedgerPartyEntity extends Equatable {

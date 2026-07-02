@@ -95,16 +95,27 @@ extension LedgerTypeX on LedgerType {
   );
 }
 
+extension LedgerFeatureModelX on LedgerFeatureModel {
+  LedgerFeatureEntity toEntity() => LedgerFeatureEntity(
+    id: id,
+    name: name,
+    sysKey: sysKey,
+    flgLandingPage: flgLandingPage,
+  );
+}
+
 extension LedgerX on Ledger {
   LedgerEntryEntity toEntity() => LedgerEntryEntity(
     type: type,
     featureId: featureId,
+    feature: feature?.toEntity(),
     docDate: docDate,
     accountId: accountId,
     finYearId: finYearId,
     currencyId: currencyId,
     drAmount: drAmount,
     crAmount: crAmount,
+    taxAmount: taxAmount,
     narration: narration,
     isOpening: isOpening,
     balance: balance,

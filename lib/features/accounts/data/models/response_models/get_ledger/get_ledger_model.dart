@@ -8,11 +8,11 @@ abstract class GetLedgerModel with _$GetLedgerModel {
         @JsonKey(name: "FinYearId")
         int? finYearId,
         @JsonKey(name: "TTLDebit")
-        int? ttlDebit,
+        double? ttlDebit,
         @JsonKey(name: "TTLCredit")
-        int? ttlCredit,
+        double? ttlCredit,
         @JsonKey(name: "Balance")
-        int? balance,
+        double? balance,
         @JsonKey(name: "FinYear")
         FinYear? finYear,
         @JsonKey(name: "LedgerTypes")
@@ -23,7 +23,7 @@ abstract class GetLedgerModel with _$GetLedgerModel {
 }
 
 @freezed
- abstract class FinYear with _$FinYear {
+abstract class FinYear with _$FinYear {
     const factory FinYear({
         @JsonKey(name: "IsClosed")
         bool? isClosed,
@@ -46,11 +46,11 @@ abstract class LedgerType with _$LedgerType {
         @JsonKey(name: "Type")
         String? type,
         @JsonKey(name: "TTLDebit")
-        int? ttlDebit,
+        double? ttlDebit,
         @JsonKey(name: "TTLCredit")
-        int? ttlCredit,
+        double? ttlCredit,
         @JsonKey(name: "Balance")
-        int? balance,
+        double? balance,
         @JsonKey(name: "Ledgers")
         List<Ledger>? ledgers,
     }) = _LedgerType;
@@ -65,6 +65,8 @@ abstract class Ledger with _$Ledger {
         String? type,
         @JsonKey(name: "FeatureId")
         int? featureId,
+        @JsonKey(name: "Feature")
+        LedgerFeatureModel? feature,
         @JsonKey(name: "DocDate")
         DateTime? docDate,
         @JsonKey(name: "AccountId")
@@ -74,15 +76,17 @@ abstract class Ledger with _$Ledger {
         @JsonKey(name: "CurrencyId")
         int? currencyId,
         @JsonKey(name: "DrAmount")
-        int? drAmount,
+        double? drAmount,
         @JsonKey(name: "CrAmount")
-        int? crAmount,
+        double? crAmount,
+        @JsonKey(name: "TaxAmount")
+        double? taxAmount,
         @JsonKey(name: "Narration")
         String? narration,
         @JsonKey(name: "IsOpening")
         bool? isOpening,
         @JsonKey(name: "Balance")
-        int? balance,
+        double? balance,
         @JsonKey(name: "Id")
         int? id,
         @JsonKey(name: "DocNbr")
@@ -102,6 +106,26 @@ abstract class Ledger with _$Ledger {
     }) = _Ledger;
 
     factory Ledger.fromJson(Map<String, dynamic> json) => _$LedgerFromJson(json);
+}
+
+@freezed
+abstract class LedgerFeatureModel with _$LedgerFeatureModel {
+    const factory LedgerFeatureModel({
+        @JsonKey(name: "Name")
+        String? name,
+        @JsonKey(name: "SysKey")
+        String? sysKey,
+        @JsonKey(name: "FinDisplayOrder")
+        int? finDisplayOrder,
+        @JsonKey(name: "StockDisplayOrder")
+        int? stockDisplayOrder,
+        @JsonKey(name: "FlgLandingPage")
+        bool? flgLandingPage,
+        @JsonKey(name: "Id")
+        int? id,
+    }) = _LedgerFeatureModel;
+
+    factory LedgerFeatureModel.fromJson(Map<String, dynamic> json) => _$LedgerFeatureModelFromJson(json);
 }
 
 @freezed
