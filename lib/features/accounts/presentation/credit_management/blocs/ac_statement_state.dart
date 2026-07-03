@@ -15,11 +15,12 @@ class AcStatementState extends Equatable {
     ApiStatus? status,
     List<LedgerStatementEntity>? statements,
     String? message,
+    bool clearMessage = false,
   }) {
     return AcStatementState(
       status:     status     ?? this.status,
       statements: statements ?? this.statements,
-      message:    message    ?? this.message,
+      message:    clearMessage ? null : (message ?? this.message),
     );
   }
 

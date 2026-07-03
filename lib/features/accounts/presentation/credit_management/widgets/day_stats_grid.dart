@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/theme_exports.dart';
 
 class DayStatsGrid extends StatelessWidget {
-  const DayStatsGrid({super.key});
+  final String firstSegment;
+  final String secondSegment;
+  final String thirdSegment;
+  final String fourthSegment;
 
-  static const _stats = [
-    ('30 Days', 'Rs 0', AppColors.grey400),
-    ('60 Days', 'Rs 1,000', AppColors.primary),
-    ('90 Days', 'Rs 0', Color(0xFFFF9800)),
-    ('90+ Days', 'Rs 0', Color(0xFFE53935)),
-  ];
+  const DayStatsGrid({
+    super.key,
+    required this.firstSegment,
+    required this.secondSegment,
+    required this.thirdSegment,
+    required this.fourthSegment,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +23,17 @@ class DayStatsGrid extends StatelessWidget {
           children: [
             Expanded(
               child: _DayStatCard(
-                label: _stats[0].$1,
-                value: _stats[0].$2,
-                accentColor: _stats[0].$3,
+                label: '30 Days',
+                value: firstSegment,
+                accentColor: AppColors.grey400,
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: _DayStatCard(
-                label: _stats[1].$1,
-                value: _stats[1].$2,
-                accentColor: _stats[1].$3,
+                label: '60 Days',
+                value: secondSegment,
+                accentColor: AppColors.primary,
               ),
             ),
           ],
@@ -39,17 +43,17 @@ class DayStatsGrid extends StatelessWidget {
           children: [
             Expanded(
               child: _DayStatCard(
-                label: _stats[2].$1,
-                value: _stats[2].$2,
-                accentColor: _stats[2].$3,
+                label: '90 Days',
+                value: thirdSegment,
+                accentColor: AppColors.orange,
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: _DayStatCard(
-                label: _stats[3].$1,
-                value: _stats[3].$2,
-                accentColor: _stats[3].$3,
+                label: '90+ Days',
+                value: fourthSegment,
+                accentColor: AppColors.errorBright,
               ),
             ),
           ],

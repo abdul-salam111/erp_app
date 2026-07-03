@@ -142,6 +142,64 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
+  Future<Either<Failure, List<PartyCreditMonthlySummaryEntity>>>
+  getPartyCreditMonthlySummary({
+    required String toDate,
+    required int partyId,
+  }) async {
+    final result = await execute(
+      call: () => dataSource.getPartyCreditMonthlySummary(
+        toDate: toDate,
+        partyId: partyId,
+      ),
+    );
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<Failure, List<PartyUnpaidDebitEntity>>> getPartyUnpaidDebits({
+    required String toDate,
+    required int partyId,
+  }) async {
+    final result = await execute(
+      call: () => dataSource.getPartyUnpaidDebits(
+        toDate: toDate,
+        partyId: partyId,
+      ),
+    );
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<Failure, List<PartyTopReceiptEntity>>> getPartyTopReceipts({
+    required String toDate,
+    required int partyId,
+  }) async {
+    final result = await execute(
+      call: () => dataSource.getPartyTopReceipts(
+        toDate: toDate,
+        partyId: partyId,
+      ),
+    );
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<Failure, PartyRevenueAndRecoveryEntity>>
+  getPartyRevenueAndRecovery({
+    required String toDate,
+    required int partyId,
+  }) async {
+    final result = await execute(
+      call: () => dataSource.getPartyRevenueAndRecovery(
+        toDate: toDate,
+        partyId: partyId,
+      ),
+    );
+    return result.map((m) => m.toEntity());
+  }
+
+  @override
   Future<Either<Failure, List<CustomerReceivableItemEntity>>> vendorPayable() {
     return execute(
       call: () => Future.delayed(

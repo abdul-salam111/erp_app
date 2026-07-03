@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../../../routes/route_exports.dart';
 import '../../../domain/entities/customer_receivable_aging_entity.dart';
 import '../views/credit_management_details_view.dart';
 
@@ -112,19 +114,20 @@ class _CreditTableRowState extends State<_CreditTableRow> {
   Color get _ratingColor {
     switch (widget.item.creditRating.toUpperCase()) {
       case 'A':
-        return const Color(0xFF4CAF50);
+        return AppColors.green;
       case 'B':
-        return const Color(0xFFFF9800);
+        return AppColors.orange;
       case 'C':
-        return const Color(0xFFFFC107);
+        return AppColors.yellow;
       default:
-        return const Color(0xFFE53935);
+        return AppColors.errorBright;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
+    final color = _ratingColor;
 
     return ColoredBox(
       color: _expanded
@@ -157,7 +160,7 @@ class _CreditTableRowState extends State<_CreditTableRow> {
                     child: Center(
                       child: _CrBadge(
                         rating: item.creditRating,
-                        color: _ratingColor,
+                        color: color,
                       ),
                     ),
                   ),
@@ -235,16 +238,18 @@ class _CreditTableRowState extends State<_CreditTableRow> {
                           value: item.fourthSegmentAmount.asPrice,
                         ),
                         IconButton(
-                          onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CreditManagementDetailsView(
-                                customer: item.partyName,
-                                creditRating: item.creditRating,
-                                ratingColor: _ratingColor,
-                                balance: item.totalAmount.asPrice,
-                                partyId: item.partyId,
-                              ),
+                          onPressed: () => context.pushNamed(
+                            RouteNames.credit_management_details,
+                            extra: CreditManagementDetailsArgs(
+                              customer: item.partyName,
+                              creditRating: item.creditRating,
+                              ratingColor: color,
+                              balance: item.totalAmount.asPrice,
+                              partyId: item.partyId,
+                              firstSegmentAmount: item.firstSegmentAmount,
+                              secondSegmentAmount: item.secondSegmentAmount,
+                              thirdSegmentAmount: item.thirdSegmentAmount,
+                              fourthSegmentAmount: item.fourthSegmentAmount,
                             ),
                           ),
                           icon: Icon(

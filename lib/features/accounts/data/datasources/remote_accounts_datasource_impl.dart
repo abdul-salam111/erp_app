@@ -172,4 +172,60 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
       authToken: _token,
     );
   }
+
+  @override
+  Future<List<PartyCreditMonthlySummaryModel>> getPartyCreditMonthlySummary({
+    required String toDate,
+    required int partyId,
+  }) {
+    return postList<PartyCreditMonthlySummaryModel>(
+      url: ApiEndPoints.accounts.partyCreditMonthlySummary,
+      body: {'ToDate': toDate, 'PartyId': partyId},
+      parser: (json) => PartyCreditMonthlySummaryModel.fromJson(
+          json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<List<PartyUnpaidDebitModel>> getPartyUnpaidDebits({
+    required String toDate,
+    required int partyId,
+  }) {
+    return postList<PartyUnpaidDebitModel>(
+      url: ApiEndPoints.accounts.partyUnpaidDebits,
+      body: {'ToDate': toDate, 'PartyId': partyId},
+      parser: (json) =>
+          PartyUnpaidDebitModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<List<PartyTopReceiptModel>> getPartyTopReceipts({
+    required String toDate,
+    required int partyId,
+  }) {
+    return postList<PartyTopReceiptModel>(
+      url: ApiEndPoints.accounts.partyTopReceipts,
+      body: {'ToDate': toDate, 'PartyId': partyId},
+      parser: (json) =>
+          PartyTopReceiptModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  @override
+  Future<PartyRevenueAndRecoveryModel> getPartyRevenueAndRecovery({
+    required String toDate,
+    required int partyId,
+  }) {
+    return post<PartyRevenueAndRecoveryModel>(
+      url: ApiEndPoints.accounts.partyRevenueAndRecovery,
+      body: {'ToDate': toDate, 'PartyId': partyId},
+      parser: (json) =>
+          PartyRevenueAndRecoveryModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
 }

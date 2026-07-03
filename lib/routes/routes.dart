@@ -11,6 +11,7 @@ import '../features/purchase_order/purchase_order_exports.dart';
 import '../features/sale_order/sale_order_exports.dart';
 import '../features/scan_document/scan_document_exports.dart';
 import '../features/accounts/accounts_exports.dart';
+import '../features/accounts/presentation/credit_management/views/credit_management_details_view.dart';
 import '../features/inventory/inventory_exports.dart';
 import '../features/production/production_exports.dart';
 import '../features/analytics/analytics_exports.dart';
@@ -132,6 +133,25 @@ class AppRoutes {
         path: RoutePaths.credit_management,
         name: RouteNames.credit_management,
         builder: (context, state) => const CreditManagementView(),
+      ),
+      GoRoute(
+        path: RoutePaths.credit_management_details,
+        name: RouteNames.credit_management_details,
+        builder: (context, state) {
+          final args = state.extra as CreditManagementDetailsArgs;
+          return CreditManagementDetailsView(
+            customer: args.customer,
+            city: args.city,
+            creditRating: args.creditRating,
+            ratingColor: args.ratingColor,
+            balance: args.balance,
+            partyId: args.partyId,
+            firstSegmentAmount: args.firstSegmentAmount,
+            secondSegmentAmount: args.secondSegmentAmount,
+            thirdSegmentAmount: args.thirdSegmentAmount,
+            fourthSegmentAmount: args.fourthSegmentAmount,
+          );
+        },
       ),
       GoRoute(
         path: RoutePaths.customer_recievables,

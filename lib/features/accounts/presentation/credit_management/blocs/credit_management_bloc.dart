@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/utils_exports.dart';
 import '../../../accounts_exports.dart';
 
 class CreditManagementBloc
@@ -24,55 +25,54 @@ class CreditManagementBloc
     on<CreditManagementPartyCleared>(
       (e, emit) => emit(state.copyWith(clearSelectedPartyId: true)),
     );
-    on<CreditManagementPartiesFetched>(_onPartiesFetched);
     on<CreditManagementFilterCollapsed>(
       (e, emit) => emit(state.copyWith(filterCollapsed: e.collapsed)),
     );
-
-    add(const CreditManagementPartiesFetched());
   }
 
   static CreditManagementState _initialState() =>
       CreditManagementState(date: DateTime.now());
 
-  Future<void> _onPartiesFetched(
-    CreditManagementPartiesFetched event,
-    Emitter<CreditManagementState> emit,
-  ) async {
-    emit(state.copyWith(partiesStatus: ApiStatus.LOADING));
-    final result = await getPartyListUsecase(NoParams());
-    result.fold(
-      (failure) => emit(state.copyWith(
-        partiesStatus: ApiStatus.FAILURE,
-        message: failure.message,
-      )),
-      (parties) => emit(state.copyWith(
-        partiesStatus: ApiStatus.SUCCESS,
-        parties: parties,
-      )),
-    );
-  }
-
   Future<void> _onSubmitted(
     CreditManagementSubmitted event,
     Emitter<CreditManagementState> emit,
   ) async {
-    emit(state.copyWith(apiStatus: ApiStatus.LOADING));
-    final result = await getCustomerReceivableAgingUsecase(
+    emit(state.copyWith(
+      apiStatus: ApiStatus.LOADING,
+      partiesStatus: ApiStatus.LOADING,
+    ));
+
+    final partiesFuture = getPartyListUsecase(NoParams());
+    final agingFuture = getCustomerReceivableAgingUsecase(
       GetCustomerReceivableAgingParams(
-        toDate: state.date.toIso8601String(),
+        toDate: state.date.format('yyyy-MM-dd'),
         partyId: state.selectedPartyId,
       ),
     );
-    result.fold(
-      (failure) => emit(state.copyWith(
-        apiStatus: ApiStatus.FAILURE,
-        message: failure.message,
-      )),
-      (data) => emit(state.copyWith(
-        apiStatus: ApiStatus.SUCCESS,
-        agingData: data,
-      )),
-    );
+
+    await Future.wait([
+      partiesFuture.then((r) => r.fold(
+            (f) => emit(state.copyWith(
+              partiesStatus: ApiStatus.FAILURE,
+              message: f.message,
+            )),
+            (parties) => emit(state.copyWith(
+              partiesStatus: ApiStatus.SUCCESS,
+              parties: parties,
+              clearMessage: true,
+            )),
+          )),
+      agingFuture.then((r) => r.fold(
+            (f) => emit(state.copyWith(
+              apiStatus: ApiStatus.FAILURE,
+              message: f.message,
+            )),
+            (data) => emit(state.copyWith(
+              apiStatus: ApiStatus.SUCCESS,
+              agingData: data,
+              clearMessage: true,
+            )),
+          )),
+    ]);
   }
 }

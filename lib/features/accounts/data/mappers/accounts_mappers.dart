@@ -167,3 +167,69 @@ extension PartyCreditModelX on PartyCreditModel {
     avgDays: avgDays,
   );
 }
+
+extension PartyCreditMonthlySummaryModelX on PartyCreditMonthlySummaryModel {
+  PartyCreditMonthlySummaryEntity toEntity() => PartyCreditMonthlySummaryEntity(
+    monthName: monthName,
+    year: year,
+    totalAmount: totalAmount,
+    month: month,
+  );
+}
+
+extension PartyUnpaidDebitModelX on PartyUnpaidDebitModel {
+  PartyUnpaidDebitEntity toEntity() => PartyUnpaidDebitEntity(
+    debitId: debitId,
+    partyId: partyId,
+    docNbr: docNbr,
+    docDate: docDate,
+    referenceDate: referenceDate,
+    totalAmount: totalAmount,
+    allocatedAmount: allocatedAmount,
+    remainingAmount: remainingAmount,
+    markupAmount: markupAmount,
+    daysOverdue: daysOverdue,
+    status: status,
+  );
+}
+
+//! ─── Top Receipts Mappers ────────────────────────────────────────────────────
+
+extension PartyTopReceiptAccountModelX on PartyTopReceiptAccountModel {
+  PartyTopReceiptAccountEntity toEntity() => PartyTopReceiptAccountEntity(
+    id: id,
+    name: name,
+  );
+}
+
+extension PartyTopReceiptModelX on PartyTopReceiptModel {
+  PartyTopReceiptEntity toEntity() => PartyTopReceiptEntity(
+    id: id,
+    docNbr: docNbr,
+    docDate: docDate,
+    amount: amount,
+    mode: mode,
+    account: account?.toEntity(),
+  );
+}
+
+//! ─── Revenue & Recovery Mappers ─────────────────────────────────────────────
+
+extension RevenueAndRecoverySummaryModelX on RevenueAndRecoverySummaryModel {
+  RevenueAndRecoverySummaryEntity toEntity() => RevenueAndRecoverySummaryEntity(
+    monthName: monthName,
+    year: year,
+    month: month,
+    totalRevenueAmount: totalRevenueAmount,
+    totalRecoveryAmount: totalRecoveryAmount,
+  );
+}
+
+extension PartyRevenueAndRecoveryModelX on PartyRevenueAndRecoveryModel {
+  PartyRevenueAndRecoveryEntity toEntity() => PartyRevenueAndRecoveryEntity(
+    totalRevenueAmount: totalRevenueAmount,
+    averageRecoveryAmount: averageRecoveryAmount,
+    averageRevenueAmount: averageRevenueAmount,
+    summaries: summaries.map((s) => s.toEntity()).toList(),
+  );
+}

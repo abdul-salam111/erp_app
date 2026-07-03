@@ -57,4 +57,26 @@ abstract interface class IAccountsRepository {
 
   Future<Either<Failure, CustomerReceivableAgingEntity>>
   getCustomerReceivableAging({required String toDate, int? partyId});
+
+  Future<Either<Failure, List<PartyCreditMonthlySummaryEntity>>>
+  getPartyCreditMonthlySummary({
+    required String toDate,
+    required int partyId,
+  });
+
+  Future<Either<Failure, List<PartyUnpaidDebitEntity>>> getPartyUnpaidDebits({
+    required String toDate,
+    required int partyId,
+  });
+
+  Future<Either<Failure, List<PartyTopReceiptEntity>>> getPartyTopReceipts({
+    required String toDate,
+    required int partyId,
+  });
+
+  Future<Either<Failure, PartyRevenueAndRecoveryEntity>>
+  getPartyRevenueAndRecovery({
+    required String toDate,
+    required int partyId,
+  });
 }

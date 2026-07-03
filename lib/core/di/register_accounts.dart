@@ -95,6 +95,31 @@ Future<void> registerAccounts() async {
   sl.registerFactory<AcStatementCubit>(
     () => AcStatementCubit(sl<GetPartyStatementsUsecase>()),
   );
+  // UseCase — PartyCreditMonthlySummary
+  sl.registerLazySingleton<GetPartyCreditMonthlySummaryUsecase>(
+    () => GetPartyCreditMonthlySummaryUsecase(repository: sl()),
+  );
+  // UseCase — PartyUnpaidDebits
+  sl.registerLazySingleton<GetPartyUnpaidDebitsUsecase>(
+    () => GetPartyUnpaidDebitsUsecase(repository: sl()),
+  );
+  // UseCase — PartyTopReceipts
+  sl.registerLazySingleton<GetPartyTopReceiptsUsecase>(
+    () => GetPartyTopReceiptsUsecase(repository: sl()),
+  );
+  // UseCase — PartyRevenueAndRecovery
+  sl.registerLazySingleton<GetPartyRevenueAndRecoveryUsecase>(
+    () => GetPartyRevenueAndRecoveryUsecase(repository: sl()),
+  );
+  // Cubit — HomeTab (credit management details: summary + unpaid + receipts + revenue)
+  sl.registerFactory<CreditManagementDetailsCubit>(
+    () => CreditManagementDetailsCubit(
+      summaryUsecase: sl(),
+      unpaidUsecase: sl(),
+      receiptsUsecase: sl(),
+      revenueUsecase: sl(),
+    ),
+  );
   // UseCase — CustomerRecievables
   sl.registerLazySingleton<CustomerRecievablesUsecase>(
     () => CustomerRecievablesUsecase(repository: sl()),

@@ -4,12 +4,10 @@ import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../domain/entities/party_list_item_entity.dart';
-
 class FilterForm extends StatelessWidget {
   final DateTime date;
   final TextEditingController partyController;
-  final List<PartyListItemEntity> parties;
+  final List<String> parties;
   final ApiStatus partiesStatus;
   final ValueChanged<String> onPartyChanged;
   final VoidCallback onPickDate;
@@ -46,7 +44,7 @@ class FilterForm extends StatelessWidget {
             _FormLabel(text: AppConstants.partyBtn),
             const SizedBox(height: 6),
             SearchableDropdown(
-              items: isLoading ? [] : parties.map((p) => p.name).toList(),
+              items: isLoading ? [] : parties,
               controller: partyController,
               hintText: isLoading ? 'Loading...' : AppConstants.selectPartyHint,
               onChanged: onPartyChanged,

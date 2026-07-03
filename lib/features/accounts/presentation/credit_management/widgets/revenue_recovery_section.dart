@@ -1,27 +1,77 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/theme/theme_exports.dart';
+import '../../../../../core/utils/utils_exports.dart';
+import '../../../../../core/widgets/widgets.dart';
+import '../blocs/credit_management_details_cubit.dart';
 
 class RevenueRecoverySection extends StatelessWidget {
   const RevenueRecoverySection({super.key});
 
-  static const _bars = [
-    (x: 0, label: 'Oct', sale: 0.0),
-    (x: 1, label: 'Nov', sale: 0.0),
-    (x: 2, label: 'Dec', sale: 0.0),
-    (x: 3, label: 'Jan', sale: 0.0),
-    (x: 4, label: 'Feb', sale: 0.0),
-    (x: 5, label: 'Mar', sale: 1000.0),
-  ];
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreditManagementDetailsCubit,
+        CreditManagementDetailsState>(
+      buildWhen: (p, c) =>
+          p.revenueStatus != c.revenueStatus ||
+          p.revenueData != c.revenueData,
+      builder: (_, state) {
+        if (state.revenueStatus == ApiStatus.LOADING) {
+          return const _RevenueRecoveryShimmer();
+        }
 
-  static const _stats = [
-    ('Total Sale', 'Rs 1,000', AppColors.primary),
-    ('Avg Recovery', 'Rs 0', AppColors.greenDark),
-    ('Average Sale', 'Rs 166.667', Color(0xFFFF9800)),
-  ];
+        final data = state.revenueData;
+        final bars = (data?.summaries ?? [])
+            .asMap()
+            .entries
+            .map((e) => (
+                  x: e.key,
+                  label: e.value.monthName.length > 3
+                      ? e.value.monthName.substring(0, 3)
+                      : e.value.monthName,
+                  sale: e.value.totalRevenueAmount,
+                ))
+            .toList();
+
+        return _RevenueRecoveryContent(
+          bars: bars,
+          totalSale: data?.totalRevenueAmount ?? 0,
+          avgRecovery: data?.averageRecoveryAmount ?? 0,
+          averageSale: data?.averageRevenueAmount ?? 0,
+          errorMessage: state.revenueStatus == ApiStatus.FAILURE
+              ? (state.revenueMessage ?? 'Failed to load data.')
+              : null,
+        );
+      },
+    );
+  }
+}
+
+class _RevenueRecoveryContent extends StatelessWidget {
+  final List<({int x, String label, double sale})> bars;
+  final double totalSale;
+  final double avgRecovery;
+  final double averageSale;
+  final String? errorMessage;
+
+  const _RevenueRecoveryContent({
+    required this.bars,
+    required this.totalSale,
+    required this.avgRecovery,
+    required this.averageSale,
+    this.errorMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final stats = [
+      ('Total Sale', totalSale.asPrice, AppColors.primary),
+      ('Avg Recovery', avgRecovery.asPrice, AppColors.greenDark),
+      ('Average Sale', averageSale.asPrice, AppColors.orange),
+    ];
+
     return Container(
       decoration: BoxDecoration(
         color: context.white,
@@ -50,30 +100,36 @@ class RevenueRecoverySection extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
-              for (int i = 0; i < _stats.length; i++) ...[
+              for (int i = 0; i < stats.length; i++) ...[
                 Expanded(
                   child: _StatCard(
-                    label: _stats[i].$1,
-                    value: _stats[i].$2,
-                    accentColor: _stats[i].$3,
+                    label: stats[i].$1,
+                    value: stats[i].$2,
+                    accentColor: stats[i].$3,
                   ),
                 ),
-                if (i < _stats.length - 1) const SizedBox(width: 8),
+                if (i < stats.length - 1) const SizedBox(width: 8),
               ],
             ],
           ),
           const SizedBox(height: 12),
           SizedBox(
             height: 180,
-            child: _RevenueBarChart(),
+            child: bars.isEmpty
+                ? Center(
+                    child: Text(
+                      errorMessage ?? 'No data available',
+                      style: context.bodySmall
+                          .copyWith(color: context.textSecondary),
+                    ),
+                  )
+                : _RevenueBarChart(bars: bars),
           ),
         ],
       ),
     );
   }
 }
-
-// ── Stat card (same style as DayStatsGrid._DayStatCard) ──────────────────────
 
 class _StatCard extends StatelessWidget {
   final String label;
@@ -146,20 +202,61 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// ── Bar chart ─────────────────────────────────────────────────────────────────
+class _RevenueRecoveryShimmer extends StatelessWidget {
+  const _RevenueRecoveryShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(8),
+        border: Border.all(color: AppColors.grey200),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          const ShimmerBox(height: 14, width: 140, radius: 4),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              for (int i = 0; i < 3; i++) ...[
+                const Expanded(child: ShimmerBox(height: 48, radius: 8)),
+                if (i < 2) const SizedBox(width: 8),
+              ],
+            ],
+          ),
+          const SizedBox(height: 12),
+          const ShimmerBox(height: 180, width: double.infinity, radius: 6),
+        ],
+      ),
+    );
+  }
+}
 
 class _RevenueBarChart extends StatelessWidget {
-  const _RevenueBarChart();
-
-  static const _bars = RevenueRecoverySection._bars;
+  final List<({int x, String label, double sale})> bars;
+  const _RevenueBarChart({required this.bars});
 
   @override
   Widget build(BuildContext context) {
     final barColor = context.primary;
+    final maxSale =
+        bars.map((b) => b.sale).fold(0.0, (a, b) => a > b ? a : b);
+    final maxY = maxSale == 0 ? 1000.0 : (maxSale * 1.25).ceilToDouble();
+    final yInterval = (maxY / 5).ceilToDouble();
 
     return BarChart(
       BarChartData(
-        maxY: 1200,
+        maxY: maxY,
         minY: 0,
         barTouchData: BarTouchData(
           enabled: true,
@@ -181,7 +278,7 @@ class _RevenueBarChart extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 42,
-              interval: 200,
+              interval: yInterval,
               getTitlesWidget: (value, _) => Text(
                 'Rs. ${value.toInt()}',
                 style: context.labelSmall.copyWith(
@@ -204,11 +301,11 @@ class _RevenueBarChart extends StatelessWidget {
               reservedSize: 24,
               getTitlesWidget: (value, _) {
                 final i = value.toInt();
-                if (i < 0 || i >= _bars.length) return const SizedBox.shrink();
+                if (i < 0 || i >= bars.length) return const SizedBox.shrink();
                 return Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
-                    _bars[i].label,
+                    bars[i].label,
                     style: context.labelSmall.copyWith(
                       fontSize: 9,
                       color: context.textSecondary,
@@ -221,14 +318,14 @@ class _RevenueBarChart extends StatelessWidget {
         ),
         gridData: FlGridData(
           drawVerticalLine: false,
-          horizontalInterval: 200,
+          horizontalInterval: yInterval,
           getDrawingHorizontalLine: (_) => FlLine(
             color: AppColors.grey100,
             strokeWidth: 1,
           ),
         ),
         borderData: FlBorderData(show: false),
-        barGroups: _bars
+        barGroups: bars
             .map(
               (b) => BarChartGroupData(
                 x: b.x,

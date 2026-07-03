@@ -18,10 +18,6 @@ class CreditManagementDateChanged extends CreditManagementEvent {
   List<Object?> get props => [date];
 }
 
-class CreditManagementPartiesFetched extends CreditManagementEvent {
-  const CreditManagementPartiesFetched();
-}
-
 class CreditManagementPartySelected extends CreditManagementEvent {
   final int partyId;
   const CreditManagementPartySelected(this.partyId);

@@ -3,6 +3,7 @@ import '../../../../../core/theme/theme_exports.dart';
 
 class TableCard extends StatelessWidget {
   final String title;
+  final Widget? titleTrailing;
   final Row header;
   final List<Widget> rows;
   final String emptyMessage;
@@ -10,6 +11,7 @@ class TableCard extends StatelessWidget {
   const TableCard({
     super.key,
     required this.title,
+    this.titleTrailing,
     required this.header,
     required this.rows,
     required this.emptyMessage,
@@ -38,13 +40,20 @@ class TableCard extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-            child: Text(
-              title,
-              style: context.bodySmall.copyWith(
-                fontWeight: .w700,
-                fontSize: 13,
-                color: context.textPrimary,
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: context.bodySmall.copyWith(
+                      fontWeight: .w700,
+                      fontSize: 13,
+                      color: context.textPrimary,
+                    ),
+                  ),
+                ),
+                if (titleTrailing != null) titleTrailing!,
+              ],
             ),
           ),
           Container(

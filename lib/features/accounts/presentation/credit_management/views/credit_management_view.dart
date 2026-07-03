@@ -128,7 +128,7 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                     : FilterForm(
                         date: state.date,
                         partyController: _partyController,
-                        parties: state.parties,
+                        parties: state.parties.map((p) => p.name).toList(),
                         partiesStatus: state.partiesStatus,
                         onPartyChanged: _onPartyChanged,
                         onPickDate: _pickDate,
@@ -193,29 +193,29 @@ class _StatCardsShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final h = EdgeInsets.fromLTRB(
+    final padding = EdgeInsets.fromLTRB(
       context.pagePadding.left,
       0,
       context.pagePadding.right,
       8,
     );
     return Padding(
-      padding: h,
+      padding: padding,
       child: Column(
         children: [
           Row(
             children: [
-              Expanded(child: ShimmerBox(height: 58, radius: 10)),
+              Expanded(child: const ShimmerBox(height: 58, radius: 10)),
               const SizedBox(width: 6),
-              Expanded(child: ShimmerBox(height: 58, radius: 10)),
+              Expanded(child: const ShimmerBox(height: 58, radius: 10)),
             ],
           ),
           const SizedBox(height: 6),
           Row(
             children: [
-              Expanded(child: ShimmerBox(height: 58, radius: 10)),
+              Expanded(child: const ShimmerBox(height: 58, radius: 10)),
               const SizedBox(width: 6),
-              Expanded(child: ShimmerBox(height: 58, radius: 10)),
+              Expanded(child: const ShimmerBox(height: 58, radius: 10)),
             ],
           ),
         ],
@@ -236,7 +236,7 @@ class _TableShimmer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: px),
       child: Column(
         children: [
-          ShimmerBox(height: 40, radius: 10),
+          const ShimmerBox(height: 40, radius: 10),
           const SizedBox(height: 1),
           Expanded(
             child: ListView.separated(
@@ -247,11 +247,11 @@ class _TableShimmer extends StatelessWidget {
                 padding: .symmetric(vertical: 8),
                 child: Row(
                   children: [
-                    Expanded(flex: 6, child: ShimmerBox(height: 16, radius: 6)),
+                    Expanded(flex: 6, child: const ShimmerBox(height: 16, radius: 6)),
                     const SizedBox(width: 8),
-                    ShimmerBox(width: 24, height: 24, radius: 12),
+                    const ShimmerBox(width: 24, height: 24, radius: 12),
                     const SizedBox(width: 8),
-                    Expanded(flex: 3, child: ShimmerBox(height: 16, radius: 6)),
+                    Expanded(flex: 3, child: const ShimmerBox(height: 16, radius: 6)),
                     const SizedBox(width: 20),
                   ],
                 ),

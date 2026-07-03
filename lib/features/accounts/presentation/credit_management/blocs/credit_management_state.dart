@@ -34,11 +34,12 @@ class CreditManagementState extends Equatable {
     ApiStatus? partiesStatus,
     int? selectedPartyId,
     bool clearSelectedPartyId = false,
+    bool clearMessage = false,
     bool? filterCollapsed,
   }) {
     return CreditManagementState(
       agingData:       agingData       ?? this.agingData,
-      message:         message         ?? this.message,
+      message:         clearMessage ? null : (message ?? this.message),
       apiStatus:       apiStatus       ?? this.apiStatus,
       date:            date            ?? this.date,
       parties:         parties         ?? this.parties,

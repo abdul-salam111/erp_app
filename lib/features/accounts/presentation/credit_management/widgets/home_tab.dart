@@ -1,53 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
-import '../../../../../core/widgets/widgets.dart';
+import '../blocs/credit_management_details_cubit.dart';
 import 'credit_trend_chart.dart';
 import 'day_stats_grid.dart';
 import 'unpaid_invoices_section.dart';
 import 'recent_payments_section.dart';
 import 'revenue_recovery_section.dart';
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends StatefulWidget {
   final String balance;
-  const HomeTab({super.key, required this.balance});
+  final int? partyId;
+  final double firstSegmentAmount;
+  final double secondSegmentAmount;
+  final double thirdSegmentAmount;
+  final double fourthSegmentAmount;
+
+  const HomeTab({
+    super.key,
+    required this.balance,
+    this.partyId,
+    this.firstSegmentAmount = 0,
+    this.secondSegmentAmount = 0,
+    this.thirdSegmentAmount = 0,
+    this.fourthSegmentAmount = 0,
+  });
+
+  @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  late final CreditManagementDetailsCubit _detailsCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _detailsCubit = sl<CreditManagementDetailsCubit>();
+    if (widget.partyId != null) {
+      _detailsCubit.fetch(
+        toDate: DateTime.now().format('yyyy-MM-dd'),
+        partyId: widget.partyId!,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _detailsCubit.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(
-        context.pagePadding.left,
-        8,
-        context.pagePadding.right,
-        24,
-      ),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          _CurrentBalanceCard(balance: balance),
-          const SizedBox(height: 8),
-          DayStatsGrid(),
-          SizedBox(height: 8),
-          CreditTrendChart(),
-          SizedBox(height: 12),
-          UnpaidInvoicesSection(),
-          CustomButton(
-            radius: 8,
-            onPressed: () {},
-            backgroundColor: context.primary.withAlpha(60),
-            icon: Icons.mail,
-            text: 'Send Unpaid Invoice',
-            size: Size(double.infinity, 40),
-            fontsize: 12,
-            textColor: context.primary,
-            iconSize: 16,
-            iconColor: context.primary,
-          ),
-          SizedBox(height: 12),
-          RecentPaymentsSection(),
-          SizedBox(height: 12),
-          RevenueRecoverySection(),
-        ],
+    return BlocProvider.value(
+      value: _detailsCubit,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(
+          context.pagePadding.left,
+          8,
+          context.pagePadding.right,
+          24,
+        ),
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            _CurrentBalanceCard(balance: widget.balance),
+            const SizedBox(height: 8),
+            DayStatsGrid(
+              firstSegment: widget.firstSegmentAmount.asPrice,
+              secondSegment: widget.secondSegmentAmount.asPrice,
+              thirdSegment: widget.thirdSegmentAmount.asPrice,
+              fourthSegment: widget.fourthSegmentAmount.asPrice,
+            ),
+            const SizedBox(height: 8),
+            const UnpaidInvoicesSection(),
+            const SizedBox(height: 12),
+            const CreditTrendChart(),
+            const SizedBox(height: 12),
+            const RecentPaymentsSection(),
+            const SizedBox(height: 12),
+            const RevenueRecoverySection(),
+          ],
+        ),
       ),
     );
   }

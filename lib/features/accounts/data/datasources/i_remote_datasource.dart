@@ -19,6 +19,7 @@ abstract interface class IRemoteAccountsDataSource {
     int? partyId,
   });
 
+
   Future<List<PartyListItemModel>> getPartyList();
 
   //! ─── Cashbook ───────────────────────────────────────────────────────────────
@@ -50,5 +51,25 @@ abstract interface class IRemoteAccountsDataSource {
   Future<CustomerReceivableAgingModel> getCustomerReceivableAging({
     required String toDate,
     int? partyId,
+  });
+
+  Future<List<PartyCreditMonthlySummaryModel>> getPartyCreditMonthlySummary({
+    required String toDate,
+    required int partyId,
+  });
+
+  Future<List<PartyUnpaidDebitModel>> getPartyUnpaidDebits({
+    required String toDate,
+    required int partyId,
+  });
+
+  Future<List<PartyTopReceiptModel>> getPartyTopReceipts({
+    required String toDate,
+    required int partyId,
+  });
+
+  Future<PartyRevenueAndRecoveryModel> getPartyRevenueAndRecovery({
+    required String toDate,
+    required int partyId,
   });
 }

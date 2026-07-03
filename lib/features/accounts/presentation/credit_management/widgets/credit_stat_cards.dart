@@ -32,12 +32,12 @@ class CreditStatCards extends StatelessWidget {
       _StatCardData(
         label: '90 Days Total',
         value: thirdSegmentAmount.asPrice,
-        accentColor: const Color(0xFFFF9800),
+        accentColor: AppColors.orange,
       ),
       _StatCardData(
         label: '90+ Days Total',
         value: fourthSegmentAmount.asPrice,
-        accentColor: const Color(0xFFE53935),
+        accentColor: AppColors.errorBright,
       ),
     ];
 

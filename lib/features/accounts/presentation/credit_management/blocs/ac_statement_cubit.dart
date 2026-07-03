@@ -33,6 +33,7 @@ class AcStatementCubit extends Cubit<AcStatementState> {
       (statements) => emit(state.copyWith(
         status: ApiStatus.SUCCESS,
         statements: statements,
+        clearMessage: true,
       )),
     );
   }
