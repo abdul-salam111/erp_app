@@ -27,6 +27,7 @@ export 'data/models/response_models/get_party_credit_monthly_summary/party_credi
 export 'data/models/response_models/get_party_unpaid_debits/party_unpaid_debit_model.dart';
 export 'data/models/response_models/get_party_top_receipts/party_top_receipt_model.dart';
 export 'data/models/response_models/get_party_revenue_and_recovery/party_revenue_and_recovery_model.dart';
+export 'data/models/response_models/get_party_balance_detail/party_balance_detail_model.dart';
 export 'data/mappers/accounts_mappers.dart';
 // Presentation — accounts screen
 export 'presentation/accounts/blocs/accounts_bloc.dart';

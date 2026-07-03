@@ -228,4 +228,27 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
       authToken: _token,
     );
   }
+
+  //! ─── Customer Receivables ───────────────────────────────────────────────────
+
+  @override
+  Future<List<PartyBalanceDetailModel>> getPartyBalanceDetail({
+    required bool flgReceivable,
+    required String fromDate,
+    required String toDate,
+    required String reportType,
+  }) {
+    return postList<PartyBalanceDetailModel>(
+      url: ApiEndPoints.accounts.partyBalanceDetail,
+      body: {
+        'FlgReceivable': flgReceivable,
+        'FromDate': fromDate,
+        'ToDate': toDate,
+        'ReportType': reportType,
+      },
+      parser: (json) =>
+          PartyBalanceDetailModel.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
 }

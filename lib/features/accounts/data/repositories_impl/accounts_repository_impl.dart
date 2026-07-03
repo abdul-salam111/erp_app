@@ -199,6 +199,25 @@ class AccountsRepositoryImpl extends BaseRepository
     return result.map((m) => m.toEntity());
   }
 
+  //! ─── Customer Receivables ───────────────────────────────────────────────────
+
+  @override
+  Future<Either<Failure, List<CustomerReceivableItemEntity>>>
+  getCustomerReceivables({
+    required String fromDate,
+    required String toDate,
+  }) async {
+    final result = await execute(
+      call: () => dataSource.getPartyBalanceDetail(
+        flgReceivable: true,
+        fromDate: fromDate,
+        toDate: toDate,
+        reportType: 'customer_receivables',
+      ),
+    );
+    return result.map((models) => models.map((m) => m.toEntity()).toList());
+  }
+
   @override
   Future<Either<Failure, List<CustomerReceivableItemEntity>>> vendorPayable() {
     return execute(

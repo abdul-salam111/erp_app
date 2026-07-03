@@ -59,9 +59,18 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
   }
 
   void _fetch() {
-    context
-        .read<CustomerRecievablesBloc>()
-        .add(const CustomerRecievablesSubmitted());
+    context.read<CustomerRecievablesBloc>().add(
+      CustomerRecievablesSubmitted(
+        fromDate: _fromDate.format('yyyy-MM-dd'),
+        toDate: _toDate.format('yyyy-MM-dd'),
+      ),
+    );
+  }
+
+  void _onPartyChanged(String name) {
+    final parties = context.read<CustomerRecievablesBloc>().state.parties;
+    final match = parties.where((p) => p.name == name).firstOrNull;
+    if (match != null) setState(() {});
   }
 
   Future<void> _pickDate(bool isFrom) async {
@@ -117,18 +126,25 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
                         }
                       },
                     )
-                  : AccountsFilterForm(
-                      label: AppConstants.customerBtn,
-                      hintText: AppConstants.selectCustomerHint,
-                      fromDate: _fromDate,
-                      toDate: _toDate,
-                      items: const [],
-                      isLoading: false,
-                      controller: _customerController,
-                      onItemChanged: (_) {},
-                      onPickFrom: () => _pickDate(true),
-                      onPickTo: () => _pickDate(false),
-                      onView: _fetch,
+                  : BlocBuilder<CustomerRecievablesBloc,
+                      CustomerRecievablesState>(
+                      buildWhen: (p, c) =>
+                          p.parties != c.parties ||
+                          p.partiesStatus != c.partiesStatus,
+                      builder: (context, state) => AccountsFilterForm(
+                        label: AppConstants.customerBtn,
+                        hintText: AppConstants.selectCustomerHint,
+                        fromDate: _fromDate,
+                        toDate: _toDate,
+                        items: state.parties.map((p) => p.name).toList(),
+                        isLoading: state.partiesStatus == ApiStatus.INITIAL ||
+                            state.partiesStatus == ApiStatus.LOADING,
+                        controller: _customerController,
+                        onItemChanged: _onPartyChanged,
+                        onPickFrom: () => _pickDate(true),
+                        onPickTo: () => _pickDate(false),
+                        onView: _fetch,
+                      ),
                     ),
             ),
             Expanded(

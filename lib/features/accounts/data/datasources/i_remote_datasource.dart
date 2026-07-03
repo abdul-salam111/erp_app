@@ -72,4 +72,13 @@ abstract interface class IRemoteAccountsDataSource {
     required String toDate,
     required int partyId,
   });
+
+  //! ─── Customer Receivables ───────────────────────────────────────────────────
+
+  Future<List<PartyBalanceDetailModel>> getPartyBalanceDetail({
+    required bool flgReceivable,
+    required String fromDate,
+    required String toDate,
+    required String reportType,
+  });
 }

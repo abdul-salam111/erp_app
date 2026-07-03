@@ -62,9 +62,9 @@ class UnpaidInvoicesSection extends StatelessWidget {
             children: [
               TableHeaderCell('Inv No', flex: 2),
               TableHeaderCell('Receivable', flex: 2, align: TextAlign.end),
-              TableHeaderCell('Age', flex: 1, align: TextAlign.center),
+              TableHeaderCell('Age', flex: 2, align: TextAlign.center),
               TableHeaderCell('Markup', flex: 2, align: TextAlign.center),
-              TableHeaderCell('Status', flex: 3, align: TextAlign.end),
+              TableHeaderCell('Status', flex: 2, align: TextAlign.end),
             ],
           ),
           rows: state.unpaidItems.map((item) => _InvoiceRow(item: item)).toList(),
@@ -132,7 +132,7 @@ class _InvoiceRow extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              item.remainingAmount.formatPrice(symbol: 'Rs'),
+              item.remainingAmount.asPrice,
               style: context.bodySmall.copyWith(
                 fontWeight: .w600,
                 fontSize: 12,
@@ -141,7 +141,7 @@ class _InvoiceRow extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 1,
+            flex: 2,
             child: Text(
               '${item.daysOverdue}',
               style: context.bodySmall.copyWith(
@@ -155,13 +155,13 @@ class _InvoiceRow extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              item.markupAmount.formatPrice(symbol: 'Rs'),
-              style: context.bodySmall.copyWith(fontSize: 12),
+              item.markupAmount.asPrice,
+              style: context.bodySmall.copyWith(fontSize: 12, fontWeight: .w600),
               textAlign: .center,
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 2,
             child: Align(
               alignment: .centerRight,
               child: _StatusBadge(status: item.status),
@@ -183,6 +183,7 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final unpaid = status.toLowerCase() == 'unpaid';
     final color = unpaid ? AppColors.errorBright : AppColors.greenDark;
+    final label = status.split(' ').first;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
@@ -190,14 +191,12 @@ class _StatusBadge extends StatelessWidget {
         borderRadius: .circular(20),
       ),
       child: Text(
-        status,
+        label,
         style: context.labelSmall.copyWith(
           color: color,
           fontSize: 10,
           fontWeight: .w600,
         ),
-        maxLines: 1,
-        overflow: .ellipsis,
       ),
     );
   }

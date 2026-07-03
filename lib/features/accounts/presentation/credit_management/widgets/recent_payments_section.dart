@@ -57,7 +57,19 @@ class _RecentPaymentsCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: .start,
         children: [
-          // ── Solid header ──────────────────────────────────────────
+          // ── Title ─────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+            child: Text(
+              'Recent Payments',
+              style: context.bodySmall.copyWith(
+                fontWeight: .w700,
+                fontSize: 13,
+                color: context.textPrimary,
+              ),
+            ),
+          ),
+          // ── Header ────────────────────────────────────────────────
           Container(
             color: context.primary.withValues(alpha: 0.07),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -177,7 +189,7 @@ class _PaymentRow extends StatelessWidget {
               style: context.bodySmall.copyWith(
                 fontWeight: .w600,
                 fontSize: 12,
-                color: context.primary,
+                color: context.textPrimary,
               ),
               textAlign: .center,
             ),
@@ -195,13 +207,15 @@ class _PaymentRow extends StatelessWidget {
                     fontSize: 12,
                     color: context.textPrimary,
                   ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
                 ),
                 if (item.account != null && item.account!.name.isNotEmpty) ...[
                   const SizedBox(height: 2),
                   Text(
                     item.account!.name,
                     style: context.labelSmall.copyWith(
-                      color: context.primary,
+                      color: context.textSecondary,
                       fontSize: 10,
                     ),
                   ),
@@ -229,6 +243,10 @@ class _RecentPaymentsShimmer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: .start,
         children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(12, 12, 12, 8),
+            child: ShimmerBox(height: 13, width: 130, radius: 4),
+          ),
           Container(
             color: context.primary.withValues(alpha: 0.07),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

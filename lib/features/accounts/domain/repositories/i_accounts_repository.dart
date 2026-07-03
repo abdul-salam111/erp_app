@@ -79,4 +79,12 @@ abstract interface class IAccountsRepository {
     required String toDate,
     required int partyId,
   });
+
+  //! ─── Customer Receivables ───────────────────────────────────────────────────
+
+  Future<Either<Failure, List<CustomerReceivableItemEntity>>>
+  getCustomerReceivables({
+    required String fromDate,
+    required String toDate,
+  });
 }

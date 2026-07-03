@@ -126,7 +126,10 @@ Future<void> registerAccounts() async {
   );
   // BLoC — CustomerRecievables screen
   sl.registerFactory<CustomerRecievablesBloc>(
-    () => CustomerRecievablesBloc(customerRecievablesUsecase: sl()),
+    () => CustomerRecievablesBloc(
+      customerRecievablesUsecase: sl(),
+      getPartyListUsecase: sl(),
+    ),
   );
   // UseCase — VendorPayable
   sl.registerLazySingleton<VendorPayableUsecase>(

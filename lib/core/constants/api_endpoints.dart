@@ -52,6 +52,7 @@ final class _Accounts {
   String get partyUnpaidDebits              => '$_execBase/creditmanagement/GetPartyUnpaidDebits';
   String get partyTopReceipts               => '$_execBase/creditmanagement/GetPartyTopReceipts';
   String get partyRevenueAndRecovery        => '$_execBase/creditmanagement/GetPartyRevenueAndRecovery';
+  String get partyBalanceDetail             => '$_execBase/party/GetPartyBalanceDetail';
   String get statements        => '$_statementsBase/GetAccountStatements';
   String get invoicePdf        => '$_statementsBase/GetInvoicePdf';
   String get printableFeatures => '$_statementsBase/GetPrintableFeatures';

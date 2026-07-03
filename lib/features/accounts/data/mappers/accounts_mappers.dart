@@ -233,3 +233,18 @@ extension PartyRevenueAndRecoveryModelX on PartyRevenueAndRecoveryModel {
     summaries: summaries.map((s) => s.toEntity()).toList(),
   );
 }
+
+//! ─── Customer Receivables Mappers ───────────────────────────────────────────
+
+extension PartyBalanceDetailModelX on PartyBalanceDetailModel {
+  CustomerReceivableItemEntity toEntity() => CustomerReceivableItemEntity(
+    partyName: party?.fullName ?? '',
+    location: null,
+    opening: openingAmount,
+    openingIsDr: openingAmount >= 0,
+    debit: drAmount,
+    credit: crAmount,
+    balance: balance,
+    balanceIsDr: balance >= 0,
+  );
+}
