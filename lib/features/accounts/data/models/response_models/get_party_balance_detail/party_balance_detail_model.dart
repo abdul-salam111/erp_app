@@ -10,6 +10,8 @@ abstract class PartyDetailModel with _$PartyDetailModel {
     @JsonKey(name: 'FullName', defaultValue: '') required String fullName,
     @JsonKey(name: 'PartyTypeId') @Default(0) int partyTypeId,
     @JsonKey(name: 'LocationId') @Default(0) int locationId,
+    @JsonKey(name: 'LocationName') @Default('') String locationName,
+    @JsonKey(name: 'PartyTypeName') @Default('') String partyTypeName,
   }) = _PartyDetailModel;
 
   factory PartyDetailModel.fromJson(Map<String, dynamic> json) =>

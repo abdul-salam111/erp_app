@@ -12,6 +12,8 @@ _PartyDetailModel _$PartyDetailModelFromJson(Map<String, dynamic> json) =>
       fullName: json['FullName'] as String? ?? '',
       partyTypeId: (json['PartyTypeId'] as num?)?.toInt() ?? 0,
       locationId: (json['LocationId'] as num?)?.toInt() ?? 0,
+      locationName: json['LocationName'] as String? ?? '',
+      partyTypeName: json['PartyTypeName'] as String? ?? '',
     );
 
 Map<String, dynamic> _$PartyDetailModelToJson(_PartyDetailModel instance) =>
@@ -20,6 +22,8 @@ Map<String, dynamic> _$PartyDetailModelToJson(_PartyDetailModel instance) =>
       'FullName': instance.fullName,
       'PartyTypeId': instance.partyTypeId,
       'LocationId': instance.locationId,
+      'LocationName': instance.locationName,
+      'PartyTypeName': instance.partyTypeName,
     };
 
 _PartyBalanceDetailModel _$PartyBalanceDetailModelFromJson(

@@ -8,5 +8,11 @@ abstract class VendorPayableEvent extends Equatable {
 }
 
 class VendorPayableSubmitted extends VendorPayableEvent {
-  const VendorPayableSubmitted();
+  final String fromDate;
+  final String toDate;
+
+  const VendorPayableSubmitted({required this.fromDate, required this.toDate});
+
+  @override
+  List<Object> get props => [fromDate, toDate];
 }

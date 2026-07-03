@@ -51,7 +51,10 @@ abstract interface class IAccountsRepository {
   });
 
   Future<Either<Failure, List<int>>> getPrintableFeatures();
-  Future<Either<Failure, List<CustomerReceivableItemEntity>>> vendorPayable();
+  Future<Either<Failure, List<CustomerReceivableItemEntity>>> vendorPayable({
+    required String fromDate,
+    required String toDate,
+  });
 
   //! ─── Credit Management ──────────────────────────────────────────────────────
 

@@ -275,17 +275,12 @@ class _ExpandedCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isZero = amount == 0;
     final textAlign = align == CrossAxisAlignment.end
         ? TextAlign.end
         : align == CrossAxisAlignment.center
             ? TextAlign.center
             : TextAlign.start;
-    final amtColor = isZero
-        ? context.textSecondary
-        : isDr
-            ? AppColors.debitRed
-            : AppColors.creditGreen;
+    final amtColor = isDr ? AppColors.debitRed : AppColors.creditGreen;
 
     return Expanded(
       child: Column(
@@ -301,7 +296,7 @@ class _ExpandedCell extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(
-            isZero ? '—' : fmt.format(amount),
+            fmt.format(amount),
             textAlign: textAlign,
             style: context.bodySmall.copyWith(
               fontWeight: highlight ? .w700 : .w500,

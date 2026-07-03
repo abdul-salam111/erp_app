@@ -239,12 +239,12 @@ extension PartyRevenueAndRecoveryModelX on PartyRevenueAndRecoveryModel {
 extension PartyBalanceDetailModelX on PartyBalanceDetailModel {
   CustomerReceivableItemEntity toEntity() => CustomerReceivableItemEntity(
     partyName: party?.fullName ?? '',
-    location: null,
-    opening: openingAmount,
+    location: party?.locationName,
+    opening: openingAmount.abs(),
     openingIsDr: openingAmount >= 0,
-    debit: drAmount,
-    credit: crAmount,
-    balance: balance,
+    debit: drAmount.abs(),
+    credit: crAmount.abs(),
+    balance: balance.abs(),
     balanceIsDr: balance >= 0,
   );
 }

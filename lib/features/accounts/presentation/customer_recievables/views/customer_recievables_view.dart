@@ -44,6 +44,7 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
     _customerController = TextEditingController();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
   }
 
   @override

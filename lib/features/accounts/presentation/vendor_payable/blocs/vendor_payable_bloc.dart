@@ -19,7 +19,9 @@ class VendorPayableBloc extends Bloc<VendorPayableEvent, VendorPayableState>
     await executeUsecase(
       emit: emit,
       currentState: state,
-      usecase: () => vendorPayableUsecase(NoParams()),
+      usecase: () => vendorPayableUsecase(
+        VendorPayableParams(fromDate: event.fromDate, toDate: event.toDate),
+      ),
       stateBuilder: (status, {data, error}) => state.copyWith(
         apiStatus: status,
         items: data ,

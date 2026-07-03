@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PartyDetailModel {
 
-@JsonKey(name: 'Id') int get id;@JsonKey(name: 'FullName', defaultValue: '') String get fullName;@JsonKey(name: 'PartyTypeId') int get partyTypeId;@JsonKey(name: 'LocationId') int get locationId;
+@JsonKey(name: 'Id') int get id;@JsonKey(name: 'FullName', defaultValue: '') String get fullName;@JsonKey(name: 'PartyTypeId') int get partyTypeId;@JsonKey(name: 'LocationId') int get locationId;@JsonKey(name: 'LocationName') String get locationName;@JsonKey(name: 'PartyTypeName') String get partyTypeName;
 /// Create a copy of PartyDetailModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PartyDetailModelCopyWith<PartyDetailModel> get copyWith => _$PartyDetailModelCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PartyDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.partyTypeId, partyTypeId) || other.partyTypeId == partyTypeId)&&(identical(other.locationId, locationId) || other.locationId == locationId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PartyDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.partyTypeId, partyTypeId) || other.partyTypeId == partyTypeId)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.partyTypeName, partyTypeName) || other.partyTypeName == partyTypeName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,fullName,partyTypeId,locationId);
+int get hashCode => Object.hash(runtimeType,id,fullName,partyTypeId,locationId,locationName,partyTypeName);
 
 @override
 String toString() {
-  return 'PartyDetailModel(id: $id, fullName: $fullName, partyTypeId: $partyTypeId, locationId: $locationId)';
+  return 'PartyDetailModel(id: $id, fullName: $fullName, partyTypeId: $partyTypeId, locationId: $locationId, locationName: $locationName, partyTypeName: $partyTypeName)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PartyDetailModelCopyWith<$Res>  {
   factory $PartyDetailModelCopyWith(PartyDetailModel value, $Res Function(PartyDetailModel) _then) = _$PartyDetailModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'Id') int id,@JsonKey(name: 'FullName', defaultValue: '') String fullName,@JsonKey(name: 'PartyTypeId') int partyTypeId,@JsonKey(name: 'LocationId') int locationId
+@JsonKey(name: 'Id') int id,@JsonKey(name: 'FullName', defaultValue: '') String fullName,@JsonKey(name: 'PartyTypeId') int partyTypeId,@JsonKey(name: 'LocationId') int locationId,@JsonKey(name: 'LocationName') String locationName,@JsonKey(name: 'PartyTypeName') String partyTypeName
 });
 
 
@@ -65,13 +65,15 @@ class _$PartyDetailModelCopyWithImpl<$Res>
 
 /// Create a copy of PartyDetailModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? fullName = null,Object? partyTypeId = null,Object? locationId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? fullName = null,Object? partyTypeId = null,Object? locationId = null,Object? locationName = null,Object? partyTypeName = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String,partyTypeId: null == partyTypeId ? _self.partyTypeId : partyTypeId // ignore: cast_nullable_to_non_nullable
 as int,locationId: null == locationId ? _self.locationId : locationId // ignore: cast_nullable_to_non_nullable
-as int,
+as int,locationName: null == locationName ? _self.locationName : locationName // ignore: cast_nullable_to_non_nullable
+as String,partyTypeName: null == partyTypeName ? _self.partyTypeName : partyTypeName // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
@@ -156,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String fullName, @JsonKey(name: 'PartyTypeId')  int partyTypeId, @JsonKey(name: 'LocationId')  int locationId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String fullName, @JsonKey(name: 'PartyTypeId')  int partyTypeId, @JsonKey(name: 'LocationId')  int locationId, @JsonKey(name: 'LocationName')  String locationName, @JsonKey(name: 'PartyTypeName')  String partyTypeName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PartyDetailModel() when $default != null:
-return $default(_that.id,_that.fullName,_that.partyTypeId,_that.locationId);case _:
+return $default(_that.id,_that.fullName,_that.partyTypeId,_that.locationId,_that.locationName,_that.partyTypeName);case _:
   return orElse();
 
 }
@@ -177,10 +179,10 @@ return $default(_that.id,_that.fullName,_that.partyTypeId,_that.locationId);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String fullName, @JsonKey(name: 'PartyTypeId')  int partyTypeId, @JsonKey(name: 'LocationId')  int locationId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String fullName, @JsonKey(name: 'PartyTypeId')  int partyTypeId, @JsonKey(name: 'LocationId')  int locationId, @JsonKey(name: 'LocationName')  String locationName, @JsonKey(name: 'PartyTypeName')  String partyTypeName)  $default,) {final _that = this;
 switch (_that) {
 case _PartyDetailModel():
-return $default(_that.id,_that.fullName,_that.partyTypeId,_that.locationId);case _:
+return $default(_that.id,_that.fullName,_that.partyTypeId,_that.locationId,_that.locationName,_that.partyTypeName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +199,10 @@ return $default(_that.id,_that.fullName,_that.partyTypeId,_that.locationId);case
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String fullName, @JsonKey(name: 'PartyTypeId')  int partyTypeId, @JsonKey(name: 'LocationId')  int locationId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int id, @JsonKey(name: 'FullName', defaultValue: '')  String fullName, @JsonKey(name: 'PartyTypeId')  int partyTypeId, @JsonKey(name: 'LocationId')  int locationId, @JsonKey(name: 'LocationName')  String locationName, @JsonKey(name: 'PartyTypeName')  String partyTypeName)?  $default,) {final _that = this;
 switch (_that) {
 case _PartyDetailModel() when $default != null:
-return $default(_that.id,_that.fullName,_that.partyTypeId,_that.locationId);case _:
+return $default(_that.id,_that.fullName,_that.partyTypeId,_that.locationId,_that.locationName,_that.partyTypeName);case _:
   return null;
 
 }
@@ -212,13 +214,15 @@ return $default(_that.id,_that.fullName,_that.partyTypeId,_that.locationId);case
 @JsonSerializable()
 
 class _PartyDetailModel implements PartyDetailModel {
-  const _PartyDetailModel({@JsonKey(name: 'Id') this.id = 0, @JsonKey(name: 'FullName', defaultValue: '') required this.fullName, @JsonKey(name: 'PartyTypeId') this.partyTypeId = 0, @JsonKey(name: 'LocationId') this.locationId = 0});
+  const _PartyDetailModel({@JsonKey(name: 'Id') this.id = 0, @JsonKey(name: 'FullName', defaultValue: '') required this.fullName, @JsonKey(name: 'PartyTypeId') this.partyTypeId = 0, @JsonKey(name: 'LocationId') this.locationId = 0, @JsonKey(name: 'LocationName') this.locationName = '', @JsonKey(name: 'PartyTypeName') this.partyTypeName = ''});
   factory _PartyDetailModel.fromJson(Map<String, dynamic> json) => _$PartyDetailModelFromJson(json);
 
 @override@JsonKey(name: 'Id') final  int id;
 @override@JsonKey(name: 'FullName', defaultValue: '') final  String fullName;
 @override@JsonKey(name: 'PartyTypeId') final  int partyTypeId;
 @override@JsonKey(name: 'LocationId') final  int locationId;
+@override@JsonKey(name: 'LocationName') final  String locationName;
+@override@JsonKey(name: 'PartyTypeName') final  String partyTypeName;
 
 /// Create a copy of PartyDetailModel
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PartyDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.partyTypeId, partyTypeId) || other.partyTypeId == partyTypeId)&&(identical(other.locationId, locationId) || other.locationId == locationId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PartyDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.partyTypeId, partyTypeId) || other.partyTypeId == partyTypeId)&&(identical(other.locationId, locationId) || other.locationId == locationId)&&(identical(other.locationName, locationName) || other.locationName == locationName)&&(identical(other.partyTypeName, partyTypeName) || other.partyTypeName == partyTypeName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,fullName,partyTypeId,locationId);
+int get hashCode => Object.hash(runtimeType,id,fullName,partyTypeId,locationId,locationName,partyTypeName);
 
 @override
 String toString() {
-  return 'PartyDetailModel(id: $id, fullName: $fullName, partyTypeId: $partyTypeId, locationId: $locationId)';
+  return 'PartyDetailModel(id: $id, fullName: $fullName, partyTypeId: $partyTypeId, locationId: $locationId, locationName: $locationName, partyTypeName: $partyTypeName)';
 }
 
 
@@ -253,7 +257,7 @@ abstract mixin class _$PartyDetailModelCopyWith<$Res> implements $PartyDetailMod
   factory _$PartyDetailModelCopyWith(_PartyDetailModel value, $Res Function(_PartyDetailModel) _then) = __$PartyDetailModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'Id') int id,@JsonKey(name: 'FullName', defaultValue: '') String fullName,@JsonKey(name: 'PartyTypeId') int partyTypeId,@JsonKey(name: 'LocationId') int locationId
+@JsonKey(name: 'Id') int id,@JsonKey(name: 'FullName', defaultValue: '') String fullName,@JsonKey(name: 'PartyTypeId') int partyTypeId,@JsonKey(name: 'LocationId') int locationId,@JsonKey(name: 'LocationName') String locationName,@JsonKey(name: 'PartyTypeName') String partyTypeName
 });
 
 
@@ -270,13 +274,15 @@ class __$PartyDetailModelCopyWithImpl<$Res>
 
 /// Create a copy of PartyDetailModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? fullName = null,Object? partyTypeId = null,Object? locationId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? fullName = null,Object? partyTypeId = null,Object? locationId = null,Object? locationName = null,Object? partyTypeName = null,}) {
   return _then(_PartyDetailModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String,partyTypeId: null == partyTypeId ? _self.partyTypeId : partyTypeId // ignore: cast_nullable_to_non_nullable
 as int,locationId: null == locationId ? _self.locationId : locationId // ignore: cast_nullable_to_non_nullable
-as int,
+as int,locationName: null == locationName ? _self.locationName : locationName // ignore: cast_nullable_to_non_nullable
+as String,partyTypeName: null == partyTypeName ? _self.partyTypeName : partyTypeName // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

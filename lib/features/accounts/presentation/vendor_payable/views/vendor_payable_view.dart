@@ -43,6 +43,7 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
     _vendorController = TextEditingController();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
   }
 
   @override
@@ -58,7 +59,12 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
   }
 
   void _fetch() {
-    context.read<VendorPayableBloc>().add(const VendorPayableSubmitted());
+    context.read<VendorPayableBloc>().add(
+      VendorPayableSubmitted(
+        fromDate: _fromDate.format('yyyy-MM-dd'),
+        toDate: _toDate.format('yyyy-MM-dd'),
+      ),
+    );
   }
 
   Future<void> _pickDate(bool isFrom) async {

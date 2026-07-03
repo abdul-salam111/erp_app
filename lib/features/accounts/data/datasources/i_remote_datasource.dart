@@ -76,9 +76,9 @@ abstract interface class IRemoteAccountsDataSource {
   //! ─── Customer Receivables ───────────────────────────────────────────────────
 
   Future<List<PartyBalanceDetailModel>> getPartyBalanceDetail({
-    required bool flgReceivable,
+    bool flgReceivable = false,
+    bool flgPayable = false,
     required String fromDate,
     required String toDate,
-    required String reportType,
   });
 }

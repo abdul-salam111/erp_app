@@ -233,18 +233,18 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
 
   @override
   Future<List<PartyBalanceDetailModel>> getPartyBalanceDetail({
-    required bool flgReceivable,
+    bool flgReceivable = false,
+    bool flgPayable = false,
     required String fromDate,
     required String toDate,
-    required String reportType,
   }) {
     return postList<PartyBalanceDetailModel>(
       url: ApiEndPoints.accounts.partyBalanceDetail,
       body: {
-        'FlgReceivable': flgReceivable,
+        if (flgReceivable) 'FlgReceivable': true,
+        if (flgPayable) 'FlgPayable': true,
         'FromDate': fromDate,
         'ToDate': toDate,
-        'ReportType': reportType,
       },
       parser: (json) =>
           PartyBalanceDetailModel.fromJson(json as Map<String, dynamic>),
