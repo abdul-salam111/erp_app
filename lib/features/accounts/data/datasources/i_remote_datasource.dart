@@ -80,5 +80,6 @@ abstract interface class IRemoteAccountsDataSource {
     bool flgPayable = false,
     required String fromDate,
     required String toDate,
+    String? reportType,
   });
 }

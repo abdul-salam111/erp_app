@@ -212,6 +212,7 @@ class AccountsRepositoryImpl extends BaseRepository
         flgReceivable: true,
         fromDate: fromDate,
         toDate: toDate,
+        reportType: 'customer_receivables',
       ),
     );
     return result.map((models) => models.map((m) => m.toEntity()).toList());

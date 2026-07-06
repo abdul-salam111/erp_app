@@ -237,6 +237,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
     bool flgPayable = false,
     required String fromDate,
     required String toDate,
+    String? reportType,
   }) {
     return postList<PartyBalanceDetailModel>(
       url: ApiEndPoints.accounts.partyBalanceDetail,
@@ -245,6 +246,7 @@ class RemoteAccountsDataSourceImpl extends BaseRemoteDatasource
         if (flgPayable) 'FlgPayable': true,
         'FromDate': fromDate,
         'ToDate': toDate,
+        if (reportType != null) 'ReportType': reportType,
       },
       parser: (json) =>
           PartyBalanceDetailModel.fromJson(json as Map<String, dynamic>),

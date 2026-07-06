@@ -61,13 +61,8 @@ class _TableHeader extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            flex: 5,
+            flex: 8,
             child: _HeaderText(AppConstants.partyBtn),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            flex: 3,
-            child: _HeaderText(AppConstants.locationLabel),
           ),
           Expanded(
             flex: 4,
@@ -136,55 +131,51 @@ class _CustomerRowState extends State<_CustomerRow> {
               child: Row(
                 crossAxisAlignment: .center,
                 children: [
-                  // Party
+                  // Party + location
                   Expanded(
-                    flex: 5,
-                    child: Text(
-                      item.partyName,
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w600,
-                        fontSize: 13,
-                        color: context.textPrimary,
-                      ),
-                      maxLines: 2,
-                      overflow: .ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  // Location
-                  Expanded(
-                    flex: 3,
-                    child: Text(
-                      item.location ?? '—',
-                      style: context.labelSmall.copyWith(
-                        color: context.textSecondary,
-                        fontSize: 12,
-                      ),
-                      maxLines: 1,
-                      overflow: .ellipsis,
+                    flex: 8,
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      mainAxisSize: .min,
+                      children: [
+                        Text(
+                          item.partyName,
+                          style: context.bodySmall.copyWith(
+                            fontWeight: .w600,
+                            fontSize: 13,
+                            color: context.textPrimary,
+                          ),
+                          maxLines: 2,
+                          overflow: .ellipsis,
+                        ),
+                        if (item.location != null && item.location!.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            item.location!,
+                            style: context.labelSmall.copyWith(
+                              color: context.textSecondary,
+                              fontSize: 11,
+                            ),
+                            maxLines: 1,
+                            overflow: .ellipsis,
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                   // Opening
                   Expanded(
                     flex: 4,
-                    child: Column(
-                      crossAxisAlignment: .end,
-                      mainAxisSize: .min,
-                      children: [
-                        Text(
-                          fmt.format(item.opening),
-                          textAlign: .end,
-                          maxLines: 1,
-                          overflow: .ellipsis,
-                          style: context.bodySmall.copyWith(
-                            fontWeight: .w600,
-                            fontSize: 12,
-                            color: context.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        _DrCrBadge(isDr: item.openingIsDr),
-                      ],
+                    child: Text(
+                      fmt.format(item.opening),
+                      textAlign: .end,
+                      maxLines: 1,
+                      overflow: .ellipsis,
+                      style: context.bodySmall.copyWith(
+                        fontWeight: .w600,
+                        fontSize: 12,
+                        color: context.textPrimary,
+                      ),
                     ),
                   ),
                   // Chevron
@@ -312,28 +303,3 @@ class _ExpandedCell extends StatelessWidget {
   }
 }
 
-// ─── DR / CR badge ────────────────────────────────────────────────────────────
-
-class _DrCrBadge extends StatelessWidget {
-  final bool isDr;
-  const _DrCrBadge({required this.isDr});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-      decoration: BoxDecoration(
-        color: isDr ? AppColors.debitContainer : AppColors.creditContainer,
-        borderRadius: .circular(3),
-      ),
-      child: Text(
-        isDr ? AppConstants.dr : AppConstants.cr,
-        style: context.labelSmall.copyWith(
-          color: isDr ? AppColors.debitRed : AppColors.creditGreen,
-          fontWeight: .w700,
-          fontSize: 9,
-        ),
-      ),
-    );
-  }
-}

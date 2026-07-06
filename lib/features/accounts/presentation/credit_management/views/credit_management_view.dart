@@ -6,10 +6,8 @@ import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../accounts_exports.dart';
-// import '../widgets/compact_filter_bar.dart';
 import '../widgets/credit_stat_cards.dart';
 import '../widgets/credit_table.dart';
-// import '../widgets/filter_form.dart';
 
 // ─── View ─────────────────────────────────────────────────────────────────────
 
@@ -35,15 +33,18 @@ class _CreditManagementBody extends StatefulWidget {
 }
 
 class _CreditManagementBodyState extends State<_CreditManagementBody> {
-  late final TextEditingController _partyController;
+  late final TextEditingController _searchController;
   late final ScrollController _scrollController;
+  String _searchQuery = '';
 
   @override
   void initState() {
     super.initState();
-    _partyController = TextEditingController();
+    _searchController = TextEditingController();
     _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
+    _searchController.addListener(() {
+      setState(() => _searchQuery = _searchController.text.trim().toLowerCase());
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<CreditManagementBloc>().add(const CreditManagementSubmitted());
     });
@@ -51,43 +52,14 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
 
   @override
   void dispose() {
-    _partyController.dispose();
+    _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    final bloc = context.read<CreditManagementBloc>();
-    final collapsed = _scrollController.offset > 40;
-    if (collapsed != bloc.state.filterCollapsed) {
-      bloc.add(CreditManagementFilterCollapsed(collapsed));
-    }
   }
 
   void _fetch() {
     context.read<CreditManagementBloc>().add(const CreditManagementSubmitted());
   }
-
-  // void _onPartyChanged(String name) {
-  //   final bloc = context.read<CreditManagementBloc>();
-  //   if (name.isEmpty) {
-  //     bloc.add(const CreditManagementPartyCleared());
-  //     return;
-  //   }
-  //   final match = bloc.state.parties.where((p) => p.name == name).firstOrNull;
-  //   if (match != null) bloc.add(CreditManagementPartySelected(match.id));
-  // }
-
-  // Future<void> _pickDate() async {
-  //   final bloc = context.read<CreditManagementBloc>();
-  //   final picked = await showCompactDatePicker(
-  //     context: context,
-  //     initialDate: bloc.state.date,
-  //     firstDate: DateTime(2000),
-  //     lastDate: DateTime(2100),
-  //   );
-  //   if (picked != null) bloc.add(CreditManagementDateChanged(picked));
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -98,45 +70,7 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
         appBar: CustomAppBar(title: AppConstants.creditManagmentTitle),
         body: Column(
           children: [
-            // BlocBuilder<CreditManagementBloc, CreditManagementState>(
-            //   buildWhen: (p, c) =>
-            //       p.filterCollapsed != c.filterCollapsed ||
-            //       p.date != c.date ||
-            //       p.parties != c.parties ||
-            //       p.partiesStatus != c.partiesStatus,
-            //   builder: (context, state) => AnimatedSize(
-            //     duration: const Duration(milliseconds: 260),
-            //     curve: Curves.easeInOut,
-            //     alignment: .topCenter,
-            //     child: state.filterCollapsed
-            //         ? CompactFilterBar(
-            //             partyName: _partyController.text,
-            //             date: state.date,
-            //             onExpand: () {
-            //               context.read<CreditManagementBloc>().add(
-            //                 const CreditManagementFilterCollapsed(false),
-            //               );
-            //               if (_scrollController.hasClients) {
-            //                 _scrollController.animateTo(
-            //                   0,
-            //                   duration: const Duration(milliseconds: 300),
-            //                   curve: Curves.easeOut,
-            //                 );
-            //               }
-            //             },
-            //           )
-            //         : FilterForm(
-            //             date: state.date,
-            //             partyController: _partyController,
-            //             parties: state.parties.map((p) => p.name).toList(),
-            //             partiesStatus: state.partiesStatus,
-            //             onPartyChanged: _onPartyChanged,
-            //             onPickDate: _pickDate,
-            //             onView: _fetch,
-            //           ),
-            //   ),
-            // ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             BlocBuilder<CreditManagementBloc, CreditManagementState>(
               buildWhen: (p, c) =>
                   p.agingData != c.agingData || p.apiStatus != c.apiStatus,
@@ -153,14 +87,62 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                 );
               },
             ),
+            BlocBuilder<CreditManagementBloc, CreditManagementState>(
+              buildWhen: (p, c) => p.apiStatus != c.apiStatus,
+              builder: (context, state) {
+                if (state.apiStatus != ApiStatus.SUCCESS) return const SizedBox.shrink();
+                return Column(
+                  mainAxisSize: .min,
+                  children: [
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
+                      child: TextField(
+                        controller: _searchController,
+                        style: context.bodySmall.copyWith(fontSize: 13),
+                        decoration: InputDecoration(
+                          hintText: 'Search customer...',
+                          hintStyle: context.bodySmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 13,
+                          ),
+                          prefixIcon: Icon(Icons.search_rounded, size: 18, color: context.textSecondary),
+                          suffixIcon: _searchQuery.isNotEmpty
+                              ? GestureDetector(
+                                  onTap: () => _searchController.clear(),
+                                  child: Icon(Icons.close_rounded, size: 16, color: context.textSecondary),
+                                )
+                              : null,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 7),
+                          filled: true,
+                          fillColor: context.white,
+                          border: OutlineInputBorder(
+                            borderRadius: .circular(8),
+                            borderSide: BorderSide(color: AppColors.grey200),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: .circular(8),
+                            borderSide: BorderSide(color: AppColors.grey200),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: .circular(8),
+                            borderSide: BorderSide(color: context.primary),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                );
+              },
+            ),
             Expanded(
               child: ColoredBox(
                 color: context.white,
                 child: BlocBuilder<CreditManagementBloc, CreditManagementState>(
                   buildWhen: (p, c) =>
-                      p.apiStatus != c.apiStatus ||
-                      p.agingData != c.agingData ||
-                      p.message != c.message,
+                      p.apiStatus != c.apiStatus || p.agingData != c.agingData,
                   builder: (context, state) {
                     if (state.apiStatus == ApiStatus.LOADING) {
                       return const _TableShimmer();
@@ -172,9 +154,17 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                         onRetry: _fetch,
                       );
                     }
+                    final allItems = state.agingData?.partyCredits ?? const [];
+                    final filtered = _searchQuery.isEmpty
+                        ? allItems
+                        : allItems
+                            .where((c) => c.partyName
+                                .toLowerCase()
+                                .contains(_searchQuery))
+                            .toList();
                     return CreditTable(
                       scrollController: _scrollController,
-                      items: state.agingData?.partyCredits ?? const [],
+                      items: filtered,
                     );
                   },
                 ),
