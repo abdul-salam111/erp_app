@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import '../../../../core/shared/shared_exports.dart';
-import '../entities/account_list_item_entity.dart';
-import '../repositories/i_accounts_repository.dart';
+import '../../../../../core/shared/shared_exports.dart';
+import '../../entities/account_ledger/account_list_item_entity.dart';
+import '../../repositories/i_accounts_repository.dart';
 
 class GetAccountsListUsecase
     implements Usecase<List<AccountListItemEntity>, NoParams> {

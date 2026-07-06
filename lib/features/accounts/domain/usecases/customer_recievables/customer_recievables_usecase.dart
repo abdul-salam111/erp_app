@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:fpdart/fpdart.dart';
-import '../../../../core/shared/shared_exports.dart';
-import '../../accounts_exports.dart';
+import '../../../../../core/shared/shared_exports.dart';
+import '../../../accounts_exports.dart';
 
 class CustomerRecievablesParams extends Equatable {
   final String fromDate;

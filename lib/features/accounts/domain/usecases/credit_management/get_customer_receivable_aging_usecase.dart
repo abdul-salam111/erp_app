@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 
-import '../../../../core/shared/shared_exports.dart';
-import '../entities/customer_receivable_aging_entity.dart';
-import '../repositories/i_accounts_repository.dart';
+import '../../../../../core/shared/shared_exports.dart';
+import '../../entities/credit_managment/customer_receivable_aging_entity.dart';
+import '../../repositories/i_accounts_repository.dart';
 
 class GetCustomerReceivableAgingParams {
   final String toDate;

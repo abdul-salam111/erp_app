@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../domain/entities/party_credit_monthly_summary_entity.dart';
+import '../../../domain/entities/credit_managment/party_credit_monthly_summary_entity.dart';
 import '../blocs/credit_management_details_cubit.dart';
 
 class CreditTrendChart extends StatelessWidget {

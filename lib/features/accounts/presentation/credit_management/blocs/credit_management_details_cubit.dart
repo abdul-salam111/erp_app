@@ -2,14 +2,14 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/constants/app_enums.dart';
-import '../../../domain/entities/party_credit_monthly_summary_entity.dart';
-import '../../../domain/entities/party_revenue_and_recovery_entity.dart';
-import '../../../domain/entities/party_top_receipt_entity.dart';
-import '../../../domain/entities/party_unpaid_debit_entity.dart';
-import '../../../domain/usecases/get_party_credit_monthly_summary_usecase.dart';
-import '../../../domain/usecases/get_party_revenue_and_recovery_usecase.dart';
-import '../../../domain/usecases/get_party_top_receipts_usecase.dart';
-import '../../../domain/usecases/get_party_unpaid_debits_usecase.dart';
+import '../../../domain/entities/credit_managment/party_credit_monthly_summary_entity.dart';
+import '../../../domain/entities/credit_managment/party_revenue_and_recovery_entity.dart';
+import '../../../domain/entities/credit_managment/party_top_receipt_entity.dart';
+import '../../../domain/entities/credit_managment/party_unpaid_debit_entity.dart';
+import '../../../domain/usecases/credit_management/get_party_credit_monthly_summary_usecase.dart';
+import '../../../domain/usecases/credit_management/get_party_revenue_and_recovery_usecase.dart';
+import '../../../domain/usecases/credit_management/get_party_top_receipts_usecase.dart';
+import '../../../domain/usecases/credit_management/get_party_unpaid_debits_usecase.dart';
 
 part 'credit_management_details_state.dart';
 

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/constants/app_enums.dart';
-import '../../../domain/entities/customer_receivable_aging_entity.dart';
-import '../../../domain/entities/party_list_item_entity.dart';
+import '../../../domain/entities/credit_managment/customer_receivable_aging_entity.dart';
+import '../../../domain/entities/party_ledger/party_list_item_entity.dart';
 
 class CreditManagementState extends Equatable {
   final CustomerReceivableAgingEntity? agingData;

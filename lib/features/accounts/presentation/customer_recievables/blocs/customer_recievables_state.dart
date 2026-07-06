@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/constants/app_enums.dart';
-import '../../../domain/entities/customer_receivable_item_entity.dart';
-import '../../../domain/entities/party_list_item_entity.dart';
+import '../../../domain/entities/customer_recievables/customer_receivable_item_entity.dart';
+import '../../../domain/entities/party_ledger/party_list_item_entity.dart';
 
 class CustomerRecievablesState extends Equatable {
   final List<CustomerReceivableItemEntity> items;

@@ -4,7 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../routes/route_exports.dart';
-import '../../../domain/entities/customer_receivable_aging_entity.dart';
+import '../../../domain/entities/credit_managment/customer_receivable_aging_entity.dart';
 import '../views/credit_management_details_view.dart';
 
 class CreditTable extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import '../../../../core/shared/shared_exports.dart';
-import '../repositories/i_accounts_repository.dart';
+import '../../../../../core/shared/shared_exports.dart';
+import '../../repositories/i_accounts_repository.dart';
 
 class GetInvoicePdfParams {
   final int featureId;

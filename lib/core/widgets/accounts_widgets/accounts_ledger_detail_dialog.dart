@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../constants/const_exports.dart';
 import '../../theme/theme_exports.dart';
-import '../../../features/accounts/domain/entities/ledger_entry_base.dart';
+import '../../../features/accounts/domain/entities/shared/ledger_entry_base.dart';
 import 'accounts_amount_card.dart';
 import 'ledger_formate_balance.dart';
 import 'accounts_info_row.dart';

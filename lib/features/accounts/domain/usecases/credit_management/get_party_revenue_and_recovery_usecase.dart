@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
 
-import '../../../../core/shared/shared_exports.dart';
-import '../entities/party_revenue_and_recovery_entity.dart';
-import '../repositories/i_accounts_repository.dart';
+import '../../../../../core/shared/shared_exports.dart';
+import '../../entities/credit_managment/party_revenue_and_recovery_entity.dart';
+import '../../repositories/i_accounts_repository.dart';
 
 class GetPartyRevenueAndRecoveryParams {
   final String toDate;

@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/app_enums.dart';
-import '../../../domain/entities/ledger_statement_entity.dart';
-import '../../../domain/usecases/get_party_statements_usecase.dart';
+import '../../../domain/entities/shared/ledger_statement_entity.dart';
+import '../../../domain/usecases/party_ledger/get_party_statements_usecase.dart';
 
 part 'ac_statement_state.dart';
 

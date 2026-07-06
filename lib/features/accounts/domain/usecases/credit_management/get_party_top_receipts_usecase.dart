@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 
-import '../../../../core/shared/shared_exports.dart';
-import '../../accounts_exports.dart';
+import '../../../../../core/shared/shared_exports.dart';
+import '../../../accounts_exports.dart';
 
 class GetPartyTopReceiptsParams {
   final String toDate;

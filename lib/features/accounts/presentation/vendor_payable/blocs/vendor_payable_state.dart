@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/constants/app_enums.dart';
-import '../../../domain/entities/customer_receivable_item_entity.dart';
+import '../../../domain/entities/customer_recievables/customer_receivable_item_entity.dart';
 
 class VendorPayableState extends Equatable {
   final List<CustomerReceivableItemEntity> items;

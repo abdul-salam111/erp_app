@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import '../../../../core/shared/shared_exports.dart';
-import '../entities/ledger_statement_entity.dart';
-import '../repositories/i_accounts_repository.dart';
+import '../../../../../core/shared/shared_exports.dart';
+import '../../entities/shared/ledger_statement_entity.dart';
+import '../../repositories/i_accounts_repository.dart';
 
 class GetPartyStatementsParams {
   final String fromDate;

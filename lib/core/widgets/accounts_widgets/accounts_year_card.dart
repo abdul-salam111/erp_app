@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants/const_exports.dart';
 import '../../theme/theme_exports.dart';
 import '../../utils/utils_exports.dart';
-import '../../../features/accounts/domain/entities/ledger_entry_base.dart';
+import '../../../features/accounts/domain/entities/shared/ledger_entry_base.dart';
 import 'ledger_formate_balance.dart';
 
 typedef AccountsLedgerGroup = ({String type, List<LedgerEntryBase> entries});

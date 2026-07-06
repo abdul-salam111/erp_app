@@ -2,9 +2,9 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
-import '../../../domain/usecases/get_cashbook_accounts_usecase.dart';
-import '../../../domain/usecases/get_cashbook_statements_usecase.dart';
-import '../../../domain/usecases/get_invoice_pdf_usecase.dart';
+import '../../../domain/usecases/cashbook/get_cashbook_accounts_usecase.dart';
+import '../../../domain/usecases/cashbook/get_cashbook_statements_usecase.dart';
+import '../../../domain/usecases/shared/get_invoice_pdf_usecase.dart';
 import 'cashbook_event.dart';
 import 'cashbook_state.dart';
 

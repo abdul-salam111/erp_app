@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
-import '../../../domain/entities/customer_receivable_item_entity.dart';
+import '../../../domain/entities/customer_recievables/customer_receivable_item_entity.dart';
 
 class CustomerReceivablesTable extends StatelessWidget {
   final List<CustomerReceivableItemEntity> items;

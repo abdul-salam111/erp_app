@@ -5,7 +5,7 @@ import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
-import '../../../domain/entities/recovery_invoice_entity.dart';
+import '../../../domain/entities/accounts/recovery_invoice_entity.dart';
 import '../blocs/accounts_bloc.dart';
 import '../blocs/accounts_state.dart';
 import 'accounts_models.dart';

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/constants/app_enums.dart';
-import '../../../domain/entities/cashbook_account_item_entity.dart';
-import '../../../domain/entities/ledger_statement_entity.dart';
+import '../../../domain/entities/cashbook/cashbook_account_item_entity.dart';
+import '../../../domain/entities/shared/ledger_statement_entity.dart';
 
 class CashbookState extends Equatable {
   final List<LedgerStatementEntity> statements;

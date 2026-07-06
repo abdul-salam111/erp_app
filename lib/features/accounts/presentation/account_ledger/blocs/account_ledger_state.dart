@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/app_enums.dart';
-import '../../../domain/entities/account_list_item_entity.dart';
-import '../../../domain/entities/ledger_statement_entity.dart';
+import '../../../domain/entities/account_ledger/account_list_item_entity.dart';
+import '../../../domain/entities/shared/ledger_statement_entity.dart';
 
 class AccountLedgerState extends Equatable {
   final List<LedgerStatementEntity> statements;

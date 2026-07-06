@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/const_exports.dart';
-import '../../../domain/entities/due_receipt_count_entity.dart';
+import '../../../domain/entities/accounts/due_receipt_count_entity.dart';
 
 enum FilterType { today, week, month, oldest }
 

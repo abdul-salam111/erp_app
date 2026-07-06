@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
 
-import '../../../domain/usecases/get_due_receipt_count_usecase.dart';
+import '../../../domain/usecases/accounts/get_due_receipt_count_usecase.dart';
 import 'accounts_event.dart';
 import 'accounts_state.dart';
 

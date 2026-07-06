@@ -1,4 +1,4 @@
-export '../../../features/accounts/domain/entities/ledger_entry_base.dart';
+export '../../../features/accounts/domain/entities/shared/ledger_entry_base.dart';
 export 'accounts_amount_card.dart';
 export 'accounts_compact_filter_bar.dart';
 export 'accounts_filter_form.dart';

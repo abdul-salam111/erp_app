@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/app_enums.dart';
-import '../../../domain/entities/ledger_statement_entity.dart';
-import '../../../domain/entities/party_list_item_entity.dart';
+import '../../../domain/entities/shared/ledger_statement_entity.dart';
+import '../../../domain/entities/party_ledger/party_list_item_entity.dart';
 
 class PartyLedgerState extends Equatable {
   final List<LedgerStatementEntity> statements;

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/app_enums.dart';
-import '../../../domain/entities/bank_cash_item_entity.dart';
+import '../../../domain/entities/bank_and_cash_position/bank_cash_item_entity.dart';
 
 class BankAndCashPositionState extends Equatable {
   final List<BankCashItemEntity> items;
