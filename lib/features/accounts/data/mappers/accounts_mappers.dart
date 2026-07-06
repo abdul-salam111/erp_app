@@ -158,6 +158,7 @@ extension PartyCreditModelX on PartyCreditModel {
   PartyCreditEntity toEntity() => PartyCreditEntity(
     partyId: partyId ?? 0,
     partyName: party?.fullName ?? '',
+    location: party?.locationName,
     creditRating: creditRating,
     firstSegmentAmount: firstSegmentAmount,
     secondSegmentAmount: secondSegmentAmount,

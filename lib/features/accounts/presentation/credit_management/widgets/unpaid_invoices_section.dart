@@ -61,10 +61,9 @@ class UnpaidInvoicesSection extends StatelessWidget {
           header: const Row(
             children: [
               TableHeaderCell('Inv No', flex: 2),
-              TableHeaderCell('Receivable', flex: 2, align: TextAlign.end),
+              TableHeaderCell('Receivable', flex: 2, align: TextAlign.center),
               TableHeaderCell('Age', flex: 2, align: TextAlign.center),
-              TableHeaderCell('Markup', flex: 2, align: TextAlign.center),
-              TableHeaderCell('Status', flex: 2, align: TextAlign.end),
+              SizedBox(width: 20),
             ],
           ),
           rows: state.unpaidItems.map((item) => _InvoiceRow(item: item)).toList(),
@@ -77,9 +76,16 @@ class UnpaidInvoicesSection extends StatelessWidget {
 
 // ── Table row ─────────────────────────────────────────────────────────────────
 
-class _InvoiceRow extends StatelessWidget {
+class _InvoiceRow extends StatefulWidget {
   final PartyUnpaidDebitEntity item;
   const _InvoiceRow({required this.item});
+
+  @override
+  State<_InvoiceRow> createState() => _InvoiceRowState();
+}
+
+class _InvoiceRowState extends State<_InvoiceRow> {
+  bool _expanded = false;
 
   static String _formatDate(String raw) {
     if (raw.length < 10) return raw;
@@ -95,80 +101,116 @@ class _InvoiceRow extends StatelessWidget {
     }
   }
 
-  static Color _ageColor(int days) {
-    if (days <= 30) return AppColors.greenDark;
-    if (days <= 60) return AppColors.orangeDark;
-    return AppColors.errorBright;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: .start,
+    final item = widget.item;
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        InkWell(
+          onTap: () => setState(() => _expanded = !_expanded),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
               children: [
-                Text(
-                  item.docNbr,
-                  style: context.bodySmall.copyWith(
-                    fontWeight: .w600,
-                    fontSize: 12,
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Text(
+                        item.docNbr,
+                        style: context.bodySmall.copyWith(
+                          fontWeight: .w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        _formatDate(item.docDate),
+                        style: context.labelSmall.copyWith(
+                          color: context.textSecondary,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  _formatDate(item.docDate),
-                  style: context.labelSmall.copyWith(
-                    color: context.textSecondary,
-                    fontSize: 10,
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    item.remainingAmount.asPrice,
+                    style: context.bodySmall.copyWith(
+                      fontWeight: .w600,
+                      fontSize: 12,
+                    ),
+                    textAlign: .center,
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    '${item.daysOverdue}',
+                    style: context.bodySmall.copyWith(
+                      color: context.textPrimary,
+                      fontSize: 12,
+                      fontWeight: .w600,
+                    ),
+                    textAlign: .center,
+                  ),
+                ),
+                SizedBox(
+                  width: 20,
+                  child: AnimatedRotation(
+                    turns: _expanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      size: 18,
+                      color: context.textSecondary,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              item.remainingAmount.asPrice,
-              style: context.bodySmall.copyWith(
-                fontWeight: .w600,
-                fontSize: 12,
-              ),
-              textAlign: .end,
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              '${item.daysOverdue}',
-              style: context.bodySmall.copyWith(
-                color: _ageColor(item.daysOverdue),
-                fontSize: 12,
-                fontWeight: .w600,
-              ),
-              textAlign: .center,
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              item.markupAmount.asPrice,
-              style: context.bodySmall.copyWith(fontSize: 12, fontWeight: .w600),
-              textAlign: .center,
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: .centerRight,
-              child: _StatusBadge(status: item.status),
-            ),
-          ),
-        ],
-      ),
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeInOut,
+          alignment: .topCenter,
+          child: _expanded
+              ? Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: .start,
+                        children: [
+                          Text(
+                            'Markup',
+                            style: context.labelSmall.copyWith(
+                              color: context.textSecondary,
+                              fontSize: 10,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            item.markupAmount.roundToDouble().asPrice,
+                            style: context.bodySmall.copyWith(
+                              fontWeight: .w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      _StatusBadge(status: item.status),
+                    ],
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
     );
   }
 }
@@ -181,8 +223,12 @@ class _StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unpaid = status.toLowerCase() == 'unpaid';
-    final color = unpaid ? AppColors.errorBright : AppColors.greenDark;
+    final s = status.toLowerCase();
+    final color = s == 'unpaid'
+        ? AppColors.errorBright
+        : s.startsWith('partial')
+            ? AppColors.orangeDark
+            : AppColors.greenDark;
     final label = status.split(' ').first;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),

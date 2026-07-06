@@ -120,6 +120,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canGoBack = context.canPop();
     return SliverToBoxAdapter(
       child: Container(
         width: double.infinity,
@@ -142,37 +143,67 @@ class _Header extends StatelessWidget {
             child: Column(
               crossAxisAlignment: .start,
               children: [
-                Container(
-                  width: 52,
-                  height: 52,
-                  decoration: BoxDecoration(
-                    color: AppColors.white.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Icon(
-                    Iconsax.buildings,
-                    color: AppColors.white,
-                    size: 28,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                if (userName.isNotEmpty) ...[
-                  Text(
-                    'Welcome, $userName',
-                    style: context.bodyMedium.copyWith(
-                      color: AppColors.white.withValues(alpha: 0.8),
+                if (canGoBack)
+                  GestureDetector(
+                    onTap: () => context.pop(),
+                    child: Container(
+                      width: 38,
+                      height: 38,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: AppColors.white.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: AppColors.white,
+                        size: 18,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 4),
-                ],
-                Text(
-                  AppConstants.selectOrganization,
-                  style: context.headlineSmall.copyWith(
-                    color: AppColors.white,
-                    fontWeight: .w700,
-                  ),
+                Row(
+                  crossAxisAlignment: .center,
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: AppColors.white.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(
+                        Iconsax.buildings,
+                        color: AppColors.white,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: .start,
+                        children: [
+                          if (userName.isNotEmpty) ...[
+                            Text(
+                              'Welcome, $userName',
+                              style: context.bodyMedium.copyWith(
+                                color: AppColors.white.withValues(alpha: 0.8),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                          ],
+                          Text(
+                            AppConstants.selectOrganization,
+                            style: context.headlineSmall.copyWith(
+                              color: AppColors.white,
+                              fontWeight: .w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Text(
                   AppConstants.chooseTheOrganizationYouWant,
                   style: context.bodySmall.copyWith(

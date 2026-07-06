@@ -6,10 +6,10 @@ import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../accounts_exports.dart';
-import '../widgets/compact_filter_bar.dart';
+// import '../widgets/compact_filter_bar.dart';
 import '../widgets/credit_stat_cards.dart';
 import '../widgets/credit_table.dart';
-import '../widgets/filter_form.dart';
+// import '../widgets/filter_form.dart';
 
 // ─── View ─────────────────────────────────────────────────────────────────────
 
@@ -68,26 +68,26 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
     context.read<CreditManagementBloc>().add(const CreditManagementSubmitted());
   }
 
-  void _onPartyChanged(String name) {
-    final bloc = context.read<CreditManagementBloc>();
-    if (name.isEmpty) {
-      bloc.add(const CreditManagementPartyCleared());
-      return;
-    }
-    final match = bloc.state.parties.where((p) => p.name == name).firstOrNull;
-    if (match != null) bloc.add(CreditManagementPartySelected(match.id));
-  }
+  // void _onPartyChanged(String name) {
+  //   final bloc = context.read<CreditManagementBloc>();
+  //   if (name.isEmpty) {
+  //     bloc.add(const CreditManagementPartyCleared());
+  //     return;
+  //   }
+  //   final match = bloc.state.parties.where((p) => p.name == name).firstOrNull;
+  //   if (match != null) bloc.add(CreditManagementPartySelected(match.id));
+  // }
 
-  Future<void> _pickDate() async {
-    final bloc = context.read<CreditManagementBloc>();
-    final picked = await showCompactDatePicker(
-      context: context,
-      initialDate: bloc.state.date,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null) bloc.add(CreditManagementDateChanged(picked));
-  }
+  // Future<void> _pickDate() async {
+  //   final bloc = context.read<CreditManagementBloc>();
+  //   final picked = await showCompactDatePicker(
+  //     context: context,
+  //     initialDate: bloc.state.date,
+  //     firstDate: DateTime(2000),
+  //     lastDate: DateTime(2100),
+  //   );
+  //   if (picked != null) bloc.add(CreditManagementDateChanged(picked));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -98,44 +98,45 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
         appBar: CustomAppBar(title: AppConstants.creditManagmentTitle),
         body: Column(
           children: [
-            BlocBuilder<CreditManagementBloc, CreditManagementState>(
-              buildWhen: (p, c) =>
-                  p.filterCollapsed != c.filterCollapsed ||
-                  p.date != c.date ||
-                  p.parties != c.parties ||
-                  p.partiesStatus != c.partiesStatus,
-              builder: (context, state) => AnimatedSize(
-                duration: const Duration(milliseconds: 260),
-                curve: Curves.easeInOut,
-                alignment: .topCenter,
-                child: state.filterCollapsed
-                    ? CompactFilterBar(
-                        partyName: _partyController.text,
-                        date: state.date,
-                        onExpand: () {
-                          context.read<CreditManagementBloc>().add(
-                            const CreditManagementFilterCollapsed(false),
-                          );
-                          if (_scrollController.hasClients) {
-                            _scrollController.animateTo(
-                              0,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeOut,
-                            );
-                          }
-                        },
-                      )
-                    : FilterForm(
-                        date: state.date,
-                        partyController: _partyController,
-                        parties: state.parties.map((p) => p.name).toList(),
-                        partiesStatus: state.partiesStatus,
-                        onPartyChanged: _onPartyChanged,
-                        onPickDate: _pickDate,
-                        onView: _fetch,
-                      ),
-              ),
-            ),
+            // BlocBuilder<CreditManagementBloc, CreditManagementState>(
+            //   buildWhen: (p, c) =>
+            //       p.filterCollapsed != c.filterCollapsed ||
+            //       p.date != c.date ||
+            //       p.parties != c.parties ||
+            //       p.partiesStatus != c.partiesStatus,
+            //   builder: (context, state) => AnimatedSize(
+            //     duration: const Duration(milliseconds: 260),
+            //     curve: Curves.easeInOut,
+            //     alignment: .topCenter,
+            //     child: state.filterCollapsed
+            //         ? CompactFilterBar(
+            //             partyName: _partyController.text,
+            //             date: state.date,
+            //             onExpand: () {
+            //               context.read<CreditManagementBloc>().add(
+            //                 const CreditManagementFilterCollapsed(false),
+            //               );
+            //               if (_scrollController.hasClients) {
+            //                 _scrollController.animateTo(
+            //                   0,
+            //                   duration: const Duration(milliseconds: 300),
+            //                   curve: Curves.easeOut,
+            //                 );
+            //               }
+            //             },
+            //           )
+            //         : FilterForm(
+            //             date: state.date,
+            //             partyController: _partyController,
+            //             parties: state.parties.map((p) => p.name).toList(),
+            //             partiesStatus: state.partiesStatus,
+            //             onPartyChanged: _onPartyChanged,
+            //             onPickDate: _pickDate,
+            //             onView: _fetch,
+            //           ),
+            //   ),
+            // ),
+            SizedBox(height: 10),
             BlocBuilder<CreditManagementBloc, CreditManagementState>(
               buildWhen: (p, c) =>
                   p.agingData != c.agingData || p.apiStatus != c.apiStatus,

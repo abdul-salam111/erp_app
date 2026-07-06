@@ -37,7 +37,7 @@ class BankAndCashHeroCard extends StatelessWidget {
 
     final chartWidth = max(
       MediaQuery.sizeOf(context).width - 12,
-      orderedItems.length * 72.0,
+      orderedItems.length * 25.0,
     );
 
     return Container(
@@ -169,16 +169,7 @@ class BankAndCashHeroCard extends StatelessWidget {
                           color: _lineColor,
                           barWidth: 2,
                           isStrokeCapRound: true,
-                          dotData: FlDotData(
-                            show: true,
-                            getDotPainter: (spot, percent, bar, index) =>
-                                FlDotCirclePainter(
-                                  radius: 3.5,
-                                  color: _lineColor,
-                                  strokeWidth: 1.5,
-                                  strokeColor: AppColors.white,
-                                ),
-                          ),
+                          dotData: const FlDotData(show: false),
                           belowBarData: BarAreaData(
                             show: true,
                             gradient: LinearGradient(

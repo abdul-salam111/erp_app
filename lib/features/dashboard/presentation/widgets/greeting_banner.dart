@@ -139,93 +139,96 @@ class DashboardHeader extends StatelessWidget {
                 const SizedBox(height: 24),
 
                 // ── Greeting row ──
-                Row(
-                  crossAxisAlignment: .end,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Text(
-                            _greeting,
-                            style: context.labelMedium.copyWith(
-                              color: AppColors.white.withValues(alpha: 0.80),
-                              fontWeight: .w500,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            userName,
-                            style: context.headlineSmall.copyWith(
-                              color: AppColors.white,
-                              fontWeight: .w700,
-                              height: 1.1,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Container(
-                                padding: .symmetric(horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: AppColors.white.withValues(alpha: 0.15),
-                                  borderRadius: .circular(20),
-                                ),
-                                child: Row(
-                                  mainAxisSize: .min,
-                                  children: [
-                                    Icon(
-                                      Iconsax.buildings,
-                                      color: AppColors.white.withValues(
-                                        alpha: 0.85,
-                                      ),
-                                      size: 11,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      orgName,
-                                      style: context.labelSmall.copyWith(
-                                        color: AppColors.white.withValues(
-                                          alpha: 0.90,
-                                        ),
-                                        fontWeight: .w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Row(
+                    crossAxisAlignment: .end,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: .start,
+                          children: [
+                            Text(
+                              _greeting,
+                              style: context.labelMedium.copyWith(
+                                color: AppColors.white.withValues(alpha: 0.80),
+                                fontWeight: .w500,
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Date pill
-                    Container(
-                      padding: .symmetric(horizontal: 11, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: AppColors.white.withValues(alpha: 0.15),
-                        borderRadius: .circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: .min,
-                        children: [
-                          Icon(
-                            Iconsax.calendar,
-                            color: AppColors.white.withValues(alpha: 0.85),
-                            size: 13,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            _formattedDate,
-                            style: context.labelSmall.copyWith(
-                              color: AppColors.white,
-                              fontWeight: .w500,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 4),
+                            Text(
+                              userName,
+                              style: context.headlineSmall.copyWith(
+                                color: AppColors.white,
+                                fontWeight: .w700,
+                                height: 1.1,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: .symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.white.withValues(alpha: 0.15),
+                                    borderRadius: .circular(20),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: .min,
+                                    children: [
+                                      Icon(
+                                        Iconsax.buildings,
+                                        color: AppColors.white.withValues(
+                                          alpha: 0.85,
+                                        ),
+                                        size: 11,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        orgName,
+                                        style: context.labelSmall.copyWith(
+                                          color: AppColors.white.withValues(
+                                            alpha: 0.90,
+                                          ),
+                                          fontWeight: .w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      // Date pill
+                      Container(
+                        padding: .symmetric(horizontal: 11, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: AppColors.white.withValues(alpha: 0.15),
+                          borderRadius: .circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: .min,
+                          children: [
+                            Icon(
+                              Iconsax.calendar,
+                              color: AppColors.white.withValues(alpha: 0.85),
+                              size: 13,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              _formattedDate,
+                              style: context.labelSmall.copyWith(
+                                color: AppColors.white,
+                                fontWeight: .w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

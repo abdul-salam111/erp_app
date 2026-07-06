@@ -139,29 +139,42 @@ class _CreditTableRowState extends State<_CreditTableRow> {
           InkWell(
             onTap: () => setState(() => _expanded = !_expanded),
             child: Padding(
-              padding: .symmetric(horizontal: 5, vertical: 6),
+              padding: .symmetric(horizontal: 5, vertical: 10),
               child: Row(
                 children: [
+                  _CrBadge(
+                    rating: item.creditRating,
+                    color: color.withAlpha(90),
+                  ),
+                  const SizedBox(width: 8),
                   Expanded(
                     flex: 6,
-                    child: Text(
-                      item.partyName,
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w600,
-                        fontSize: 13,
-                        color: context.textPrimary,
-                      ),
-                      maxLines: 1,
-                      overflow: .ellipsis,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: _CrBadge(
-                        rating: item.creditRating,
-                        color: color,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        Text(
+                          item.partyName,
+                          style: context.bodySmall.copyWith(
+                            fontWeight: .w600,
+                            fontSize: 13,
+                            color: AppColors.grey700,
+                          ),
+                          maxLines: 1,
+                          overflow: .ellipsis,
+                        ),
+                        if (item.location != null && item.location!.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            item.location!,
+                            style: context.labelSmall.copyWith(
+                              color: context.textSecondary,
+                              fontSize: 11,
+                            ),
+                            maxLines: 1,
+                            overflow: .ellipsis,
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                   Expanded(
@@ -242,6 +255,7 @@ class _CreditTableRowState extends State<_CreditTableRow> {
                             RouteNames.credit_management_details,
                             extra: CreditManagementDetailsArgs(
                               customer: item.partyName,
+                              city: item.location ?? '',
                               creditRating: item.creditRating,
                               ratingColor: color,
                               balance: item.totalAmount.asPrice,
@@ -324,14 +338,14 @@ class _CrBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 24,
-      height: 24,
+      width: 28,
+      height: 28,
       decoration: BoxDecoration(color: color, shape: .circle),
       alignment: .center,
       child: Text(
         rating,
         style: context.labelSmall.copyWith(
-          color: Colors.white,
+          color: Colors.black,
           fontSize: 11,
           fontWeight: .w700,
         ),

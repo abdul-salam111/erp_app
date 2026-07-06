@@ -31,6 +31,7 @@ class CustomerReceivableAgingEntity extends Equatable {
 class PartyCreditEntity extends Equatable {
   final int partyId;
   final String partyName;
+  final String? location;
   final String creditRating;
   final double firstSegmentAmount;
   final double secondSegmentAmount;
@@ -42,6 +43,7 @@ class PartyCreditEntity extends Equatable {
   const PartyCreditEntity({
     required this.partyId,
     required this.partyName,
+    this.location,
     required this.creditRating,
     required this.firstSegmentAmount,
     required this.secondSegmentAmount,
@@ -52,9 +54,10 @@ class PartyCreditEntity extends Equatable {
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         partyId,
         partyName,
+        location,
         creditRating,
         firstSegmentAmount,
         secondSegmentAmount,
