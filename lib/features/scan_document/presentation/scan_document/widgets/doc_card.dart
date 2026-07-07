@@ -32,15 +32,10 @@ class DocCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       onLongPress: onLongPress,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
+      child: Container(
         decoration: BoxDecoration(
           color: context.white,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected ? context.primary : Colors.transparent,
-            width: 2,
-          ),
           boxShadow: const [
             BoxShadow(
               color: Color(0x14000000),

@@ -152,7 +152,9 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
         ],
       ),
     );
-    controller.dispose();
+    // Defer disposal until after the dialog pop animation completes so the
+    // TextField's animation doesn't touch a disposed controller.
+    Future.delayed(const Duration(milliseconds: 300), controller.dispose);
   }
 
   @override
