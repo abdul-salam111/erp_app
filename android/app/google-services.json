@@ -1,0 +1,114 @@
+{
+  "project_info": {
+    "project_number": "665271526560",
+    "project_id": "manticerp",
+    "storage_bucket": "manticerp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:665271526560:android:0ce6aade9e8bd05aa6d5c5",
+        "android_client_info": {
+          "package_name": "com.mantic.partah"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "665271526560-0mubpnkk1ffll60ahqs7gsn1si9umala.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mantic.partah",
+            "certificate_hash": "937b7c1c4453bf24a628a81180cd16c855928a8b"
+          }
+        },
+        {
+          "client_id": "665271526560-4uuonsbs6sasj9378eau43m4r6pu7ufe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mantic.partah",
+            "certificate_hash": "29a0fd02beaa65d5f6781506cf9d0ea86264402c"
+          }
+        },
+        {
+          "client_id": "665271526560-i36vcqgekqbv9nig93ngr6dalgvmhcfo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mantic.partah",
+            "certificate_hash": "78311f49e4210c67c5a5b7877767e069cc971fa0"
+          }
+        },
+        {
+          "client_id": "665271526560-rsc54124c0akd8g149bi5r00p3i140uf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mantic.partah",
+            "certificate_hash": "404c7ff514d290471432f457756d45c51e61339f"
+          }
+        },
+        {
+          "client_id": "665271526560-h8t0mg2o4bg2j506lr3mm8un017i1r4p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7vDHrLRqwnpzzqi48ueChw3YMD0X4mXI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "665271526560-h8t0mg2o4bg2j506lr3mm8un017i1r4p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "665271526560-sflull70ekgl1ur3aeuncribse2ledhv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mantic.partah"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:665271526560:android:ef324e9c6c7f2d42a6d5c5",
+        "android_client_info": {
+          "package_name": "com.manticerp.softronix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "665271526560-h8t0mg2o4bg2j506lr3mm8un017i1r4p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7vDHrLRqwnpzzqi48ueChw3YMD0X4mXI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "665271526560-h8t0mg2o4bg2j506lr3mm8un017i1r4p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "665271526560-sflull70ekgl1ur3aeuncribse2ledhv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mantic.partah"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,14 +1,20 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'core/app_updates/force_update_gate.dart';
+import 'core/app_updates/force_update_service.dart';
 import 'core/di/app_dependencies.dart';
 import 'core/theme/theme_exports.dart';
 import 'core/utils/utils_exports.dart';
+import 'firebase_options.dart';
 import 'routes/route_exports.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   Bloc.observer = AppBlocObserver();
   await setupLocator();
+  await ForceUpdateService().initialize();
   runApp(const MyApp());
 }
 
@@ -27,6 +33,9 @@ class MyApp extends StatelessWidget {
             themeMode: ThemeMode.light,
             debugShowCheckedModeBanner: false,
             routerConfig: AppRoutes.router,
+            builder: (context, child) {
+              return ForceUpdateGate(child: child ?? const SizedBox.shrink());
+            },
           );
         },
       ),
