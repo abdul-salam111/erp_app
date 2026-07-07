@@ -63,7 +63,7 @@ class _NameDocumentSheetState extends State<NameDocumentSheet> {
               fillColor: context.grey50,
               border: OutlineInputBorder(
                 borderRadius: .circular(8),
-                borderSide: BorderSide.none,
+                borderSide: .none,
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: .circular(8),
