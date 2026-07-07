@@ -1,29 +1,44 @@
 import 'package:equatable/equatable.dart';
-import '../../../../../core/constants/const_exports.dart';
+import '../../../domain/entities/scanned_document.dart';
 
-class ScanDocumentState extends Equatable {
-  final dynamic data;
-  final String? message;
-  final ApiStatus apiStatus;
-
-  const ScanDocumentState({
-    this.data,
-    this.message,
-    this.apiStatus = ApiStatus.INITIAL,
-  });
-
-  ScanDocumentState copyWith({
-    dynamic data,
-    String? message,
-    ApiStatus? apiStatus,
-  }) {
-    return ScanDocumentState(
-      data: data ?? this.data,
-      message: message ?? this.message,
-      apiStatus: apiStatus ?? this.apiStatus,
-    );
-  }
+abstract class ScannerState extends Equatable {
+  const ScannerState();
 
   @override
-  List<Object?> get props => [data, message, apiStatus];
+  List<Object?> get props => [];
+}
+
+class ScannerInitial extends ScannerState {
+  const ScannerInitial();
+}
+
+class ScannerScanning extends ScannerState {
+  const ScannerScanning();
+}
+
+class ScannerNamingDocument extends ScannerState {
+  final List<String> imagePaths;
+
+  const ScannerNamingDocument(this.imagePaths);
+
+  @override
+  List<Object?> get props => [imagePaths];
+}
+
+class ScannerLoaded extends ScannerState {
+  final List<ScannedDocument> documents;
+
+  const ScannerLoaded(this.documents);
+
+  @override
+  List<Object?> get props => [documents];
+}
+
+class ScannerError extends ScannerState {
+  final String message;
+
+  const ScannerError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

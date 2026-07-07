@@ -1,13 +1,13 @@
 // ScanDocument feature barrel — public API of this feature.
-// Import this from outside the feature instead of individual file paths.
-// Data layer and domain internals (datasources, repository impls, repository
-// interfaces, usecases) are intentionally excluded — imported directly by DI.
+// Domain internals, data layer, and DI are imported directly in DI files.
 
 // Domain
-export 'domain/entities/scan_document_entity.dart';
+export 'domain/entities/scanned_document.dart';
 
-// Presentation — scan_document screen
+// Presentation — BLoC
 export 'presentation/scan_document/blocs/scan_document_bloc.dart';
 export 'presentation/scan_document/blocs/scan_document_event.dart';
 export 'presentation/scan_document/blocs/scan_document_state.dart';
+
+// Presentation — Views
 export 'presentation/scan_document/views/scan_document_view.dart';

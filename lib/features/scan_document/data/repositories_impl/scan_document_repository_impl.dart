@@ -1,18 +1,16 @@
-import 'package:fpdart/fpdart.dart';
-import '../../../../core/shared/shared_exports.dart';
+import '../../domain/entities/scanned_document.dart';
 import '../../domain/repositories/scan_document_repository.dart';
-import '../datasources/remote_scan_document_datasource.dart';
 
-class ScanDocumentRepositoryImpl extends BaseRepository
-    implements ScanDocumentRepository {
-  final IRemoteScanDocumentDataSource dataSource;
-
-  ScanDocumentRepositoryImpl({required this.dataSource});
+class DocumentRepositoryImpl implements DocumentRepository {
+  final List<ScannedDocument> _documents = [];
 
   @override
-  Future<Either<Failure, dynamic>> performAction() {
-    return execute(
-      call: () => dataSource.performAction(),
-    );
-  }
+  List<ScannedDocument> getDocuments() => List.unmodifiable(_documents);
+
+  @override
+  void addDocument(ScannedDocument document) => _documents.add(document);
+
+  @override
+  void deleteDocument(String id) =>
+      _documents.removeWhere((d) => d.id == id);
 }

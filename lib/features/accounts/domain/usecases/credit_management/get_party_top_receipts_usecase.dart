@@ -21,7 +21,7 @@ class GetPartyTopReceiptsUsecase
   GetPartyTopReceiptsUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<PartyTopReceiptEntity>>> call(
+  Future<Either<Failure, List<PartyTopReceiptEntity>>> call( 
     GetPartyTopReceiptsParams params,
   ) =>
       repository.getPartyTopReceipts(

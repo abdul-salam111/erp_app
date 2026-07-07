@@ -1,6 +1,7 @@
-import 'package:fpdart/fpdart.dart';
-import '../../../../core/shared/shared_exports.dart';
+import '../entities/scanned_document.dart';
 
-abstract interface class ScanDocumentRepository {
-  Future<Either<Failure, dynamic>> performAction();
+abstract class DocumentRepository {
+  List<ScannedDocument> getDocuments();
+  void addDocument(ScannedDocument document);
+  void deleteDocument(String id);
 }
