@@ -33,3 +33,12 @@ class DocumentDeleted extends ScannerEvent {
   @override
   List<Object?> get props => [id];
 }
+
+class DocumentsDeleted extends ScannerEvent {
+  final List<String> ids;
+
+  const DocumentsDeleted(this.ids);
+
+  @override
+  List<Object?> get props => [ids];
+}

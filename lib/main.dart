@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/app_updates/force_update_gate.dart';
 import 'core/app_updates/force_update_service.dart';
+import 'core/config/app_config.dart';
 import 'core/di/app_dependencies.dart';
 import 'core/theme/theme_exports.dart';
 import 'core/utils/utils_exports.dart';
@@ -12,6 +13,7 @@ import 'routes/route_exports.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await AppConfig.instance.initialize();
   Bloc.observer = AppBlocObserver();
   await setupLocator();
   await ForceUpdateService().initialize();

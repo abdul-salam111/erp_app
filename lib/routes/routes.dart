@@ -1,6 +1,4 @@
 import 'package:go_router/go_router.dart';
-
-import '../core/services/session_manager.dart';
 import '../features/auth/auth_exports.dart';
 import '../features/dashboard/dashboard_exports.dart';
 import '../features/splash/splash_view.dart';

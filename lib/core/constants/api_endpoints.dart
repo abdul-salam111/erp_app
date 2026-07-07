@@ -1,5 +1,7 @@
+import '../config/app_config.dart';
+
 class ApiEndPoints {
-  static const String _base = 'https://erpstagingapi.manticapps.com/api';
+  static String get _base => AppConfig.instance.baseUrl;
 
   static const auth       = _Auth();
   static const dashboard  = _Dashboard();
@@ -12,7 +14,7 @@ class ApiEndPoints {
 final class _Auth {
   const _Auth();
 
-  static const String _base = '${ApiEndPoints._base}/mis';
+  static String get _base => '${ApiEndPoints._base}/mis';
 
   String get login        => '$_base/auth/Authlogin';
   String get selectBranch => '$_base/Auth/SelectBranch';
@@ -24,7 +26,7 @@ final class _Auth {
 final class _Dashboard {
   const _Dashboard();
 
-  static const String _base = '${ApiEndPoints._base}/ExecutiveApp/dashboard';
+  static String get _base => '${ApiEndPoints._base}/ExecutiveApp/dashboard';
 
   String get dailyStats               => '$_base/GetDailyStatistics';
   String get monthlyStats             => '$_base/GetMonthlyStatistics';
@@ -41,8 +43,8 @@ final class _Dashboard {
 final class _Accounts {
   const _Accounts();
 
-  static const String _execBase      = '${ApiEndPoints._base}/ExecutiveApp';
-  static const String _statementsBase = '${ApiEndPoints._base}/AccountStatement';
+  static String get _execBase       => '${ApiEndPoints._base}/ExecutiveApp';
+  static String get _statementsBase => '${ApiEndPoints._base}/AccountStatement';
 
   String get accountList              => '$_execBase/accounts/GetList';
   String get accountLedger            => '$_execBase/accounts/GetLedger';
@@ -63,7 +65,7 @@ final class _Accounts {
 final class _Modules {
   const _Modules();
 
-  static const String _base = ApiEndPoints._base;
+  static String get _base => ApiEndPoints._base;
 
   String get alertPanel    => '${_base}alert_panel';
   String get purchaseOrder => '${_base}purchase_order';

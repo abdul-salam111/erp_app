@@ -6,7 +6,7 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../analytics_exports.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
+
 
 class AnalyticsView extends StatelessWidget {
   const AnalyticsView({super.key});

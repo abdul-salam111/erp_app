@@ -31,6 +31,7 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
     on<ScanStarted>(_onScanStarted);
     on<DocumentNamed>(_onDocumentNamed);
     on<DocumentDeleted>(_onDocumentDeleted);
+    on<DocumentsDeleted>(_onDocumentsDeleted);
   }
 
   void _onDocumentsLoaded(
@@ -116,6 +117,16 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
     Emitter<ScannerState> emit,
   ) {
     _deleteDocument(event.id);
+    emit(ScannerLoaded(_getDocuments()));
+  }
+
+  void _onDocumentsDeleted(
+    DocumentsDeleted event,
+    Emitter<ScannerState> emit,
+  ) {
+    for (final id in event.ids) {
+      _deleteDocument(id);
+    }
     emit(ScannerLoaded(_getDocuments()));
   }
 }
