@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_doc_scanner/flutter_doc_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,6 +14,10 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
   final GetDocuments _getDocuments;
   final AddDocument _addDocument;
   final DeleteDocument _deleteDocument;
+
+  static const _channel = MethodChannel(
+    'com.manticerp.softronix/content_resolver',
+  );
 
   ScannerBloc({
     required GetDocuments getDocuments,
@@ -53,19 +59,42 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
         imageFormat: ImageFormat.jpeg,
       );
 
-      if (result == null || (result as List).isEmpty) {
+      if (result == null || result.images.isEmpty) {
         emit(ScannerLoaded(_getDocuments()));
         return;
       }
 
-      final cleanedPaths = (result as List)
-          .map((p) => p.toString().replaceFirst('file://', ''))
-          .toList();
+      final paths = await _resolveImagePaths(result.images);
 
-      emit(ScannerNamingDocument(List<String>.from(cleanedPaths)));
-    } catch (_) {
+      if (paths.isEmpty) {
+        emit(ScannerLoaded(_getDocuments()));
+        return;
+      }
+
+      emit(ScannerNamingDocument(paths));
+    } catch (e) {
+      emit(ScannerError(e.toString()));
       emit(ScannerLoaded(_getDocuments()));
     }
+  }
+
+  // On Android, ML Kit returns content:// URIs — copy them to real cache files.
+  // On iOS, images are already file paths.
+  Future<List<String>> _resolveImagePaths(List<String> uris) async {
+    if (!Platform.isAndroid) {
+      return uris.map((p) => p.replaceFirst('file://', '')).toList();
+    }
+
+    final contentUris = uris.where((u) => u.startsWith('content://')).toList();
+    if (contentUris.isEmpty) {
+      return uris.map((p) => p.replaceFirst('file://', '')).toList();
+    }
+
+    final resolved = await _channel.invokeMethod<List<dynamic>>(
+      'copyContentUriToFile',
+      {'uris': uris},
+    );
+    return resolved?.cast<String>() ?? [];
   }
 
   void _onDocumentNamed(

@@ -30,62 +30,101 @@ class DocCard extends StatelessWidget {
       onLongPress: onDelete,
       child: Container(
         decoration: BoxDecoration(
-          color: context.grey900,
-          borderRadius: BorderRadius.circular(12),
+          color: context.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x14000000),
+              blurRadius: 12,
+              offset: Offset(0, 4),
+            ),
+          ],
         ),
         clipBehavior: .hardEdge,
         child: Column(
           crossAxisAlignment: .start,
           children: [
             Expanded(
-              child: Image.file(
-                File(document.imagePaths.first),
-                fit: .cover,
-                width: double.infinity,
-                errorBuilder: (_, __, ___) => Center(
-                  child: Icon(
-                    Icons.description,
-                    color: context.textDisabled,
-                    size: 48,
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: .start,
+              flex: 7,
+              child: Stack(
+                fit: StackFit.expand,
                 children: [
-                  Text(
-                    document.name,
-                    style: context.bodySmall.copyWith(
-                      color: context.textPrimary,
-                      fontWeight: .w500,
+                  Image.file(
+                    File(document.imagePaths.first),
+                    fit: .cover,
+                    errorBuilder: (_, __, ___) => Container(
+                      color: context.grey50,
+                      child: Center(
+                        child: Icon(
+                          Icons.description_outlined,
+                          color: context.grey300,
+                          size: 48,
+                        ),
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: .ellipsis,
                   ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: .spaceBetween,
-                    children: [
-                      Text(
+                  Positioned(
+                    bottom: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.primary,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
                         document.imagePaths.length == 1
                             ? '1 page'
                             : '${document.imagePaths.length} pages',
                         style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
+                          color: context.white,
+                          fontWeight: .w600,
                         ),
                       ),
-                      Text(
-                        _formatDate(document.createdAt),
-                        style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: .start,
+                  mainAxisAlignment: .center,
+                  children: [
+                    Text(
+                      document.name,
+                      style: context.bodySmall.copyWith(
+                        color: context.black,
+                        fontWeight: .w600,
+                      ),
+                      maxLines: 1,
+                      overflow: .ellipsis,
+                    ),
+                    const SizedBox(height: 3),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          size: 11,
+                          color: context.grey400,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          _formatDate(document.createdAt),
+                          style: context.labelSmall.copyWith(
+                            color: context.grey400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

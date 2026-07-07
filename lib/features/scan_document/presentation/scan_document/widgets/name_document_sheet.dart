@@ -43,7 +43,7 @@ class _NameDocumentSheetState extends State<NameDocumentSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: context.grey700,
+                color: context.grey300,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -51,26 +51,26 @@ class _NameDocumentSheetState extends State<NameDocumentSheet> {
           const SizedBox(height: 20),
           Text(
             'Name your document',
-            style: context.titleMedium.copyWith(color: context.textPrimary),
+            style: context.titleMedium.copyWith(color: context.black),
           ),
           const SizedBox(height: 16),
           TextField(
             controller: _controller,
             autofocus: true,
-            style: TextStyle(color: context.textPrimary),
+            style: TextStyle(color: context.black),
             decoration: InputDecoration(
               filled: true,
-              fillColor: context.grey800,
+              fillColor: context.grey50,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: .circular(8),
                 borderSide: BorderSide.none,
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: .circular(8),
                 borderSide: BorderSide(color: context.primary),
               ),
               hintText: 'Document name',
-              hintStyle: TextStyle(color: context.textDisabled),
+              hintStyle: TextStyle(color: context.grey400),
             ),
           ),
           const SizedBox(height: 20),
@@ -80,11 +80,11 @@ class _NameDocumentSheetState extends State<NameDocumentSheet> {
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: context.border),
-                    foregroundColor: context.textPrimary,
+                    side: BorderSide(color: context.grey300),
+                    foregroundColor: context.grey600,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   child: const Text('Cancel'),
@@ -102,7 +102,7 @@ class _NameDocumentSheetState extends State<NameDocumentSheet> {
                     foregroundColor: context.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   child: const Text('Save'),

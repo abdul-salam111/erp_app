@@ -24,8 +24,22 @@ class ScanDocumentView extends StatelessWidget {
   }
 }
 
-class _ScanDocumentBody extends StatelessWidget {
+class _ScanDocumentBody extends StatefulWidget {
   const _ScanDocumentBody();
+
+  @override
+  State<_ScanDocumentBody> createState() => _ScanDocumentBodyState();
+}
+
+class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
+  final _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +57,9 @@ class _ScanDocumentBody extends StatelessWidget {
           final name = await showModalBottomSheet<String>(
             context: context,
             isScrollControlled: true,
-            backgroundColor: context.grey900,
+            backgroundColor: context.white,
             shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
             ),
             builder: (_) => const NameDocumentSheet(),
           );
@@ -61,12 +75,20 @@ class _ScanDocumentBody extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        final docs = state is ScannerLoaded
+        final allDocs = state is ScannerLoaded
             ? state.documents
             : <ScannedDocument>[];
         final isScanning = state is ScannerScanning;
 
+        final docs = _query.isEmpty
+            ? allDocs
+            : allDocs
+                .where((d) =>
+                    d.name.toLowerCase().contains(_query.toLowerCase()))
+                .toList();
+
         return Scaffold(
+          backgroundColor: context.grey50,
           appBar: CustomAppBar(title: 'Documents'),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: isScanning
@@ -93,30 +115,90 @@ class _ScanDocumentBody extends StatelessWidget {
                     ],
                   ),
           ),
-          body: docs.isEmpty
-              ? const _EmptyState()
-              : GridView.builder(
-                  padding: context.pagePadding,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: context.gridColumnCount,
-                    mainAxisSpacing: context.gridSpacing,
-                    crossAxisSpacing: context.gridSpacing,
-                    childAspectRatio: 0.72,
-                  ),
-                  itemCount: docs.length,
-                  itemBuilder: (context, index) {
-                    final doc = docs[index];
-                    return DocCard(
-                      document: doc,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => DocumentViewPage(document: doc),
-                        ),
+          body: Column(
+            children: [
+              if (allDocs.isNotEmpty)
+                Padding(
+                  padding: context.pagePadding.copyWith(bottom: 4),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (v) => setState(() => _query = v),
+                    style: context.bodySmall.copyWith(color: context.black),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: context.white,
+                      hintText: 'Search documents…',
+                      hintStyle: TextStyle(color: context.grey400),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: context.grey400,
+                        size: 20,
                       ),
-                      onDelete: () => _confirmDelete(context, doc.id),
-                    );
-                  },
+                      suffixIcon: _query.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: context.grey400,
+                                size: 18,
+                              ),
+                              onPressed: () {
+                                _searchController.clear();
+                                setState(() => _query = '');
+                              },
+                            )
+                          : null,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: context.grey200),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: context.grey200),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: context.primary),
+                      ),
+                    ),
+                  ),
                 ),
+              Expanded(
+                child: allDocs.isEmpty
+                    ? const _EmptyState()
+                    : docs.isEmpty
+                        ? _NoResults(query: _query)
+                        : GridView.builder(
+                            padding: context.pagePadding,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: context.gridColumnCount,
+                              mainAxisSpacing: context.gridSpacing,
+                              crossAxisSpacing: context.gridSpacing,
+                              childAspectRatio: 0.72,
+                            ),
+                            itemCount: docs.length,
+                            itemBuilder: (context, index) {
+                              final doc = docs[index];
+                              return DocCard(
+                                document: doc,
+                                onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        DocumentViewPage(document: doc),
+                                  ),
+                                ),
+                                onDelete: () =>
+                                    _confirmDelete(context, doc.id),
+                              );
+                            },
+                          ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -126,29 +208,33 @@ class _ScanDocumentBody extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: ctx.grey900,
+        backgroundColor: ctx.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         title: Text(
           'Delete document?',
-          style: TextStyle(color: ctx.textPrimary),
+          style: ctx.titleMedium.copyWith(
+            color: ctx.black,
+            fontWeight: .w600,
+          ),
         ),
         content: Text(
           'This action cannot be undone.',
-          style: TextStyle(color: ctx.textSecondary),
+          style: ctx.bodySmall.copyWith(color: ctx.grey500),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text(
-              'Cancel',
-              style: TextStyle(color: ctx.textSecondary),
-            ),
+            child: Text('Cancel', style: TextStyle(color: ctx.grey500)),
           ),
-          TextButton(
+          FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(
-              'Delete',
-              style: TextStyle(color: ctx.error),
+            style: FilledButton.styleFrom(
+              backgroundColor: ctx.error,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
+            child: Text('Delete', style: TextStyle(color: ctx.white)),
           ),
         ],
       ),
@@ -156,6 +242,37 @@ class _ScanDocumentBody extends StatelessWidget {
     if (confirmed == true && context.mounted) {
       context.read<ScannerBloc>().add(DocumentDeleted(id));
     }
+  }
+}
+
+class _NoResults extends StatelessWidget {
+  final String query;
+
+  const _NoResults({required this.query});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: .min,
+        children: [
+          Icon(Icons.search_off_rounded, color: context.grey300, size: 64),
+          const SizedBox(height: 16),
+          Text(
+            'No results for "$query"',
+            style: context.titleMedium.copyWith(
+              color: context.black,
+              fontWeight: .w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Try a different name',
+            style: context.bodySmall.copyWith(color: context.grey400),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -168,16 +285,31 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          Icon(Icons.document_scanner, color: context.textDisabled, size: 80),
-          const SizedBox(height: 16),
+          Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              color: context.primary.withValues(alpha: 0.08),
+              shape: .circle,
+            ),
+            child: Icon(
+              Icons.document_scanner_outlined,
+              color: context.primary,
+              size: 48,
+            ),
+          ),
+          const SizedBox(height: 20),
           Text(
             'No documents yet',
-            style: context.titleLarge.copyWith(color: context.textPrimary),
+            style: context.titleMedium.copyWith(
+              color: context.black,
+              fontWeight: .w600,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Tap Scan to begin',
-            style: context.bodyMedium.copyWith(color: context.textSecondary),
+            'Tap Scan to scan your first document',
+            style: context.bodySmall.copyWith(color: context.grey400),
           ),
         ],
       ),

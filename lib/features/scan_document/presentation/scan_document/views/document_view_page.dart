@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../domain/entities/scanned_document.dart';
@@ -41,22 +42,32 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
     await showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: ctx.grey900,
+        backgroundColor: ctx.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         title: Text(
-          'Rename',
-          style: TextStyle(color: ctx.textPrimary),
+          'Rename Document',
+          style: ctx.titleMedium.copyWith(
+            color: ctx.black,
+            fontWeight: .w600,
+          ),
         ),
         content: TextField(
           controller: controller,
           autofocus: true,
-          style: TextStyle(color: ctx.textPrimary),
+          style: TextStyle(color: ctx.black),
           decoration: InputDecoration(
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: ctx.border),
+            filled: true,
+            fillColor: ctx.grey50,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
             ),
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: ctx.primary),
             ),
+            hintText: 'Document name',
+            hintStyle: TextStyle(color: ctx.grey400),
           ),
         ),
         actions: [
@@ -64,14 +75,20 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               'Cancel',
-              style: TextStyle(color: ctx.textSecondary),
+              style: TextStyle(color: ctx.grey500),
             ),
           ),
-          TextButton(
+          FilledButton(
             onPressed: () => Navigator.pop(ctx),
+            style: FilledButton.styleFrom(
+              backgroundColor: ctx.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
             child: Text(
               'Save',
-              style: TextStyle(color: ctx.primary),
+              style: TextStyle(color: ctx.white),
             ),
           ),
         ],
@@ -82,122 +99,167 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.black,
-      appBar: AppBar(
-        backgroundColor: context.black,
-        foregroundColor: context.textPrimary,
-        title: Column(
-          crossAxisAlignment: .start,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: context.grey50,
+        appBar: AppBar(
+          backgroundColor: context.white,
+          foregroundColor: context.black,
+          elevation: 0,
+          surfaceTintColor: context.white,
+          shadowColor: const Color(0x14000000),
+          centerTitle: false,
+          title: Column(
+            crossAxisAlignment: .start,
+            mainAxisSize: .min,
+            children: [
+              Text(
+                widget.document.name,
+                style: context.titleMedium.copyWith(
+                  color: context.black,
+                  fontWeight: .w600,
+                ),
+              ),
+              if (_pageCount > 1)
+                Text(
+                  'Page ${_currentPage + 1} of $_pageCount',
+                  style: context.bodySmall.copyWith(color: context.grey500),
+                ),
+            ],
+          ),
+        ),
+        body: Column(
           children: [
-            Text(
-              widget.document.name,
-              style: context.titleMedium.copyWith(
-                color: context.textPrimary,
-                fontWeight: .w600,
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: _pageCount,
+                onPageChanged: (i) => setState(() => _currentPage = i),
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        color: context.white,
+                        child: InteractiveViewer(
+                          child: Image.file(
+                            File(widget.document.imagePaths[index]),
+                            fit: .contain,
+                            errorBuilder: (_, __, ___) => Center(
+                              child: Column(
+                                mainAxisSize: .min,
+                                children: [
+                                  Icon(
+                                    Icons.broken_image_outlined,
+                                    color: context.grey300,
+                                    size: 64,
+                                  ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    'Could not load image',
+                                    style: context.bodySmall.copyWith(
+                                      color: context.grey400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             if (_pageCount > 1)
-              Text(
-                'Page ${_currentPage + 1} of $_pageCount',
-                style: context.bodySmall.copyWith(color: context.textSecondary),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Row(
+                  mainAxisAlignment: .center,
+                  children: List.generate(_pageCount, (i) {
+                    final active = i == _currentPage;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      width: active ? 20 : 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: active ? context.primary : context.grey300,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    );
+                  }),
+                ),
               ),
+            _BottomBar(
+              onShare: _share,
+              onRename: _rename,
+            ),
           ],
         ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: _pageCount,
-              onPageChanged: (i) => setState(() => _currentPage = i),
-              itemBuilder: (context, index) {
-                return InteractiveViewer(
-                  child: Image.file(
-                    File(widget.document.imagePaths[index]),
-                    fit: .contain,
-                    errorBuilder: (_, __, ___) => Center(
-                      child: Icon(
-                        Icons.broken_image,
-                        color: context.textDisabled,
-                        size: 64,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          if (_pageCount > 1)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Row(
-                mainAxisAlignment: .center,
-                children: List.generate(_pageCount, (i) {
-                  final active = i == _currentPage;
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    margin: const EdgeInsets.symmetric(horizontal: 3),
-                    width: active ? 20 : 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: active ? context.primary : context.grey600,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  );
-                }),
-              ),
-            ),
-          Container(
-            color: context.grey900,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            child: Row(
-              mainAxisAlignment: .spaceEvenly,
-              children: [
-                _ActionButton(
-                  icon: Icons.share,
-                  label: 'Share',
-                  onTap: _share,
-                ),
-                _ActionButton(
-                  icon: Icons.edit,
-                  label: 'Rename',
-                  onTap: _rename,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom),
-        ],
       ),
     );
   }
 }
 
-class _ActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
+class _BottomBar extends StatelessWidget {
+  final VoidCallback onShare;
+  final VoidCallback onRename;
 
-  const _ActionButton({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
+  const _BottomBar({required this.onShare, required this.onRename});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: .min,
+    return Container(
+      decoration: BoxDecoration(
+        color: context.white,
+        border: Border(
+          top: BorderSide(color: context.grey200, width: 1),
+        ),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        24,
+        12,
+        24,
+        12 + MediaQuery.of(context).padding.bottom,
+      ),
+      child: Row(
         children: [
-          Icon(icon, color: context.textPrimary, size: 24),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: context.labelSmall.copyWith(color: context.textPrimary),
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: onShare,
+              icon: const Icon(Icons.ios_share_rounded, size: 18),
+              label: const Text('Share'),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: context.primary,
+                side: BorderSide(color: context.primary),
+                padding: const EdgeInsets.symmetric(vertical: 13),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                textStyle: context.bodySmall.copyWith(fontWeight: .w600),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: FilledButton.icon(
+              onPressed: onRename,
+              icon: const Icon(Icons.drive_file_rename_outline_rounded, size: 18),
+              label: const Text('Rename'),
+              style: FilledButton.styleFrom(
+                backgroundColor: context.primary,
+                foregroundColor: context.white,
+                padding: const EdgeInsets.symmetric(vertical: 13),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                textStyle: context.bodySmall.copyWith(fontWeight: .w600),
+              ),
+            ),
           ),
         ],
       ),
