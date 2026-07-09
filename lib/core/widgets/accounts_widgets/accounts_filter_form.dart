@@ -40,74 +40,94 @@ class AccountsFilterForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.white,
+      color: context.grey50,
       padding: EdgeInsets.fromLTRB(
         context.pagePadding.left,
         12,
         context.pagePadding.right,
-        
-        0,
+        12,
       ),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          _FormLabel(text: label),
-          const SizedBox(height: 6),
-          if (isLoading)
-            const ShimmerBox(height: 56, radius: 10)
-          else
-            SearchableDropdown(
-              items: items,
-              subtitles: subtitles,
-              controller: controller,
-              hintText: hintText,
-              onChanged: onItemChanged,
-              fieldHeight: 40,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(
+          context.pagePadding.left,
+          12,
+          context.pagePadding.right,
+          12,
+        ),
+        decoration: BoxDecoration(
+          color: context.white,
+          borderRadius: .circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    _FormLabel(text: AppConstants.fromDateBtn),
-                    const SizedBox(height: 6),
-                    _FieldTile(
-                      icon: Iconsax.calendar_1,
-                      label: fromDate.format(AppConstants.ddMMMYyyyLabel),
-                      onTap: onPickFrom,
-                    ),
-                  ],
-                ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            _FormLabel(text: label),
+            const SizedBox(height: 6),
+            if (isLoading)
+              const ShimmerBox(height: 56, radius: 10)
+            else
+              SearchableDropdown(
+                items: items,
+                subtitles: subtitles,
+                controller: controller,
+                hintText: hintText,
+                onChanged: onItemChanged,
+                fieldHeight: 40,
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    _FormLabel(text: AppConstants.toDateBtn),
-                    const SizedBox(height: 6),
-                    _FieldTile(
-                      icon: Iconsax.calendar_1,
-                      label: toDate.format(AppConstants.ddMMMYyyyLabel),
-                      onTap: onPickTo,
-                    ),
-                  ],
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      _FormLabel(text: AppConstants.fromDateBtn),
+                      const SizedBox(height: 6),
+                      _FieldTile(
+                        icon: Iconsax.calendar_1,
+                        label: fromDate.format(AppConstants.ddMMMYyyyLabel),
+                        onTap: onPickFrom,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          CustomButton(
-            text: AppConstants.view,
-            onPressed: onView,
-            radius: 6,
-            elevation: 0,
-            fontsize: 14,
-            size: const Size.fromHeight(40),
-          ),
-        ],
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      _FormLabel(text: AppConstants.toDateBtn),
+                      const SizedBox(height: 6),
+                      _FieldTile(
+                        icon: Iconsax.calendar_1,
+                        label: toDate.format(AppConstants.ddMMMYyyyLabel),
+                        onTap: onPickTo,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            CustomButton(
+              text: AppConstants.view,
+              onPressed: onView,
+              radius: 6,
+              elevation: 0,
+              fontsize: 14,
+              size: const Size.fromHeight(40),
+              backgroundColor: context.primary.withValues(alpha: 0.12),
+              textColor: context.primary,
+            ),
+          ],
+        ),
       ),
     );
   }

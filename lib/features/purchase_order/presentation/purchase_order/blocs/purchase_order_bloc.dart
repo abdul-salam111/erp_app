@@ -10,22 +10,25 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState>
 
   PurchaseOrderBloc({required this.purchaseorderUsecase})
       : super(const PurchaseOrderState()) {
-    on<PurchaseOrderSubmitted>(_onPurchaseOrderSubmitted);
+    on<PurchaseOrderFetched>(_onFetched);
   }
 
-  Future<void> _onPurchaseOrderSubmitted(
-    PurchaseOrderSubmitted event,
+  Future<void> _onFetched(
+    PurchaseOrderFetched event,
     Emitter<PurchaseOrderState> emit,
   ) async {
     await executeUsecase(
       emit: emit,
       currentState: state,
       usecase: () => purchaseorderUsecase.call(
-        // TODO: Pass your parameters here
-        NoParams(),
+        PurchaseOrderParams(
+          fromDate: event.fromDate,
+          toDate: event.toDate,
+          search: event.search,
+        ),
       ),
       stateBuilder: (status, {data, error}) =>
-          state.copyWith(apiStatus: status, data: data, message: error),
+          state.copyWith(apiStatus: status, orders: data ?? [], message: error),
     );
   }
 }

@@ -152,8 +152,16 @@ class AppConstants {
   static const String logOut = 'Log Out';
   static const String signOutOfYourAccount = 'Sign out of your account';
   // ─── PurchaseOrder ─────────────────────────────────────
-  static const String purchaseOrderTitle = 'PurchaseOrder';
+  static const String purchaseOrderTitle = 'Purchase Order';
   static const String purchaseOrderView = 'PurchaseOrder View';
+  static const String netAmountLabel = 'Net Amount';
+  static const String searchByDocRefNo = 'Search by Doc / Ref No';
+  static const String selectDateRangeAndTap = 'Select a date range and tap View';
+  static const String partyLabel = 'Party';
+  static const String docNoLabel = 'Doc No';
+  static const String refNoLabel = 'Ref #';
+  static const String rowsLabel = 'Rows';
+  static const String remarksLabel = 'Remarks';
 
   // ─── SaleOrder ─────────────────────────────────────────
   static const String saleOrderTitle = 'SaleOrder';
