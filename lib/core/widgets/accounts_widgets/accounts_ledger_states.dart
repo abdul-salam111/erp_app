@@ -5,7 +5,8 @@ import '../../theme/theme_exports.dart';
 
 class AccountsIdleState extends StatelessWidget {
   final String subtitle;
-  const AccountsIdleState({super.key, required this.subtitle});
+  final String? title;
+  const AccountsIdleState({super.key, required this.subtitle, this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class AccountsIdleState extends StatelessWidget {
           Icon(Iconsax.document_text, size: 48, color: AppColors.grey300),
           const SizedBox(height: 12),
           Text(
-            AppConstants.noStatementsYet,
+            title ?? AppConstants.noStatementsYet,
             style: context.bodyMedium.copyWith(
               fontWeight: .w500,
               color: context.textSecondary,
@@ -34,7 +35,8 @@ class AccountsIdleState extends StatelessWidget {
 }
 
 class AccountsEmptyState extends StatelessWidget {
-  const AccountsEmptyState({super.key});
+  final String? title;
+  const AccountsEmptyState({super.key, this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class AccountsEmptyState extends StatelessWidget {
           Icon(Icons.search_off_rounded, size: 48, color: AppColors.grey300),
           const SizedBox(height: 12),
           Text(
-            AppConstants.noRecordsFound,
+            title ?? AppConstants.noRecordsFound,
             style: context.bodyMedium.copyWith(
               fontWeight: .w500,
               color: context.textSecondary,

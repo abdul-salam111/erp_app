@@ -8,4 +8,5 @@ abstract interface class PurchaseOrderRepository {
     required String toDate,
     String? search,
   });
+  Future<Either<Failure, dynamic>> createPurchaseOrder();
 }

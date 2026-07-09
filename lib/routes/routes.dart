@@ -234,6 +234,11 @@ class AppRoutes {
         name: RouteNames.vendor_payable,
         builder: (context, state) => const VendorPayableView(),
       ),
+      GoRoute(
+        path: RoutePaths.create_purchase_order,
+        name: RouteNames.create_purchase_order,
+        builder: (context, state) => const CreatePurchaseOrderView(),
+      ),
     
      
      

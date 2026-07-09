@@ -24,4 +24,5 @@ class RoutePaths {
   static const String credit_management_details = '/credit_management/details';
   static const String customer_recievables = '/customer_recievables';
   static const String vendor_payable = '/vendor_payable';
+  static const String create_purchase_order = '/create_purchase_order';
 }

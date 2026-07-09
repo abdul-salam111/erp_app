@@ -4,6 +4,8 @@ import '../../features/purchase_order/domain/repositories/purchase_order_reposit
 import '../../features/purchase_order/domain/usecases/purchase_order_usecase.dart';
 import '../../features/purchase_order/presentation/purchase_order/blocs/purchase_order_bloc.dart';
 import 'app_dependencies.dart';
+import '../../features/purchase_order/domain/usecases/create_purchase_order_usecase.dart';
+import '../../features/purchase_order/presentation/create_purchase_order/blocs/create_purchase_order_bloc.dart';
 
 Future<void> registerPurchaseOrder() async {
   // DataSource
@@ -24,5 +26,13 @@ Future<void> registerPurchaseOrder() async {
   // BLoCs
   sl.registerFactory<PurchaseOrderBloc>(
     () => PurchaseOrderBloc(purchaseorderUsecase: sl()),
+  );
+  // UseCase — CreatePurchaseOrder
+  sl.registerLazySingleton<CreatePurchaseOrderUsecase>(
+    () => CreatePurchaseOrderUsecase(repository: sl()),
+  );
+  // BLoC — CreatePurchaseOrder screen
+  sl.registerFactory<CreatePurchaseOrderBloc>(
+    () => CreatePurchaseOrderBloc(createPurchaseOrderUsecase: sl()),
   );
 }

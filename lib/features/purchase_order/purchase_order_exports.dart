@@ -11,3 +11,11 @@ export 'presentation/purchase_order/blocs/purchase_order_bloc.dart';
 export 'presentation/purchase_order/blocs/purchase_order_event.dart';
 export 'presentation/purchase_order/blocs/purchase_order_state.dart';
 export 'presentation/purchase_order/views/purchase_order_view.dart';
+
+// Presentation — create_purchase_order screen
+export './presentation/create_purchase_order/blocs/create_purchase_order_bloc.dart';
+export './presentation/create_purchase_order/blocs/create_purchase_order_event.dart';
+export './presentation/create_purchase_order/blocs/create_purchase_order_state.dart';
+export './presentation/create_purchase_order/views/create_purchase_order_view.dart';
+export './domain/usecases/create_purchase_order_usecase.dart';
+

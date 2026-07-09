@@ -24,4 +24,11 @@ class PurchaseOrderRepositoryImpl extends BaseRepository
       ),
     );
   }
+
+  @override
+  Future<Either<Failure, dynamic>> createPurchaseOrder() {
+    return execute(
+      call: () => dataSource.createPurchaseOrder(),
+    );
+  }
 }

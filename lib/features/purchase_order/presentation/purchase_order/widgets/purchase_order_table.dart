@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
@@ -207,26 +208,42 @@ class _OrderRowState extends State<_OrderRow> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
                         child: Row(
-                          mainAxisAlignment: .spaceBetween,
-                          crossAxisAlignment: .start,
+                          crossAxisAlignment: .center,
                           children: [
-                            _DetailChip(
-                              label: AppConstants.refNoLabel,
-                              value: order.refNo?.isNotEmpty == true
-                                  ? order.refNo!
-                                  : '—',
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: .spaceBetween,
+                                crossAxisAlignment: .start,
+                                children: [
+                                  _DetailChip(
+                                    label: AppConstants.refNoLabel,
+                                    value: order.refNo?.isNotEmpty == true
+                                        ? order.refNo!
+                                        : '—',
+                                  ),
+                                  _DetailChip(
+                                    label: AppConstants.rowsLabel,
+                                    value: order.rowsCount.toString(),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  _DetailChip(
+                                    label: AppConstants.remarksLabel,
+                                    value: order.remarks?.isNotEmpty == true
+                                        ? order.remarks!
+                                        : '—',
+                                    textAlign: TextAlign.end,
+                                  ),
+                                ],
+                              ),
                             ),
-                            _DetailChip(
-                              label: AppConstants.rowsLabel,
-                              value: order.rowsCount.toString(),
-                              textAlign: TextAlign.center,
-                            ),
-                            _DetailChip(
-                              label: AppConstants.remarksLabel,
-                              value: order.remarks?.isNotEmpty == true
-                                  ? order.remarks!
-                                  : '—',
-                              textAlign: TextAlign.end,
+                            const SizedBox(width: 12),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Icon(
+                                Iconsax.eye,
+                                size: 20,
+                                color: context.primary,
+                              ),
                             ),
                           ],
                         ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:mantic_erp_app/routes/route_names.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
@@ -97,7 +99,9 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
     return Scaffold(
       appBar: CustomAppBar(title: AppConstants.purchaseOrderTitle),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(RouteNames.create_purchase_order);
+        },
         backgroundColor: context.primary,
         shape: const CircleBorder(),
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
@@ -141,6 +145,7 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
                 builder: (context, state) {
                   if (state.apiStatus == ApiStatus.INITIAL) {
                     return const AccountsIdleState(
+                      title: 'No Purchase Orders',
                       subtitle: AppConstants.selectDateRangeAndTap,
                     );
                   }
@@ -156,7 +161,7 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
                   }
                   if (state.apiStatus == ApiStatus.SUCCESS &&
                       state.orders.isEmpty) {
-                    return const AccountsEmptyState();
+                    return const AccountsEmptyState(title: 'No Purchase Orders');
                   }
                   return PurchaseOrderTable(
                     orders: state.orders,

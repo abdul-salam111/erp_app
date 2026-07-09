@@ -7,9 +7,11 @@ abstract interface class IRemotePurchaseOrderDataSource {
     required String toDate,
     String? search,
   });
+  Future<dynamic> createPurchaseOrder();
 }
 
-class RemotePurchaseOrderDataSourceImpl extends BaseRemoteDatasource
+class RemotePurchaseOrderDataSourceImpl 
+extends BaseRemoteDatasource
     implements IRemotePurchaseOrderDataSource {
   RemotePurchaseOrderDataSourceImpl({required super.dioHelper});
 
@@ -47,4 +49,10 @@ class RemotePurchaseOrderDataSourceImpl extends BaseRemoteDatasource
     PurchaseOrderEntity(docNumber: 'PO-0001', partyName: 'Muzammil Hussain Commission Shop', date: '01/07/25', netAmount: 1077750, refNo: '1', rowsCount: 1, remarks: 'RM Yellow Corn'),
     PurchaseOrderEntity(docNumber: 'PO-0001', partyName: 'Muzammil Hussain Commission Shop', date: '01/07/25', netAmount: 1077750, refNo: '1', rowsCount: 1, remarks: 'RM Yellow Corn'),
   ];
+
+  @override
+  Future<dynamic> createPurchaseOrder() async {
+    // TODO: implement createPurchaseOrder API call
+    throw UnimplementedError('createPurchaseOrder not implemented');
+  }
 }
