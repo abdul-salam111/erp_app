@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get_utils/get_utils.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/di/di_exports.dart';
@@ -26,7 +25,7 @@ class _SignInViewState extends State<SignInView> {
       create: (_) => sl<SignInBloc>(),
       child: UnfocusWrapper(
         child: Scaffold(
-          appBar: AppBar(title: const Text(AppConstants.signInTitle)),
+          backgroundColor: const Color(0xFFF0F4FF),
           body: BlocConsumer<SignInBloc, SignInState>(
             listener: (context, state) {
               if (state.apiStatus == ApiStatus.SUCCESS) {
@@ -37,75 +36,243 @@ class _SignInViewState extends State<SignInView> {
                   context.goNamed(RouteNames.organizationSelection);
                 }
               }
-
               if (state.apiStatus == ApiStatus.FAILURE) {
                 AppToastsUtils.showErrorTop(context, state.message.toString());
               }
             },
             builder: (context, state) {
-              return Center(
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    children: [
-                      const AppLogo(),
-                      heightBox(context.screenHeight * 0.1),
-                      BlocBuilder<SignInBloc, SignInState>(
-                        buildWhen: (p, n) => p.email != n.email,
-                        builder: (context, state) {
-                          return CustomTextFormField(
-                            prefixIcon: Iconsax.sms,
-                            label: AppConstants.emailLabel,
-                            keyboardType: TextInputType.emailAddress,
-                            hintText: AppConstants.enterYourEmailHint,
-                            onChanged: (email) {
-                              context.read<SignInBloc>().add(
-                                EmailChangedEvent(email),
-                              );
-                            },
-                          );
-                        },
+              return Stack(
+                children: [
+                  const _BackgroundDecoration(),
+                  SafeArea(
+                    child: Center(
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Responsive.value<double>(
+                            context,
+                            phone: 20,
+                            tablet: 64,
+                            ipad: 120,
+                          ),
+                          vertical: 24,
+                        ),
+                        child: _LoginCard(formKey: _formKey, state: state),
                       ),
-                      const SizedBox(height: 16),
-                      BlocBuilder<SignInBloc, SignInState>(
-                        buildWhen: (p, n) => p.password != n.password,
-                        builder: (context, state) {
-                          return CustomTextFormField(
-                            onChanged: (password) {
-                              context.read<SignInBloc>().add(
-                                PasswordChangedEvent(password),
-                              );
-                            },
-                            obscureText: true,
-                            prefixIcon: Iconsax.lock,
-                            label: AppConstants.passwordLabel,
-                            hintText: AppConstants.enterYourPasswordHint,
-                            keyboardType: TextInputType.visiblePassword,
-                          );
-                        },
-                      ),
-                      heightBox(context.screenHeight * 0.05),
-                      BlocBuilder<SignInBloc, SignInState>(
-                        buildWhen: (p, n) => p.apiStatus != n.apiStatus,
-                        builder: (context, state) {
-                          return CustomButton(
-                            isLoading: state.apiStatus == ApiStatus.LOADING,
-                            text: AppConstants.signInBtn,
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                context.read<SignInBloc>().add(SignInSubmitted());
-                              }
-                            },
-                            radius: 10,
-                          );
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                ).paddingAll(12),
+                ],
               );
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BackgroundDecoration extends StatelessWidget {
+  const _BackgroundDecoration();
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    return SizedBox.expand(
+      child: Stack(
+        children: [
+          // Large blurred circle — top left
+          Positioned(
+            top: -size.height * 0.12,
+            left: -size.width * 0.2,
+            child: _Circle(
+              diameter: size.width * 0.75,
+              color: const Color(0xff1B84FF).withValues(alpha: 0.12),
+            ),
+          ),
+          // Medium circle — bottom right
+          Positioned(
+            bottom: -size.height * 0.08,
+            right: -size.width * 0.15,
+            child: _Circle(
+              diameter: size.width * 0.6,
+              color: const Color(0xFF074DBF).withValues(alpha: 0.09),
+            ),
+          ),
+          // Small accent — top right
+          Positioned(
+            top: size.height * 0.08,
+            right: -size.width * 0.06,
+            child: _Circle(
+              diameter: size.width * 0.28,
+              color: const Color(0xff1B84FF).withValues(alpha: 0.07),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Circle extends StatelessWidget {
+  const _Circle({required this.diameter, required this.color});
+  final double diameter;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: diameter,
+      height: diameter,
+      decoration: BoxDecoration(shape: .circle, color: color),
+    );
+  }
+}
+
+class _LoginCard extends StatelessWidget {
+  const _LoginCard({required this.formKey, required this.state});
+
+  final GlobalKey<FormState> formKey;
+  final SignInState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(
+        Responsive.value<double>(context, phone: 24, tablet: 32, ipad: 40),
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xff1B84FF).withValues(alpha: 0.08),
+            blurRadius: 40,
+            offset: const Offset(0, 12),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Form(
+        key: formKey,
+        child: Column(
+          crossAxisAlignment: .center,
+          mainAxisSize: .min,
+          children: [
+            // Logo badge
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0F4FF),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              padding: const EdgeInsets.all(10),
+              child: Image.asset(AppImages.manticLogo, fit: .contain),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Mantic ERP',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                color: Color(0xFF0D1B3E),
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Sign in to your account',
+              style: TextStyle(
+                fontSize: 13,
+                color: Color(0xFF717171),
+              ),
+            ),
+            const SizedBox(height: 28),
+            // Thin divider line
+            Row(
+              children: [
+                Expanded(
+                  child: Container(height: 1, color: const Color(0xFFEDEDED)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                      shape: .circle,
+                      color: Color(0xff1B84FF),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(height: 1, color: const Color(0xFFEDEDED)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            BlocBuilder<SignInBloc, SignInState>(
+              buildWhen: (p, n) => p.email != n.email,
+              builder: (context, state) {
+                return CustomTextFormField(
+                  prefixIcon: Iconsax.sms,
+                  label: AppConstants.emailLabel,
+                  keyboardType: TextInputType.emailAddress,
+                  hintText: AppConstants.enterYourEmailHint,
+                  validator: Validator.validateEmail,
+                  onChanged: (email) {
+                    context.read<SignInBloc>().add(EmailChangedEvent(email));
+                  },
+                );
+              },
+            ),
+            const SizedBox(height: 14),
+            BlocBuilder<SignInBloc, SignInState>(
+              buildWhen: (p, n) => p.password != n.password,
+              builder: (context, state) {
+                return CustomTextFormField(
+                  onChanged: (password) {
+                    context.read<SignInBloc>().add(PasswordChangedEvent(password));
+                  },
+                  obscureText: true,
+                  prefixIcon: Iconsax.lock,
+                  label: AppConstants.passwordLabel,
+                  hintText: AppConstants.enterYourPasswordHint,
+                  keyboardType: TextInputType.visiblePassword,
+                  validator: Validator.validatePassword,
+                );
+              },
+            ),
+            const SizedBox(height: 28),
+            BlocBuilder<SignInBloc, SignInState>(
+              buildWhen: (p, n) => p.apiStatus != n.apiStatus,
+              builder: (context, state) {
+                return CustomButton(
+                  isLoading: state.apiStatus == ApiStatus.LOADING,
+                  text: AppConstants.signInBtn,
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      context.read<SignInBloc>().add(SignInSubmitted());
+                    }
+                  },
+                  radius: 12,
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Powered by Mantic Solutions',
+              style: TextStyle(
+                fontSize: 11,
+                color: const Color(0xFFACACAC),
+                letterSpacing: 0.3,
+              ),
+            ),
+          ],
         ),
       ),
     );

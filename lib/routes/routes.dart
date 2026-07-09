@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../features/auth/auth_exports.dart';
 import '../features/dashboard/dashboard_exports.dart';
@@ -40,17 +41,89 @@ class AppRoutes {
       GoRoute(
         path: RoutePaths.signin,
         name: RouteNames.signin,
-        builder: (context, state) => const SignInView(),
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SignInView(),
+          transitionDuration: const Duration(milliseconds: 650),
+          reverseTransitionDuration: const Duration(milliseconds: 400),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            // Signin rises from below and fades in
+            final slide = Tween<Offset>(
+              begin: const Offset(0, 0.07),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+
+            final scale = Tween<double>(begin: 0.96, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            );
+
+            // Signin dims + shrinks when something pushes on top of it
+            final secondaryScale = Tween<double>(begin: 1.0, end: 0.95).animate(
+              CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
+            );
+            final secondaryOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
+              CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
+            );
+
+            return FadeTransition(
+              opacity: secondaryOpacity,
+              child: ScaleTransition(
+                scale: secondaryScale,
+                child: FadeTransition(
+                  opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                  child: SlideTransition(
+                    position: slide,
+                    child: ScaleTransition(scale: scale, child: child),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
       GoRoute(
         path: RoutePaths.splash,
         name: RouteNames.splash,
-        builder: (context, state) => const SplashView(),
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const SplashView(),
+          transitionDuration: const Duration(milliseconds: 500),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            // Splash fades in on load; zooms out + fades when signin rises over it
+            final exitScale = Tween<double>(begin: 1.0, end: 1.08).animate(
+              CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
+            );
+            final exitOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
+              CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
+            );
+
+            return FadeTransition(
+              opacity: CurvedAnimation(parent: animation, curve: Curves.easeIn),
+              child: FadeTransition(
+                opacity: exitOpacity,
+                child: ScaleTransition(scale: exitScale, child: child),
+              ),
+            );
+          },
+        ),
       ),
       GoRoute(
         path: RoutePaths.dashboard,
         name: RouteNames.dashboard,
-        builder: (context, state) => const DashboardView(),
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const DashboardView(),
+          transitionDuration: const Duration(milliseconds: 600),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final scale = Tween<double>(begin: 0.94, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            );
+            return FadeTransition(
+              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+              child: ScaleTransition(scale: scale, child: child),
+            );
+          },
+        ),
       ),
       GoRoute(
         path: RoutePaths.profile,

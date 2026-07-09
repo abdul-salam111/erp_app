@@ -119,16 +119,30 @@ class _EmptyOrders extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: .symmetric(vertical: 32),
+      padding: .symmetric(vertical: 36),
       decoration: BoxDecoration(
         color: context.white,
         borderRadius: .circular(12),
         border: Border.all(color: context.border),
       ),
-      child: Text(
-        AppConstants.noOrdersToday,
-        textAlign: .center,
-        style: context.bodySmall.copyWith(color: context.textSecondary),
+      child: Column(
+        mainAxisSize: .min,
+        children: [
+          Image.asset(
+            'assets/icons/empty.png',
+            width: 72,
+            height: 72,
+          ),
+ 
+          Text(
+            AppConstants.noOrdersToday,
+            textAlign: .center,
+            style: context.bodySmall.copyWith(
+              color: context.textSecondary,
+              fontWeight: .w500,
+            ),
+          ),
+        ],
       ),
     );
   }
