@@ -17,6 +17,7 @@ class SearchableDropdown extends StatefulWidget {
   final double? fieldHeight;
   // Pass a fieldName to enable required validation; omit for no validation.
   final String? fieldName;
+  final bool isShowIcon;
 
   const SearchableDropdown({
     super.key,
@@ -31,6 +32,7 @@ class SearchableDropdown extends StatefulWidget {
     this.contentPadding,
     this.fieldHeight = 56,
     this.fieldName,
+    this.isShowIcon=true,
   });
 
   @override
@@ -169,7 +171,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: context.bodySmall.copyWith(color: context.textSecondary),
-            prefixIcon: Icon(Iconsax.user, color: context.grey500, size: 20),
+            prefixIcon: widget.isShowIcon ?  Icon(Iconsax.user, color: context.grey500, size: 20): null,
             suffixIcon: widget.controller.text.isNotEmpty
                 ? IconButton(
                     icon: Icon(Icons.close, color: context.grey500, size: 18),

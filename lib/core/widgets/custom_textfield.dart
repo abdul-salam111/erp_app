@@ -120,31 +120,31 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
             // Default border
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: defaultBorderColor),
             ),
 
             // Enabled border
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: defaultBorderColor),
             ),
 
             // Focused border
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: context.primary, width: 2),
             ),
 
             // Error border
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: context.error, width: 1),
             ),
 
             // Focused error border
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: context.error, width: 2),
             ),
 

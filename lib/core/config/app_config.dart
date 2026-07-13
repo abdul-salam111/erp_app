@@ -15,6 +15,7 @@ class AppConfig {
     await rc.setDefaults({_rcKeyBaseUrl: _defaultBaseUrl});
     try {
       await rc.fetchAndActivate();
+      
     } catch (_) {}
     final fetched = rc.getString(_rcKeyBaseUrl);
     if (fetched.isNotEmpty) _baseUrl = fetched;

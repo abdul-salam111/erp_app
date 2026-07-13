@@ -239,10 +239,15 @@ class _OrderRowState extends State<_OrderRow> {
                             const SizedBox(width: 12),
                             GestureDetector(
                               onTap: () {},
-                              child: Icon(
-                                Iconsax.eye,
-                                size: 20,
-                                color: context.primary,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  
+                                ),
+                                child: Icon(
+                                  Iconsax.eye,
+                                  size: 20,
+                                  color: context.primary,
+                                ),
                               ),
                             ),
                           ],

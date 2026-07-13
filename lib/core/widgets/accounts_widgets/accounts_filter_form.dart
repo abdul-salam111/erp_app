@@ -68,7 +68,7 @@ class AccountsFilterForm extends StatelessWidget {
         child: Column(
           crossAxisAlignment: .start,
           children: [
-            _FormLabel(text: label),
+            FormLabel(text: label),
             const SizedBox(height: 6),
             if (isLoading)
               const ShimmerBox(height: 56, radius: 10)
@@ -88,9 +88,9 @@ class AccountsFilterForm extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: .start,
                     children: [
-                      _FormLabel(text: AppConstants.fromDateBtn),
+                      FormLabel(text: AppConstants.fromDateBtn),
                       const SizedBox(height: 6),
-                      _FieldTile(
+                      FieldTile(
                         icon: Iconsax.calendar_1,
                         label: fromDate.format(AppConstants.ddMMMYyyyLabel),
                         onTap: onPickFrom,
@@ -103,9 +103,9 @@ class AccountsFilterForm extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: .start,
                     children: [
-                      _FormLabel(text: AppConstants.toDateBtn),
+                      FormLabel(text: AppConstants.toDateBtn),
                       const SizedBox(height: 6),
-                      _FieldTile(
+                      FieldTile(
                         icon: Iconsax.calendar_1,
                         label: toDate.format(AppConstants.ddMMMYyyyLabel),
                         onTap: onPickTo,
@@ -133,9 +133,9 @@ class AccountsFilterForm extends StatelessWidget {
   }
 }
 
-class _FormLabel extends StatelessWidget {
+class FormLabel extends StatelessWidget {
   final String text;
-  const _FormLabel({required this.text});
+  const FormLabel({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -150,12 +150,12 @@ class _FormLabel extends StatelessWidget {
   }
 }
 
-class _FieldTile extends StatelessWidget {
+class FieldTile extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
 
-  const _FieldTile({
+  const FieldTile({super.key, 
     required this.icon,
     required this.label,
     required this.onTap,

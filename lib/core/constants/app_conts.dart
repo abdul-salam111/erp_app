@@ -145,7 +145,6 @@ class AppConstants {
   static const String nameLabel = 'Name';
   static const String tenantLabel = 'Tenant';
   static const String countryLabel = 'Country';
-  static const String currencyLabel = 'Currency';
   static const String switchOrganization = 'Switch Organization';
   static const String changeToADifferentOrganization =
       'Change to a different organization';
@@ -156,12 +155,23 @@ class AppConstants {
   static const String purchaseOrderView = 'PurchaseOrder View';
   static const String netAmountLabel = 'Net Amount';
   static const String searchByDocRefNo = 'Search by Doc / Ref No';
-  static const String selectDateRangeAndTap = 'Select a date range and tap View';
+  static const String selectDateRangeAndTap =
+      'Select a date range and tap View';
   static const String partyLabel = 'Party';
   static const String docNoLabel = 'Doc No';
   static const String refNoLabel = 'Ref #';
   static const String rowsLabel = 'Rows';
   static const String remarksLabel = 'Remarks';
+  static const String supplierLabel = 'Supplier';
+  static const String brokerLabel = 'Broker';
+  static const String orderSourceLabel = 'Order Source';
+  static const String paymentModeLabel = 'Payment Mode';
+  static const String weightSourceLabel = 'Weight Source';
+  static const String calculationsLabel = 'Select Calculation';
+  static const String currencyLabel = 'Currency';
+  static const String currencyRateLabel = 'Currency Rate';
+  static const String currencyRate = 'Rate';
+    
 
   // ─── SaleOrder ─────────────────────────────────────────
   static const String saleOrderTitle = 'SaleOrder';
@@ -188,8 +198,8 @@ class AppConstants {
   static const String customerReceivableLabel = 'Customer Receivable';
   static const String vendorPayableLabel = 'Vendor Payable';
   static const String recoveryProgress = 'Recovery progress';
-  static const String weekLabel   = 'Week';
-  static const String monthLabel  = 'Month';
+  static const String weekLabel = 'Week';
+  static const String monthLabel = 'Month';
   static const String oldestLabel = 'Oldest';
   static const String hideDetailsLabel = 'Hide Details';
   static const String addReceipt = 'Add Receipt';
