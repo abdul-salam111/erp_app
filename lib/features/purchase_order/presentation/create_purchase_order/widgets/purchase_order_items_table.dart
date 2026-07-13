@@ -1,0 +1,696 @@
+import 'package:flutter/material.dart';
+import '../../../../../core/theme/theme_exports.dart';
+import '../../../../../core/utils/utils_exports.dart';
+import '../../../../../core/widgets/widgets.dart';
+
+// ── Local model ───────────────────────────────────────────────────────────────
+
+class PurchaseOrderRowItem {
+  final String item;
+  final String mode;
+  final double contractQty;
+  final double price;
+  final String rateUnit;
+  final double discPercent;
+  final double discValue;
+  final double vatPercent;
+  final double vatAmount;
+  final double total;
+  final String? remarks;
+
+  const PurchaseOrderRowItem({
+    required this.item,
+    required this.mode,
+    required this.contractQty,
+    required this.price,
+    required this.rateUnit,
+    required this.discPercent,
+    required this.discValue,
+    required this.vatPercent,
+    required this.vatAmount,
+    required this.total,
+    this.remarks,
+  });
+}
+
+// ── Table ─────────────────────────────────────────────────────────────────────
+
+class PurchaseOrderItemsTable extends StatelessWidget {
+  final List<PurchaseOrderRowItem> rows;
+
+  const PurchaseOrderItemsTable({super.key, required this.rows});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(8),
+        border: Border.all(color: context.border),
+      ),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          const _TableHeader(),
+          Divider(height: 1, thickness: 1, color: AppColors.grey200),
+          ...rows.asMap().entries.map(
+            (e) => Column(
+              children: [
+                _ItemRow(index: e.key, item: e.value),
+                if (e.key < rows.length - 1)
+                  Divider(height: 1, thickness: 1, color: AppColors.grey100),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TableHeader extends StatelessWidget {
+  const _TableHeader();
+
+  static const _cellStyle = TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.w600,
+    fontSize: 11,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.primary,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      child: Row(
+        children: [
+          SizedBox(width: 22, child: Text('#', style: _cellStyle)),
+          Expanded(flex: 5, child: Text('Item', style: _cellStyle)),
+          Expanded(flex: 3, child: Text('Mode', style: _cellStyle, textAlign: .center)),
+          Expanded(flex: 2, child: Text('Qty', style: _cellStyle, textAlign: .end)),
+          const SizedBox(width: 20),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Row ───────────────────────────────────────────────────────────────────────
+
+class _ItemRow extends StatefulWidget {
+  final int index;
+  final PurchaseOrderRowItem item;
+  const _ItemRow({required this.index, required this.item});
+
+  @override
+  State<_ItemRow> createState() => _ItemRowState();
+}
+
+class _ItemRowState extends State<_ItemRow> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final item = widget.item;
+
+    return Column(
+        crossAxisAlignment: .start,
+        children: [
+          ColoredBox(
+            color: _expanded
+                ? context.primary.withValues(alpha: 0.07)
+                : Colors.transparent,
+            child: InkWell(
+              onTap: () => setState(() => _expanded = !_expanded),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 22,
+                      child: Text(
+                        '${widget.index + 1}',
+                        style: context.labelSmall.copyWith(
+                          color: context.textSecondary,
+                          fontSize: 11,
+                          fontWeight: .w600,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
+                      child: Text(
+                        item.item,
+                        style: context.bodySmall.copyWith(
+                          fontWeight: .w600,
+                          fontSize: 12,
+                          color: AppColors.grey700,
+                        ),
+                        maxLines: 1,
+                        overflow: .ellipsis,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        item.mode,
+                        style: context.bodySmall.copyWith(
+                          color: context.textPrimary,
+                          fontWeight: .w600,
+                          fontSize: 12,
+                        ),
+                        textAlign: .center,
+                        maxLines: 1,
+                        overflow: .ellipsis,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        item.contractQty.toStringAsFixed(2),
+                        style: context.bodySmall.copyWith(
+                          fontWeight: .w600,
+                          fontSize: 12,
+                          color: context.textPrimary,
+                        ),
+                        textAlign: .end,
+                        maxLines: 1,
+                        overflow: .ellipsis,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                      child: AnimatedRotation(
+                        turns: _expanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 200),
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 18,
+                          color: context.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeInOut,
+            alignment: .topCenter,
+            child: _expanded
+                ? Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: context.primary.withAlpha(30),
+                      ),
+                      ColoredBox(
+                        color: context.primary.withValues(alpha: 0.07),
+                        child: Column(
+                        crossAxisAlignment: .start,
+                        children: [
+                          Row(
+                            children: [
+                              _ExpandedChip(label: 'Price', value: item.price.asPrice),
+                              _ExpandedChip(
+                                label: 'Rate Unit',
+                                value: item.rateUnit.isEmpty ? '—' : item.rateUnit,
+                                textAlign: .center,
+                              ),
+                              _ExpandedChip(
+                                label: 'Disc %',
+                                value: '${item.discPercent.toStringAsFixed(2)}%',
+                                textAlign: .center,
+                              ),
+                              _ExpandedChip(
+                                label: 'Disc Value',
+                                value: item.discValue.asPrice,
+                                textAlign: .end,
+                              ),
+                            ],
+                          ),
+                          const Divider(height: 1, thickness: 1, color: AppColors.grey200),
+                          Row(
+                            children: [
+                              _ExpandedChip(label: 'VAT %', value: '${item.vatPercent.toStringAsFixed(2)}%'),
+                              _ExpandedChip(
+                                label: 'VAT Amount',
+                                value: item.vatAmount.asPrice,
+                                textAlign: .center,
+                              ),
+                              _ExpandedChip(
+                                label: 'Total',
+                                value: item.total.asPrice,
+                                textAlign: .end,
+                                flex: 2,
+                              ),
+                            ],
+                          ),
+                          if (item.remarks != null && item.remarks!.isNotEmpty) ...[
+                            const Divider(height: 1, thickness: 1, color: AppColors.grey200),
+                            _ExpandedChip(
+                              label: 'Remarks',
+                              value: item.remarks!,
+                              fullWidth: true,
+                            ),
+                          ],
+                        ],
+                      ),
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+    );
+  }
+}
+
+class _ExpandedChip extends StatelessWidget {
+  final String label;
+  final String value;
+  final TextAlign textAlign;
+  final bool fullWidth;
+  final int flex;
+
+  const _ExpandedChip({
+    required this.label,
+    required this.value,
+    this.textAlign = TextAlign.start,
+    this.fullWidth = false,
+    this.flex = 1,
+  });
+
+  CrossAxisAlignment get _crossAlign => textAlign == TextAlign.end
+      ? CrossAxisAlignment.end
+      : textAlign == TextAlign.center
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start;
+
+  @override
+  Widget build(BuildContext context) {
+    final col = Column(
+      crossAxisAlignment: _crossAlign,
+      children: [
+        Text(
+          label,
+          style: context.labelSmall.copyWith(
+            color: context.textSecondary,
+            fontSize: 10,
+          ),
+          textAlign: textAlign,
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: context.bodySmall.copyWith(
+            fontWeight: .w600,
+            fontSize: 12,
+            color: context.textPrimary,
+          ),
+          textAlign: textAlign,
+          maxLines: 1,
+          overflow: .ellipsis,
+        ),
+      ],
+    );
+
+    final padded = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      child: col,
+    );
+    return fullWidth ? padded : Expanded(flex: flex, child: padded);
+  }
+}
+
+// ── Add Row Bottom Sheet ───────────────────────────────────────────────────────
+
+Future<PurchaseOrderRowItem?> showAddRowBottomSheet(BuildContext context) {
+  return showModalBottomSheet<PurchaseOrderRowItem>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (_) => const _AddRowSheet(),
+  );
+}
+
+class _AddRowSheet extends StatefulWidget {
+  const _AddRowSheet();
+
+  @override
+  State<_AddRowSheet> createState() => _AddRowSheetState();
+}
+
+class _AddRowSheetState extends State<_AddRowSheet> {
+  final _itemController = TextEditingController();
+  final _modeController = TextEditingController();
+  final _qtyController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _rateUnitController = TextEditingController();
+  final _discPercentController = TextEditingController();
+  final _vatPercentController = TextEditingController();
+  final _remarksController = TextEditingController();
+
+  double _discValue = 0;
+  double _vatAmount = 0;
+  double _total = 0;
+
+  @override
+  void dispose() {
+    _itemController.dispose();
+    _modeController.dispose();
+    _qtyController.dispose();
+    _priceController.dispose();
+    _rateUnitController.dispose();
+    _discPercentController.dispose();
+    _vatPercentController.dispose();
+    _remarksController.dispose();
+    super.dispose();
+  }
+
+  void _calculate() {
+    final qty = double.tryParse(_qtyController.text) ?? 0;
+    final price = double.tryParse(_priceController.text) ?? 0;
+    final disc = double.tryParse(_discPercentController.text) ?? 0;
+    final vat = double.tryParse(_vatPercentController.text) ?? 0;
+
+    final gross = qty * price;
+    final discVal = gross * disc / 100;
+    final subTotal = gross - discVal;
+    final vatAmt = subTotal * vat / 100;
+
+    setState(() {
+      _discValue = discVal;
+      _vatAmount = vatAmt;
+      _total = subTotal + vatAmt;
+    });
+  }
+
+  void _save() {
+    if (_itemController.text.trim().isEmpty) return;
+
+    Navigator.of(context).pop(
+      PurchaseOrderRowItem(
+        item: _itemController.text.trim(),
+        mode: _modeController.text.trim(),
+        contractQty: double.tryParse(_qtyController.text) ?? 0,
+        price: double.tryParse(_priceController.text) ?? 0,
+        rateUnit: _rateUnitController.text.trim(),
+        discPercent: double.tryParse(_discPercentController.text) ?? 0,
+        discValue: _discValue,
+        vatPercent: double.tryParse(_vatPercentController.text) ?? 0,
+        vatAmount: _vatAmount,
+        total: _total,
+        remarks: _remarksController.text.trim().isEmpty
+            ? null
+            : _remarksController.text.trim(),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Container(
+      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 80),
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: Column(
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.grey300,
+                    borderRadius: .circular(2),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  children: [
+                    Text(
+                      'Add Row',
+                      style: context.titleSmall.copyWith(fontWeight: .w600),
+                    ),
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 20,
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Divider(color: context.border),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+              children: [
+                _SheetField(
+                  label: 'Item',
+                  controller: _itemController,
+                  hintText: 'Enter item name',
+                ),
+                const SizedBox(height: 12),
+                _SheetField(
+                  label: 'Mode',
+                  controller: _modeController,
+                  hintText: 'Contract Mode',
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _SheetField(
+                        label: 'Contract Qty',
+                        controller: _qtyController,
+                        hintText: '0.00',
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        onChanged: (_) => _calculate(),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _SheetField(
+                        label: 'Price',
+                        controller: _priceController,
+                        hintText: '0.00',
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        onChanged: (_) => _calculate(),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _SheetField(
+                        label: 'Rate Unit',
+                        controller: _rateUnitController,
+                        hintText: 'e.g. /Kg',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _SheetField(
+                        label: 'Disc %',
+                        controller: _discPercentController,
+                        hintText: '0.00',
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        onChanged: (_) => _calculate(),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _ReadOnlyField(label: 'Disc Value', value: _discValue.asPrice),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _SheetField(
+                        label: 'VAT %',
+                        controller: _vatPercentController,
+                        hintText: '0.00',
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        onChanged: (_) => _calculate(),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _ReadOnlyField(label: 'VAT Amount', value: _vatAmount.asPrice),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _ReadOnlyField(label: 'Total', value: _total.asPrice),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _SheetField(
+                  label: 'Remarks',
+                  controller: _remarksController,
+                  hintText: 'Optional remarks',
+                  maxLines: 6,
+                  contentPadding: const EdgeInsets.all(15),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              8,
+              16,
+              MediaQuery.of(context).padding.bottom + 12,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: context.primary,
+                      side: BorderSide(color: context.primary),
+                      minimumSize: const Size.fromHeight(44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: .circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: context.bodySmall.copyWith(
+                        fontWeight: .w600,
+                        fontSize: 14,
+                        color: context.primary,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: CustomButton(
+                    text: 'Add Row',
+                    onPressed: _save,
+                    radius: 8,
+                    elevation: 0,
+                    fontsize: 14,
+                    size: const Size.fromHeight(44),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      ),
+    );
+  }
+}
+
+// ── Sheet helpers ─────────────────────────────────────────────────────────────
+
+class _SheetField extends StatelessWidget {
+  final String label;
+  final TextEditingController controller;
+  final String hintText;
+  final TextInputType? keyboardType;
+  final ValueChanged<String>? onChanged;
+  final int? maxLines;
+  final EdgeInsetsGeometry? contentPadding;
+
+  const _SheetField({
+    required this.label,
+    required this.controller,
+    required this.hintText,
+    this.keyboardType,
+    this.onChanged,
+    this.maxLines,
+    this.contentPadding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        FormLabel(text: label),
+        const SizedBox(height: 4),
+        CustomTextFormField(
+          controller: controller,
+          fieldHeight: maxLines != null ? null : 45,
+          hintText: hintText,
+          keyboardType: keyboardType ?? TextInputType.text,
+          onChanged: onChanged,
+          maxLines: maxLines ?? 1,
+          contentPadding: contentPadding,
+        ),
+      ],
+    );
+  }
+}
+
+class _ReadOnlyField extends StatelessWidget {
+  final String label;
+  final String value;
+  const _ReadOnlyField({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        FormLabel(text: label),
+        const SizedBox(height: 4),
+        Container(
+          height: 45,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          decoration: BoxDecoration(
+            color: context.grey50,
+            borderRadius: .circular(6),
+            border: Border.all(color: context.border),
+          ),
+          alignment: .centerLeft,
+          child: Text(
+            value,
+            style: context.bodySmall.copyWith(
+              fontSize: 13,
+              color: context.textPrimary,
+              fontWeight: .w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

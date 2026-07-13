@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iconsax/iconsax.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../purchase_order_exports.dart';
+import '../widgets/purchase_order_form.dart';
+import '../widgets/purchase_order_items_table.dart';
 
 class CreatePurchaseOrderView extends StatelessWidget {
   const CreatePurchaseOrderView({super.key});
@@ -44,6 +45,13 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
     }
   }
 
+  final List<PurchaseOrderRowItem> _rows = [];
+
+  Future<void> _addRow() async {
+    final result = await showAddRowBottomSheet(context);
+    if (result != null) setState(() => _rows.add(result));
+  }
+
   late final TextEditingController _brokerController;
   late final TextEditingController _supplierController;
   late final TextEditingController _calculationsController;
@@ -54,6 +62,14 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
   late final TextEditingController _rateController;
   late final TextEditingController _refDocNbrController;
   late final TextEditingController _orderSourceController;
+  late final TextEditingController _orderRemarksController;
+
+  double get _productTotal =>
+      _rows.fold(0.0, (s, r) => s + r.contractQty * r.price);
+  double get _totalDiscount => _rows.fold(0.0, (s, r) => s + r.discValue);
+  double get _subTotal => _productTotal - _totalDiscount;
+  double get _totalTax => _rows.fold(0.0, (s, r) => s + r.vatAmount);
+  double get _netAmount => _rows.fold(0.0, (s, r) => s + r.total);
 
   @override
   initState() {
@@ -68,6 +84,23 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
     _rateController = TextEditingController();
     _refDocNbrController = TextEditingController();
     _orderSourceController = TextEditingController();
+    _orderRemarksController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _brokerController.dispose();
+    _supplierController.dispose();
+    _calculationsController.dispose();
+    _paymentModeController.dispose();
+    _weightSourceController.dispose();
+    _selectedCurrencyController.dispose();
+    _currencyRateController.dispose();
+    _rateController.dispose();
+    _refDocNbrController.dispose();
+    _orderSourceController.dispose();
+    _orderRemarksController.dispose();
+    super.dispose();
   }
 
   @override
@@ -90,242 +123,267 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
               child: ListView(
                 padding: .all(8),
                 children: [
-                  Container(
-                    padding: .all(8),
-                    decoration: BoxDecoration(
-                      color: context.white,
-                      borderRadius: .circular(8),
-                      border: Border.all(color: context.border),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(text: AppConstants.dateLabel),
-                                  const SizedBox(height: 6),
-                                  CustomTextFormField(
-                                    controller: TextEditingController(
-                                      text: state.date.format(
-                                        AppConstants.ddMMMYyyyLabel,
-                                      ),
-                                    ),
-                                    fieldHeight: 37,
-                                    readOnly: true,
-                                    onTap: _pickDate,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(text: "Ref Doc Nbr"),
-                                  const SizedBox(height: 6),
-                                  CustomTextFormField(
-                                    controller: _refDocNbrController,
-                                    fieldHeight: 37,
-                                    hintText: "Ref Doc Nbr",
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                  PurchaseOrderForm(
+                    date: state.date,
+                    onDateTap: _pickDate,
+                    refDocNbrController: _refDocNbrController,
+                    supplierController: _supplierController,
+                    brokerController: _brokerController,
+                    weightSourceController: _weightSourceController,
+                    calculationsController: _calculationsController,
+                    orderSourceController: _orderSourceController,
+                    paymentModeController: _paymentModeController,
+                    selectedCurrencyController: _selectedCurrencyController,
+                    currencyRateController: _currencyRateController,
+                    rateController: _rateController,
+                  ),
+                  heightBox(8),
+                  if (_rows.isNotEmpty) ...[
+                    PurchaseOrderItemsTable(rows: _rows),
+                    heightBox(8),
+                  ],
+                  GestureDetector(
+                    onTap: _addRow,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      decoration: BoxDecoration(
+                        color: context.primary.withValues(alpha: 0.06),
+                        borderRadius: .circular(8),
+                        border: Border.all(
+                          color: context.primary.withValues(alpha: 0.3),
                         ),
-                        heightBox(10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(text: AppConstants.supplierLabel),
-                                  const SizedBox(height: 6),
-                                  SearchableDropdown(
-                                    items: [],
-                                    controller: _supplierController,
-                                    hintText: AppConstants.supplierLabel,
-                                    onChanged: (value) {},
-                                    fieldHeight: 40,
-                                    isShowIcon: false,
-                                  ),
-                                ],
-                              ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: .center,
+                        children: [
+                          Icon(Icons.add_rounded, size: 18, color: context.primary),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Add Row',
+                            style: context.bodySmall.copyWith(
+                              color: context.primary,
+                              fontWeight: .w600,
+                              fontSize: 13,
                             ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(text: "Broker"),
-                                  const SizedBox(height: 6),
-                                  SearchableDropdown(
-                                    items: [],
-                                    controller: _brokerController,
-                                    hintText: AppConstants.brokerLabel,
-                                    onChanged: (value) {},
-                                    fieldHeight: 40,
-                                    isShowIcon: false,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        heightBox(10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(
-                                    text: AppConstants.weightSourceLabel,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  SearchableDropdown(
-                                    items: [],
-                                    controller: _weightSourceController,
-                                    hintText: AppConstants.weightSourceLabel,
-                                    onChanged: (value) {},
-                                    fieldHeight: 40,
-                                    isShowIcon: false,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(
-                                    text: AppConstants.calculationsLabel,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  SearchableDropdown(
-                                    items: [],
-                                    controller: _calculationsController,
-                                    hintText: AppConstants.calculationsLabel,
-                                    onChanged: (value) {},
-                                    fieldHeight: 40,
-                                    isShowIcon: false,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        heightBox(10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(
-                                    text: AppConstants.orderSourceLabel,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  SearchableDropdown(
-                                    items: [],
-                                    controller: _orderSourceController,
-                                    hintText: AppConstants.orderSourceLabel,
-                                    onChanged: (value) {},
-                                    fieldHeight: 40,
-                                    isShowIcon: false,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(
-                                    text: AppConstants.paymentModeLabel,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  SearchableDropdown(
-                                    items: [],
-                                    controller: _calculationsController,
-                                    hintText: AppConstants.paymentModeLabel,
-                                    onChanged: (value) {},
-                                    fieldHeight: 40,
-                                    isShowIcon: false,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        heightBox(10),
-                        Column(
-                          crossAxisAlignment: .start,
-                          children: [
-                            FormLabel(text: AppConstants.currencyLabel),
-                            const SizedBox(height: 6),
-                            SearchableDropdown(
-                              items: [],
-                              controller: _selectedCurrencyController,
-                              hintText: AppConstants.currencyLabel,
-                              onChanged: (value) {},
-                              fieldHeight: 40,
-                              isShowIcon: false,
-                            ),
-                          ],
-                        ),
-                        heightBox(10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(
-                                    text: AppConstants.currencyRateLabel,
-                                  ),
-                                  const SizedBox(height: 6),
-                                  CustomTextFormField(
-                                    controller: _currencyRateController,
-                                    fieldHeight: 37,
-                                    hintText: AppConstants.currencyRateLabel,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  FormLabel(text: AppConstants.currencyRate),
-                                  const SizedBox(height: 6),
-                                  CustomTextFormField(
-                                    controller: _rateController,
-                                    fieldHeight: 37,
-                                    hintText: AppConstants.currencyRate,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
+                  if (_rows.isNotEmpty) ...[
+                    heightBox(8),
+                    _OrderSummarySection(
+                      productTotal: _productTotal,
+                      totalDiscount: _totalDiscount,
+                      subTotal: _subTotal,
+                      totalTax: _totalTax,
+                      netAmount: _netAmount,
+                    ),
+                    heightBox(8),
+                    _OrderRemarksSection(
+                      controller: _orderRemarksController,
+                    ),
+                    heightBox(8),
+                    CustomButton(
+                      text: 'Submit Order',
+                      onPressed: () {},
+                      radius: 8,
+                      elevation: 0,
+                      fontsize: 14,
+                      size: const Size.fromHeight(46),
+                    ),
+                  ],
+                  heightBox(16),
                 ],
               ),
             ),
           ),
         );
       },
+    );
+  }
+}
+
+// ── Order Remarks ─────────────────────────────────────────────────────────────
+
+class _OrderRemarksSection extends StatelessWidget {
+  final TextEditingController controller;
+  const _OrderRemarksSection({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: .all(12),
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(8),
+        border: Border.all(color: context.border),
+      ),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          Text(
+            'Order Remarks',
+            style: context.bodySmall.copyWith(
+              fontWeight: .w600,
+              fontSize: 12,
+              color: context.textPrimary,
+            ),
+          ),
+          heightBox(8),
+          CustomTextFormField(
+            controller: controller,
+            hintText: 'Add any notes or remarks for this order…',
+            maxLines: 6,
+            fieldHeight: null,
+            contentPadding: .all(12),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Order Summary ─────────────────────────────────────────────────────────────
+
+class _OrderSummarySection extends StatelessWidget {
+  final double productTotal;
+  final double totalDiscount;
+  final double subTotal;
+  final double totalTax;
+  final double netAmount;
+
+  const _OrderSummarySection({
+    required this.productTotal,
+    required this.totalDiscount,
+    required this.subTotal,
+    required this.totalTax,
+    required this.netAmount,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(8),
+        border: Border.all(color: context.border),
+      ),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Text(
+              'Order Summary',
+              style: context.bodySmall.copyWith(
+                fontWeight: .w600,
+                fontSize: 12,
+                color: context.textPrimary,
+              ),
+            ),
+          ),
+          Divider(height: 1, thickness: 1, color: context.border),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Column(
+              children: [
+                _SummaryRow(
+                  label: 'Product Total',
+                  value: productTotal.asPrice,
+                ),
+                heightBox(8),
+                _SummaryRow(
+                  label: 'Discounts',
+                  value: totalDiscount.asPrice,
+                  valueColor: totalDiscount > 0 ? Colors.green.shade600 : null,
+                ),
+                heightBox(8),
+                _SummaryRow(
+                  label: 'Sub Total',
+                  value: subTotal.asPrice,
+                ),
+              ],
+            ),
+          ),
+          Divider(height: 1, thickness: 1, color: context.border),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: _SummaryRow(
+              label: 'Total Tax',
+              value: totalTax.asPrice,
+            ),
+          ),
+          Divider(height: 1, thickness: 1, color: context.border),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              color: context.primary.withValues(alpha: 0.05),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text(
+                  'Net Amount',
+                  style: context.bodySmall.copyWith(
+                    fontWeight: .w700,
+                    fontSize: 13,
+                    color: context.primary,
+                  ),
+                ),
+                Text(
+                  netAmount.asPrice,
+                  style: context.bodySmall.copyWith(
+                    fontWeight: .w700,
+                    fontSize: 14,
+                    color: context.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SummaryRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color? valueColor;
+
+  const _SummaryRow({
+    required this.label,
+    required this.value,
+    this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: .spaceBetween,
+      children: [
+        Text(
+          label,
+          style: context.bodySmall.copyWith(
+            fontSize: 12,
+            color: context.textSecondary,
+          ),
+        ),
+        Text(
+          value,
+          style: context.bodySmall.copyWith(
+            fontSize: 12,
+            fontWeight: .w600,
+            color: valueColor ?? context.textPrimary,
+          ),
+        ),
+      ],
     );
   }
 }

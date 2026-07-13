@@ -22,6 +22,7 @@ class CustomTextFormField extends StatefulWidget {
   final int labelFontSize;
   final bool readOnly;
   final double? fieldHeight;
+  final EdgeInsetsGeometry? contentPadding;
 
   const CustomTextFormField({
     super.key,
@@ -42,6 +43,7 @@ class CustomTextFormField extends StatefulWidget {
     this.onTap,
     this.maxLines = 1,
     this.fieldHeight = 56,
+    this.contentPadding,
   });
 
   @override
@@ -116,7 +118,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 : null,
             fillColor: defaultFillColor,
             filled: true,
-            contentPadding: const EdgeInsets.only(left: 10),
+            contentPadding: widget.contentPadding ?? const EdgeInsets.only(left: 10),
 
             // Default border
             border: OutlineInputBorder(
