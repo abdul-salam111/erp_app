@@ -94,21 +94,6 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: CustomTextFormField(
-                  controller: widget.refDocNbrController,
-                  label: 'Ref Doc Nbr',
-                  fieldHeight: 37,
-                  hintText: 'Ref Doc Nbr',
-                  labelFontSize: 12,
-                ),
-              ),
-            ],
-          ),
-          heightBox(10),
-          Row(
-            crossAxisAlignment: .start,
-            children: [
-              Expanded(
                 child: SearchableDropdown(
                   items: [],
                   controller: widget.supplierController,
@@ -118,6 +103,21 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
                   onChanged: (value) {},
                   fieldHeight: 40,
                   isShowIcon: false,
+                ),
+              ),
+            ],
+          ),
+          heightBox(10),
+          Row(
+            crossAxisAlignment: .start,
+            children: [
+              Expanded(
+                child: CustomTextFormField(
+                  controller: widget.refDocNbrController,
+                  label: 'Ref Doc Nbr',
+                  fieldHeight: 37,
+                  hintText: 'Ref Doc Nbr',
+                  labelFontSize: 12,
                 ),
               ),
               const SizedBox(width: 10),

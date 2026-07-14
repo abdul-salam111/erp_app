@@ -29,6 +29,14 @@ class PurchaseOrderRowRemoved extends CreatePurchaseOrderEvent {
   List<Object?> get props => [index];
 }
 
+class PurchaseOrderRowUpdated extends CreatePurchaseOrderEvent {
+  final int index;
+  final PurchaseOrderRowItem item;
+  const PurchaseOrderRowUpdated(this.index, this.item);
+  @override
+  List<Object?> get props => [index, item];
+}
+
 class CreatePurchaseOrderSubmitted extends CreatePurchaseOrderEvent {
   const CreatePurchaseOrderSubmitted();
 }

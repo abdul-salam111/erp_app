@@ -143,11 +143,21 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
                     currencyRateController: _currencyRateController,
                     rateController: _rateController,
                   ),
-                  heightBox(15),
-                  if (rows.isNotEmpty) ...[
-                    PurchaseOrderItemsTable(rows: rows),
-                    heightBox(8),
+                  heightBox(8),
+                  if (rows.isEmpty)
+                    const _EmptyItemsHint()
+                  else ...[
+                    PurchaseOrderItemsTable(
+                      rows: rows,
+                      onDelete: (index) => context
+                          .read<CreatePurchaseOrderBloc>()
+                          .add(PurchaseOrderRowRemoved(index)),
+                      onEdit: (index, updated) => context
+                          .read<CreatePurchaseOrderBloc>()
+                          .add(PurchaseOrderRowUpdated(index, updated)),
+                    ),
                   ],
+                  heightBox(8),
                   GestureDetector(
                     onTap: _addRow,
                     child: Container(
@@ -178,17 +188,37 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
                   ),
                   if (rows.isNotEmpty) ...[
                     heightBox(8),
-                    _OrderSummarySection(
-                      productTotal: _productTotal(rows),
-                      totalDiscount: _totalDiscount(rows),
-                      subTotal: _subTotal(rows),
-                      totalTax: _totalTax(rows),
-                      netAmount: _netAmount(rows),
-                    ),
-                    heightBox(15),
-                    _OrderRemarksSection(
-                      controller: _orderRemarksController,
-                    ),
+                    if (context.isPhone) ...[
+                      _OrderSummarySection(
+                        productTotal: _productTotal(rows),
+                        totalDiscount: _totalDiscount(rows),
+                        subTotal: _subTotal(rows),
+                        totalTax: _totalTax(rows),
+                        netAmount: _netAmount(rows),
+                      ),
+                      heightBox(8),
+                      _OrderRemarksSection(controller: _orderRemarksController),
+                    ] else
+                      Row(
+                        crossAxisAlignment: .start,
+                        children: [
+                          Expanded(
+                            child: _OrderSummarySection(
+                              productTotal: _productTotal(rows),
+                              totalDiscount: _totalDiscount(rows),
+                              subTotal: _subTotal(rows),
+                              totalTax: _totalTax(rows),
+                              netAmount: _netAmount(rows),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: _OrderRemarksSection(
+                              controller: _orderRemarksController,
+                            ),
+                          ),
+                        ],
+                      ),
                     heightBox(8),
                     CustomButton(
                       text: 'Add Order',
@@ -210,7 +240,51 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
   }
 }
 
-// ── Order Remarks / Order Summary sections stay unchanged ──────────
+// ── Empty state ───────────────────────────────────────────────────────────────
+
+class _EmptyItemsHint extends StatelessWidget {
+  const _EmptyItemsHint();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(8),
+        border: Border.all(color: context.border),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.inventory_2_outlined,
+            size: 38,
+            color: context.textSecondary.withValues(alpha: 0.4),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'No items added yet',
+            style: context.bodySmall.copyWith(
+              fontWeight: .w600,
+              fontSize: 13,
+              color: context.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Tap Add Row below to add items to this order.',
+            style: context.bodySmall.copyWith(
+              fontSize: 12,
+              color: context.textSecondary,
+            ),
+            textAlign: .center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ── Order Remarks ─────────────────────────────────────────────────────────────
 
 class _OrderRemarksSection extends StatelessWidget {

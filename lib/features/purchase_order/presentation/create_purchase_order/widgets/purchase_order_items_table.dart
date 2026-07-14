@@ -37,8 +37,15 @@ class PurchaseOrderRowItem {
 
 class PurchaseOrderItemsTable extends StatelessWidget {
   final List<PurchaseOrderRowItem> rows;
+  final void Function(int index)? onDelete;
+  final void Function(int index, PurchaseOrderRowItem updated)? onEdit;
 
-  const PurchaseOrderItemsTable({super.key, required this.rows});
+  const PurchaseOrderItemsTable({
+    super.key,
+    required this.rows,
+    this.onDelete,
+    this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +63,12 @@ class PurchaseOrderItemsTable extends StatelessWidget {
           ...rows.asMap().entries.map(
             (e) => Column(
               children: [
-                _ItemRow(index: e.key, item: e.value),
+                _ItemRow(
+                  index: e.key,
+                  item: e.value,
+                  onDelete: onDelete != null ? () => onDelete!(e.key) : null,
+                  onEdit: onEdit != null ? (updated) => onEdit!(e.key, updated) : null,
+                ),
                 if (e.key < rows.length - 1)
                   Divider(height: 1, thickness: 1, color: AppColors.grey100),
               ],
@@ -106,7 +118,9 @@ class _TableHeader extends StatelessWidget {
 class _ItemRow extends StatefulWidget {
   final int index;
   final PurchaseOrderRowItem item;
-  const _ItemRow({required this.index, required this.item});
+  final VoidCallback? onDelete;
+  final void Function(PurchaseOrderRowItem updated)? onEdit;
+  const _ItemRow({required this.index, required this.item, this.onDelete, this.onEdit});
 
   @override
   State<_ItemRow> createState() => _ItemRowState();
@@ -263,7 +277,62 @@ class _ItemRowState extends State<_ItemRow> {
                               value: item.remarks!,
                               fullWidth: true,
                             ),
-                          ], 
+                          ],
+                          if (widget.onDelete != null || widget.onEdit != null) ...[
+                            const Divider(height: 1, thickness: 1, color: AppColors.grey200),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              child: Row(
+                                mainAxisAlignment: .end,
+                                children: [
+                                  if (widget.onEdit != null)
+                                    TextButton.icon(
+                                      onPressed: () async {
+                                        final updated = await showAddRowBottomSheet(
+                                          context,
+                                          initialItem: widget.item,
+                                        );
+                                        if (updated != null) widget.onEdit!(updated);
+                                      },
+                                      icon: Icon(Icons.edit_outlined, size: 14, color: context.primary),
+                                      label: Text(
+                                        'Edit Row',
+                                        style: context.labelSmall.copyWith(
+                                          color: context.primary,
+                                          fontSize: 11,
+                                          fontWeight: .w600,
+                                        ),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                    ),
+                                  if (widget.onEdit != null && widget.onDelete != null)
+                                    const SizedBox(width: 4),
+                                  if (widget.onDelete != null)
+                                    TextButton.icon(
+                                      onPressed: widget.onDelete,
+                                      icon: Icon(Icons.delete_outline_rounded, size: 14, color: context.error),
+                                      label: Text(
+                                        'Remove Row',
+                                        style: context.labelSmall.copyWith(
+                                          color: context.error,
+                                          fontSize: 11,
+                                          fontWeight: .w600,
+                                        ),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        minimumSize: Size.zero,
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                       ),
@@ -335,17 +404,21 @@ class _ExpandedChip extends StatelessWidget {
 
 // ── Add Row Bottom Sheet ───────────────────────────────────────────────────────
 
-Future<PurchaseOrderRowItem?> showAddRowBottomSheet(BuildContext context) {
+Future<PurchaseOrderRowItem?> showAddRowBottomSheet(
+  BuildContext context, {
+  PurchaseOrderRowItem? initialItem,
+}) {
   return showModalBottomSheet<PurchaseOrderRowItem>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => const _AddRowSheet(),
+    builder: (_) => _AddRowSheet(initialItem: initialItem),
   );
 }
 
 class _AddRowSheet extends StatefulWidget {
-  const _AddRowSheet();
+  final PurchaseOrderRowItem? initialItem;
+  const _AddRowSheet({this.initialItem});
 
   @override
   State<_AddRowSheet> createState() => _AddRowSheetState();
@@ -364,6 +437,27 @@ class _AddRowSheetState extends State<_AddRowSheet> {
   double _discValue = 0;
   double _vatAmount = 0;
   double _total = 0;
+
+  bool get _isEdit => widget.initialItem != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final i = widget.initialItem;
+    if (i != null) {
+      _itemController.text = i.item;
+      _modeController.text = i.mode;
+      _qtyController.text = i.contractQty == 0 ? '' : i.contractQty.toStringAsFixed(2);
+      _priceController.text = i.price == 0 ? '' : i.price.toStringAsFixed(2);
+      _rateUnitController.text = i.rateUnit;
+      _discPercentController.text = i.discPercent == 0 ? '' : i.discPercent.toStringAsFixed(2);
+      _vatPercentController.text = i.vatPercent == 0 ? '' : i.vatPercent.toStringAsFixed(2);
+      _remarksController.text = i.remarks ?? '';
+      _discValue = i.discValue;
+      _vatAmount = i.vatAmount;
+      _total = i.total;
+    }
+  }
 
   @override
   void dispose() {
@@ -447,7 +541,7 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                   mainAxisAlignment: .spaceBetween,
                   children: [
                     Text(
-                      'Add Row',
+                      _isEdit ? 'Edit Row' : 'Add Row',
                       style: context.titleSmall.copyWith(fontWeight: .w600),
                     ),
                     GestureDetector(
@@ -600,7 +694,7 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: CustomButton(
-                    text: 'Add Row',
+                    text: _isEdit ? 'Save Changes' : 'Add Row',
                     onPressed: _save,
                     radius: 8,
                     elevation: 0,

@@ -14,6 +14,7 @@ class CreatePurchaseOrderBloc
     on<PurchaseOrderDateChanged>(_onDateChanged);
     on<PurchaseOrderRowAdded>(_onRowAdded);
     on<PurchaseOrderRowRemoved>(_onRowRemoved);
+    on<PurchaseOrderRowUpdated>(_onRowUpdated);
   }
 
   Future<void> _onCreatePurchaseOrderSubmitted(
@@ -48,6 +49,14 @@ class CreatePurchaseOrderBloc
     Emitter<CreatePurchaseOrderState> emit,
   ) {
     final updated = [...state.rows]..removeAt(event.index);
+    emit(state.copyWith(rows: updated));
+  }
+
+  void _onRowUpdated(
+    PurchaseOrderRowUpdated event,
+    Emitter<CreatePurchaseOrderState> emit,
+  ) {
+    final updated = [...state.rows]..[event.index] = event.item;
     emit(state.copyWith(rows: updated));
   }
 
