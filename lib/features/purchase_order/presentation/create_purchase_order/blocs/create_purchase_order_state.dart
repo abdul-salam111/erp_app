@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/constants/app_enums.dart';
+import '../widgets/purchase_order_items_table.dart';
 
 class CreatePurchaseOrderState extends Equatable {
   final dynamic data;
@@ -17,6 +18,7 @@ class CreatePurchaseOrderState extends Equatable {
   final int? selectedWeightSource;
   final int? calculationsId;
   final double? currencyRate;
+  final List<PurchaseOrderRowItem> rows;
 
   const CreatePurchaseOrderState({
     this.data,
@@ -33,6 +35,7 @@ class CreatePurchaseOrderState extends Equatable {
     this.selectedWeightSource,
     this.calculationsId,
     this.currencyRate,
+    this.rows = const [],
   });
 
   CreatePurchaseOrderState copyWith({
@@ -50,6 +53,7 @@ class CreatePurchaseOrderState extends Equatable {
     int? selectedBrokerId,
     int? selectedWeightSource,
     int? calculationsId,
+    List<PurchaseOrderRowItem>? rows,
   }) {
     return CreatePurchaseOrderState(
       data: data ?? this.data,
@@ -66,6 +70,7 @@ class CreatePurchaseOrderState extends Equatable {
       selectedWeightSource: selectedWeightSource ?? this.selectedWeightSource,
       calculationsId: calculationsId ?? this.calculationsId,
       currencyRate: currencyRate ?? this.currencyRate,
+      rows: rows ?? this.rows,
     );
   }
 
@@ -85,5 +90,6 @@ class CreatePurchaseOrderState extends Equatable {
     selectedWeightSource,
     calculationsId,
     currencyRate,
+    rows,
   ];
 }

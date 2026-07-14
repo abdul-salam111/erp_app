@@ -45,11 +45,11 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
     }
   }
 
-  final List<PurchaseOrderRowItem> _rows = [];
-
   Future<void> _addRow() async {
     final result = await showAddRowBottomSheet(context);
-    if (result != null) setState(() => _rows.add(result));
+    if (result != null) {
+      context.read<CreatePurchaseOrderBloc>().add(PurchaseOrderRowAdded(result));
+    }
   }
 
   late final TextEditingController _brokerController;
@@ -64,15 +64,19 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
   late final TextEditingController _orderSourceController;
   late final TextEditingController _orderRemarksController;
 
-  double get _productTotal =>
-      _rows.fold(0.0, (s, r) => s + r.contractQty * r.price);
-  double get _totalDiscount => _rows.fold(0.0, (s, r) => s + r.discValue);
-  double get _subTotal => _productTotal - _totalDiscount;
-  double get _totalTax => _rows.fold(0.0, (s, r) => s + r.vatAmount);
-  double get _netAmount => _rows.fold(0.0, (s, r) => s + r.total);
+  double _productTotal(List<PurchaseOrderRowItem> rows) =>
+      rows.fold(0.0, (s, r) => s + r.contractQty * r.price);
+  double _totalDiscount(List<PurchaseOrderRowItem> rows) =>
+      rows.fold(0.0, (s, r) => s + r.discValue);
+  double _subTotal(List<PurchaseOrderRowItem> rows) =>
+      _productTotal(rows) - _totalDiscount(rows);
+  double _totalTax(List<PurchaseOrderRowItem> rows) =>
+      rows.fold(0.0, (s, r) => s + r.vatAmount);
+  double _netAmount(List<PurchaseOrderRowItem> rows) =>
+      rows.fold(0.0, (s, r) => s + r.total);
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _brokerController = TextEditingController();
     _supplierController = TextEditingController();
@@ -115,6 +119,7 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
         }
       },
       builder: (context, state) {
+        final rows = state.rows;
         return UnfocusWrapper(
           child: Scaffold(
             appBar: CustomAppBar(title: 'Create Purchase Order'),
@@ -126,6 +131,7 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
                   PurchaseOrderForm(
                     date: state.date,
                     onDateTap: _pickDate,
+                    hasItems: rows.isNotEmpty,
                     refDocNbrController: _refDocNbrController,
                     supplierController: _supplierController,
                     brokerController: _brokerController,
@@ -137,9 +143,9 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
                     currencyRateController: _currencyRateController,
                     rateController: _rateController,
                   ),
-                  heightBox(8),
-                  if (_rows.isNotEmpty) ...[
-                    PurchaseOrderItemsTable(rows: _rows),
+                  heightBox(15),
+                  if (rows.isNotEmpty) ...[
+                    PurchaseOrderItemsTable(rows: rows),
                     heightBox(8),
                   ],
                   GestureDetector(
@@ -170,22 +176,22 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
                       ),
                     ),
                   ),
-                  if (_rows.isNotEmpty) ...[
+                  if (rows.isNotEmpty) ...[
                     heightBox(8),
                     _OrderSummarySection(
-                      productTotal: _productTotal,
-                      totalDiscount: _totalDiscount,
-                      subTotal: _subTotal,
-                      totalTax: _totalTax,
-                      netAmount: _netAmount,
+                      productTotal: _productTotal(rows),
+                      totalDiscount: _totalDiscount(rows),
+                      subTotal: _subTotal(rows),
+                      totalTax: _totalTax(rows),
+                      netAmount: _netAmount(rows),
                     ),
-                    heightBox(8),
+                    heightBox(15),
                     _OrderRemarksSection(
                       controller: _orderRemarksController,
                     ),
                     heightBox(8),
                     CustomButton(
-                      text: 'Submit Order',
+                      text: 'Add Order',
                       onPressed: () {},
                       radius: 8,
                       elevation: 0,
@@ -204,6 +210,7 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
   }
 }
 
+// ── Order Remarks / Order Summary sections stay unchanged ──────────
 // ── Order Remarks ─────────────────────────────────────────────────────────────
 
 class _OrderRemarksSection extends StatelessWidget {

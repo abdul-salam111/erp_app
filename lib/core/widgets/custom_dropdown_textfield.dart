@@ -18,6 +18,8 @@ class SearchableDropdown extends StatefulWidget {
   // Pass a fieldName to enable required validation; omit for no validation.
   final String? fieldName;
   final bool isShowIcon;
+  final String? label;
+  final bool isRequired;
 
   const SearchableDropdown({
     super.key,
@@ -32,7 +34,9 @@ class SearchableDropdown extends StatefulWidget {
     this.contentPadding,
     this.fieldHeight = 56,
     this.fieldName,
-    this.isShowIcon=true,
+    this.isShowIcon = true,
+    this.label,
+    this.isRequired = false,
   });
 
   @override
@@ -153,7 +157,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
     final defaultFillColor = widget.fillColor ?? context.surface;
     final defaultBorderColor = widget.borderColor ?? context.border.withAlpha(50);
 
-    return CompositedTransformTarget(
+    final field = CompositedTransformTarget(
       link: _layerLink,
       child: SizedBox(
         height: widget.fieldHeight,
@@ -213,6 +217,38 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
           ),
         ),
       ),
+    );
+
+    if (widget.label == null) return field;
+
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: widget.label!,
+                style: context.bodySmall.copyWith(
+                  color: context.textSecondary,
+                  fontSize: 12,
+                ),
+              ),
+              if (widget.isRequired)
+                TextSpan(
+                  text: ' *',
+                  style: context.bodySmall.copyWith(
+                    color: context.error,
+                    fontWeight: .bold,
+                    fontSize: 12,
+                  ),
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 6),
+        field,
+      ],
     );
   }
 }

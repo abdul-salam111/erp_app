@@ -82,7 +82,7 @@ class _TableHeader extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: context.primary,
-        borderRadius: const BorderRadius.only(
+        borderRadius: const BorderRadius.only( 
           topLeft: Radius.circular(8),
           topRight: Radius.circular(8),
         ),
@@ -263,7 +263,7 @@ class _ItemRowState extends State<_ItemRow> {
                               value: item.remarks!,
                               fullWidth: true,
                             ),
-                          ],
+                          ], 
                         ],
                       ),
                       ),
