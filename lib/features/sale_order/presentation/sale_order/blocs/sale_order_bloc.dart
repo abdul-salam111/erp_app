@@ -10,22 +10,25 @@ class SaleOrderBloc extends Bloc<SaleOrderEvent, SaleOrderState>
 
   SaleOrderBloc({required this.saleorderUsecase})
       : super(const SaleOrderState()) {
-    on<SaleOrderSubmitted>(_onSaleOrderSubmitted);
+    on<SaleOrderFetched>(_onFetched);
   }
 
-  Future<void> _onSaleOrderSubmitted(
-    SaleOrderSubmitted event,
+  Future<void> _onFetched(
+    SaleOrderFetched event,
     Emitter<SaleOrderState> emit,
   ) async {
     await executeUsecase(
       emit: emit,
       currentState: state,
       usecase: () => saleorderUsecase.call(
-        // TODO: Pass your parameters here
-        NoParams(),
+        SaleOrderParams(
+          fromDate: event.fromDate,
+          toDate: event.toDate,
+          search: event.search,
+        ),
       ),
       stateBuilder: (status, {data, error}) =>
-          state.copyWith(apiStatus: status, data: data, message: error),
+          state.copyWith(apiStatus: status, orders: data ?? [], message: error),
     );
   }
 }

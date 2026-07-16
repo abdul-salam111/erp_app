@@ -4,12 +4,12 @@ import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 
-class PurchaseOrderForm extends StatefulWidget {
+class SaleOrderForm extends StatefulWidget {
   final DateTime date;
   final VoidCallback onDateTap;
   final bool hasItems;
   final TextEditingController refDocNbrController;
-  final TextEditingController supplierController;
+  final TextEditingController customerController;
   final TextEditingController brokerController;
   final TextEditingController weightSourceController;
   final TextEditingController calculationsController;
@@ -19,13 +19,13 @@ class PurchaseOrderForm extends StatefulWidget {
   final TextEditingController currencyRateController;
   final TextEditingController rateController;
 
-  const PurchaseOrderForm({
+  const SaleOrderForm({
     super.key,
     required this.date,
     required this.onDateTap,
     required this.hasItems,
     required this.refDocNbrController,
-    required this.supplierController,
+    required this.customerController,
     required this.brokerController,
     required this.weightSourceController,
     required this.calculationsController,
@@ -37,17 +37,15 @@ class PurchaseOrderForm extends StatefulWidget {
   });
 
   @override
-  State<PurchaseOrderForm> createState() => _PurchaseOrderFormState();
+  State<SaleOrderForm> createState() => _SaleOrderFormState();
 }
 
-class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
-  // Only meaningful once widget.hasItems is true.
+class _SaleOrderFormState extends State<SaleOrderForm> {
   bool _expanded = false;
 
   @override
-  void didUpdateWidget(covariant PurchaseOrderForm oldWidget) {
+  void didUpdateWidget(covariant SaleOrderForm oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // The moment the first row is added, collapse the form automatically.
     if (!oldWidget.hasItems && widget.hasItems) {
       _expanded = false;
     }
@@ -57,7 +55,6 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Container(
       padding: .all(8),
       decoration: BoxDecoration(
@@ -67,9 +64,6 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
       ),
       child: Column(
         children: [
-          // ── Header ───────────────────────────────────────────
-          // Toggle only shows once there's at least one item — before
-          // that, the full form is always visible.
           if (widget.hasItems) ...[
             _FormHeader(
               expanded: _expanded,
@@ -97,10 +91,10 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
               Expanded(
                 child: SearchableDropdown(
                   items: [],
-                  controller: widget.supplierController,
-                  label: AppConstants.supplierLabel,
+                  controller: widget.customerController,
+                  label: 'Customer',
                   isRequired: true,
-                  hintText: AppConstants.supplierLabel,
+                  hintText: 'Customer',
                   onChanged: (value) {},
                   fieldHeight: 40,
                   isShowIcon: false,
@@ -126,7 +120,7 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
                 child: SearchableDropdown(
                   items: [],
                   controller: widget.brokerController,
-                  label: 'Broker',
+                  label: AppConstants.brokerLabel,
                   hintText: AppConstants.brokerLabel,
                   onChanged: (value) {},
                   fieldHeight: 40,
@@ -135,9 +129,6 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
               ),
             ],
           ),
-          // ── Remaining fields ─────────────────────────────────
-          // Always laid out; AnimatedSize handles the collapse/expand
-          // once hasItems is true.
           AnimatedSize(
             duration: const Duration(milliseconds: 220),
             curve: Curves.easeInOut,
@@ -250,8 +241,6 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
   }
 }
 
-// ── Header ───────────────────────────────────────────────────────
-
 class _FormHeader extends StatelessWidget {
   final bool expanded;
   final VoidCallback onToggle;
@@ -264,7 +253,7 @@ class _FormHeader extends StatelessWidget {
       mainAxisAlignment: .spaceBetween,
       children: [
         Text(
-          'Purchase Order Form',
+          'Sale Order Form',
           style: context.bodySmall.copyWith(
             fontWeight: .w600,
             fontSize: 13,

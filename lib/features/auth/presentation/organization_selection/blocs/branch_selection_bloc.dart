@@ -49,10 +49,16 @@ class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionStat
         clearLoadingIndex: true,
       )),
       (authToken) async {
-        await SessionController.instance.saveSelectedOrganization(event.org);
-        if (authToken.accessToken != null) {
-          await SessionController.instance.updateActiveToken(authToken.accessToken!);
+        if (authToken.accessToken == null) {
+          emit(state.copyWith(
+            status: ApiStatus.FAILURE,
+            message: AppConstants.branchTokenUnavailable,
+            clearLoadingIndex: true,
+          ));
+          return;
         }
+        await SessionController.instance.saveSelectedOrganization(event.org);
+        await SessionController.instance.updateActiveToken(authToken.accessToken!);
         emit(state.copyWith(
           status: ApiStatus.SUCCESS,
           clearLoadingIndex: true,

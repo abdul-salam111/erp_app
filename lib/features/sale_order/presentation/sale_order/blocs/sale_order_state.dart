@@ -1,29 +1,30 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/const_exports.dart';
+import '../../../domain/entities/sale_order_entity.dart';
 
 class SaleOrderState extends Equatable {
-  final dynamic data;
+  final List<SaleOrderEntity> orders;
   final String? message;
   final ApiStatus apiStatus;
 
   const SaleOrderState({
-    this.data,
+    this.orders = const [],
     this.message,
     this.apiStatus = ApiStatus.INITIAL,
   });
 
   SaleOrderState copyWith({
-    dynamic data,
+    List<SaleOrderEntity>? orders,
     String? message,
     ApiStatus? apiStatus,
   }) {
     return SaleOrderState(
-      data: data ?? this.data,
+      orders: orders ?? this.orders,
       message: message ?? this.message,
       apiStatus: apiStatus ?? this.apiStatus,
     );
   }
 
   @override
-  List<Object?> get props => [data, message, apiStatus];
+  List<Object?> get props => [orders, message, apiStatus];
 }
