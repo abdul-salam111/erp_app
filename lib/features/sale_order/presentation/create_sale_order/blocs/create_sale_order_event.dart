@@ -40,3 +40,28 @@ class SaleOrderRowUpdated extends CreateSaleOrderEvent {
 class CreateSaleOrderSubmitted extends CreateSaleOrderEvent {
   const CreateSaleOrderSubmitted();
 }
+
+class SaleOrderDetailRequested extends CreateSaleOrderEvent {
+  final int orderId;
+  const SaleOrderDetailRequested(this.orderId);
+  @override
+  List<Object?> get props => [orderId];
+}
+
+class SaleOrderPartiesRequested extends CreateSaleOrderEvent {
+  const SaleOrderPartiesRequested();
+}
+
+class SaleOrderCustomerSelected extends CreateSaleOrderEvent {
+  final String name;
+  const SaleOrderCustomerSelected(this.name);
+  @override
+  List<Object?> get props => [name];
+}
+
+class SaleOrderBrokerSelected extends CreateSaleOrderEvent {
+  final String name;
+  const SaleOrderBrokerSelected(this.name);
+  @override
+  List<Object?> get props => [name];
+}

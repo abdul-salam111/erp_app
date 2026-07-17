@@ -57,7 +57,9 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
   Future<void> _addRow() async {
     final result = await showAddRowBottomSheet(context);
     if (result != null && mounted) {
-      context.read<CreatePurchaseOrderBloc>().add(PurchaseOrderRowAdded(result));
+      context.read<CreatePurchaseOrderBloc>().add(
+        PurchaseOrderRowAdded(result),
+      );
     }
   }
 
@@ -129,9 +131,10 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CreatePurchaseOrderBloc, CreatePurchaseOrderState>(
+    return BlocListener<CreatePurchaseOrderBloc, CreatePurchaseOrderState>(
+      // Fill the form only when the detail fetch finishes — never on
+      // later submit events, so user edits are not overwritten.
       listenWhen: (previous, current) =>
-          previous.apiStatus != current.apiStatus ||
           previous.detailStatus != current.detailStatus,
       listener: (context, state) {
         if (state.detailStatus == ApiStatus.SUCCESS) {
@@ -140,149 +143,297 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
         if (state.detailStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
-        if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(context, 'Success!');
-        }
-        if (state.apiStatus == ApiStatus.FAILURE) {
-          AppToastsUtils.showErrorTop(context, state.message.toString());
-        }
       },
-      builder: (context, state) {
-        final rows = state.rows;
-        final title = state.isEditMode
-            ? (state.docNbr ?? 'Purchase Order')
-            : 'Create Purchase Order';
-        return UnfocusWrapper(
-          child: Scaffold(
-            appBar: CustomAppBar(title: title),
-            body: state.detailStatus == ApiStatus.LOADING
-                ? Center(
-                    child: CircularProgressIndicator(color: context.primary),
-                  )
-                : Form(
-                    key: _formKey,
-                    child: ListView(
-                      padding: .all(8),
-                      children: [
-                        PurchaseOrderForm(
-                          date: state.date,
-                          onDateTap: _pickDate,
-                          hasItems: rows.isNotEmpty,
-                          partyNames:
-                              state.parties.map((p) => p.name).toList(),
-                          onSupplierChanged: (name) => context
-                              .read<CreatePurchaseOrderBloc>()
-                              .add(PurchaseOrderSupplierSelected(name)),
-                          onBrokerChanged: (name) => context
-                              .read<CreatePurchaseOrderBloc>()
-                              .add(PurchaseOrderBrokerSelected(name)),
-                          refDocNbrController: _refDocNbrController,
-                          supplierController: _supplierController,
-                          brokerController: _brokerController,
-                          weightSourceController: _weightSourceController,
-                          calculationsController: _calculationsController,
-                          orderSourceController: _orderSourceController,
-                          paymentModeController: _paymentModeController,
-                          selectedCurrencyController:
-                              _selectedCurrencyController,
-                          currencyRateController: _currencyRateController,
-                          rateController: _rateController,
-                        ),
-                        heightBox(8),
-                        if (rows.isEmpty)
-                          const _EmptyItemsHint()
-                        else ...[
-                          PurchaseOrderItemsTable(
-                            rows: rows,
-                            onDelete: (index) => context
+      child: BlocConsumer<CreatePurchaseOrderBloc, CreatePurchaseOrderState>(
+        listenWhen: (previous, current) =>
+            previous.apiStatus != current.apiStatus,
+        listener: (context, state) {
+          if (state.apiStatus == ApiStatus.SUCCESS) {
+            AppToastsUtils.showSuccessTop(context, 'Success!');
+          }
+          if (state.apiStatus == ApiStatus.FAILURE) {
+            AppToastsUtils.showErrorTop(context, state.message.toString());
+          }
+        },
+        builder: (context, state) {
+          final rows = state.rows;
+          final title = state.isEditMode
+              ? (state.docNbr ?? 'Purchase Order')
+              : 'Create Purchase Order';
+          return UnfocusWrapper(
+            child: Scaffold(
+              appBar: CustomAppBar(title: title),
+              body: state.detailStatus == ApiStatus.LOADING
+                  ? const _DetailShimmer()
+                  : Form(
+                      key: _formKey,
+                      child: ListView(
+                        padding: .all(8),
+                        children: [
+                          PurchaseOrderForm(
+                            date: state.date,
+                            onDateTap: _pickDate,
+                            hasItems: rows.isNotEmpty,
+                            partyNames: state.parties
+                                .map((p) => p.name)
+                                .toList(),
+                            onSupplierChanged: (name) => context
                                 .read<CreatePurchaseOrderBloc>()
-                                .add(PurchaseOrderRowRemoved(index)),
-                            onEdit: (index, updated) => context
+                                .add(PurchaseOrderSupplierSelected(name)),
+                            onBrokerChanged: (name) => context
                                 .read<CreatePurchaseOrderBloc>()
-                                .add(PurchaseOrderRowUpdated(index, updated)),
+                                .add(PurchaseOrderBrokerSelected(name)),
+                            refDocNbrController: _refDocNbrController,
+                            supplierController: _supplierController,
+                            brokerController: _brokerController,
+                            weightSourceController: _weightSourceController,
+                            calculationsController: _calculationsController,
+                            orderSourceController: _orderSourceController,
+                            paymentModeController: _paymentModeController,
+                            selectedCurrencyController:
+                                _selectedCurrencyController,
+                            currencyRateController: _currencyRateController,
+                            rateController: _rateController,
                           ),
-                        ],
-                        heightBox(8),
-                        GestureDetector(
-                          onTap: _addRow,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            decoration: BoxDecoration(
-                              color: context.primary.withValues(alpha: 0.06),
-                              borderRadius: .circular(8),
-                              border: Border.all(
-                                color: context.primary.withValues(alpha: 0.3),
+                          heightBox(8),
+                          if (rows.isEmpty)
+                            const _EmptyItemsHint()
+                          else ...[
+                            PurchaseOrderItemsTable(
+                              rows: rows,
+                              onDelete: (index) => context
+                                  .read<CreatePurchaseOrderBloc>()
+                                  .add(PurchaseOrderRowRemoved(index)),
+                              onEdit: (index, updated) => context
+                                  .read<CreatePurchaseOrderBloc>()
+                                  .add(PurchaseOrderRowUpdated(index, updated)),
+                            ),
+                          ],
+                          heightBox(8),
+                          GestureDetector(
+                            onTap: _addRow,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              decoration: BoxDecoration(
+                                color: context.primary.withValues(alpha: 0.06),
+                                borderRadius: .circular(8),
+                                border: Border.all(
+                                  color: context.primary.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: .center,
+                                children: [
+                                  Icon(
+                                    Icons.add_rounded,
+                                    size: 18,
+                                    color: context.primary,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Add Row',
+                                    style: context.bodySmall.copyWith(
+                                      color: context.primary,
+                                      fontWeight: .w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            child: Row(
-                              mainAxisAlignment: .center,
-                              children: [
-                                Icon(Icons.add_rounded,
-                                    size: 18, color: context.primary),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'Add Row',
-                                  style: context.bodySmall.copyWith(
-                                    color: context.primary,
-                                    fontWeight: .w600,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
-                        ),
-                        if (rows.isNotEmpty) ...[
-                          heightBox(8),
-                          if (context.isPhone) ...[
-                            _OrderSummarySection(
-                              productTotal: _productTotal(rows),
-                              totalDiscount: _totalDiscount(rows),
-                              subTotal: _subTotal(rows),
-                              totalTax: _totalTax(rows),
-                              netAmount: _netAmount(rows),
-                            ),
+                          if (rows.isNotEmpty) ...[
                             heightBox(8),
-                            _OrderRemarksSection(
-                                controller: _orderRemarksController),
-                          ] else
-                            Row(
-                              crossAxisAlignment: .start,
-                              children: [
-                                Expanded(
-                                  child: _OrderSummarySection(
-                                    productTotal: _productTotal(rows),
-                                    totalDiscount: _totalDiscount(rows),
-                                    subTotal: _subTotal(rows),
-                                    totalTax: _totalTax(rows),
-                                    netAmount: _netAmount(rows),
+                            if (context.isPhone) ...[
+                              _OrderSummarySection(
+                                productTotal: _productTotal(rows),
+                                totalDiscount: _totalDiscount(rows),
+                                subTotal: _subTotal(rows),
+                                totalTax: _totalTax(rows),
+                                netAmount: _netAmount(rows),
+                              ),
+                              heightBox(8),
+                              _OrderRemarksSection(
+                                controller: _orderRemarksController,
+                              ),
+                            ] else
+                              Row(
+                                crossAxisAlignment: .start,
+                                children: [
+                                  Expanded(
+                                    child: _OrderSummarySection(
+                                      productTotal: _productTotal(rows),
+                                      totalDiscount: _totalDiscount(rows),
+                                      subTotal: _subTotal(rows),
+                                      totalTax: _totalTax(rows),
+                                      netAmount: _netAmount(rows),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: _OrderRemarksSection(
-                                    controller: _orderRemarksController,
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: _OrderRemarksSection(
+                                      controller: _orderRemarksController,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                            heightBox(8),
+                            CustomButton(
+                              text: state.isEditMode
+                                  ? 'Update Order'
+                                  : 'Add Order',
+                              onPressed: () {},
+                              radius: 8,
+                              elevation: 0,
+                              fontsize: 14,
+                              size: const Size.fromHeight(46),
                             ),
-                          heightBox(8),
-                          CustomButton(
-                            text: state.isEditMode ? 'Update Order' : 'Add Order',
-                            onPressed: () {},
-                            radius: 8,
-                            elevation: 0,
-                            fontsize: 14,
-                            size: const Size.fromHeight(46),
-                          ),
+                          ],
+                          heightBox(16),
                         ],
-                        heightBox(16),
-                      ],
+                      ),
                     ),
-                  ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ── Detail Shimmer ────────────────────────────────────────────────────────────
+
+class _DetailShimmer extends StatelessWidget {
+  const _DetailShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: .all(8),
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        // Form card
+        Container(
+          padding: .all(12),
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: .circular(8),
+            border: Border.all(color: context.border),
           ),
-        );
-      },
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              const ShimmerBox(width: 140, height: 14, radius: 4),
+              heightBox(14),
+              const _ShimmerFieldRow(),
+              heightBox(12),
+              const _ShimmerFieldRow(),
+              heightBox(12),
+              const _ShimmerFieldRow(),
+            ],
+          ),
+        ),
+        heightBox(8),
+        // Items table card
+        Container(
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: .circular(8),
+            border: Border.all(color: context.border),
+          ),
+          child: Column(
+            children: [
+              const ShimmerBox(height: 38, radius: 8),
+              for (int i = 0; i < 3; i++)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    children: const [
+                      ShimmerBox(width: 20, height: 12, radius: 4),
+                      SizedBox(width: 10),
+                      Expanded(
+                        flex: 5,
+                        child: ShimmerBox(height: 12, radius: 4),
+                      ),
+                      SizedBox(width: 14),
+                      Expanded(
+                        flex: 2,
+                        child: ShimmerBox(height: 12, radius: 4),
+                      ),
+                      SizedBox(width: 14),
+                      Expanded(
+                        flex: 2,
+                        child: ShimmerBox(height: 12, radius: 4),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+        heightBox(8),
+        // Summary card
+        Container(
+          padding: .all(12),
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: .circular(8),
+            border: Border.all(color: context.border),
+          ),
+          child: Column(
+            children: [
+              for (int i = 0; i < 4; i++) ...[
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  children: const [
+                    ShimmerBox(width: 90, height: 12, radius: 4),
+                    ShimmerBox(width: 70, height: 12, radius: 4),
+                  ],
+                ),
+                if (i < 3) heightBox(12),
+              ],
+            ],
+          ),
+        ),
+        heightBox(8),
+        const ShimmerBox(height: 46, radius: 8),
+      ],
+    );
+  }
+}
+
+class _ShimmerFieldRow extends StatelessWidget {
+  const _ShimmerFieldRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: const [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              ShimmerBox(width: 70, height: 10, radius: 4),
+              SizedBox(height: 6),
+              ShimmerBox(height: 38, radius: 6),
+            ],
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              ShimmerBox(width: 70, height: 10, radius: 4),
+              SizedBox(height: 6),
+              ShimmerBox(height: 38, radius: 6),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -427,20 +578,14 @@ class _OrderSummarySection extends StatelessWidget {
                   valueColor: totalDiscount > 0 ? Colors.green.shade600 : null,
                 ),
                 heightBox(8),
-                _SummaryRow(
-                  label: 'Sub Total',
-                  value: subTotal.asPrice,
-                ),
+                _SummaryRow(label: 'Sub Total', value: subTotal.asPrice),
               ],
             ),
           ),
           Divider(height: 1, thickness: 1, color: context.border),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: _SummaryRow(
-              label: 'Total Tax',
-              value: totalTax.asPrice,
-            ),
+            child: _SummaryRow(label: 'Total Tax', value: totalTax.asPrice),
           ),
           Divider(height: 1, thickness: 1, color: context.border),
           Container(

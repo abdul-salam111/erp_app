@@ -379,41 +379,39 @@ class _RowDetailsSheet extends StatelessWidget {
                 ),
               ),
             ),
-            if (item.remarks != null && item.remarks!.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: context.grey50,
-                    borderRadius: .circular(10),
-                    border: Border.all(color: context.border),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      Text(
-                        'Remarks',
-                        style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
-                          fontSize: 10,
-                        ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: context.grey50,
+                  borderRadius: .circular(10),
+                  border: Border.all(color: context.border),
+                ),
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Text(
+                      'Remarks',
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                        fontSize: 10,
                       ),
-                      const SizedBox(height: 3),
-                      Text(
-                        item.remarks!,
-                        style: context.bodySmall.copyWith(
-                          fontSize: 12,
-                          color: context.textPrimary,
-                        ),
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      item.remarks?.isNotEmpty == true ? item.remarks! : '—',
+                      style: context.bodySmall.copyWith(
+                        fontSize: 12,
+                        color: context.textPrimary,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
             if (canEdit || canDelete)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),

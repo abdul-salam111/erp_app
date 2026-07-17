@@ -243,7 +243,8 @@ class AppRoutes {
       GoRoute(
         path: RoutePaths.create_sale_order,
         name: RouteNames.create_sale_order,
-        builder: (context, state) => const CreateSaleOrderView(),
+        builder: (context, state) =>
+            CreateSaleOrderView(orderId: state.extra as int?),
       ),
     
      

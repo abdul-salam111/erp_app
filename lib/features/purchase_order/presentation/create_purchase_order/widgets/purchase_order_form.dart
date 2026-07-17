@@ -49,6 +49,15 @@ class PurchaseOrderForm extends StatefulWidget {
 class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
   // Only meaningful once widget.hasItems is true.
   bool _expanded = false;
+  late final TextEditingController _dateController;
+
+  @override
+  void initState() {
+    super.initState();
+    _dateController = TextEditingController(
+      text: widget.date.format(AppConstants.ddMMMYyyyLabel),
+    );
+  }
 
   @override
   void didUpdateWidget(covariant PurchaseOrderForm oldWidget) {
@@ -57,6 +66,15 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
     if (!oldWidget.hasItems && widget.hasItems) {
       _expanded = false;
     }
+    if (oldWidget.date != widget.date) {
+      _dateController.text = widget.date.format(AppConstants.ddMMMYyyyLabel);
+    }
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
   }
 
   bool get _showAllFields => !widget.hasItems || _expanded;
@@ -88,9 +106,7 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
             children: [
               Expanded(
                 child: CustomTextFormField(
-                  controller: TextEditingController(
-                    text: widget.date.format(AppConstants.ddMMMYyyyLabel),
-                  ),
+                  controller: _dateController,
                   label: AppConstants.dateLabel,
                   isRequired: true,
                   fieldHeight: 37,

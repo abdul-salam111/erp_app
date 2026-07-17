@@ -49,7 +49,8 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      context.read<PurchaseOrderBloc>().add(const PurchaseOrderLoadMore());
+      final bloc = context.read<PurchaseOrderBloc>();
+      if (bloc.state.hasMore) bloc.add(const PurchaseOrderLoadMore());
     }
   }
 

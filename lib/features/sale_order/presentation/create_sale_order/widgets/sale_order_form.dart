@@ -8,6 +8,9 @@ class SaleOrderForm extends StatefulWidget {
   final DateTime date;
   final VoidCallback onDateTap;
   final bool hasItems;
+  final List<String> partyNames;
+  final ValueChanged<String>? onCustomerChanged;
+  final ValueChanged<String>? onBrokerChanged;
   final TextEditingController refDocNbrController;
   final TextEditingController customerController;
   final TextEditingController brokerController;
@@ -24,6 +27,9 @@ class SaleOrderForm extends StatefulWidget {
     required this.date,
     required this.onDateTap,
     required this.hasItems,
+    this.partyNames = const [],
+    this.onCustomerChanged,
+    this.onBrokerChanged,
     required this.refDocNbrController,
     required this.customerController,
     required this.brokerController,
@@ -42,6 +48,15 @@ class SaleOrderForm extends StatefulWidget {
 
 class _SaleOrderFormState extends State<SaleOrderForm> {
   bool _expanded = false;
+  late final TextEditingController _dateController;
+
+  @override
+  void initState() {
+    super.initState();
+    _dateController = TextEditingController(
+      text: widget.date.format(AppConstants.ddMMMYyyyLabel),
+    );
+  }
 
   @override
   void didUpdateWidget(covariant SaleOrderForm oldWidget) {
@@ -49,6 +64,15 @@ class _SaleOrderFormState extends State<SaleOrderForm> {
     if (!oldWidget.hasItems && widget.hasItems) {
       _expanded = false;
     }
+    if (oldWidget.date != widget.date) {
+      _dateController.text = widget.date.format(AppConstants.ddMMMYyyyLabel);
+    }
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
   }
 
   bool get _showAllFields => !widget.hasItems || _expanded;
@@ -76,9 +100,7 @@ class _SaleOrderFormState extends State<SaleOrderForm> {
             children: [
               Expanded(
                 child: CustomTextFormField(
-                  controller: TextEditingController(
-                    text: widget.date.format(AppConstants.ddMMMYyyyLabel),
-                  ),
+                  controller: _dateController,
                   label: AppConstants.dateLabel,
                   isRequired: true,
                   fieldHeight: 37,
@@ -90,12 +112,12 @@ class _SaleOrderFormState extends State<SaleOrderForm> {
               const SizedBox(width: 10),
               Expanded(
                 child: SearchableDropdown(
-                  items: [],
+                  items: widget.partyNames,
                   controller: widget.customerController,
                   label: 'Customer',
                   isRequired: true,
                   hintText: 'Customer',
-                  onChanged: (value) {},
+                  onChanged: (value) => widget.onCustomerChanged?.call(value),
                   fieldHeight: 40,
                   isShowIcon: false,
                 ),
@@ -118,11 +140,11 @@ class _SaleOrderFormState extends State<SaleOrderForm> {
               const SizedBox(width: 10),
               Expanded(
                 child: SearchableDropdown(
-                  items: [],
+                  items: widget.partyNames,
                   controller: widget.brokerController,
                   label: AppConstants.brokerLabel,
                   hintText: AppConstants.brokerLabel,
-                  onChanged: (value) {},
+                  onChanged: (value) => widget.onBrokerChanged?.call(value),
                   fieldHeight: 40,
                   isShowIcon: false,
                 ),

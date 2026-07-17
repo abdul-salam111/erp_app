@@ -8,17 +8,19 @@ import '../../../domain/entities/sale_order_entity.dart';
 class SaleOrderTable extends StatelessWidget {
   final List<SaleOrderEntity> orders;
   final ScrollController? scrollController;
+  final void Function(SaleOrderEntity order)? onView;
 
   const SaleOrderTable({
     super.key,
     required this.orders,
     this.scrollController,
+    this.onView,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: .symmetric(horizontal: context.pagePadding.left),
+      padding: .only(left: 10, right: 10, bottom: 20),
       child: Column(
         children: [
           const _TableHeader(),
@@ -29,7 +31,10 @@ class SaleOrderTable extends StatelessWidget {
               itemCount: orders.length,
               separatorBuilder: (_, __) =>
                   Divider(height: 1, thickness: 1, color: AppColors.grey100),
-              itemBuilder: (_, i) => _OrderRow(order: orders[i]),
+              itemBuilder: (_, i) => _OrderRow(
+                order: orders[i],
+                onView: onView != null ? () => onView!(orders[i]) : null,
+              ),
             ),
           ),
         ],
@@ -47,8 +52,8 @@ class _TableHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.primary,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(10),
-          topRight: Radius.circular(10),
+          topLeft: Radius.circular(6),
+          topRight: Radius.circular(6),
         ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -98,7 +103,8 @@ class _TableHeader extends StatelessWidget {
 
 class _OrderRow extends StatefulWidget {
   final SaleOrderEntity order;
-  const _OrderRow({required this.order});
+  final VoidCallback? onView;
+  const _OrderRow({required this.order, this.onView});
 
   @override
   State<_OrderRow> createState() => _OrderRowState();
@@ -238,7 +244,7 @@ class _OrderRowState extends State<_OrderRow> {
                             ),
                             const SizedBox(width: 12),
                             GestureDetector(
-                              onTap: () {},
+                              onTap: widget.onView,
                               child: Icon(
                                 Iconsax.eye,
                                 size: 20,

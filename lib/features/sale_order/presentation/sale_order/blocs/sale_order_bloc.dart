@@ -11,6 +11,8 @@ class SaleOrderBloc extends Bloc<SaleOrderEvent, SaleOrderState>
   SaleOrderBloc({required this.saleorderUsecase})
       : super(const SaleOrderState()) {
     on<SaleOrderFetched>(_onFetched);
+    on<SaleOrderSearchChanged>(_onSearchChanged);
+    on<SaleOrderLoadMore>(_onLoadMore);
   }
 
   Future<void> _onFetched(
@@ -20,15 +22,28 @@ class SaleOrderBloc extends Bloc<SaleOrderEvent, SaleOrderState>
     await executeUsecase(
       emit: emit,
       currentState: state,
-      usecase: () => saleorderUsecase.call(
-        SaleOrderParams(
-          fromDate: event.fromDate,
-          toDate: event.toDate,
-          search: event.search,
-        ),
+      usecase: () => saleorderUsecase.call(NoParams()),
+      stateBuilder: (status, {data, error}) => state.copyWith(
+        apiStatus: status,
+        orders: data ?? [],
+        message: error,
+        currentPage: 1,
       ),
-      stateBuilder: (status, {data, error}) =>
-          state.copyWith(apiStatus: status, orders: data ?? [], message: error),
     );
+  }
+
+  void _onSearchChanged(
+    SaleOrderSearchChanged event,
+    Emitter<SaleOrderState> emit,
+  ) {
+    emit(state.copyWith(searchQuery: event.query, currentPage: 1));
+  }
+
+  void _onLoadMore(
+    SaleOrderLoadMore event,
+    Emitter<SaleOrderState> emit,
+  ) {
+    if (!state.hasMore) return;
+    emit(state.copyWith(currentPage: state.currentPage + 1));
   }
 }

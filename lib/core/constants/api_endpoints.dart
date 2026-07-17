@@ -8,6 +8,7 @@ class ApiEndPoints {
   static const accounts   = _Accounts();
   static const modules    = _Modules();
   static const purchase   = _PurchaseOrders();
+  static const sale       = _SaleOrders();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -66,6 +67,13 @@ final class _PurchaseOrders {
 
   String get getPurchaseOrdersList => '${ApiEndPoints._base}/purchase/po/getPagedList';
   String getPurchaseOrderById(int id) => '${ApiEndPoints._base}/purchase/po/GetById/$id';
+}
+
+final class _SaleOrders {
+  const _SaleOrders();
+
+  String get getSaleOrdersList => '${ApiEndPoints._base}/sale/so/getPagedList';
+  String getSaleOrderById(int id) => '${ApiEndPoints._base}/sale/so/GetById/$id';
 }
 
 // ─── Modules (legacy placeholders) ──────────────────────────────────────────

@@ -12,12 +12,21 @@ import '../widgets/sale_order_form.dart';
 import '../widgets/sale_order_items_table.dart';
 
 class CreateSaleOrderView extends StatelessWidget {
-  const CreateSaleOrderView({super.key});
+  final int? orderId;
+
+  const CreateSaleOrderView({super.key, this.orderId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<CreateSaleOrderBloc>(),
+      create: (_) {
+        final bloc = sl<CreateSaleOrderBloc>()
+          ..add(const SaleOrderPartiesRequested());
+        if (orderId != null) {
+          bloc.add(SaleOrderDetailRequested(orderId!));
+        }
+        return bloc;
+      },
       child: const _CreateSaleOrderBody(),
     );
   }
@@ -108,133 +117,321 @@ class _CreateSaleOrderBodyState extends State<_CreateSaleOrderBody> {
     }
   }
 
+  void _fillControllersFromState(CreateSaleOrderState state) {
+    _refDocNbrController.text = state.refDocNumber ?? '';
+    _customerController.text = state.customerName ?? '';
+    _brokerController.text = state.brokerName ?? '';
+    _paymentModeController.text = state.paymentModeName ?? '';
+    _orderSourceController.text = state.orderSourceName ?? '';
+    _calculationsController.text = state.calculationsName ?? '';
+    _currencyRateController.text = state.currencyRate?.toString() ?? '';
+    _rateController.text = state.rate?.toString() ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CreateSaleOrderBloc, CreateSaleOrderState>(
+    return BlocListener<CreateSaleOrderBloc, CreateSaleOrderState>(
+      // Fill the form only when the detail fetch finishes — never on
+      // later submit events, so user edits are not overwritten.
+      listenWhen: (previous, current) =>
+          previous.detailStatus != current.detailStatus,
       listener: (context, state) {
-        if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(context, 'Success!');
+        if (state.detailStatus == ApiStatus.SUCCESS) {
+          _fillControllersFromState(state);
         }
-        if (state.apiStatus == ApiStatus.FAILURE) {
+        if (state.detailStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
       },
-      builder: (context, state) {
-        final rows = state.rows;
-        return UnfocusWrapper(
-          child: Scaffold(
-            appBar: CustomAppBar(title: 'Create Sale Order'),
-            body: Form(
-              key: _formKey,
-              child: ListView(
-                padding: .all(8),
-                children: [
-                  SaleOrderForm(
-                    date: state.date,
-                    onDateTap: _pickDate,
-                    hasItems: rows.isNotEmpty,
-                    refDocNbrController: _refDocNbrController,
-                    customerController: _customerController,
-                    brokerController: _brokerController,
-                    weightSourceController: _weightSourceController,
-                    calculationsController: _calculationsController,
-                    orderSourceController: _orderSourceController,
-                    paymentModeController: _paymentModeController,
-                    selectedCurrencyController: _selectedCurrencyController,
-                    currencyRateController: _currencyRateController,
-                    rateController: _rateController,
-                  ),
-                  heightBox(8),
-                  if (rows.isEmpty)
-                    const _EmptyItemsHint()
-                  else ...[
-                    SaleOrderItemsTable(
-                      rows: rows,
-                      onDelete: (index) => context
+      child: BlocConsumer<CreateSaleOrderBloc, CreateSaleOrderState>(
+        listenWhen: (previous, current) =>
+            previous.apiStatus != current.apiStatus,
+        listener: (context, state) {
+          if (state.apiStatus == ApiStatus.SUCCESS) {
+            AppToastsUtils.showSuccessTop(context, 'Success!');
+          }
+          if (state.apiStatus == ApiStatus.FAILURE) {
+            AppToastsUtils.showErrorTop(context, state.message.toString());
+          }
+        },
+        builder: (context, state) {
+          final rows = state.rows;
+          final title = state.isEditMode
+              ? (state.docNbr ?? 'Sale Order')
+              : 'Create Sale Order';
+          if (state.detailStatus == ApiStatus.LOADING) {
+            return UnfocusWrapper(
+              child: Scaffold(
+                appBar: CustomAppBar(title: title),
+                body: const _DetailShimmer(),
+              ),
+            );
+          }
+          return UnfocusWrapper(
+            child: Scaffold(
+              appBar: CustomAppBar(title: title),
+              body: Form(
+                key: _formKey,
+                child: ListView(
+                  padding: .all(8),
+                  children: [
+                    SaleOrderForm(
+                      date: state.date,
+                      onDateTap: _pickDate,
+                      hasItems: rows.isNotEmpty,
+                      partyNames: state.parties.map((p) => p.name).toList(),
+                      onCustomerChanged: (name) => context
                           .read<CreateSaleOrderBloc>()
-                          .add(SaleOrderRowRemoved(index)),
-                      onEdit: (index, updated) => context
+                          .add(SaleOrderCustomerSelected(name)),
+                      onBrokerChanged: (name) => context
                           .read<CreateSaleOrderBloc>()
-                          .add(SaleOrderRowUpdated(index, updated)),
+                          .add(SaleOrderBrokerSelected(name)),
+                      refDocNbrController: _refDocNbrController,
+                      customerController: _customerController,
+                      brokerController: _brokerController,
+                      weightSourceController: _weightSourceController,
+                      calculationsController: _calculationsController,
+                      orderSourceController: _orderSourceController,
+                      paymentModeController: _paymentModeController,
+                      selectedCurrencyController: _selectedCurrencyController,
+                      currencyRateController: _currencyRateController,
+                      rateController: _rateController,
                     ),
-                  ],
-                  heightBox(8),
-                  GestureDetector(
-                    onTap: _addRow,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        color: context.primary.withValues(alpha: 0.06),
-                        borderRadius: .circular(8),
-                        border: Border.all(
-                          color: context.primary.withValues(alpha: 0.3),
+                    heightBox(8),
+                    if (rows.isEmpty)
+                      const _EmptyItemsHint()
+                    else ...[
+                      SaleOrderItemsTable(
+                        rows: rows,
+                        onDelete: (index) => context
+                            .read<CreateSaleOrderBloc>()
+                            .add(SaleOrderRowRemoved(index)),
+                        onEdit: (index, updated) => context
+                            .read<CreateSaleOrderBloc>()
+                            .add(SaleOrderRowUpdated(index, updated)),
+                      ),
+                    ],
+                    heightBox(8),
+                    GestureDetector(
+                      onTap: _addRow,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: BoxDecoration(
+                          color: context.primary.withValues(alpha: 0.06),
+                          borderRadius: .circular(8),
+                          border: Border.all(
+                            color: context.primary.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: .center,
+                          children: [
+                            Icon(
+                              Icons.add_rounded,
+                              size: 18,
+                              color: context.primary,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Add Row',
+                              style: context.bodySmall.copyWith(
+                                color: context.primary,
+                                fontWeight: .w600,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: .center,
-                        children: [
-                          Icon(Icons.add_rounded, size: 18, color: context.primary),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Add Row',
-                            style: context.bodySmall.copyWith(
-                              color: context.primary,
-                              fontWeight: .w600,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
-                  ),
-                  if (rows.isNotEmpty) ...[
-                    heightBox(8),
-                    if (context.isPhone) ...[
-                      _OrderSummarySection(
-                        productTotal: _productTotal(rows),
-                        totalDiscount: _totalDiscount(rows),
-                        subTotal: _subTotal(rows),
-                        totalTax: _totalTax(rows),
-                        netAmount: _netAmount(rows),
-                      ),
+                    if (rows.isNotEmpty) ...[
                       heightBox(8),
-                      _OrderRemarksSection(controller: _orderRemarksController),
-                    ] else
-                      Row(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Expanded(
-                            child: _OrderSummarySection(
-                              productTotal: _productTotal(rows),
-                              totalDiscount: _totalDiscount(rows),
-                              subTotal: _subTotal(rows),
-                              totalTax: _totalTax(rows),
-                              netAmount: _netAmount(rows),
+                      if (context.isPhone) ...[
+                        _OrderSummarySection(
+                          productTotal: _productTotal(rows),
+                          totalDiscount: _totalDiscount(rows),
+                          subTotal: _subTotal(rows),
+                          totalTax: _totalTax(rows),
+                          netAmount: _netAmount(rows),
+                        ),
+                        heightBox(8),
+                        _OrderRemarksSection(
+                          controller: _orderRemarksController,
+                        ),
+                      ] else
+                        Row(
+                          crossAxisAlignment: .start,
+                          children: [
+                            Expanded(
+                              child: _OrderSummarySection(
+                                productTotal: _productTotal(rows),
+                                totalDiscount: _totalDiscount(rows),
+                                subTotal: _subTotal(rows),
+                                totalTax: _totalTax(rows),
+                                netAmount: _netAmount(rows),
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: _OrderRemarksSection(controller: _orderRemarksController),
-                          ),
-                        ],
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: _OrderRemarksSection(
+                                controller: _orderRemarksController,
+                              ),
+                            ),
+                          ],
+                        ),
+                      heightBox(8),
+                      CustomButton(
+                        text: state.isEditMode ? 'Update Order' : 'Add Order',
+                        onPressed: () {},
+                        radius: 8,
+                        elevation: 0,
+                        fontsize: 14,
+                        size: const Size.fromHeight(46),
                       ),
-                    heightBox(8),
-                    CustomButton(
-                      text: 'Add Order',
-                      onPressed: () {},
-                      radius: 8,
-                      elevation: 0,
-                      fontsize: 14,
-                      size: const Size.fromHeight(46),
-                    ),
+                    ],
+                    heightBox(16),
                   ],
-                  heightBox(16),
-                ],
+                ),
               ),
             ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _DetailShimmer extends StatelessWidget {
+  const _DetailShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: .all(8),
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        // Form card
+        Container(
+          padding: .all(12),
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: .circular(8),
+            border: Border.all(color: context.border),
           ),
-        );
-      },
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              const ShimmerBox(width: 140, height: 14, radius: 4),
+              heightBox(14),
+              const _ShimmerFieldRow(),
+              heightBox(12),
+              const _ShimmerFieldRow(),
+              heightBox(12),
+              const _ShimmerFieldRow(),
+            ],
+          ),
+        ),
+        heightBox(8),
+        // Items table card
+        Container(
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: .circular(8),
+            border: Border.all(color: context.border),
+          ),
+          child: Column(
+            children: [
+              const ShimmerBox(height: 38, radius: 8),
+              for (int i = 0; i < 3; i++)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
+                  child: Row(
+                    children: const [
+                      ShimmerBox(width: 20, height: 12, radius: 4),
+                      SizedBox(width: 10),
+                      Expanded(
+                        flex: 5,
+                        child: ShimmerBox(height: 12, radius: 4),
+                      ),
+                      SizedBox(width: 14),
+                      Expanded(
+                        flex: 2,
+                        child: ShimmerBox(height: 12, radius: 4),
+                      ),
+                      SizedBox(width: 14),
+                      Expanded(
+                        flex: 2,
+                        child: ShimmerBox(height: 12, radius: 4),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+        heightBox(8),
+        // Summary card
+        Container(
+          padding: .all(12),
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: .circular(8),
+            border: Border.all(color: context.border),
+          ),
+          child: Column(
+            children: [
+              for (int i = 0; i < 4; i++) ...[
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  children: const [
+                    ShimmerBox(width: 90, height: 12, radius: 4),
+                    ShimmerBox(width: 70, height: 12, radius: 4),
+                  ],
+                ),
+                if (i < 3) heightBox(12),
+              ],
+            ],
+          ),
+        ),
+        heightBox(8),
+        const ShimmerBox(height: 46, radius: 8),
+      ],
+    );
+  }
+}
+
+class _ShimmerFieldRow extends StatelessWidget {
+  const _ShimmerFieldRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: const [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              ShimmerBox(width: 70, height: 10, radius: 4),
+              SizedBox(height: 6),
+              ShimmerBox(height: 38, radius: 6),
+            ],
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              ShimmerBox(width: 70, height: 10, radius: 4),
+              SizedBox(height: 6),
+              ShimmerBox(height: 38, radius: 6),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -362,7 +559,10 @@ class _OrderSummarySection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Column(
               children: [
-                _SummaryRow(label: 'Product Total', value: productTotal.asPrice),
+                _SummaryRow(
+                  label: 'Product Total',
+                  value: productTotal.asPrice,
+                ),
                 heightBox(8),
                 _SummaryRow(
                   label: 'Discounts',
@@ -422,7 +622,11 @@ class _SummaryRow extends StatelessWidget {
   final String value;
   final Color? valueColor;
 
-  const _SummaryRow({required this.label, required this.value, this.valueColor});
+  const _SummaryRow({
+    required this.label,
+    required this.value,
+    this.valueColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -431,7 +635,10 @@ class _SummaryRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: context.bodySmall.copyWith(fontSize: 12, color: context.textSecondary),
+          style: context.bodySmall.copyWith(
+            fontSize: 12,
+            color: context.textSecondary,
+          ),
         ),
         Text(
           value,

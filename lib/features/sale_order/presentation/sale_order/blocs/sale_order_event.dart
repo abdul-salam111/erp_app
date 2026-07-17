@@ -8,16 +8,18 @@ abstract class SaleOrderEvent extends Equatable {
 }
 
 class SaleOrderFetched extends SaleOrderEvent {
-  final String fromDate;
-  final String toDate;
-  final String? search;
+  const SaleOrderFetched();
+}
 
-  const SaleOrderFetched({
-    required this.fromDate,
-    required this.toDate,
-    this.search,
-  });
+class SaleOrderSearchChanged extends SaleOrderEvent {
+  final String query;
+
+  const SaleOrderSearchChanged(this.query);
 
   @override
-  List<Object?> get props => [fromDate, toDate, search];
+  List<Object?> get props => [query];
+}
+
+class SaleOrderLoadMore extends SaleOrderEvent {
+  const SaleOrderLoadMore();
 }
