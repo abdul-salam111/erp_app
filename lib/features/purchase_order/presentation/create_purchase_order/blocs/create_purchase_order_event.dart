@@ -40,3 +40,28 @@ class PurchaseOrderRowUpdated extends CreatePurchaseOrderEvent {
 class CreatePurchaseOrderSubmitted extends CreatePurchaseOrderEvent {
   const CreatePurchaseOrderSubmitted();
 }
+
+class PurchaseOrderDetailRequested extends CreatePurchaseOrderEvent {
+  final int orderId;
+  const PurchaseOrderDetailRequested(this.orderId);
+  @override
+  List<Object?> get props => [orderId];
+}
+
+class PurchaseOrderPartiesRequested extends CreatePurchaseOrderEvent {
+  const PurchaseOrderPartiesRequested();
+}
+
+class PurchaseOrderSupplierSelected extends CreatePurchaseOrderEvent {
+  final String name;
+  const PurchaseOrderSupplierSelected(this.name);
+  @override
+  List<Object?> get props => [name];
+}
+
+class PurchaseOrderBrokerSelected extends CreatePurchaseOrderEvent {
+  final String name;
+  const PurchaseOrderBrokerSelected(this.name);
+  @override
+  List<Object?> get props => [name];
+}

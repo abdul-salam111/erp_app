@@ -237,7 +237,8 @@ class AppRoutes {
       GoRoute(
         path: RoutePaths.create_purchase_order,
         name: RouteNames.create_purchase_order,
-        builder: (context, state) => const CreatePurchaseOrderView(),
+        builder: (context, state) =>
+            CreatePurchaseOrderView(orderId: state.extra as int?),
       ),
       GoRoute(
         path: RoutePaths.create_sale_order,

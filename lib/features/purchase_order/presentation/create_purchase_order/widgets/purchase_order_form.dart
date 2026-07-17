@@ -8,6 +8,9 @@ class PurchaseOrderForm extends StatefulWidget {
   final DateTime date;
   final VoidCallback onDateTap;
   final bool hasItems;
+  final List<String> partyNames;
+  final ValueChanged<String>? onSupplierChanged;
+  final ValueChanged<String>? onBrokerChanged;
   final TextEditingController refDocNbrController;
   final TextEditingController supplierController;
   final TextEditingController brokerController;
@@ -24,6 +27,9 @@ class PurchaseOrderForm extends StatefulWidget {
     required this.date,
     required this.onDateTap,
     required this.hasItems,
+    this.partyNames = const [],
+    this.onSupplierChanged,
+    this.onBrokerChanged,
     required this.refDocNbrController,
     required this.supplierController,
     required this.brokerController,
@@ -96,12 +102,12 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
               const SizedBox(width: 10),
               Expanded(
                 child: SearchableDropdown(
-                  items: [],
+                  items: widget.partyNames,
                   controller: widget.supplierController,
                   label: AppConstants.supplierLabel,
                   isRequired: true,
                   hintText: AppConstants.supplierLabel,
-                  onChanged: (value) {},
+                  onChanged: (value) => widget.onSupplierChanged?.call(value),
                   fieldHeight: 40,
                   isShowIcon: false,
                 ),
@@ -124,11 +130,11 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
               const SizedBox(width: 10),
               Expanded(
                 child: SearchableDropdown(
-                  items: [],
+                  items: widget.partyNames,
                   controller: widget.brokerController,
                   label: 'Broker',
                   hintText: AppConstants.brokerLabel,
-                  onChanged: (value) {},
+                  onChanged: (value) => widget.onBrokerChanged?.call(value),
                   fieldHeight: 40,
                   isShowIcon: false,
                 ),

@@ -1,16 +1,32 @@
 import 'package:bloc/bloc.dart';
 
+import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
-import '../../../purchase_order_exports.dart';
+import '../../../data/models/response_models/purchase_order_detail/purchase_order_detail.dart';
+import '../../../domain/usecases/create_purchase_order_usecase.dart';
+import '../../../domain/usecases/get_parties_usecase.dart';
+import '../../../domain/usecases/get_purchase_order_by_id_usecase.dart';
+import '../widgets/purchase_order_items_table.dart';
+import 'create_purchase_order_event.dart';
+import 'create_purchase_order_state.dart';
 
 class CreatePurchaseOrderBloc
     extends Bloc<CreatePurchaseOrderEvent, CreatePurchaseOrderState>
     with UsecaseExecuterMixin {
   final CreatePurchaseOrderUsecase createPurchaseOrderUsecase;
+  final GetPurchaseOrderByIdUsecase getPurchaseOrderByIdUsecase;
+  final GetPartiesUsecase getPartiesUsecase;
 
-  CreatePurchaseOrderBloc({required this.createPurchaseOrderUsecase})
-    : super(_initialState()) {
+  CreatePurchaseOrderBloc({
+    required this.createPurchaseOrderUsecase,
+    required this.getPurchaseOrderByIdUsecase,
+    required this.getPartiesUsecase,
+  }) : super(_initialState()) {
     on<CreatePurchaseOrderSubmitted>(_onCreatePurchaseOrderSubmitted);
+    on<PurchaseOrderDetailRequested>(_onDetailRequested);
+    on<PurchaseOrderPartiesRequested>(_onPartiesRequested);
+    on<PurchaseOrderSupplierSelected>(_onSupplierSelected);
+    on<PurchaseOrderBrokerSelected>(_onBrokerSelected);
     on<PurchaseOrderDateChanged>(_onDateChanged);
     on<PurchaseOrderRowAdded>(_onRowAdded);
     on<PurchaseOrderRowRemoved>(_onRowRemoved);
@@ -28,6 +44,61 @@ class CreatePurchaseOrderBloc
       stateBuilder: (status, {data, error}) =>
           state.copyWith(apiStatus: status, data: data, message: error),
     );
+  }
+
+  Future<void> _onDetailRequested(
+    PurchaseOrderDetailRequested event,
+    Emitter<CreatePurchaseOrderState> emit,
+  ) async {
+    await executeUsecase(
+      emit: emit,
+      currentState: state,
+      usecase: () => getPurchaseOrderByIdUsecase(event.orderId),
+      stateBuilder: (status, {data, error}) {
+        if (status == ApiStatus.SUCCESS && data != null) {
+          return _applyDetail(data, event.orderId);
+        }
+        return state.copyWith(detailStatus: status, message: error);
+      },
+    );
+  }
+
+  Future<void> _onPartiesRequested(
+    PurchaseOrderPartiesRequested event,
+    Emitter<CreatePurchaseOrderState> emit,
+  ) async {
+    await executeUsecase(
+      emit: emit,
+      currentState: state,
+      usecase: () => getPartiesUsecase(NoParams()),
+      stateBuilder: (status, {data, error}) => state.copyWith(
+        partiesStatus: status,
+        parties: data ?? state.parties,
+        message: error,
+      ),
+    );
+  }
+
+  void _onSupplierSelected(
+    PurchaseOrderSupplierSelected event,
+    Emitter<CreatePurchaseOrderState> emit,
+  ) {
+    final party = state.parties.where((p) => p.name == event.name).firstOrNull;
+    emit(state.copyWith(
+      selectedSupplierId: party?.id,
+      supplierName: event.name,
+    ));
+  }
+
+  void _onBrokerSelected(
+    PurchaseOrderBrokerSelected event,
+    Emitter<CreatePurchaseOrderState> emit,
+  ) {
+    final party = state.parties.where((p) => p.name == event.name).firstOrNull;
+    emit(state.copyWith(
+      selectedBrokerId: party?.id,
+      brokerName: event.name,
+    ));
   }
 
   void _onDateChanged(
@@ -58,6 +129,51 @@ class CreatePurchaseOrderBloc
   ) {
     final updated = [...state.rows]..[event.index] = event.item;
     emit(state.copyWith(rows: updated));
+  }
+
+  CreatePurchaseOrderState _applyDetail(PurchaseOrderDetail d, int orderId) {
+    final rows = (d.rows ?? []).map((r) {
+      final qty = r.qtyPack ?? 0;
+      final price = r.pricePack ?? 0;
+      final disc = r.ttlDisc ?? 0;
+      final tax = r.taxAmount ?? 0;
+      final productValue = qty * price;
+      final subTotal = r.subTotal ?? (productValue - disc);
+      return PurchaseOrderRowItem(
+        item: r.item?.name ?? '—',
+        mode: r.contractMode?.name ?? '—',
+        contractQty: qty,
+        price: price,
+        rateUnit: (r.weightPriceUnit ?? 1).toStringAsFixed(2),
+        discPercent: productValue > 0 ? disc / productValue * 100 : 0,
+        discValue: disc,
+        vatPercent: subTotal > 0 ? tax / subTotal * 100 : 0,
+        vatAmount: tax,
+        total: r.rowTotal ?? subTotal + tax,
+      );
+    }).toList();
+
+    return state.copyWith(
+      detailStatus: ApiStatus.SUCCESS,
+      editingOrderId: orderId,
+      docNbr: d.docNbr,
+      date: d.docDate,
+      refDocNumber: d.refDocNbr,
+      selectedSupplierId: d.partyId,
+      selectedBrokerId: d.brokerId,
+      selectedCurrencyId: d.currencyId,
+      currencyRate: d.currencyRate,
+      rate: d.brokerageOptionValue,
+      calculationsId: d.brokerageOptionId,
+      selectedOrderSource: d.orderSourceId,
+      paymentMode: d.paymentModeId,
+      supplierName: d.party?.fullName,
+      brokerName: d.broker?.fullName,
+      paymentModeName: d.modeOfPayment?.name,
+      orderSourceName: d.orderSource?.name,
+      calculationsName: d.brokerComissionOption?.name,
+      rows: rows,
+    );
   }
 
   static CreatePurchaseOrderState _initialState() {

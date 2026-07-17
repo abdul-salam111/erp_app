@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class PurchaseOrderEntity extends Equatable {
+  final int id;
   final String docNumber;
   final String partyName;
   final String date;
@@ -10,6 +11,7 @@ class PurchaseOrderEntity extends Equatable {
   final String? remarks;
 
   const PurchaseOrderEntity({
+    required this.id,
     required this.docNumber,
     required this.partyName,
     required this.date,
@@ -20,5 +22,6 @@ class PurchaseOrderEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [docNumber, partyName, date, netAmount, refNo, rowsCount, remarks];
+  List<Object?> get props =>
+      [id, docNumber, partyName, date, netAmount, refNo, rowsCount, remarks];
 }

@@ -17,6 +17,7 @@ Map<String, dynamic> _$PurchaseOrdersListToJson(_PurchaseOrdersList instance) =>
     <String, dynamic>{'Data': instance.data};
 
 _Datum _$DatumFromJson(Map<String, dynamic> json) => _Datum(
+  id: (json['Id'] as num?)?.toInt(),
   party: json['Party'] == null
       ? null
       : Party.fromJson(json['Party'] as Map<String, dynamic>),
@@ -41,6 +42,7 @@ _Datum _$DatumFromJson(Map<String, dynamic> json) => _Datum(
 );
 
 Map<String, dynamic> _$DatumToJson(_Datum instance) => <String, dynamic>{
+  'Id': instance.id,
   'Party': instance.party,
   'FirstRow': instance.firstRow,
   'DocDate': instance.docDate?.toIso8601String(),

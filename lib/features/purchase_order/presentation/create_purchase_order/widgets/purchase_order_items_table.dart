@@ -115,290 +115,411 @@ class _TableHeader extends StatelessWidget {
 
 // ── Row ───────────────────────────────────────────────────────────────────────
 
-class _ItemRow extends StatefulWidget {
+class _ItemRow extends StatelessWidget {
   final int index;
   final PurchaseOrderRowItem item;
   final VoidCallback? onDelete;
   final void Function(PurchaseOrderRowItem updated)? onEdit;
   const _ItemRow({required this.index, required this.item, this.onDelete, this.onEdit});
 
-  @override
-  State<_ItemRow> createState() => _ItemRowState();
-}
-
-class _ItemRowState extends State<_ItemRow> {
-  bool _expanded = false;
+  Future<void> _openDetails(BuildContext context) async {
+    final action = await showModalBottomSheet<_RowDetailAction>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _RowDetailsSheet(index: index, item: item, canEdit: onEdit != null, canDelete: onDelete != null),
+    );
+    if (!context.mounted) return;
+    switch (action) {
+      case _RowDetailAction.edit:
+        final updated = await showAddRowBottomSheet(context, initialItem: item);
+        if (updated != null) onEdit?.call(updated);
+      case _RowDetailAction.delete:
+        onDelete?.call();
+      case null:
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final item = widget.item;
+    return InkWell(
+      onTap: () => _openDetails(context),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 22,
+              child: Text(
+                '${index + 1}',
+                style: context.labelSmall.copyWith(
+                  color: context.textSecondary,
+                  fontSize: 11,
+                  fontWeight: .w600,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 5,
+              child: Text(
+                item.item,
+                style: context.bodySmall.copyWith(
+                  fontWeight: .w600,
+                  fontSize: 12,
+                  color: AppColors.grey700,
+                ),
+                maxLines: 1,
+                overflow: .ellipsis,
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Text(
+                item.mode,
+                style: context.bodySmall.copyWith(
+                  color: context.textPrimary,
+                  fontWeight: .w600,
+                  fontSize: 12,
+                ),
+                textAlign: .center,
+                maxLines: 1,
+                overflow: .ellipsis,
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                item.contractQty.toStringAsFixed(2),
+                style: context.bodySmall.copyWith(
+                  fontWeight: .w600,
+                  fontSize: 12,
+                  color: context.textPrimary,
+                ),
+                textAlign: .end,
+                maxLines: 1,
+                overflow: .ellipsis,
+              ),
+            ),
+            SizedBox(
+              width: 20,
+              child: Icon(
+                Icons.chevron_right_rounded,
+                size: 18,
+                color: context.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-    return Column(
-        crossAxisAlignment: .start,
-        children: [
-          ColoredBox(
-            color: _expanded
-                ? context.primary.withValues(alpha: 0.07)
-                : Colors.transparent,
-            child: InkWell(
-              onTap: () => setState(() => _expanded = !_expanded),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                child: Row(
+// ── Row Details Bottom Sheet ──────────────────────────────────────────────────
+
+enum _RowDetailAction { edit, delete }
+
+class _RowDetailsSheet extends StatelessWidget {
+  final int index;
+  final PurchaseOrderRowItem item;
+  final bool canEdit;
+  final bool canDelete;
+
+  const _RowDetailsSheet({
+    required this.index,
+    required this.item,
+    required this.canEdit,
+    required this.canDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: .min,
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.grey300,
+                borderRadius: .circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+              child: Row(
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: context.primary.withValues(alpha: 0.10),
+                      shape: .circle,
+                    ),
+                    alignment: .center,
+                    child: Text(
+                      '${index + 1}',
+                      style: context.bodySmall.copyWith(
+                        color: context.primary,
+                        fontWeight: .w700,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        Text(
+                          item.item,
+                          style: context.bodySmall.copyWith(
+                            fontWeight: .w700,
+                            fontSize: 14,
+                            color: context.textPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: .ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          item.mode,
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 20,
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 14),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: context.grey50,
+                  borderRadius: .circular(10),
+                  border: Border.all(color: context.border),
+                ),
+                child: Column(
                   children: [
-                    SizedBox(
-                      width: 22,
-                      child: Text(
-                        '${widget.index + 1}',
-                        style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
-                          fontSize: 11,
-                          fontWeight: .w600,
-                        ),
+                    _DetailTileRow(
+                      left: _DetailTile(label: 'Contract Qty', value: item.contractQty.toStringAsFixed(2)),
+                      right: _DetailTile(label: 'Price', value: item.price.asPrice),
+                    ),
+                    Divider(height: 1, thickness: 1, color: context.border),
+                    _DetailTileRow(
+                      left: _DetailTile(label: 'Rate Unit', value: item.rateUnit.isEmpty ? '—' : item.rateUnit),
+                      right: _DetailTile(label: 'Disc %', value: '${item.discPercent.toStringAsFixed(2)}%'),
+                    ),
+                    Divider(height: 1, thickness: 1, color: context.border),
+                    _DetailTileRow(
+                      left: _DetailTile(label: 'Disc Value', value: item.discValue.asPrice),
+                      right: _DetailTile(label: 'VAT %', value: '${item.vatPercent.toStringAsFixed(2)}%'),
+                    ),
+                    Divider(height: 1, thickness: 1, color: context.border),
+                    _DetailTileRow(
+                      left: _DetailTile(label: 'VAT Amount', value: item.vatAmount.asPrice),
+                      right: const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: context.primary.withValues(alpha: 0.06),
+                  borderRadius: .circular(10),
+                  border: Border.all(color: context.primary.withValues(alpha: 0.2)),
+                ),
+                child: Row(
+                  mainAxisAlignment: .spaceBetween,
+                  children: [
+                    Text(
+                      'Total',
+                      style: context.bodySmall.copyWith(
+                        fontWeight: .w700,
+                        fontSize: 13,
+                        color: context.primary,
                       ),
                     ),
-                    Expanded(
-                      flex: 5,
-                      child: Text(
-                        item.item,
-                        style: context.bodySmall.copyWith(
-                          fontWeight: .w600,
-                          fontSize: 12,
-                          color: AppColors.grey700,
-                        ),
-                        maxLines: 1,
-                        overflow: .ellipsis,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Text(
-                        item.mode,
-                        style: context.bodySmall.copyWith(
-                          color: context.textPrimary,
-                          fontWeight: .w600,
-                          fontSize: 12,
-                        ),
-                        textAlign: .center,
-                        maxLines: 1,
-                        overflow: .ellipsis,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        item.contractQty.toStringAsFixed(2),
-                        style: context.bodySmall.copyWith(
-                          fontWeight: .w600,
-                          fontSize: 12,
-                          color: context.textPrimary,
-                        ),
-                        textAlign: .end,
-                        maxLines: 1,
-                        overflow: .ellipsis,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                      child: AnimatedRotation(
-                        turns: _expanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          size: 18,
-                          color: context.textSecondary,
-                        ),
+                    Text(
+                      item.total.asPrice,
+                      style: context.bodySmall.copyWith(
+                        fontWeight: .w700,
+                        fontSize: 15,
+                        color: context.primary,
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeInOut,
-            alignment: .topCenter,
-            child: _expanded
-                ? Column(
+            if (item.remarks != null && item.remarks!.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: context.grey50,
+                    borderRadius: .circular(10),
+                    border: Border.all(color: context.border),
+                  ),
+                  child: Column(
                     crossAxisAlignment: .start,
                     children: [
-                      Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: context.primary.withAlpha(30),
+                      Text(
+                        'Remarks',
+                        style: context.labelSmall.copyWith(
+                          color: context.textSecondary,
+                          fontSize: 10,
+                        ),
                       ),
-                      ColoredBox(
-                        color: context.primary.withValues(alpha: 0.07),
-                        child: Column(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Row(
-                            children: [
-                              _ExpandedChip(label: 'Price', value: item.price.asPrice),
-                              _ExpandedChip(
-                                label: 'Rate Unit',
-                                value: item.rateUnit.isEmpty ? '—' : item.rateUnit,
-                                textAlign: .center,
-                              ),
-                              _ExpandedChip(
-                                label: 'Disc %',
-                                value: '${item.discPercent.toStringAsFixed(2)}%',
-                                textAlign: .center,
-                              ),
-                              _ExpandedChip(
-                                label: 'Disc Value',
-                                value: item.discValue.asPrice,
-                                textAlign: .end,
-                              ),
-                            ],
-                          ),
-                          const Divider(height: 1, thickness: 1, color: AppColors.grey200),
-                          Row(
-                            children: [
-                              _ExpandedChip(label: 'VAT %', value: '${item.vatPercent.toStringAsFixed(2)}%'),
-                              _ExpandedChip(
-                                label: 'VAT Amount',
-                                value: item.vatAmount.asPrice,
-                                textAlign: .center,
-                              ),
-                              _ExpandedChip(
-                                label: 'Total',
-                                value: item.total.asPrice,
-                                textAlign: .end,
-                                flex: 2,
-                              ),
-                            ],
-                          ),
-                          if (item.remarks != null && item.remarks!.isNotEmpty) ...[
-                            const Divider(height: 1, thickness: 1, color: AppColors.grey200),
-                            _ExpandedChip(
-                              label: 'Remarks',
-                              value: item.remarks!,
-                              fullWidth: true,
-                            ),
-                          ],
-                          if (widget.onDelete != null || widget.onEdit != null) ...[
-                            const Divider(height: 1, thickness: 1, color: AppColors.grey200),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              child: Row(
-                                mainAxisAlignment: .end,
-                                children: [
-                                  if (widget.onEdit != null)
-                                    TextButton.icon(
-                                      onPressed: () async {
-                                        final updated = await showAddRowBottomSheet(
-                                          context,
-                                          initialItem: widget.item,
-                                        );
-                                        if (updated != null) widget.onEdit!(updated);
-                                      },
-                                      icon: Icon(Icons.edit_outlined, size: 14, color: context.primary),
-                                      label: Text(
-                                        'Edit Row',
-                                        style: context.labelSmall.copyWith(
-                                          color: context.primary,
-                                          fontSize: 11,
-                                          fontWeight: .w600,
-                                        ),
-                                      ),
-                                      style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                    ),
-                                  if (widget.onEdit != null && widget.onDelete != null)
-                                    const SizedBox(width: 4),
-                                  if (widget.onDelete != null)
-                                    TextButton.icon(
-                                      onPressed: widget.onDelete,
-                                      icon: Icon(Icons.delete_outline_rounded, size: 14, color: context.error),
-                                      label: Text(
-                                        'Remove Row',
-                                        style: context.labelSmall.copyWith(
-                                          color: context.error,
-                                          fontSize: 11,
-                                          fontWeight: .w600,
-                                        ),
-                                      ),
-                                      style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                        minimumSize: Size.zero,
-                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        item.remarks!,
+                        style: context.bodySmall.copyWith(
+                          fontSize: 12,
+                          color: context.textPrimary,
+                        ),
                       ),
                     ],
-                  )
-                : const SizedBox.shrink(),
-          ),
-        ],
+                  ),
+                ),
+              ),
+            ],
+            if (canEdit || canDelete)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+                child: Row(
+                  children: [
+                    if (canDelete)
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () =>
+                              Navigator.of(context).pop(_RowDetailAction.delete),
+                          icon: Icon(Icons.delete_outline_rounded,
+                              size: 16, color: context.error),
+                          label: Text(
+                            'Remove Row',
+                            style: context.bodySmall.copyWith(
+                              fontWeight: .w600,
+                              fontSize: 13,
+                              color: context.error,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: context.error.withValues(alpha: 0.4)),
+                            minimumSize: const Size.fromHeight(44),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: .circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (canEdit && canDelete) const SizedBox(width: 12),
+                    if (canEdit)
+                      Expanded(
+                        child: CustomButton(
+                          text: 'Edit Row',
+                          onPressed: () =>
+                              Navigator.of(context).pop(_RowDetailAction.edit),
+                          radius: 8,
+                          elevation: 0,
+                          fontsize: 13,
+                          size: const Size.fromHeight(44),
+                        ),
+                      ),
+                  ],
+                ),
+              )
+            else
+              const SizedBox(height: 12),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class _ExpandedChip extends StatelessWidget {
-  final String label;
-  final String value;
-  final TextAlign textAlign;
-  final bool fullWidth;
-  final int flex;
-
-  const _ExpandedChip({
-    required this.label,
-    required this.value,
-    this.textAlign = TextAlign.start,
-    this.fullWidth = false,
-    this.flex = 1,
-  });
-
-  CrossAxisAlignment get _crossAlign => textAlign == TextAlign.end
-      ? CrossAxisAlignment.end
-      : textAlign == TextAlign.center
-          ? CrossAxisAlignment.center
-          : CrossAxisAlignment.start;
+class _DetailTileRow extends StatelessWidget {
+  final Widget left;
+  final Widget right;
+  const _DetailTileRow({required this.left, required this.right});
 
   @override
   Widget build(BuildContext context) {
-    final col = Column(
-      crossAxisAlignment: _crossAlign,
-      children: [
-        Text(
-          label,
-          style: context.labelSmall.copyWith(
-            color: context.textSecondary,
-            fontSize: 10,
-          ),
-          textAlign: textAlign,
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: context.bodySmall.copyWith(
-            fontWeight: .w600,
-            fontSize: 12,
-            color: context.textPrimary,
-          ),
-          textAlign: textAlign,
-          maxLines: 1,
-          overflow: .ellipsis,
-        ),
-      ],
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          Expanded(child: left),
+          VerticalDivider(width: 1, thickness: 1, color: context.border),
+          Expanded(child: right),
+        ],
+      ),
     );
+  }
+}
 
-    final padded = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      child: col,
+class _DetailTile extends StatelessWidget {
+  final String label;
+  final String value;
+  const _DetailTile({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          Text(
+            label,
+            style: context.labelSmall.copyWith(
+              color: context.textSecondary,
+              fontSize: 10,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            value,
+            style: context.bodySmall.copyWith(
+              fontWeight: .w600,
+              fontSize: 13,
+              color: context.textPrimary,
+            ),
+            maxLines: 1,
+            overflow: .ellipsis,
+          ),
+        ],
+      ),
     );
-    return fullWidth ? padded : Expanded(flex: flex, child: padded);
   }
 }
 

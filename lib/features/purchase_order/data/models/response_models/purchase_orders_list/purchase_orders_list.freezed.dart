@@ -286,7 +286,7 @@ as List<Datum>?,
 /// @nodoc
 mixin _$Datum {
 
-@JsonKey(name: "Party") Party? get party;@JsonKey(name: "FirstRow") FirstRow? get firstRow;@JsonKey(name: "DocDate") DateTime? get docDate;@JsonKey(name: "FeatureId") int? get featureId;@JsonKey(name: "DocNbr") String? get docNbr;@JsonKey(name: "RefDocNbr") String? get refDocNbr;@JsonKey(name: "DueDate") DateTime? get dueDate;@JsonKey(name: "TTLSubTotal") double? get ttlSubTotal;@JsonKey(name: "TTLTaxAmount") double? get ttlTaxAmount;@JsonKey(name: "TTLNetAmount") double? get ttlNetAmount;@JsonKey(name: "TTLRows") int? get ttlRows;@JsonKey(name: "TTLAttachments") int? get ttlAttachments;@JsonKey(name: "EnumPrintStatusId") int? get enumPrintStatusId;
+@JsonKey(name: "Id") int? get id;@JsonKey(name: "Party") Party? get party;@JsonKey(name: "FirstRow") FirstRow? get firstRow;@JsonKey(name: "DocDate") DateTime? get docDate;@JsonKey(name: "FeatureId") int? get featureId;@JsonKey(name: "DocNbr") String? get docNbr;@JsonKey(name: "RefDocNbr") String? get refDocNbr;@JsonKey(name: "DueDate") DateTime? get dueDate;@JsonKey(name: "TTLSubTotal") double? get ttlSubTotal;@JsonKey(name: "TTLTaxAmount") double? get ttlTaxAmount;@JsonKey(name: "TTLNetAmount") double? get ttlNetAmount;@JsonKey(name: "TTLRows") int? get ttlRows;@JsonKey(name: "TTLAttachments") int? get ttlAttachments;@JsonKey(name: "EnumPrintStatusId") int? get enumPrintStatusId;
 /// Create a copy of Datum
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -299,16 +299,16 @@ $DatumCopyWith<Datum> get copyWith => _$DatumCopyWithImpl<Datum>(this as Datum, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Datum&&(identical(other.party, party) || other.party == party)&&(identical(other.firstRow, firstRow) || other.firstRow == firstRow)&&(identical(other.docDate, docDate) || other.docDate == docDate)&&(identical(other.featureId, featureId) || other.featureId == featureId)&&(identical(other.docNbr, docNbr) || other.docNbr == docNbr)&&(identical(other.refDocNbr, refDocNbr) || other.refDocNbr == refDocNbr)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.ttlSubTotal, ttlSubTotal) || other.ttlSubTotal == ttlSubTotal)&&(identical(other.ttlTaxAmount, ttlTaxAmount) || other.ttlTaxAmount == ttlTaxAmount)&&(identical(other.ttlNetAmount, ttlNetAmount) || other.ttlNetAmount == ttlNetAmount)&&(identical(other.ttlRows, ttlRows) || other.ttlRows == ttlRows)&&(identical(other.ttlAttachments, ttlAttachments) || other.ttlAttachments == ttlAttachments)&&(identical(other.enumPrintStatusId, enumPrintStatusId) || other.enumPrintStatusId == enumPrintStatusId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Datum&&(identical(other.id, id) || other.id == id)&&(identical(other.party, party) || other.party == party)&&(identical(other.firstRow, firstRow) || other.firstRow == firstRow)&&(identical(other.docDate, docDate) || other.docDate == docDate)&&(identical(other.featureId, featureId) || other.featureId == featureId)&&(identical(other.docNbr, docNbr) || other.docNbr == docNbr)&&(identical(other.refDocNbr, refDocNbr) || other.refDocNbr == refDocNbr)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.ttlSubTotal, ttlSubTotal) || other.ttlSubTotal == ttlSubTotal)&&(identical(other.ttlTaxAmount, ttlTaxAmount) || other.ttlTaxAmount == ttlTaxAmount)&&(identical(other.ttlNetAmount, ttlNetAmount) || other.ttlNetAmount == ttlNetAmount)&&(identical(other.ttlRows, ttlRows) || other.ttlRows == ttlRows)&&(identical(other.ttlAttachments, ttlAttachments) || other.ttlAttachments == ttlAttachments)&&(identical(other.enumPrintStatusId, enumPrintStatusId) || other.enumPrintStatusId == enumPrintStatusId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,party,firstRow,docDate,featureId,docNbr,refDocNbr,dueDate,ttlSubTotal,ttlTaxAmount,ttlNetAmount,ttlRows,ttlAttachments,enumPrintStatusId);
+int get hashCode => Object.hash(runtimeType,id,party,firstRow,docDate,featureId,docNbr,refDocNbr,dueDate,ttlSubTotal,ttlTaxAmount,ttlNetAmount,ttlRows,ttlAttachments,enumPrintStatusId);
 
 @override
 String toString() {
-  return 'Datum(party: $party, firstRow: $firstRow, docDate: $docDate, featureId: $featureId, docNbr: $docNbr, refDocNbr: $refDocNbr, dueDate: $dueDate, ttlSubTotal: $ttlSubTotal, ttlTaxAmount: $ttlTaxAmount, ttlNetAmount: $ttlNetAmount, ttlRows: $ttlRows, ttlAttachments: $ttlAttachments, enumPrintStatusId: $enumPrintStatusId)';
+  return 'Datum(id: $id, party: $party, firstRow: $firstRow, docDate: $docDate, featureId: $featureId, docNbr: $docNbr, refDocNbr: $refDocNbr, dueDate: $dueDate, ttlSubTotal: $ttlSubTotal, ttlTaxAmount: $ttlTaxAmount, ttlNetAmount: $ttlNetAmount, ttlRows: $ttlRows, ttlAttachments: $ttlAttachments, enumPrintStatusId: $enumPrintStatusId)';
 }
 
 
@@ -319,7 +319,7 @@ abstract mixin class $DatumCopyWith<$Res>  {
   factory $DatumCopyWith(Datum value, $Res Function(Datum) _then) = _$DatumCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: "Party") Party? party,@JsonKey(name: "FirstRow") FirstRow? firstRow,@JsonKey(name: "DocDate") DateTime? docDate,@JsonKey(name: "FeatureId") int? featureId,@JsonKey(name: "DocNbr") String? docNbr,@JsonKey(name: "RefDocNbr") String? refDocNbr,@JsonKey(name: "DueDate") DateTime? dueDate,@JsonKey(name: "TTLSubTotal") double? ttlSubTotal,@JsonKey(name: "TTLTaxAmount") double? ttlTaxAmount,@JsonKey(name: "TTLNetAmount") double? ttlNetAmount,@JsonKey(name: "TTLRows") int? ttlRows,@JsonKey(name: "TTLAttachments") int? ttlAttachments,@JsonKey(name: "EnumPrintStatusId") int? enumPrintStatusId
+@JsonKey(name: "Id") int? id,@JsonKey(name: "Party") Party? party,@JsonKey(name: "FirstRow") FirstRow? firstRow,@JsonKey(name: "DocDate") DateTime? docDate,@JsonKey(name: "FeatureId") int? featureId,@JsonKey(name: "DocNbr") String? docNbr,@JsonKey(name: "RefDocNbr") String? refDocNbr,@JsonKey(name: "DueDate") DateTime? dueDate,@JsonKey(name: "TTLSubTotal") double? ttlSubTotal,@JsonKey(name: "TTLTaxAmount") double? ttlTaxAmount,@JsonKey(name: "TTLNetAmount") double? ttlNetAmount,@JsonKey(name: "TTLRows") int? ttlRows,@JsonKey(name: "TTLAttachments") int? ttlAttachments,@JsonKey(name: "EnumPrintStatusId") int? enumPrintStatusId
 });
 
 
@@ -336,9 +336,10 @@ class _$DatumCopyWithImpl<$Res>
 
 /// Create a copy of Datum
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? party = freezed,Object? firstRow = freezed,Object? docDate = freezed,Object? featureId = freezed,Object? docNbr = freezed,Object? refDocNbr = freezed,Object? dueDate = freezed,Object? ttlSubTotal = freezed,Object? ttlTaxAmount = freezed,Object? ttlNetAmount = freezed,Object? ttlRows = freezed,Object? ttlAttachments = freezed,Object? enumPrintStatusId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? party = freezed,Object? firstRow = freezed,Object? docDate = freezed,Object? featureId = freezed,Object? docNbr = freezed,Object? refDocNbr = freezed,Object? dueDate = freezed,Object? ttlSubTotal = freezed,Object? ttlTaxAmount = freezed,Object? ttlNetAmount = freezed,Object? ttlRows = freezed,Object? ttlAttachments = freezed,Object? enumPrintStatusId = freezed,}) {
   return _then(_self.copyWith(
-party: freezed == party ? _self.party : party // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,party: freezed == party ? _self.party : party // ignore: cast_nullable_to_non_nullable
 as Party?,firstRow: freezed == firstRow ? _self.firstRow : firstRow // ignore: cast_nullable_to_non_nullable
 as FirstRow?,docDate: freezed == docDate ? _self.docDate : docDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,featureId: freezed == featureId ? _self.featureId : featureId // ignore: cast_nullable_to_non_nullable
@@ -460,10 +461,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "Party")  Party? party, @JsonKey(name: "FirstRow")  FirstRow? firstRow, @JsonKey(name: "DocDate")  DateTime? docDate, @JsonKey(name: "FeatureId")  int? featureId, @JsonKey(name: "DocNbr")  String? docNbr, @JsonKey(name: "RefDocNbr")  String? refDocNbr, @JsonKey(name: "DueDate")  DateTime? dueDate, @JsonKey(name: "TTLSubTotal")  double? ttlSubTotal, @JsonKey(name: "TTLTaxAmount")  double? ttlTaxAmount, @JsonKey(name: "TTLNetAmount")  double? ttlNetAmount, @JsonKey(name: "TTLRows")  int? ttlRows, @JsonKey(name: "TTLAttachments")  int? ttlAttachments, @JsonKey(name: "EnumPrintStatusId")  int? enumPrintStatusId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "Id")  int? id, @JsonKey(name: "Party")  Party? party, @JsonKey(name: "FirstRow")  FirstRow? firstRow, @JsonKey(name: "DocDate")  DateTime? docDate, @JsonKey(name: "FeatureId")  int? featureId, @JsonKey(name: "DocNbr")  String? docNbr, @JsonKey(name: "RefDocNbr")  String? refDocNbr, @JsonKey(name: "DueDate")  DateTime? dueDate, @JsonKey(name: "TTLSubTotal")  double? ttlSubTotal, @JsonKey(name: "TTLTaxAmount")  double? ttlTaxAmount, @JsonKey(name: "TTLNetAmount")  double? ttlNetAmount, @JsonKey(name: "TTLRows")  int? ttlRows, @JsonKey(name: "TTLAttachments")  int? ttlAttachments, @JsonKey(name: "EnumPrintStatusId")  int? enumPrintStatusId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Datum() when $default != null:
-return $default(_that.party,_that.firstRow,_that.docDate,_that.featureId,_that.docNbr,_that.refDocNbr,_that.dueDate,_that.ttlSubTotal,_that.ttlTaxAmount,_that.ttlNetAmount,_that.ttlRows,_that.ttlAttachments,_that.enumPrintStatusId);case _:
+return $default(_that.id,_that.party,_that.firstRow,_that.docDate,_that.featureId,_that.docNbr,_that.refDocNbr,_that.dueDate,_that.ttlSubTotal,_that.ttlTaxAmount,_that.ttlNetAmount,_that.ttlRows,_that.ttlAttachments,_that.enumPrintStatusId);case _:
   return orElse();
 
 }
@@ -481,10 +482,10 @@ return $default(_that.party,_that.firstRow,_that.docDate,_that.featureId,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "Party")  Party? party, @JsonKey(name: "FirstRow")  FirstRow? firstRow, @JsonKey(name: "DocDate")  DateTime? docDate, @JsonKey(name: "FeatureId")  int? featureId, @JsonKey(name: "DocNbr")  String? docNbr, @JsonKey(name: "RefDocNbr")  String? refDocNbr, @JsonKey(name: "DueDate")  DateTime? dueDate, @JsonKey(name: "TTLSubTotal")  double? ttlSubTotal, @JsonKey(name: "TTLTaxAmount")  double? ttlTaxAmount, @JsonKey(name: "TTLNetAmount")  double? ttlNetAmount, @JsonKey(name: "TTLRows")  int? ttlRows, @JsonKey(name: "TTLAttachments")  int? ttlAttachments, @JsonKey(name: "EnumPrintStatusId")  int? enumPrintStatusId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "Id")  int? id, @JsonKey(name: "Party")  Party? party, @JsonKey(name: "FirstRow")  FirstRow? firstRow, @JsonKey(name: "DocDate")  DateTime? docDate, @JsonKey(name: "FeatureId")  int? featureId, @JsonKey(name: "DocNbr")  String? docNbr, @JsonKey(name: "RefDocNbr")  String? refDocNbr, @JsonKey(name: "DueDate")  DateTime? dueDate, @JsonKey(name: "TTLSubTotal")  double? ttlSubTotal, @JsonKey(name: "TTLTaxAmount")  double? ttlTaxAmount, @JsonKey(name: "TTLNetAmount")  double? ttlNetAmount, @JsonKey(name: "TTLRows")  int? ttlRows, @JsonKey(name: "TTLAttachments")  int? ttlAttachments, @JsonKey(name: "EnumPrintStatusId")  int? enumPrintStatusId)  $default,) {final _that = this;
 switch (_that) {
 case _Datum():
-return $default(_that.party,_that.firstRow,_that.docDate,_that.featureId,_that.docNbr,_that.refDocNbr,_that.dueDate,_that.ttlSubTotal,_that.ttlTaxAmount,_that.ttlNetAmount,_that.ttlRows,_that.ttlAttachments,_that.enumPrintStatusId);case _:
+return $default(_that.id,_that.party,_that.firstRow,_that.docDate,_that.featureId,_that.docNbr,_that.refDocNbr,_that.dueDate,_that.ttlSubTotal,_that.ttlTaxAmount,_that.ttlNetAmount,_that.ttlRows,_that.ttlAttachments,_that.enumPrintStatusId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -501,10 +502,10 @@ return $default(_that.party,_that.firstRow,_that.docDate,_that.featureId,_that.d
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "Party")  Party? party, @JsonKey(name: "FirstRow")  FirstRow? firstRow, @JsonKey(name: "DocDate")  DateTime? docDate, @JsonKey(name: "FeatureId")  int? featureId, @JsonKey(name: "DocNbr")  String? docNbr, @JsonKey(name: "RefDocNbr")  String? refDocNbr, @JsonKey(name: "DueDate")  DateTime? dueDate, @JsonKey(name: "TTLSubTotal")  double? ttlSubTotal, @JsonKey(name: "TTLTaxAmount")  double? ttlTaxAmount, @JsonKey(name: "TTLNetAmount")  double? ttlNetAmount, @JsonKey(name: "TTLRows")  int? ttlRows, @JsonKey(name: "TTLAttachments")  int? ttlAttachments, @JsonKey(name: "EnumPrintStatusId")  int? enumPrintStatusId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "Id")  int? id, @JsonKey(name: "Party")  Party? party, @JsonKey(name: "FirstRow")  FirstRow? firstRow, @JsonKey(name: "DocDate")  DateTime? docDate, @JsonKey(name: "FeatureId")  int? featureId, @JsonKey(name: "DocNbr")  String? docNbr, @JsonKey(name: "RefDocNbr")  String? refDocNbr, @JsonKey(name: "DueDate")  DateTime? dueDate, @JsonKey(name: "TTLSubTotal")  double? ttlSubTotal, @JsonKey(name: "TTLTaxAmount")  double? ttlTaxAmount, @JsonKey(name: "TTLNetAmount")  double? ttlNetAmount, @JsonKey(name: "TTLRows")  int? ttlRows, @JsonKey(name: "TTLAttachments")  int? ttlAttachments, @JsonKey(name: "EnumPrintStatusId")  int? enumPrintStatusId)?  $default,) {final _that = this;
 switch (_that) {
 case _Datum() when $default != null:
-return $default(_that.party,_that.firstRow,_that.docDate,_that.featureId,_that.docNbr,_that.refDocNbr,_that.dueDate,_that.ttlSubTotal,_that.ttlTaxAmount,_that.ttlNetAmount,_that.ttlRows,_that.ttlAttachments,_that.enumPrintStatusId);case _:
+return $default(_that.id,_that.party,_that.firstRow,_that.docDate,_that.featureId,_that.docNbr,_that.refDocNbr,_that.dueDate,_that.ttlSubTotal,_that.ttlTaxAmount,_that.ttlNetAmount,_that.ttlRows,_that.ttlAttachments,_that.enumPrintStatusId);case _:
   return null;
 
 }
@@ -516,9 +517,10 @@ return $default(_that.party,_that.firstRow,_that.docDate,_that.featureId,_that.d
 @JsonSerializable()
 
 class _Datum implements Datum {
-  const _Datum({@JsonKey(name: "Party") this.party, @JsonKey(name: "FirstRow") this.firstRow, @JsonKey(name: "DocDate") this.docDate, @JsonKey(name: "FeatureId") this.featureId, @JsonKey(name: "DocNbr") this.docNbr, @JsonKey(name: "RefDocNbr") this.refDocNbr, @JsonKey(name: "DueDate") this.dueDate, @JsonKey(name: "TTLSubTotal") this.ttlSubTotal, @JsonKey(name: "TTLTaxAmount") this.ttlTaxAmount, @JsonKey(name: "TTLNetAmount") this.ttlNetAmount, @JsonKey(name: "TTLRows") this.ttlRows, @JsonKey(name: "TTLAttachments") this.ttlAttachments, @JsonKey(name: "EnumPrintStatusId") this.enumPrintStatusId});
+  const _Datum({@JsonKey(name: "Id") this.id, @JsonKey(name: "Party") this.party, @JsonKey(name: "FirstRow") this.firstRow, @JsonKey(name: "DocDate") this.docDate, @JsonKey(name: "FeatureId") this.featureId, @JsonKey(name: "DocNbr") this.docNbr, @JsonKey(name: "RefDocNbr") this.refDocNbr, @JsonKey(name: "DueDate") this.dueDate, @JsonKey(name: "TTLSubTotal") this.ttlSubTotal, @JsonKey(name: "TTLTaxAmount") this.ttlTaxAmount, @JsonKey(name: "TTLNetAmount") this.ttlNetAmount, @JsonKey(name: "TTLRows") this.ttlRows, @JsonKey(name: "TTLAttachments") this.ttlAttachments, @JsonKey(name: "EnumPrintStatusId") this.enumPrintStatusId});
   factory _Datum.fromJson(Map<String, dynamic> json) => _$DatumFromJson(json);
 
+@override@JsonKey(name: "Id") final  int? id;
 @override@JsonKey(name: "Party") final  Party? party;
 @override@JsonKey(name: "FirstRow") final  FirstRow? firstRow;
 @override@JsonKey(name: "DocDate") final  DateTime? docDate;
@@ -546,16 +548,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Datum&&(identical(other.party, party) || other.party == party)&&(identical(other.firstRow, firstRow) || other.firstRow == firstRow)&&(identical(other.docDate, docDate) || other.docDate == docDate)&&(identical(other.featureId, featureId) || other.featureId == featureId)&&(identical(other.docNbr, docNbr) || other.docNbr == docNbr)&&(identical(other.refDocNbr, refDocNbr) || other.refDocNbr == refDocNbr)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.ttlSubTotal, ttlSubTotal) || other.ttlSubTotal == ttlSubTotal)&&(identical(other.ttlTaxAmount, ttlTaxAmount) || other.ttlTaxAmount == ttlTaxAmount)&&(identical(other.ttlNetAmount, ttlNetAmount) || other.ttlNetAmount == ttlNetAmount)&&(identical(other.ttlRows, ttlRows) || other.ttlRows == ttlRows)&&(identical(other.ttlAttachments, ttlAttachments) || other.ttlAttachments == ttlAttachments)&&(identical(other.enumPrintStatusId, enumPrintStatusId) || other.enumPrintStatusId == enumPrintStatusId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Datum&&(identical(other.id, id) || other.id == id)&&(identical(other.party, party) || other.party == party)&&(identical(other.firstRow, firstRow) || other.firstRow == firstRow)&&(identical(other.docDate, docDate) || other.docDate == docDate)&&(identical(other.featureId, featureId) || other.featureId == featureId)&&(identical(other.docNbr, docNbr) || other.docNbr == docNbr)&&(identical(other.refDocNbr, refDocNbr) || other.refDocNbr == refDocNbr)&&(identical(other.dueDate, dueDate) || other.dueDate == dueDate)&&(identical(other.ttlSubTotal, ttlSubTotal) || other.ttlSubTotal == ttlSubTotal)&&(identical(other.ttlTaxAmount, ttlTaxAmount) || other.ttlTaxAmount == ttlTaxAmount)&&(identical(other.ttlNetAmount, ttlNetAmount) || other.ttlNetAmount == ttlNetAmount)&&(identical(other.ttlRows, ttlRows) || other.ttlRows == ttlRows)&&(identical(other.ttlAttachments, ttlAttachments) || other.ttlAttachments == ttlAttachments)&&(identical(other.enumPrintStatusId, enumPrintStatusId) || other.enumPrintStatusId == enumPrintStatusId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,party,firstRow,docDate,featureId,docNbr,refDocNbr,dueDate,ttlSubTotal,ttlTaxAmount,ttlNetAmount,ttlRows,ttlAttachments,enumPrintStatusId);
+int get hashCode => Object.hash(runtimeType,id,party,firstRow,docDate,featureId,docNbr,refDocNbr,dueDate,ttlSubTotal,ttlTaxAmount,ttlNetAmount,ttlRows,ttlAttachments,enumPrintStatusId);
 
 @override
 String toString() {
-  return 'Datum(party: $party, firstRow: $firstRow, docDate: $docDate, featureId: $featureId, docNbr: $docNbr, refDocNbr: $refDocNbr, dueDate: $dueDate, ttlSubTotal: $ttlSubTotal, ttlTaxAmount: $ttlTaxAmount, ttlNetAmount: $ttlNetAmount, ttlRows: $ttlRows, ttlAttachments: $ttlAttachments, enumPrintStatusId: $enumPrintStatusId)';
+  return 'Datum(id: $id, party: $party, firstRow: $firstRow, docDate: $docDate, featureId: $featureId, docNbr: $docNbr, refDocNbr: $refDocNbr, dueDate: $dueDate, ttlSubTotal: $ttlSubTotal, ttlTaxAmount: $ttlTaxAmount, ttlNetAmount: $ttlNetAmount, ttlRows: $ttlRows, ttlAttachments: $ttlAttachments, enumPrintStatusId: $enumPrintStatusId)';
 }
 
 
@@ -566,7 +568,7 @@ abstract mixin class _$DatumCopyWith<$Res> implements $DatumCopyWith<$Res> {
   factory _$DatumCopyWith(_Datum value, $Res Function(_Datum) _then) = __$DatumCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: "Party") Party? party,@JsonKey(name: "FirstRow") FirstRow? firstRow,@JsonKey(name: "DocDate") DateTime? docDate,@JsonKey(name: "FeatureId") int? featureId,@JsonKey(name: "DocNbr") String? docNbr,@JsonKey(name: "RefDocNbr") String? refDocNbr,@JsonKey(name: "DueDate") DateTime? dueDate,@JsonKey(name: "TTLSubTotal") double? ttlSubTotal,@JsonKey(name: "TTLTaxAmount") double? ttlTaxAmount,@JsonKey(name: "TTLNetAmount") double? ttlNetAmount,@JsonKey(name: "TTLRows") int? ttlRows,@JsonKey(name: "TTLAttachments") int? ttlAttachments,@JsonKey(name: "EnumPrintStatusId") int? enumPrintStatusId
+@JsonKey(name: "Id") int? id,@JsonKey(name: "Party") Party? party,@JsonKey(name: "FirstRow") FirstRow? firstRow,@JsonKey(name: "DocDate") DateTime? docDate,@JsonKey(name: "FeatureId") int? featureId,@JsonKey(name: "DocNbr") String? docNbr,@JsonKey(name: "RefDocNbr") String? refDocNbr,@JsonKey(name: "DueDate") DateTime? dueDate,@JsonKey(name: "TTLSubTotal") double? ttlSubTotal,@JsonKey(name: "TTLTaxAmount") double? ttlTaxAmount,@JsonKey(name: "TTLNetAmount") double? ttlNetAmount,@JsonKey(name: "TTLRows") int? ttlRows,@JsonKey(name: "TTLAttachments") int? ttlAttachments,@JsonKey(name: "EnumPrintStatusId") int? enumPrintStatusId
 });
 
 
@@ -583,9 +585,10 @@ class __$DatumCopyWithImpl<$Res>
 
 /// Create a copy of Datum
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? party = freezed,Object? firstRow = freezed,Object? docDate = freezed,Object? featureId = freezed,Object? docNbr = freezed,Object? refDocNbr = freezed,Object? dueDate = freezed,Object? ttlSubTotal = freezed,Object? ttlTaxAmount = freezed,Object? ttlNetAmount = freezed,Object? ttlRows = freezed,Object? ttlAttachments = freezed,Object? enumPrintStatusId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? party = freezed,Object? firstRow = freezed,Object? docDate = freezed,Object? featureId = freezed,Object? docNbr = freezed,Object? refDocNbr = freezed,Object? dueDate = freezed,Object? ttlSubTotal = freezed,Object? ttlTaxAmount = freezed,Object? ttlNetAmount = freezed,Object? ttlRows = freezed,Object? ttlAttachments = freezed,Object? enumPrintStatusId = freezed,}) {
   return _then(_Datum(
-party: freezed == party ? _self.party : party // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,party: freezed == party ? _self.party : party // ignore: cast_nullable_to_non_nullable
 as Party?,firstRow: freezed == firstRow ? _self.firstRow : firstRow // ignore: cast_nullable_to_non_nullable
 as FirstRow?,docDate: freezed == docDate ? _self.docDate : docDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,featureId: freezed == featureId ? _self.featureId : featureId // ignore: cast_nullable_to_non_nullable

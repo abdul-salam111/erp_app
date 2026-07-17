@@ -10,12 +10,21 @@ import '../widgets/purchase_order_form.dart';
 import '../widgets/purchase_order_items_table.dart';
 
 class CreatePurchaseOrderView extends StatelessWidget {
-  const CreatePurchaseOrderView({super.key});
+  final int? orderId;
+
+  const CreatePurchaseOrderView({super.key, this.orderId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<CreatePurchaseOrderBloc>(),
+      create: (_) {
+        final bloc = sl<CreatePurchaseOrderBloc>()
+          ..add(const PurchaseOrderPartiesRequested());
+        if (orderId != null) {
+          bloc.add(PurchaseOrderDetailRequested(orderId!));
+        }
+        return bloc;
+      },
       child: const _CreatePurchaseOrderBody(),
     );
   }
@@ -107,10 +116,30 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
     super.dispose();
   }
 
+  void _fillControllersFromState(CreatePurchaseOrderState state) {
+    _refDocNbrController.text = state.refDocNumber ?? '';
+    _supplierController.text = state.supplierName ?? '';
+    _brokerController.text = state.brokerName ?? '';
+    _paymentModeController.text = state.paymentModeName ?? '';
+    _orderSourceController.text = state.orderSourceName ?? '';
+    _calculationsController.text = state.calculationsName ?? '';
+    _currencyRateController.text = state.currencyRate?.toString() ?? '';
+    _rateController.text = state.rate?.toString() ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CreatePurchaseOrderBloc, CreatePurchaseOrderState>(
+      listenWhen: (previous, current) =>
+          previous.apiStatus != current.apiStatus ||
+          previous.detailStatus != current.detailStatus,
       listener: (context, state) {
+        if (state.detailStatus == ApiStatus.SUCCESS) {
+          _fillControllersFromState(state);
+        }
+        if (state.detailStatus == ApiStatus.FAILURE) {
+          AppToastsUtils.showErrorTop(context, state.message.toString());
+        }
         if (state.apiStatus == ApiStatus.SUCCESS) {
           AppToastsUtils.showSuccessTop(context, 'Success!');
         }
@@ -120,119 +149,137 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
       },
       builder: (context, state) {
         final rows = state.rows;
+        final title = state.isEditMode
+            ? (state.docNbr ?? 'Purchase Order')
+            : 'Create Purchase Order';
         return UnfocusWrapper(
           child: Scaffold(
-            appBar: CustomAppBar(title: 'Create Purchase Order'),
-            body: Form(
-              key: _formKey,
-              child: ListView(
-                padding: .all(8),
-                children: [
-                  PurchaseOrderForm(
-                    date: state.date,
-                    onDateTap: _pickDate,
-                    hasItems: rows.isNotEmpty,
-                    refDocNbrController: _refDocNbrController,
-                    supplierController: _supplierController,
-                    brokerController: _brokerController,
-                    weightSourceController: _weightSourceController,
-                    calculationsController: _calculationsController,
-                    orderSourceController: _orderSourceController,
-                    paymentModeController: _paymentModeController,
-                    selectedCurrencyController: _selectedCurrencyController,
-                    currencyRateController: _currencyRateController,
-                    rateController: _rateController,
-                  ),
-                  heightBox(8),
-                  if (rows.isEmpty)
-                    const _EmptyItemsHint()
-                  else ...[
-                    PurchaseOrderItemsTable(
-                      rows: rows,
-                      onDelete: (index) => context
-                          .read<CreatePurchaseOrderBloc>()
-                          .add(PurchaseOrderRowRemoved(index)),
-                      onEdit: (index, updated) => context
-                          .read<CreatePurchaseOrderBloc>()
-                          .add(PurchaseOrderRowUpdated(index, updated)),
-                    ),
-                  ],
-                  heightBox(8),
-                  GestureDetector(
-                    onTap: _addRow,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        color: context.primary.withValues(alpha: 0.06),
-                        borderRadius: .circular(8),
-                        border: Border.all(
-                          color: context.primary.withValues(alpha: 0.3),
+            appBar: CustomAppBar(title: title),
+            body: state.detailStatus == ApiStatus.LOADING
+                ? Center(
+                    child: CircularProgressIndicator(color: context.primary),
+                  )
+                : Form(
+                    key: _formKey,
+                    child: ListView(
+                      padding: .all(8),
+                      children: [
+                        PurchaseOrderForm(
+                          date: state.date,
+                          onDateTap: _pickDate,
+                          hasItems: rows.isNotEmpty,
+                          partyNames:
+                              state.parties.map((p) => p.name).toList(),
+                          onSupplierChanged: (name) => context
+                              .read<CreatePurchaseOrderBloc>()
+                              .add(PurchaseOrderSupplierSelected(name)),
+                          onBrokerChanged: (name) => context
+                              .read<CreatePurchaseOrderBloc>()
+                              .add(PurchaseOrderBrokerSelected(name)),
+                          refDocNbrController: _refDocNbrController,
+                          supplierController: _supplierController,
+                          brokerController: _brokerController,
+                          weightSourceController: _weightSourceController,
+                          calculationsController: _calculationsController,
+                          orderSourceController: _orderSourceController,
+                          paymentModeController: _paymentModeController,
+                          selectedCurrencyController:
+                              _selectedCurrencyController,
+                          currencyRateController: _currencyRateController,
+                          rateController: _rateController,
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: .center,
-                        children: [
-                          Icon(Icons.add_rounded, size: 18, color: context.primary),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Add Row',
-                            style: context.bodySmall.copyWith(
-                              color: context.primary,
-                              fontWeight: .w600,
-                              fontSize: 13,
-                            ),
+                        heightBox(8),
+                        if (rows.isEmpty)
+                          const _EmptyItemsHint()
+                        else ...[
+                          PurchaseOrderItemsTable(
+                            rows: rows,
+                            onDelete: (index) => context
+                                .read<CreatePurchaseOrderBloc>()
+                                .add(PurchaseOrderRowRemoved(index)),
+                            onEdit: (index, updated) => context
+                                .read<CreatePurchaseOrderBloc>()
+                                .add(PurchaseOrderRowUpdated(index, updated)),
                           ),
                         ],
-                      ),
-                    ),
-                  ),
-                  if (rows.isNotEmpty) ...[
-                    heightBox(8),
-                    if (context.isPhone) ...[
-                      _OrderSummarySection(
-                        productTotal: _productTotal(rows),
-                        totalDiscount: _totalDiscount(rows),
-                        subTotal: _subTotal(rows),
-                        totalTax: _totalTax(rows),
-                        netAmount: _netAmount(rows),
-                      ),
-                      heightBox(8),
-                      _OrderRemarksSection(controller: _orderRemarksController),
-                    ] else
-                      Row(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Expanded(
-                            child: _OrderSummarySection(
+                        heightBox(8),
+                        GestureDetector(
+                          onTap: _addRow,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            decoration: BoxDecoration(
+                              color: context.primary.withValues(alpha: 0.06),
+                              borderRadius: .circular(8),
+                              border: Border.all(
+                                color: context.primary.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: .center,
+                              children: [
+                                Icon(Icons.add_rounded,
+                                    size: 18, color: context.primary),
+                                const SizedBox(width: 6),
+                                Text(
+                                  'Add Row',
+                                  style: context.bodySmall.copyWith(
+                                    color: context.primary,
+                                    fontWeight: .w600,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        if (rows.isNotEmpty) ...[
+                          heightBox(8),
+                          if (context.isPhone) ...[
+                            _OrderSummarySection(
                               productTotal: _productTotal(rows),
                               totalDiscount: _totalDiscount(rows),
                               subTotal: _subTotal(rows),
                               totalTax: _totalTax(rows),
                               netAmount: _netAmount(rows),
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: _OrderRemarksSection(
-                              controller: _orderRemarksController,
+                            heightBox(8),
+                            _OrderRemarksSection(
+                                controller: _orderRemarksController),
+                          ] else
+                            Row(
+                              crossAxisAlignment: .start,
+                              children: [
+                                Expanded(
+                                  child: _OrderSummarySection(
+                                    productTotal: _productTotal(rows),
+                                    totalDiscount: _totalDiscount(rows),
+                                    subTotal: _subTotal(rows),
+                                    totalTax: _totalTax(rows),
+                                    netAmount: _netAmount(rows),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: _OrderRemarksSection(
+                                    controller: _orderRemarksController,
+                                  ),
+                                ),
+                              ],
                             ),
+                          heightBox(8),
+                          CustomButton(
+                            text: state.isEditMode ? 'Update Order' : 'Add Order',
+                            onPressed: () {},
+                            radius: 8,
+                            elevation: 0,
+                            fontsize: 14,
+                            size: const Size.fromHeight(46),
                           ),
                         ],
-                      ),
-                    heightBox(8),
-                    CustomButton(
-                      text: 'Add Order',
-                      onPressed: () {},
-                      radius: 8,
-                      elevation: 0,
-                      fontsize: 14,
-                      size: const Size.fromHeight(46),
+                        heightBox(16),
+                      ],
                     ),
-                  ],
-                  heightBox(16),
-                ],
-              ),
-            ),
+                  ),
           ),
         );
       },

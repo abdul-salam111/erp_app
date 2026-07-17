@@ -65,6 +65,7 @@ final class _PurchaseOrders {
   const _PurchaseOrders();
 
   String get getPurchaseOrdersList => '${ApiEndPoints._base}/purchase/po/getPagedList';
+  String getPurchaseOrderById(int id) => '${ApiEndPoints._base}/purchase/po/GetById/$id';
 }
 
 // ─── Modules (legacy placeholders) ──────────────────────────────────────────

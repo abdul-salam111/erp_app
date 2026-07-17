@@ -104,6 +104,10 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
                 return PurchaseOrderTable(
                   orders: state.pagedOrders,
                   scrollController: _scrollController,
+                  onView: (order) => context.pushNamed(
+                    RouteNames.create_purchase_order,
+                    extra: order.id,
+                  ),
                 );
               },
             ),

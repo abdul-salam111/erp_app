@@ -8,11 +8,13 @@ import '../../../domain/entities/purchase_order_entity.dart';
 class PurchaseOrderTable extends StatelessWidget {
   final List<PurchaseOrderEntity> orders;
   final ScrollController? scrollController;
+  final void Function(PurchaseOrderEntity order)? onView;
 
   const PurchaseOrderTable({
     super.key,
     required this.orders,
     this.scrollController,
+    this.onView,
   });
 
   @override
@@ -29,7 +31,10 @@ class PurchaseOrderTable extends StatelessWidget {
               itemCount: orders.length,
               separatorBuilder: (_, __) =>
                   Divider(height: 1, thickness: 1, color: AppColors.grey100),
-              itemBuilder: (_, i) => _OrderRow(order: orders[i]),
+              itemBuilder: (_, i) => _OrderRow(
+                order: orders[i],
+                onView: onView != null ? () => onView!(orders[i]) : null,
+              ),
             ),
           ),
         ],
@@ -46,6 +51,7 @@ class _TableHeader extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
+          
           topLeft: Radius.circular(6),
           topRight: Radius.circular(6),
         ),
@@ -98,7 +104,8 @@ class _TableHeader extends StatelessWidget {
 
 class _OrderRow extends StatefulWidget {
   final PurchaseOrderEntity order;
-  const _OrderRow({required this.order});
+  final VoidCallback? onView;
+  const _OrderRow({required this.order, this.onView});
 
   @override
   State<_OrderRow> createState() => _OrderRowState();
@@ -242,14 +249,11 @@ class _OrderRowState extends State<_OrderRow> {
                             ),
                             const SizedBox(width: 12),
                             GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                decoration: BoxDecoration(),
-                                child: Icon(
-                                  Iconsax.eye,
-                                  size: 20,
-                                  color: context.primary,
-                                ),
+                              onTap: widget.onView,
+                              child: Icon(
+                                Iconsax.eye,
+                                size: 20,
+                                color: context.primary,
                               ),
                             ),
                           ],

@@ -15,6 +15,8 @@ abstract class PurchaseOrdersList with _$PurchaseOrdersList {
 @freezed
 abstract class Datum with _$Datum {
     const factory Datum({
+        @JsonKey(name: "Id")
+        int? id,
         @JsonKey(name: "Party")
         Party? party,
         @JsonKey(name: "FirstRow")
