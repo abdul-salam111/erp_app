@@ -162,6 +162,7 @@ class AppConstants {
   static const String refNoLabel = 'Ref #';
   static const String rowsLabel = 'Rows';
   static const String remarksLabel = 'Remarks';
+  static const String recordsLabel = 'records';
   static const String supplierLabel = 'Supplier';
   static const String brokerLabel = 'Broker';
   static const String orderSourceLabel = 'Order Source';

@@ -47,7 +47,7 @@ class _CreatePurchaseOrderBodyState extends State<_CreatePurchaseOrderBody> {
 
   Future<void> _addRow() async {
     final result = await showAddRowBottomSheet(context);
-    if (result != null) {
+    if (result != null && mounted) {
       context.read<CreatePurchaseOrderBloc>().add(PurchaseOrderRowAdded(result));
     }
   }

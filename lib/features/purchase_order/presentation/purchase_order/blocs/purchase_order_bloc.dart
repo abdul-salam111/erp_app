@@ -11,6 +11,7 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState>
   PurchaseOrderBloc({required this.purchaseorderUsecase})
       : super(const PurchaseOrderState()) {
     on<PurchaseOrderFetched>(_onFetched);
+    on<PurchaseOrderPageChanged>(_onPageChanged);
   }
 
   Future<void> _onFetched(
@@ -21,14 +22,22 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState>
       emit: emit,
       currentState: state,
       usecase: () => purchaseorderUsecase.call(
-        PurchaseOrderParams(
-          fromDate: event.fromDate,
-          toDate: event.toDate,
-          search: event.search,
-        ),
+        PurchaseOrderParams(search: event.search),
       ),
-      stateBuilder: (status, {data, error}) =>
-          state.copyWith(apiStatus: status, orders: data ?? [], message: error),
+      stateBuilder: (status, {data, error}) => state.copyWith(
+        apiStatus: status,
+        orders: data ?? [],
+        message: error,
+        currentPage: 1,
+      ),
     );
+  }
+
+  void _onPageChanged(
+    PurchaseOrderPageChanged event,
+    Emitter<PurchaseOrderState> emit,
+  ) {
+    final page = event.page.clamp(1, state.totalPages);
+    emit(state.copyWith(currentPage: page));
   }
 }

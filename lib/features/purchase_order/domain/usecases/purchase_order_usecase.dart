@@ -5,18 +5,12 @@ import '../entities/purchase_order_entity.dart';
 import '../repositories/purchase_order_repository.dart';
 
 class PurchaseOrderParams extends Equatable {
-  final String fromDate;
-  final String toDate;
   final String? search;
 
-  const PurchaseOrderParams({
-    required this.fromDate,
-    required this.toDate,
-    this.search,
-  });
+  const PurchaseOrderParams({this.search});
 
   @override
-  List<Object?> get props => [fromDate, toDate, search];
+  List<Object?> get props => [search];
 }
 
 class PurchaseOrderUsecase
@@ -28,10 +22,6 @@ class PurchaseOrderUsecase
   @override
   Future<Either<Failure, List<PurchaseOrderEntity>>> call(
       PurchaseOrderParams params) {
-    return repository.fetchOrders(
-      fromDate: params.fromDate,
-      toDate: params.toDate,
-      search: params.search,
-    );
+    return repository.fetchOrders(search: params.search);
   }
 }

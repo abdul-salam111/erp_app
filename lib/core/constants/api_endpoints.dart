@@ -7,6 +7,7 @@ class ApiEndPoints {
   static const dashboard  = _Dashboard();
   static const accounts   = _Accounts();
   static const modules    = _Modules();
+  static const purchase   = _PurchaseOrders();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -60,6 +61,12 @@ final class _Accounts {
   String get printableFeatures => '$_statementsBase/GetPrintableFeatures';
 }
 
+final class _PurchaseOrders {
+  const _PurchaseOrders();
+
+  String get getPurchaseOrdersList => '${ApiEndPoints._base}/purchase/po/getPagedList';
+}
+
 // ─── Modules (legacy placeholders) ──────────────────────────────────────────
 
 final class _Modules {
@@ -78,3 +85,4 @@ final class _Modules {
   String get security      => '${_base}security';
   String get dashboard     => '${_base}dashboard';
 }
+

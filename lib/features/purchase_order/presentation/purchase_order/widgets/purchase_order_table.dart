@@ -17,23 +17,20 @@ class PurchaseOrderTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: .symmetric(horizontal: context.pagePadding.left),
-      child: Column(
-        children: [
-          const _TableHeader(),
-          Divider(height: 1, thickness: 1, color: AppColors.grey200),
-          Expanded(
-            child: ListView.separated(
-              controller: scrollController,
-              itemCount: orders.length,
-              separatorBuilder: (_, __) =>
-                  Divider(height: 1, thickness: 1, color: AppColors.grey100),
-              itemBuilder: (_, i) => _OrderRow(order: orders[i]),
-            ),
+    return Column(
+      children: [
+        const _TableHeader(),
+        Divider(height: 1, thickness: 1, color: AppColors.grey200),
+        Expanded(
+          child: ListView.separated(
+            controller: scrollController,
+            itemCount: orders.length,
+            separatorBuilder: (_, __) =>
+                Divider(height: 1, thickness: 1, color: AppColors.grey100),
+            itemBuilder: (_, i) => _OrderRow(order: orders[i]),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -44,13 +41,7 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: context.primary,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(10),
-          topRight: Radius.circular(10),
-        ),
-      ),
+      color: context.primary,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Row(
         children: [
