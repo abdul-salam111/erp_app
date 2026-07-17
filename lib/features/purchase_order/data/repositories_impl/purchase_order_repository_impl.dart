@@ -11,11 +11,9 @@ class PurchaseOrderRepositoryImpl extends BaseRepository
   PurchaseOrderRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Either<Failure, List<PurchaseOrderEntity>>> fetchOrders({
-    String? search,
-  }) {
+  Future<Either<Failure, List<PurchaseOrderEntity>>> fetchOrders() {
     return execute(
-      call: () => dataSource.fetchOrders(search: search),
+      call: () => dataSource.fetchOrders(),
     );
   }
 

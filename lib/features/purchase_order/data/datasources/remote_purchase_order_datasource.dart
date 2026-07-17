@@ -6,7 +6,7 @@ import '../../domain/entities/purchase_order_entity.dart';
 import '../models/response_models/purchase_orders_list/purchase_orders_list.dart';
 
 abstract interface class IRemotePurchaseOrderDataSource {
-  Future<List<PurchaseOrderEntity>> fetchOrders({String? search});
+  Future<List<PurchaseOrderEntity>> fetchOrders();
   Future<dynamic> createPurchaseOrder();
 }
 
@@ -17,13 +17,10 @@ class RemotePurchaseOrderDataSourceImpl extends BaseRemoteDatasource
   String? get _token => SessionController.instance.activeAccessToken;
 
   @override
-  Future<List<PurchaseOrderEntity>> fetchOrders({String? search}) async {
-    final body = <String, dynamic>{
-      if (search != null && search.isNotEmpty) 'Search': search,
-    };
+  Future<List<PurchaseOrderEntity>> fetchOrders() async {
     final result = await post<PurchaseOrdersList>(
       url: ApiEndPoints.purchase.getPurchaseOrdersList,
-      body: body,
+      body: const {},
       parser: (json) =>
           PurchaseOrdersList.fromJson(json as Map<String, dynamic>),
       authToken: _token,

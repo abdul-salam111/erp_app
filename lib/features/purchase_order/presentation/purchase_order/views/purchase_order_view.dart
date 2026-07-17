@@ -43,6 +43,14 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
     super.initState();
     _searchController = TextEditingController();
     _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      context.read<PurchaseOrderBloc>().add(const PurchaseOrderLoadMore());
+    }
   }
 
   @override
@@ -53,10 +61,7 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
   }
 
   void _fetch() {
-    final query = _searchController.text.trim();
-    context.read<PurchaseOrderBloc>().add(
-          PurchaseOrderFetched(search: query.isEmpty ? null : query),
-        );
+    context.read<PurchaseOrderBloc>().add(const PurchaseOrderFetched());
   }
 
   @override
@@ -75,7 +80,9 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
         children: [
           _SearchBar(
             controller: _searchController,
-            onSearch: _fetch,
+            onChanged: (query) => context
+                .read<PurchaseOrderBloc>()
+                .add(PurchaseOrderSearchChanged(query)),
           ),
           Expanded(
             child: BlocBuilder<PurchaseOrderBloc, PurchaseOrderState>(
@@ -91,31 +98,12 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
                   );
                 }
                 if (state.apiStatus == ApiStatus.SUCCESS &&
-                    state.orders.isEmpty) {
+                    state.filteredOrders.isEmpty) {
                   return const AccountsEmptyState(title: 'No Purchase Orders');
                 }
-                return Column(
-                  children: [
-                    Expanded(
-                      child: PurchaseOrderTable(
-                        orders: state.pagedOrders,
-                        scrollController: _scrollController,
-                      ),
-                    ),
-                    _PaginationBar(
-                      currentPage: state.currentPage,
-                      totalPages: state.totalPages,
-                      totalCount: state.orders.length,
-                      onPageChanged: (page) {
-                        context
-                            .read<PurchaseOrderBloc>()
-                            .add(PurchaseOrderPageChanged(page));
-                        if (_scrollController.hasClients) {
-                          _scrollController.jumpTo(0);
-                        }
-                      },
-                    ),
-                  ],
+                return PurchaseOrderTable(
+                  orders: state.pagedOrders,
+                  scrollController: _scrollController,
                 );
               },
             ),
@@ -130,9 +118,9 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
 
 class _SearchBar extends StatelessWidget {
   final TextEditingController controller;
-  final VoidCallback onSearch;
+  final ValueChanged<String> onChanged;
 
-  const _SearchBar({required this.controller, required this.onSearch});
+  const _SearchBar({required this.controller, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -160,9 +148,10 @@ class _SearchBar extends StatelessWidget {
         child: TextField(
           controller: controller,
           textInputAction: .search,
-          onSubmitted: (_) => onSearch(),
+          onChanged: onChanged,
           style: context.bodySmall.copyWith(fontSize: 13),
           decoration: InputDecoration(
+            filled: false,
             hintText: AppConstants.searchByDocRefNo,
             hintStyle: context.bodySmall.copyWith(
               color: context.textSecondary,
@@ -172,14 +161,6 @@ class _SearchBar extends StatelessWidget {
               Iconsax.search_normal,
               size: 16,
               color: context.textSecondary,
-            ),
-            suffixIcon: GestureDetector(
-              onTap: onSearch,
-              child: Icon(
-                Icons.arrow_forward_rounded,
-                size: 18,
-                color: context.primary,
-              ),
             ),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 12),
@@ -191,99 +172,3 @@ class _SearchBar extends StatelessWidget {
   }
 }
 
-// ─── Pagination Bar ───────────────────────────────────────────────────────────
-
-class _PaginationBar extends StatelessWidget {
-  final int currentPage;
-  final int totalPages;
-  final int totalCount;
-  final ValueChanged<int> onPageChanged;
-
-  const _PaginationBar({
-    required this.currentPage,
-    required this.totalPages,
-    required this.totalCount,
-    required this.onPageChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: context.pagePadding.left,
-        vertical: 8,
-      ),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: context.border)),
-      ),
-      child: Row(
-        children: [
-          Text(
-            '$totalCount ${AppConstants.recordsLabel}',
-            style: context.labelSmall.copyWith(
-              color: context.textSecondary,
-              fontSize: 11,
-            ),
-          ),
-          const Spacer(),
-          _PageButton(
-            icon: Icons.chevron_left_rounded,
-            enabled: currentPage > 1,
-            onTap: () => onPageChanged(currentPage - 1),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
-              '$currentPage / $totalPages',
-              style: context.bodySmall.copyWith(
-                fontWeight: .w600,
-                fontSize: 12,
-                color: context.textPrimary,
-              ),
-            ),
-          ),
-          _PageButton(
-            icon: Icons.chevron_right_rounded,
-            enabled: currentPage < totalPages,
-            onTap: () => onPageChanged(currentPage + 1),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PageButton extends StatelessWidget {
-  final IconData icon;
-  final bool enabled;
-  final VoidCallback onTap;
-
-  const _PageButton({
-    required this.icon,
-    required this.enabled,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: enabled ? onTap : null,
-      child: Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          color: enabled
-              ? context.primary.withValues(alpha: 0.10)
-              : context.grey50,
-          borderRadius: .circular(6),
-          border: Border.all(color: context.border),
-        ),
-        child: Icon(
-          icon,
-          size: 18,
-          color: enabled ? context.primary : context.textSecondary,
-        ),
-      ),
-    );
-  }
-}

@@ -8,19 +8,18 @@ abstract class PurchaseOrderEvent extends Equatable {
 }
 
 class PurchaseOrderFetched extends PurchaseOrderEvent {
-  final String? search;
-
-  const PurchaseOrderFetched({this.search});
-
-  @override
-  List<Object?> get props => [search];
+  const PurchaseOrderFetched();
 }
 
-class PurchaseOrderPageChanged extends PurchaseOrderEvent {
-  final int page;
+class PurchaseOrderSearchChanged extends PurchaseOrderEvent {
+  final String query;
 
-  const PurchaseOrderPageChanged(this.page);
+  const PurchaseOrderSearchChanged(this.query);
 
   @override
-  List<Object?> get props => [page];
+  List<Object?> get props => [query];
+}
+
+class PurchaseOrderLoadMore extends PurchaseOrderEvent {
+  const PurchaseOrderLoadMore();
 }

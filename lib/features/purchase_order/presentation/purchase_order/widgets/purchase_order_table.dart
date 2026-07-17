@@ -17,20 +17,23 @@ class PurchaseOrderTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const _TableHeader(),
-        Divider(height: 1, thickness: 1, color: AppColors.grey200),
-        Expanded(
-          child: ListView.separated(
-            controller: scrollController,
-            itemCount: orders.length,
-            separatorBuilder: (_, __) =>
-                Divider(height: 1, thickness: 1, color: AppColors.grey100),
-            itemBuilder: (_, i) => _OrderRow(order: orders[i]),
+    return Padding(
+      padding: .only(left: 10, right: 10, bottom: 20),
+      child: Column(
+        children: [
+          const _TableHeader(),
+          Divider(height: 1, thickness: 1, color: AppColors.grey200),
+          Expanded(
+            child: ListView.separated(
+              controller: scrollController,
+              itemCount: orders.length,
+              separatorBuilder: (_, __) =>
+                  Divider(height: 1, thickness: 1, color: AppColors.grey100),
+              itemBuilder: (_, i) => _OrderRow(order: orders[i]),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -41,7 +44,13 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.primary,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(6),
+          topRight: Radius.circular(6),
+        ),
+        color: context.primary,
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Row(
         children: [
@@ -195,7 +204,11 @@ class _OrderRowState extends State<_OrderRow> {
                 ? Column(
                     crossAxisAlignment: .start,
                     children: [
-                      Divider(height: 1, thickness: 1, color: context.primary.withAlpha(30)),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: context.primary.withAlpha(30),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
                         child: Row(
@@ -231,9 +244,7 @@ class _OrderRowState extends State<_OrderRow> {
                             GestureDetector(
                               onTap: () {},
                               child: Container(
-                                decoration: BoxDecoration(
-                                  
-                                ),
+                                decoration: BoxDecoration(),
                                 child: Icon(
                                   Iconsax.eye,
                                   size: 20,
@@ -270,8 +281,8 @@ class _DetailChip extends StatelessWidget {
       crossAxisAlignment: textAlign == TextAlign.end
           ? .end
           : textAlign == TextAlign.center
-              ? .center
-              : .start,
+          ? .center
+          : .start,
       children: [
         Text(
           label,
