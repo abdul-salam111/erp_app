@@ -298,7 +298,7 @@ class _PlaceholderContent extends StatelessWidget {
           Icon(Iconsax.box_1, size: 40, color: context.grey300),
           const SizedBox(height: 10),
           Text(
-            '$title â€” coming soon',
+            '$title — coming soon',
             style: context.bodyMedium.copyWith(color: context.textSecondary),
           ),
         ],
@@ -381,11 +381,8 @@ class _UsersContentState extends State<_UsersContent> {
     ),
   ];
 
-  static const _filters = ['All', 'Active', 'Inactive'];
-
   final _searchController = TextEditingController();
   String _query = '';
-  String _filter = 'All';
 
   @override
   void dispose() {
@@ -395,8 +392,6 @@ class _UsersContentState extends State<_UsersContent> {
 
   List<_UserRow> get _filtered {
     return _users.where((user) {
-      if (_filter == 'Active' && !user.active) return false;
-      if (_filter == 'Inactive' && user.active) return false;
       if (_query.isEmpty) return true;
       final q = _query.toLowerCase();
       return user.name.toLowerCase().contains(q) ||
@@ -415,17 +410,6 @@ class _UsersContentState extends State<_UsersContent> {
           padding: context.pagePadding.copyWith(bottom: 0),
           child: Row(
             children: [
-              Text(
-                'Users',
-                style: context.titleSmall.copyWith(fontWeight: .w700),
-              ),
-              const SizedBox(width: 10),
-              _FilterDropdown(
-                value: _filter,
-                options: _filters,
-                onChanged: (value) => setState(() => _filter = value),
-              ),
-              const SizedBox(width: 10),
               Expanded(
                 child: SizedBox(
                   height: 40,
@@ -486,7 +470,7 @@ class _UsersContentState extends State<_UsersContent> {
               InkWell(
                 onTap: () => AppToastsUtils.showInfoTop(
                   context,
-                  'New user â€” coming soon',
+                  'New user — coming soon',
                 ),
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
@@ -531,8 +515,12 @@ class _UsersContentState extends State<_UsersContent> {
                     ),
                   )
                 : ListView.builder(
-                    key: ValueKey('$_filter-$_query'),
-                    padding: context.pagePadding.copyWith(top: 0),
+                    key: ValueKey(_query),
+                    padding: context.pagePadding.copyWith(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                    ),
                     itemCount: rows.length + 1,
                     itemBuilder: (context, index) {
                       if (index == 0) return const _UsersTableHeader();
@@ -549,46 +537,6 @@ class _UsersContentState extends State<_UsersContent> {
   }
 }
 
-class _FilterDropdown extends StatelessWidget {
-  final String value;
-  final List<String> options;
-  final ValueChanged<String> onChanged;
-
-  const _FilterDropdown({
-    required this.value,
-    required this.options,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: onChanged,
-      itemBuilder: (context) => options
-          .map(
-            (option) => PopupMenuItem(
-              value: option,
-              child: Text(option, style: context.bodySmall),
-            ),
-          )
-          .toList(),
-      child: Row(
-        mainAxisSize: .min,
-        children: [
-          Text(
-            value,
-            style: context.bodySmall.copyWith(
-              color: context.textSecondary,
-              fontWeight: .w500,
-            ),
-          ),
-          Icon(Iconsax.arrow_down_1, size: 13, color: context.textSecondary),
-        ],
-      ),
-    );
-  }
-}
-
 class _UsersTableHeader extends StatelessWidget {
   const _UsersTableHeader();
 
@@ -598,26 +546,26 @@ class _UsersTableHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.indigoLight,
+        color: context.grey100,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
       ),
       child: Row(
         children: [
           Expanded(
-            flex: 3,
+            flex: 4,
             child: Text(
               'Name',
               style: context.labelMedium.copyWith(fontWeight: .w700),
             ),
           ),
-          if (showAllColumns) ...[
-            Expanded(
-              flex: 2,
-              child: Text(
-                'Designation',
-                style: context.labelMedium.copyWith(fontWeight: .w700),
-              ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              'Designation',
+              style: context.labelMedium.copyWith(fontWeight: .w700),
             ),
+          ),
+          if (showAllColumns)
             Expanded(
               flex: 2,
               child: Text(
@@ -625,7 +573,6 @@ class _UsersTableHeader extends StatelessWidget {
                 style: context.labelMedium.copyWith(fontWeight: .w700),
               ),
             ),
-          ],
           Expanded(
             flex: 2,
             child: Text(
@@ -664,11 +611,14 @@ class _UserTableRow extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Row(
                 children: [
-                  _UserAvatar(active: user.active),
-                  const SizedBox(width: 10),
+                  _UserAvatar(
+                    name: user.name.isNotEmpty ? user.name : user.email,
+                    active: user.active,
+                  ),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: .start,
@@ -694,7 +644,7 @@ class _UserTableRow extends StatelessWidget {
                         if (!showAllColumns) ...[
                           const SizedBox(height: 2),
                           Text(
-                            '${user.designation} â€¢ ${user.department}',
+                            user.department,
                             style: context.labelSmall.copyWith(
                               color: context.textSecondary,
                             ),
@@ -708,16 +658,16 @@ class _UserTableRow extends StatelessWidget {
                 ],
               ),
             ),
-            if (showAllColumns) ...[
-              Expanded(
-                flex: 2,
-                child: Text(
-                  user.designation,
-                  style: context.bodySmall.copyWith(
-                    color: context.textPrimary,
-                  ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                user.designation,
+                style: context.bodySmall.copyWith(
+                  color: context.textPrimary,
                 ),
               ),
+            ),
+            if (showAllColumns)
               Expanded(
                 flex: 2,
                 child: Text(
@@ -727,7 +677,6 @@ class _UserTableRow extends StatelessWidget {
                   ),
                 ),
               ),
-            ],
             Expanded(
               flex: 2,
               child: Column(
@@ -738,7 +687,7 @@ class _UserTableRow extends StatelessWidget {
                     label: 'Tokens',
                     onTap: () => AppToastsUtils.showInfoTop(
                       context,
-                      'Tokens â€” coming soon',
+                      'Tokens — coming soon',
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -747,7 +696,7 @@ class _UserTableRow extends StatelessWidget {
                     label: 'Fin Years',
                     onTap: () => AppToastsUtils.showInfoTop(
                       context,
-                      'Fin Years â€” coming soon',
+                      'Fin Years — coming soon',
                     ),
                   ),
                 ],
@@ -761,31 +710,59 @@ class _UserTableRow extends StatelessWidget {
 }
 
 class _UserAvatar extends StatelessWidget {
+  final String name;
   final bool active;
 
-  const _UserAvatar({required this.active});
+  static const _palette = [
+    AppColors.primary,
+    AppColors.teal,
+    AppColors.purple,
+    AppColors.orange,
+    AppColors.green,
+    AppColors.deepPurple,
+    AppColors.tealDark,
+    AppColors.blueGrey,
+  ];
+
+  const _UserAvatar({required this.name, required this.active});
+
+  String get _initials {
+    final words = name.trim().split(RegExp(r'\s+'));
+    if (words.length >= 2) {
+      return '${words[0][0]}${words[1][0]}'.toUpperCase();
+    }
+    return name.isNotEmpty ? name[0].toUpperCase() : '?';
+  }
 
   @override
   Widget build(BuildContext context) {
+    final color = _palette[name.hashCode.abs() % _palette.length];
     return Stack(
       clipBehavior: .none,
       children: [
         Container(
-          width: 38,
-          height: 38,
+          width: 28,
+          height: 28,
+          alignment: .center,
           decoration: BoxDecoration(
-            color: context.grey100,
+            color: color.withValues(alpha: 0.15),
             shape: .circle,
-            border: Border.all(color: context.border),
           ),
-          child: Icon(Iconsax.user, size: 18, color: context.grey400),
+          child: Text(
+            _initials,
+            style: context.labelSmall.copyWith(
+              color: color,
+              fontWeight: .w700,
+              fontSize: 10,
+            ),
+          ),
         ),
         Positioned(
           right: -1,
           top: -1,
           child: Container(
-            width: 10,
-            height: 10,
+            width: 8,
+            height: 8,
             decoration: BoxDecoration(
               color: active ? AppColors.green : AppColors.errorBright,
               shape: .circle,

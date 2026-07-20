@@ -311,7 +311,11 @@ class _SectionContent extends StatelessWidget {
                   )
                 : ListView.builder(
                     key: ValueKey('${section.title}-$query'),
-                    padding: context.pagePadding.copyWith(top: 0),
+                    padding: context.pagePadding.copyWith(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                    ),
                     itemCount: rows.length + 1,
                     itemBuilder: (context, index) {
                       if (index == 0) return const _TableHeader();
@@ -464,7 +468,7 @@ class _TableHeader extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Text(
               'Name',
               style: context.labelMedium.copyWith(fontWeight: .w700),
@@ -508,7 +512,7 @@ class _TableRow extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Text.rich(
                 TextSpan(
                   text: row.name,
