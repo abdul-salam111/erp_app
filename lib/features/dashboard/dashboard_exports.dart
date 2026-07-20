@@ -27,6 +27,7 @@ export 'presentation/dashboard/blocs/dashboard_bloc.dart';
 // ── Presentation — pages ──────────────────────────────────────────────────────
 export 'presentation/dashboard/pages/dashboard_view.dart';
 export 'presentation/dashboard/pages/admin_dashboard.dart';
+export 'presentation/dashboard/pages/employee_dashboard.dart';
 export 'presentation/dashboard/pages/accountant_dashboard.dart';
 export 'presentation/dashboard/pages/hr_dashboard.dart';
 

@@ -178,6 +178,7 @@ class _SectionSidebar extends StatelessWidget {
                         color: selected ? context.primary : context.textPrimary,
                         fontWeight: selected ? .w600 : .w400,
                       ),
+                      
                     ),
                   ),
                 ],

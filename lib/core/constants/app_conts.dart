@@ -52,6 +52,37 @@ class AppConstants {
   static const String systemLabel = 'System';
   static const String assetsLabel = 'Assets';
   static const String logout = 'Logout';
+  // ─── Employee Dashboard ────────────────────────────────
+  static const String employeeDashboardTitle = 'Employee Dashboard';
+  static const String myWorkspaceTitle = 'My Workspace';
+  static const String noticeBoardTitle = 'Notice Board';
+  static const String monthlySnapshotTitle = 'Monthly Snapshot';
+  static const String noticesLabel = 'Notices';
+  static const String attendanceLabel = 'Attendance';
+  static const String leaveRequestLabel = 'Leave Request';
+  static const String loanAdvanceLabel = 'Loan / Advance';
+  static const String overtimeLabel = 'Overtime';
+  static const String salaryLabel = 'Salary';
+  static const String acStatementsLabel = 'A/C Statements';
+  static const String noticesSubtitle = 'Company announcements';
+  static const String attendanceSubtitle = 'Check-in & history';
+  static const String leaveRequestSubtitle = 'Apply & track leaves';
+  static const String loanAdvanceSubtitle = 'Request loan or advance';
+  static const String overtimeSubtitle = 'Extra hours & approvals';
+  static const String salarySubtitle = 'Payslips & breakdown';
+  static const String acStatementsSubtitle = 'Your account ledger';
+  static const String todayAttendanceTitle = 'Today\'s Attendance';
+  static const String checkedInLabel = 'Checked in';
+  static const String checkOutLabel = 'Check out';
+  static const String shiftLabel = 'Shift';
+  static const String workedLabel = 'worked';
+  static const String onTimeLabel = 'On time';
+  static const String leaveBalanceLabel = 'Leave balance';
+  static const String overtimeMonthLabel = 'Overtime this month';
+  static const String attendanceRateLabel = 'Attendance rate';
+  static const String loanOutstandingLabel = 'Loan outstanding';
+  static const String employeeLabel = 'Employee';
+
   static const String goodMorning = 'Good Morning';
   static const String goodAfternoon = 'Good Afternoon';
   static const String goodEveningMsg = 'Good Evening';

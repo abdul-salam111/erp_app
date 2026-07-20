@@ -126,6 +126,24 @@ class AppRoutes {
         ),
       ),
       GoRoute(
+        path: RoutePaths.employee_dashboard,
+        name: RouteNames.employee_dashboard,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const EmployeeDashboard(),
+          transitionDuration: const Duration(milliseconds: 600),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final scale = Tween<double>(begin: 0.94, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            );
+            return FadeTransition(
+              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+              child: ScaleTransition(scale: scale, child: child),
+            );
+          },
+        ),
+      ),
+      GoRoute(
         path: RoutePaths.profile,
         name: RouteNames.profile,
         builder: (context, state) => const ProfileView(),
