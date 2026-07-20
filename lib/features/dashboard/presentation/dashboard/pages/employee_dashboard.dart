@@ -86,21 +86,17 @@ class EmployeeDashboard extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          DashboardHeader(
-            userName: currentUser.fullName,
-            orgName: currentUser.org.name,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: context.pagePadding.copyWith(top: 20),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: .stretch,
+          children: [
+            const _EmployeeHeader(),
+            const SizedBox(height: 20),
+            Padding(
+              padding: context.pagePadding.copyWith(top: 0),
               child: const Column(
                 crossAxisAlignment: .start,
                 children: [
-                  _AttendanceHeroCard(),
-                  SizedBox(height: 20),
                   _MonthlySnapshotSection(),
                   SizedBox(height: 20),
                   _WorkspaceMenuSection(),
@@ -110,45 +106,59 @@ class EmployeeDashboard extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-// ─── Attendance hero card ─────────────────────────────────────────────────────
+// ─── Employee header with inline attendance strip ─────────────────────────────
 
-class _AttendanceHeroCard extends StatelessWidget {
-  const _AttendanceHeroCard();
+class _EmployeeHeader extends StatelessWidget {
+  const _EmployeeHeader();
+
+  String get _greeting {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return AppConstants.goodMorning;
+    if (hour < 17) return AppConstants.goodAfternoon;
+    return AppConstants.goodEveningMsg;
+  }
+
+  String _initials(String name) {
+    final parts = name.trim().split(RegExp(r'\s+'));
+    if (parts.isEmpty || parts.first.isEmpty) return '?';
+    final first = parts.first[0];
+    final last = parts.length > 1 ? parts.last[0] : '';
+    return (first + last).toUpperCase();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final top = MediaQuery.paddingOf(context).top;
+    final hPad = context.pagePadding.left;
+
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [AppColors.primary, AppColors.primaryDark],
+        gradient: LinearGradient(
+          colors: [context.primary, context.primary.withValues(alpha: 0.72)],
           begin: .topLeft,
           end: .bottomRight,
         ),
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.30),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(28),
+          bottomRight: Radius.circular(28),
+        ),
       ),
       child: Stack(
         children: [
           Positioned(
-            right: -30,
-            top: -30,
+            right: -35,
+            top: top - 35,
             child: Container(
-              width: 130,
-              height: 130,
+              width: 150,
+              height: 150,
               decoration: BoxDecoration(
                 shape: .circle,
                 color: AppColors.white.withValues(alpha: 0.07),
@@ -156,8 +166,8 @@ class _AttendanceHeroCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: 40,
-            bottom: -40,
+            left: -25,
+            bottom: -15,
             child: Container(
               width: 100,
               height: 100,
@@ -168,87 +178,123 @@ class _AttendanceHeroCard extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(18),
+            padding: EdgeInsets.only(
+              top: top + 14,
+              bottom: 18,
+              left: hPad,
+              right: hPad,
+            ),
             child: Column(
               crossAxisAlignment: .start,
               children: [
+                // ── App-bar row ──
                 Row(
                   children: [
+                    _HeaderIconBtn(
+                      icon: Icons.menu_rounded,
+                      onTap: () => Scaffold.of(context).openDrawer(),
+                    ),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        AppConstants.todayAttendanceTitle,
+                        AppConstants.employeePortalTitle,
                         style: context.titleSmall.copyWith(
                           color: AppColors.white,
-                          fontWeight: .w700,
+                          fontWeight: .w600,
+                          letterSpacing: 0.3,
                         ),
                       ),
                     ),
-                    Container(
-                      padding: .symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.successLight.withValues(alpha: 0.22),
-                        borderRadius: .circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: .min,
-                        children: [
-                          Container(
-                            width: 6,
-                            height: 6,
+                    Stack(
+                      clipBehavior: .none,
+                      children: [
+                        _HeaderIconBtn(
+                          icon: Iconsax.notification,
+                          onTap: () =>
+                              context.pushNamed(RouteNames.alert_panel),
+                        ),
+                        Positioned(
+                          top: 6,
+                          right: 6,
+                          child: Container(
+                            width: 8,
+                            height: 8,
                             decoration: const BoxDecoration(
-                              color: AppColors.successLight,
+                              color: AppColors.redAccent,
                               shape: .circle,
                             ),
                           ),
-                          const SizedBox(width: 5),
-                          Text(
-                            AppConstants.onTimeLabel,
-                            style: context.labelSmall.copyWith(
-                              color: AppColors.white,
-                              fontWeight: .w600,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+
+                const SizedBox(height: 22),
+
+                // ── Identity row ──
                 Row(
-                  crossAxisAlignment: .center,
                   children: [
+                    GestureDetector(
+                      onTap: () => context.pushNamed(RouteNames.profile),
+                      child: Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          shape: .circle,
+                          border: Border.all(
+                            color: AppColors.white.withValues(alpha: 0.45),
+                            width: 2,
+                          ),
+                        ),
+                        child: CircleAvatar(
+                          radius: 27,
+                          backgroundColor:
+                              AppColors.white.withValues(alpha: 0.18),
+                          child: Text(
+                            _initials(currentUser.fullName),
+                            style: context.titleMedium.copyWith(
+                              color: AppColors.white,
+                              fontWeight: .w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: .start,
                         children: [
                           Text(
-                            AppConstants.checkedInLabel,
+                            '$_greeting 👋',
                             style: context.labelSmall.copyWith(
-                              color: AppColors.white.withValues(alpha: 0.75),
+                              color: AppColors.white.withValues(alpha: 0.80),
+                              fontWeight: .w500,
                             ),
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            '09:04 AM',
-                            style: context.headlineSmall.copyWith(
+                            currentUser.fullName,
+                            style: context.titleLarge.copyWith(
                               color: AppColors.white,
                               fontWeight: .w700,
                               height: 1.1,
                             ),
+                            maxLines: 1,
+                            overflow: .ellipsis,
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 7),
                           Row(
                             children: [
-                              Icon(
-                                Iconsax.clock,
-                                size: 12,
-                                color: AppColors.white.withValues(alpha: 0.75),
+                              const _HeaderChip(
+                                icon: Iconsax.personalcard,
+                                label: 'EMP-0231',
                               ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${AppConstants.shiftLabel} 09:00 – 17:00',
-                                style: context.labelSmall.copyWith(
-                                  color: AppColors.white.withValues(alpha: 0.80),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: _HeaderChip(
+                                  icon: Iconsax.buildings,
+                                  label: currentUser.org.name,
                                 ),
                               ),
                             ],
@@ -256,26 +302,47 @@ class _AttendanceHeroCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    _CheckOutButton(onTap: () {}),
                   ],
                 ),
-                const SizedBox(height: 16),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: 0.65,
-                    minHeight: 6,
-                    backgroundColor: AppColors.white.withValues(alpha: 0.20),
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.white,
+
+                const SizedBox(height: 18),
+
+                // ── Attendance strip — read-only, synced from biometric ──
+                Container(
+                  padding: .symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.white.withValues(alpha: 0.12),
+                    borderRadius: .circular(14),
+                    border: Border.all(
+                      color: AppColors.white.withValues(alpha: 0.14),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '5h 12m ${AppConstants.workedLabel}',
-                  style: context.labelSmall.copyWith(
-                    color: AppColors.white.withValues(alpha: 0.80),
+                  child: const Row(
+                    children: [
+                      Expanded(
+                        child: _MiniStat(
+                          icon: Iconsax.login,
+                          label: AppConstants.checkInLabel,
+                          value: '09:04 AM',
+                        ),
+                      ),
+                      _StripDivider(),
+                      Expanded(
+                        child: _MiniStat(
+                          icon: Iconsax.logout_1,
+                          label: AppConstants.checkOutLabel,
+                          value: '--:--',
+                        ),
+                      ),
+                      _StripDivider(),
+                      Expanded(
+                        child: _MiniStat(
+                          icon: Iconsax.timer_1,
+                          label: AppConstants.totalHoursLabel,
+                          value: '5h 12m',
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -287,42 +354,119 @@ class _AttendanceHeroCard extends StatelessWidget {
   }
 }
 
-class _CheckOutButton extends StatelessWidget {
+class _MiniStat extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _MiniStat({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: .center,
+      children: [
+        Icon(icon, size: 14, color: AppColors.white.withValues(alpha: 0.70)),
+        const SizedBox(width: 7),
+        Column(
+          crossAxisAlignment: .start,
+          children: [
+            Text(
+              value,
+              style: context.labelMedium.copyWith(
+                color: AppColors.white,
+                fontWeight: .w700,
+                fontSize: 12.5,
+                height: 1.1,
+              ),
+            ),
+            const SizedBox(height: 1),
+            Text(
+              label,
+              style: context.labelSmall.copyWith(
+                color: AppColors.white.withValues(alpha: 0.60),
+                fontSize: 9.5,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _StripDivider extends StatelessWidget {
+  const _StripDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 1,
+      height: 26,
+      color: AppColors.white.withValues(alpha: 0.15),
+    );
+  }
+}
+
+class _HeaderChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _HeaderChip({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: .symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppColors.white.withValues(alpha: 0.15),
+        borderRadius: .circular(20),
+      ),
+      child: Row(
+        mainAxisSize: .min,
+        children: [
+          Icon(icon, color: AppColors.white.withValues(alpha: 0.85), size: 11),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              label,
+              style: context.labelSmall.copyWith(
+                color: AppColors.white.withValues(alpha: 0.90),
+                fontWeight: .w500,
+                fontSize: 10.5,
+              ),
+              maxLines: 1,
+              overflow: .ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeaderIconBtn extends StatelessWidget {
+  final IconData icon;
   final VoidCallback onTap;
 
-  const _CheckOutButton({required this.onTap});
+  const _HeaderIconBtn({required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: .symmetric(horizontal: 16, vertical: 12),
+        width: 38,
+        height: 38,
         decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: .circular(14),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.black.withValues(alpha: 0.15),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          color: AppColors.white.withValues(alpha: 0.15),
+          borderRadius: .circular(10),
         ),
-        child: Column(
-          mainAxisSize: .min,
-          children: [
-            const Icon(Iconsax.logout_1, color: AppColors.primary, size: 20),
-            const SizedBox(height: 4),
-            Text(
-              AppConstants.checkOutLabel,
-              style: context.labelSmall.copyWith(
-                color: AppColors.primary,
-                fontWeight: .w700,
-              ),
-            ),
-          ],
-        ),
+        child: Icon(icon, color: AppColors.white, size: 20),
       ),
     );
   }

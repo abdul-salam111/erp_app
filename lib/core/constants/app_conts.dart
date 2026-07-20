@@ -56,7 +56,7 @@ class AppConstants {
   static const String employeeDashboardTitle = 'Employee Dashboard';
   static const String myWorkspaceTitle = 'My Workspace';
   static const String noticeBoardTitle = 'Notice Board';
-  static const String monthlySnapshotTitle = 'Monthly Snapshot';
+  static const String monthlySnapshotTitle = 'Monthly Data';
   static const String noticesLabel = 'Notices';
   static const String attendanceLabel = 'Attendance';
   static const String leaveRequestLabel = 'Leave Request';
@@ -82,6 +82,11 @@ class AppConstants {
   static const String attendanceRateLabel = 'Attendance rate';
   static const String loanOutstandingLabel = 'Loan outstanding';
   static const String employeeLabel = 'Employee';
+  static const String employeePortalTitle = 'Employee Portal';
+  static const String checkInLabel = 'Check in';
+  static const String totalHoursLabel = 'Total hours';
+  static const String presentLabel = 'Present';
+  static const String biometricSyncNote = 'Synced from biometric attendance device';
 
   static const String goodMorning = 'Good Morning';
   static const String goodAfternoon = 'Good Afternoon';
