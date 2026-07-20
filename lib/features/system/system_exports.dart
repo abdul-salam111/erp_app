@@ -14,3 +14,9 @@ export 'presentation/system/views/system_view.dart';
 
 // Presentation — setup screen
 export 'presentation/setup/views/setup_view.dart';
+
+// Presentation — security screen
+export 'presentation/security/blocs/security_bloc.dart';
+export 'presentation/security/blocs/security_event.dart';
+export 'presentation/security/blocs/security_state.dart';
+export 'presentation/security/views/security_view.dart';

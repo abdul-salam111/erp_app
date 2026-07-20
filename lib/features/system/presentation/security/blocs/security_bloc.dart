@@ -1,14 +1,14 @@
-﻿import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../../core/shared/shared_exports.dart';
-import '../../../domain/usecases/security_usecase.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/shared/shared_exports.dart';
+import '../../../domain/usecases/system_usecase.dart';
 import 'security_event.dart';
 import 'security_state.dart';
 
 class SecurityBloc extends Bloc<SecurityEvent, SecurityState>
     with UsecaseExecuterMixin {
-  final SecurityUsecase securityUsecase;
+  final SystemUsecase systemUsecase;
 
-  SecurityBloc({required this.securityUsecase})
+  SecurityBloc({required this.systemUsecase})
       : super(const SecurityState()) {
     on<SecuritySubmitted>(_onSecuritySubmitted);
   }
@@ -20,7 +20,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState>
     await executeUsecase(
       emit: emit,
       currentState: state,
-      usecase: () => securityUsecase.call(
+      usecase: () => systemUsecase.call(
         NoParams(),
       ),
       stateBuilder: (status, {data, error}) =>

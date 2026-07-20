@@ -1,5 +1,5 @@
 ﻿import 'package:equatable/equatable.dart';
-import '../../../../../../core/constants/const_exports.dart';
+import '../../../../../core/constants/const_exports.dart';
 
 class SecurityState extends Equatable {
   final dynamic data;
