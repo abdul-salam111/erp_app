@@ -216,24 +216,11 @@ class AdminDashboard extends StatelessWidget {
               ),
             ],
           ),
-          DrawerItem.expandable(
+          DrawerItem.tile(
             label: AppConstants.systemLabel,
             icon: Iconsax.setting_2,
             color: AppColors.brown,
-            children: [
-              DrawerItem.tile(
-                label: AppConstants.menu1Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu2Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu3Label,
-                icon: Iconsax.document,
-              ),
-            ],
+            routeName: RouteNames.system,
           ),
           DrawerItem.expandable(
             label: AppConstants.assetsLabel,

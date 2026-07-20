@@ -93,5 +93,6 @@ final class _Modules {
   String get analytics     => '${_base}analytics';
   String get security      => '${_base}security';
   String get dashboard     => '${_base}dashboard';
+
 }
 

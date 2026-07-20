@@ -14,7 +14,8 @@ import '../features/accounts/presentation/credit_management/views/credit_managem
 import '../features/inventory/inventory_exports.dart';
 import '../features/production/production_exports.dart';
 import '../features/analytics/analytics_exports.dart';
-import '../features/security/security_exports.dart';
+import '../features/system/security/security_exports.dart';
+import '../features/system/system_exports.dart';
 
 
 class AppRoutes {
@@ -245,6 +246,16 @@ class AppRoutes {
         name: RouteNames.create_sale_order,
         builder: (context, state) =>
             CreateSaleOrderView(orderId: state.extra as int?),
+      ),
+      GoRoute(
+        path: RoutePaths.system,
+        name: RouteNames.system,
+        builder: (context, state) => const SystemView(),
+      ),
+      GoRoute(
+        path: RoutePaths.system_setup,
+        name: RouteNames.system_setup,
+        builder: (context, state) => const SetupView(),
       ),
     
      

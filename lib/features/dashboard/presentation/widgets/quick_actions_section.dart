@@ -69,7 +69,7 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
       label: AppConstants.systemLabel,
       icon: Iconsax.setting_2,
       color: AppColors.brown,
-      routeName: null,
+      routeName: RouteNames.system,
     ),
     _MenuItem(
       label: AppConstants.assetsLabel,

@@ -1,8 +1,8 @@
-import '../../features/security/data/datasources/remote_security_datasource.dart';
-import '../../features/security/data/repositories_impl/security_repository_impl.dart';
-import '../../features/security/domain/repositories/security_repository.dart';
-import '../../features/security/domain/usecases/security_usecase.dart';
-import '../../features/security/presentation/security/blocs/security_bloc.dart';
+﻿import '../../features/system/security/data/datasources/remote_security_datasource.dart';
+import '../../features/system/security/data/repositories_impl/security_repository_impl.dart';
+import '../../features/system/security/domain/repositories/security_repository.dart';
+import '../../features/system/security/domain/usecases/security_usecase.dart';
+import '../../features/system/security/presentation/security/blocs/security_bloc.dart';
 import 'app_dependencies.dart';
 
 Future<void> registerSecurity() async {

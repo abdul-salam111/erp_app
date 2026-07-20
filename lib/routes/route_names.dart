@@ -26,4 +26,6 @@ class RouteNames {
   static const String vendor_payable = 'vendor_payable';
   static const String create_purchase_order = 'create_purchase_order';
   static const String create_sale_order = 'create_sale_order';
+  static const String system = 'system';
+  static const String system_setup = 'system_setup';
 }
