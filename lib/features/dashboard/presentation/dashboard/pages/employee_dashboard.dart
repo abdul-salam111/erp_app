@@ -8,7 +8,6 @@ import 'package:mantic_erp_app/routes/route_exports.dart';
 import '../../../../../core/services/current_user.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
-import '../../../../../core/widgets/widgets.dart';
 import '../../widgets/dashboard_widgets.dart';
 
 class EmployeeDashboard extends StatelessWidget {
@@ -17,15 +16,6 @@ class EmployeeDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        toolbarHeight: 0,
-        backgroundColor: AppColors.transparent,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarBrightness: Brightness.dark,
-          statusBarIconBrightness: Brightness.light,
-        ),
-      ),
       drawer: AppDrawer(
         userName: currentUser.fullName,
         orgName: currentUser.org.name,
@@ -86,15 +76,13 @@ class EmployeeDashboard extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: .stretch,
-          children: [
-            const _EmployeeHeader(),
-            const SizedBox(height: 20),
-            Padding(
-              padding: context.pagePadding.copyWith(top: 0),
-              child: const Column(
+      body: CustomScrollView(
+        slivers: [
+          const _EmployeeSliverAppBar(),
+          SliverPadding(
+            padding: context.pagePadding.copyWith(top: 20),
+            sliver: const SliverToBoxAdapter(
+              child: Column(
                 crossAxisAlignment: .start,
                 children: [
                   _MonthlySnapshotSection(),
@@ -106,17 +94,19 @@ class EmployeeDashboard extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// ─── Employee header with inline attendance strip ─────────────────────────────
+// ─── Employee sliver header ───────────────────────────────────────────────────
 
-class _EmployeeHeader extends StatelessWidget {
-  const _EmployeeHeader();
+class _EmployeeSliverAppBar extends StatelessWidget {
+  const _EmployeeSliverAppBar();
+
+  static const double _expandedHeight = 218;
 
   String get _greeting {
     final hour = DateTime.now().hour;
@@ -138,64 +128,132 @@ class _EmployeeHeader extends StatelessWidget {
     final top = MediaQuery.paddingOf(context).top;
     final hPad = context.pagePadding.left;
 
-    return Container(
-      clipBehavior: .hardEdge,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [context.primary, context.primary.withValues(alpha: 0.72)],
-          begin: .topLeft,
-          end: .bottomRight,
-        ),
-        borderRadius: const BorderRadius.only(
-          bottomLeft: Radius.circular(28),
-          bottomRight: Radius.circular(28),
+    return SliverAppBar(
+      pinned: true,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      backgroundColor: AppColors.transparent,
+      automaticallyImplyLeading: false,
+      expandedHeight: _expandedHeight,
+      systemOverlayStyle: const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.light,
+      ),
+      leadingWidth: hPad + 38,
+      leading: Padding(
+        padding: EdgeInsets.only(left: hPad),
+        child: Center(
+          child: _HeaderIconBtn(
+            icon: Icons.menu_rounded,
+            onTap: () => Scaffold.of(context).openDrawer(),
+          ),
         ),
       ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -35,
-            top: top - 35,
-            child: Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: .circle,
-                color: AppColors.white.withValues(alpha: 0.07),
+      actions: [
+        Center(
+          child: Stack(
+            clipBehavior: .none,
+            children: [
+              _HeaderIconBtn(
+                icon: Iconsax.notification,
+                onTap: () => context.pushNamed(RouteNames.alert_panel),
+              ),
+              Positioned(
+                top: 6,
+                right: 6,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: AppColors.redAccent,
+                    shape: .circle,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        Center(
+          child: GestureDetector(
+            onTap: () => context.pushNamed(RouteNames.profile),
+            child: CircleAvatar(
+              radius: 19,
+              backgroundColor: AppColors.white.withValues(alpha: 0.15),
+              child: const Icon(
+                Iconsax.profile_circle,
+                color: AppColors.white,
+                size: 20,
               ),
             ),
           ),
-          Positioned(
-            left: -25,
-            bottom: -15,
-            child: Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                shape: .circle,
-                color: AppColors.white.withValues(alpha: 0.05),
+        ),
+        SizedBox(width: hPad),
+      ],
+      flexibleSpace: LayoutBuilder(
+        builder: (context, constraints) {
+          final minH = top + kToolbarHeight;
+          final maxH = top + _expandedHeight;
+          final t = ((constraints.maxHeight - minH) / (maxH - minH))
+              .clamp(0.0, 1.0);
+          // Expanded content fades out early; compact title fades in late —
+          // the two never fully overlap mid-collapse.
+          final expandedOpacity = ((t - 0.4) / 0.6).clamp(0.0, 1.0);
+          final collapsedOpacity = ((0.35 - t) / 0.35).clamp(0.0, 1.0);
+
+          return Container(
+            clipBehavior: .hardEdge,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  context.primary,
+                  context.primary.withValues(alpha: 0.72),
+                ],
+                begin: .topLeft,
+                end: .bottomRight,
+              ),
+              // Corners flatten as the bar collapses into a regular app bar.
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(28 * t),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              top: top + 14,
-              bottom: 18,
-              left: hPad,
-              right: hPad,
-            ),
-            child: Column(
-              crossAxisAlignment: .start,
+            child: Stack(
               children: [
-                // ── App-bar row ──
-                Row(
-                  children: [
-                    _HeaderIconBtn(
-                      icon: Icons.menu_rounded,
-                      onTap: () => Scaffold.of(context).openDrawer(),
+                Positioned(
+                  right: -35,
+                  top: -20,
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      shape: .circle,
+                      color: AppColors.white.withValues(alpha: 0.07),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
+                  ),
+                ),
+                Positioned(
+                  left: -25,
+                  bottom: -15,
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: .circle,
+                      color: AppColors.white.withValues(alpha: 0.05),
+                    ),
+                  ),
+                ),
+
+                // ── Toolbar title — expanded state ──
+                Positioned(
+                  top: top,
+                  left: hPad + 48,
+                  right: hPad + 94,
+                  height: kToolbarHeight,
+                  child: Opacity(
+                    opacity: expandedOpacity,
+                    child: Align(
+                      alignment: .centerLeft,
                       child: Text(
                         AppConstants.employeePortalTitle,
                         style: context.titleSmall.copyWith(
@@ -205,150 +263,166 @@ class _EmployeeHeader extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Stack(
-                      clipBehavior: .none,
-                      children: [
-                        _HeaderIconBtn(
-                          icon: Iconsax.notification,
-                          onTap: () =>
-                              context.pushNamed(RouteNames.alert_panel),
-                        ),
-                        Positioned(
-                          top: 6,
-                          right: 6,
-                          child: Container(
-                            width: 8,
-                            height: 8,
-                            decoration: const BoxDecoration(
-                              color: AppColors.redAccent,
-                              shape: .circle,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
 
-                const SizedBox(height: 22),
-
-                // ── Identity row ──
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => context.pushNamed(RouteNames.profile),
-                      child: Container(
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          shape: .circle,
-                          border: Border.all(
-                            color: AppColors.white.withValues(alpha: 0.45),
-                            width: 2,
-                          ),
+                // ── Toolbar title — collapsed state (name) ──
+                Positioned(
+                  top: top,
+                  left: hPad + 48,
+                  right: hPad + 94,
+                  height: kToolbarHeight,
+                  child: Opacity(
+                    opacity: collapsedOpacity,
+                    child: Align(
+                      alignment: .centerLeft,
+                      child: Text(
+                        currentUser.fullName,
+                        style: context.titleSmall.copyWith(
+                          color: AppColors.white,
+                          fontWeight: .w700,
                         ),
-                        child: CircleAvatar(
-                          radius: 27,
-                          backgroundColor:
-                              AppColors.white.withValues(alpha: 0.18),
-                          child: Text(
-                            _initials(currentUser.fullName),
-                            style: context.titleMedium.copyWith(
-                              color: AppColors.white,
-                              fontWeight: .w700,
-                            ),
-                          ),
-                        ),
+                        maxLines: 1,
+                        overflow: .ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Text(
-                            '$_greeting 👋',
-                            style: context.labelSmall.copyWith(
-                              color: AppColors.white.withValues(alpha: 0.80),
-                              fontWeight: .w500,
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            currentUser.fullName,
-                            style: context.titleLarge.copyWith(
-                              color: AppColors.white,
-                              fontWeight: .w700,
-                              height: 1.1,
-                            ),
-                            maxLines: 1,
-                            overflow: .ellipsis,
-                          ),
-                          const SizedBox(height: 7),
-                          Row(
-                            children: [
-                              const _HeaderChip(
-                                icon: Iconsax.personalcard,
-                                label: 'EMP-0231',
+                  ),
+                ),
+
+                // ── Expanded content — identity + attendance strip ──
+                Positioned(
+                  left: hPad,
+                  right: hPad,
+                  bottom: 18,
+                  child: Opacity(
+                    opacity: expandedOpacity,
+                    child: Column(
+                      mainAxisSize: .min,
+                      crossAxisAlignment: .start,
+                      children: [
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () =>
+                                  context.pushNamed(RouteNames.profile),
+                              child: Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  shape: .circle,
+                                  border: Border.all(
+                                    color: AppColors.white.withValues(
+                                      alpha: 0.45,
+                                    ),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  radius: 27,
+                                  backgroundColor:
+                                      AppColors.white.withValues(alpha: 0.18),
+                                  child: Text(
+                                    _initials(currentUser.fullName),
+                                    style: context.titleMedium.copyWith(
+                                      color: AppColors.white,
+                                      fontWeight: .w700,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              const SizedBox(width: 6),
-                              Flexible(
-                                child: _HeaderChip(
-                                  icon: Iconsax.buildings,
-                                  label: currentUser.org.name,
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: .start,
+                                children: [
+                                  Text(
+                                    '$_greeting 👋',
+                                    style: context.labelSmall.copyWith(
+                                      color: AppColors.white.withValues(
+                                        alpha: 0.80,
+                                      ),
+                                      fontWeight: .w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 3),
+                                  Text(
+                                    currentUser.fullName,
+                                    style: context.titleLarge.copyWith(
+                                      color: AppColors.white,
+                                      fontWeight: .w700,
+                                      height: 1.1,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: .ellipsis,
+                                  ),
+                                  const SizedBox(height: 7),
+                                  Row(
+                                    children: [
+                                      const _HeaderChip(
+                                        icon: Iconsax.personalcard,
+                                        label: 'EMP-0231',
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Flexible(
+                                        child: _HeaderChip(
+                                          icon: Iconsax.buildings,
+                                          label: currentUser.org.name,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 18),
+                        // ── Attendance strip — synced from biometric ──
+                        Container(
+                          padding: .symmetric(horizontal: 12, vertical: 10),
+                          decoration: BoxDecoration(
+                            color: AppColors.white.withValues(alpha: 0.12),
+                            borderRadius: .circular(10),
+                            border: Border.all(
+                              color: AppColors.white.withValues(alpha: 0.14),
+                            ),
+                          ),
+                          child: const Row(
+                            children: [
+                              Expanded(
+                                child: _MiniStat(
+                                  icon: Iconsax.login,
+                                  label: AppConstants.checkInLabel,
+                                  value: '09:04 AM',
+                                ),
+                              ),
+                              _StripDivider(),
+                              Expanded(
+                                child: _MiniStat(
+                                  icon: Iconsax.logout_1,
+                                  label: AppConstants.checkOutLabel,
+                                  value: '--:--',
+                                ),
+                              ),
+                              _StripDivider(),
+                              Expanded(
+                                child: _MiniStat(
+                                  icon: Iconsax.timer_1,
+                                  label: AppConstants.totalHoursLabel,
+                                  value: '5h 12m',
                                 ),
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-
-                const SizedBox(height: 18),
-
-                // ── Attendance strip — read-only, synced from biometric ──
-                Container(
-                  padding: .symmetric(horizontal: 12, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: AppColors.white.withValues(alpha: 0.12),
-                    borderRadius: .circular(14),
-                    border: Border.all(
-                      color: AppColors.white.withValues(alpha: 0.14),
-                    ),
-                  ),
-                  child: const Row(
-                    children: [
-                      Expanded(
-                        child: _MiniStat(
-                          icon: Iconsax.login,
-                          label: AppConstants.checkInLabel,
-                          value: '09:04 AM',
-                        ),
-                      ),
-                      _StripDivider(),
-                      Expanded(
-                        child: _MiniStat(
-                          icon: Iconsax.logout_1,
-                          label: AppConstants.checkOutLabel,
-                          value: '--:--',
-                        ),
-                      ),
-                      _StripDivider(),
-                      Expanded(
-                        child: _MiniStat(
-                          icon: Iconsax.timer_1,
-                          label: AppConstants.totalHoursLabel,
-                          value: '5h 12m',
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -518,16 +592,16 @@ class _MonthlySnapshotSection extends StatelessWidget {
           itemCount: _stats.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: context.gridColumnCount,
+            mainAxisExtent: Responsive.value<double>(
+              context,
+              phone: 54,
+              tablet: 60,
+              ipad: 66,
+            ),
             mainAxisSpacing: context.gridSpacing,
             crossAxisSpacing: context.gridSpacing,
-            childAspectRatio: context.overviewCardRatio,
           ),
-          itemBuilder: (context, i) => OverviewStatCard(
-            label: _stats[i].label,
-            value: _stats[i].value,
-            icon: _stats[i].icon,
-            color: _stats[i].color,
-          ),
+          itemBuilder: (context, i) => _SnapshotCard(stat: _stats[i]),
         ),
       ],
     );
@@ -546,6 +620,74 @@ class _StatMeta {
     required this.icon,
     required this.color,
   });
+}
+
+class _SnapshotCard extends StatelessWidget {
+  final _StatMeta stat;
+
+  const _SnapshotCard({required this.stat});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: .symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.06),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            decoration: BoxDecoration(
+              color: stat.color.withValues(alpha: 0.12),
+              borderRadius: .circular(8),
+            ),
+            child: Icon(stat.icon, color: stat.color, size: 14),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              mainAxisAlignment: .center,
+              children: [
+                Text(
+                  stat.value,
+                  style: context.labelMedium.copyWith(
+                    fontWeight: .w700,
+                    color: context.textPrimary,
+                    fontSize: 12,
+                    height: 1,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  stat.label,
+                  style: context.labelSmall.copyWith(
+                    color: context.textSecondary,
+                    fontSize: 9.5,
+                    height: 1.1,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 // ─── Workspace menu grid ──────────────────────────────────────────────────────
@@ -603,9 +745,9 @@ class _WorkspaceMenuSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final cardHeight = Responsive.value<double>(
       context,
-      phone: 118,
-      tablet: 128,
-      ipad: 138,
+      phone: 88,
+      tablet: 96,
+      ipad: 104,
     );
 
     return Column(
@@ -642,12 +784,12 @@ class _WorkspaceCard extends StatelessWidget {
       onTap: item.routeName != null
           ? () => context.pushNamed(item.routeName!)
           : null,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
         clipBehavior: .hardEdge,
         decoration: BoxDecoration(
           color: context.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
               color: AppColors.black.withValues(alpha: 0.06),
@@ -656,69 +798,53 @@ class _WorkspaceCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -22,
-              right: -22,
-              child: Container(
-                width: 70,
-                height: 70,
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              Container(
+                width: 30,
+                height: 30,
                 decoration: BoxDecoration(
-                  shape: .circle,
-                  color: item.color.withValues(alpha: 0.08),
+                  color: item.color.withValues(alpha: 0.12),
+                  borderRadius: .circular(9),
                 ),
+                child: Icon(item.icon, color: item.color, size: 15),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: .start,
+              const Spacer(),
+              Text(
+                item.label,
+                style: context.labelMedium.copyWith(
+                  fontWeight: .w700,
+                  color: context.textPrimary,
+                ),
+                maxLines: 1,
+                overflow: .ellipsis,
+              ),
+              const SizedBox(height: 1),
+              Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: item.color.withValues(alpha: 0.12),
-                      borderRadius: .circular(12),
-                    ),
-                    child: Icon(item.icon, color: item.color, size: 20),
-                  ),
-                  const Spacer(),
-                  Text(
-                    item.label,
-                    style: context.labelLarge.copyWith(
-                      fontWeight: .w700,
-                      color: context.textPrimary,
-                    ),
-                    maxLines: 1,
-                    overflow: .ellipsis,
-                  ),
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          item.subtitle,
-                          style: context.labelSmall.copyWith(
-                            color: context.textSecondary,
-                            fontSize: 10.5,
-                          ),
-                          maxLines: 1,
-                          overflow: .ellipsis,
-                        ),
+                  Expanded(
+                    child: Text(
+                      item.subtitle,
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                        fontSize: 9.5,
                       ),
-                      Icon(
-                        Iconsax.arrow_right_3,
-                        size: 13,
-                        color: item.color,
-                      ),
-                    ],
+                      maxLines: 1,
+                      overflow: .ellipsis,
+                    ),
+                  ),
+                  Icon(
+                    Iconsax.arrow_right_3,
+                    size: 11,
+                    color: item.color,
                   ),
                 ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -820,7 +946,7 @@ class _NoticeTile extends StatelessWidget {
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
         color: context.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.05),
@@ -833,70 +959,64 @@ class _NoticeTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: .stretch,
           children: [
-            Container(width: 4, color: notice.color),
+            Container(width: 3, color: notice.color),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
+                  horizontal: 10,
+                  vertical: 8,
                 ),
-                child: Column(
-                  crossAxisAlignment: .start,
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 30,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: notice.color.withValues(alpha: 0.12),
-                            borderRadius: .circular(9),
-                          ),
-                          child: Icon(
-                            Iconsax.notification_1,
-                            color: notice.color,
-                            size: 15,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
+                    Container(
+                      width: 26,
+                      height: 26,
+                      decoration: BoxDecoration(
+                        color: notice.color.withValues(alpha: 0.12),
+                        borderRadius: .circular(8),
+                      ),
+                      child: Icon(
+                        Iconsax.notification_1,
+                        color: notice.color,
+                        size: 13,
+                      ),
+                    ),
+                    const SizedBox(width: 9),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: .start,
+                        children: [
+                          Text(
                             notice.title,
-                            style: context.labelLarge.copyWith(
+                            style: context.labelMedium.copyWith(
                               fontWeight: .w700,
                               color: context.textPrimary,
                             ),
                             maxLines: 1,
                             overflow: .ellipsis,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: .symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: context.grey50,
-                            borderRadius: .circular(20),
-                          ),
-                          child: Text(
-                            notice.date,
+                          const SizedBox(height: 2),
+                          Text(
+                            notice.snippet,
                             style: context.labelSmall.copyWith(
                               color: context.textSecondary,
-                              fontSize: 10,
-                              fontWeight: .w600,
+                              fontSize: 9.5,
+                              height: 1.3,
                             ),
+                            maxLines: 1,
+                            overflow: .ellipsis,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(width: 8),
                     Text(
-                      notice.snippet,
+                      notice.date,
                       style: context.labelSmall.copyWith(
                         color: context.textSecondary,
-                        height: 1.35,
+                        fontSize: 9.5,
+                        fontWeight: .w600,
                       ),
-                      maxLines: 2,
-                      overflow: .ellipsis,
                     ),
                   ],
                 ),
