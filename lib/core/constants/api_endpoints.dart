@@ -9,6 +9,7 @@ class ApiEndPoints {
   static const modules    = _Modules();
   static const purchase   = _PurchaseOrders();
   static const sale       = _SaleOrders();
+  static const attendance = _Attendance();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -94,5 +95,15 @@ final class _Modules {
   String get security      => '${_base}security';
   String get dashboard     => '${_base}dashboard';
 
+}
+
+// ─── Attendance ──────────────────────────────────────────────────────────────
+
+final class _Attendance {
+  const _Attendance();
+
+  static String get _base => '${ApiEndPoints._base}/attendance';
+
+  String get getAttendance => '$_base/GetAttendance';
 }
 

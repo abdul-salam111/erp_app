@@ -314,13 +314,13 @@ class _EmployeeSliverAppBar extends StatelessWidget {
                         const Row(
                           children: [
                             _HeaderChip(
-                              icon: Iconsax.personalcard,
-                              label: 'EMP-0231',
+                              icon: Iconsax.briefcase,
+                              label: 'Software Engineer',
                             ),
                             SizedBox(width: 6),
                             _HeaderChip(
-                              icon: Iconsax.clock,
-                              label: '09:00 – 18:00',
+                              icon: Iconsax.personalcard,
+                              label: 'EMP-0231',
                             ),
                           ],
                         ),

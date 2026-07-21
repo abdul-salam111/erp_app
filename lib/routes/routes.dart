@@ -15,6 +15,7 @@ import '../features/inventory/inventory_exports.dart';
 import '../features/production/production_exports.dart';
 import '../features/analytics/analytics_exports.dart';
 import '../features/system/system_exports.dart';
+import '../features/attendance/attendance_exports.dart';
 
 
 class AppRoutes {
@@ -273,6 +274,11 @@ class AppRoutes {
         path: RoutePaths.system_setup,
         name: RouteNames.system_setup,
         builder: (context, state) => const SetupView(),
+      ),
+      GoRoute(
+        path: RoutePaths.attendance,
+        name: RouteNames.attendance,
+        builder: (context, state) => const AttendanceView(),
       ),
     
      

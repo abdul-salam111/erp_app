@@ -29,4 +29,5 @@ class RouteNames {
   static const String create_sale_order = 'create_sale_order';
   static const String system = 'system';
   static const String system_setup = 'system_setup';
+  static const String attendance = 'attendance';
 }
