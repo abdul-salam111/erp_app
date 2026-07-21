@@ -1,6 +1,6 @@
-part of 'dashboard_bloc.dart';
+part of 'admin_dashboard_bloc.dart';
 
-final class DashboardState extends Equatable {
+final class AdminDashboardState extends Equatable {
   // ── UI state ──────────────────────────────────────────────────────────────
   final DateTime saleOrderFromDate;
   final DateTime saleOrderToDate;
@@ -29,7 +29,7 @@ final class DashboardState extends Equatable {
   final SaleOrderSummaryEntity? saleOrderSummary;
   final String                  saleOrderSummaryError;
 
-  const DashboardState({
+  const AdminDashboardState({
     required this.saleOrderFromDate,
     required this.saleOrderToDate,
     required this.selectedMonth,
@@ -50,7 +50,7 @@ final class DashboardState extends Equatable {
     this.saleOrderSummaryError = '',
   });
 
-  DashboardState copyWith({
+  AdminDashboardState copyWith({
     DateTime?                   saleOrderFromDate,
     DateTime?                   saleOrderToDate,
     DateTime?                   selectedMonth,
@@ -70,7 +70,7 @@ final class DashboardState extends Equatable {
     SaleOrderSummaryEntity?     saleOrderSummary,
     String?                     saleOrderSummaryError,
   }) {
-    return DashboardState(
+    return AdminDashboardState(
       saleOrderFromDate:         saleOrderFromDate         ?? this.saleOrderFromDate,
       saleOrderToDate:           saleOrderToDate           ?? this.saleOrderToDate,
       selectedMonth:             selectedMonth             ?? this.selectedMonth,

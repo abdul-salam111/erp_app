@@ -7,7 +7,7 @@ import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../dashboard/blocs/dashboard_bloc.dart';
+import '../admin_dashboard/bloc/admin_dashboard_bloc.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
 import '../../../dashboard/domain/entities/sale_order_summary_entity.dart';
 
@@ -32,7 +32,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
   @override
   void initState() {
     super.initState();
-    final bloc = context.read<DashboardBloc>();
+    final bloc = context.read<AdminDashboardBloc>();
     _fromDate = bloc.state.saleOrderFromDate;
     _toDate = bloc.state.saleOrderToDate;
     _chartCtrl = AnimationController(
@@ -63,7 +63,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
       _fromDate = picked;
       if (_toDate.isBefore(_fromDate)) _toDate = _fromDate;
     });
-    context.read<DashboardBloc>().add(
+    context.read<AdminDashboardBloc>().add(
       SaleOrderDateRangeChanged(fromDate: _fromDate, toDate: _toDate),
     );
   }
@@ -77,14 +77,14 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
     );
     if (picked == null || !mounted) return;
     setState(() => _toDate = picked);
-    context.read<DashboardBloc>().add(
+    context.read<AdminDashboardBloc>().add(
       SaleOrderDateRangeChanged(fromDate: _fromDate, toDate: _toDate),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<DashboardBloc, DashboardState>(
+    return BlocConsumer<AdminDashboardBloc, AdminDashboardState>(
       listenWhen: (p, c) =>
           p.saleOrderSummaryStatus != ApiStatus.SUCCESS &&
           c.saleOrderSummaryStatus == ApiStatus.SUCCESS,

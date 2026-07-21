@@ -22,14 +22,17 @@ export 'data/models/response_models/get_monthly_stats/monthly_stats_model_mapper
 export 'data/models/response_models/get_sale_order_summary_by_party/sale_order_summary_mapper.dart';
 
 // ── Presentation — BLoC ───────────────────────────────────────────────────────
-export 'presentation/dashboard/blocs/dashboard_bloc.dart';
+export 'presentation/admin_dashboard/bloc/admin_dashboard_bloc.dart';
+export 'presentation/accountant_dashboard/bloc/accountant_dashboard_bloc.dart';
+export 'presentation/employee_dashboard/bloc/employee_dashboard_bloc.dart';
+export 'presentation/hr_dashboard/bloc/hr_dashboard_bloc.dart';
 
 // ── Presentation — pages ──────────────────────────────────────────────────────
-export 'presentation/dashboard/pages/dashboard_view.dart';
-export 'presentation/dashboard/pages/admin_dashboard.dart';
-export 'presentation/dashboard/pages/employee_dashboard.dart';
-export 'presentation/dashboard/pages/accountant_dashboard.dart';
-export 'presentation/dashboard/pages/hr_dashboard.dart';
+export 'presentation/main_dashboard/pages/dashboard_view.dart';
+export 'presentation/admin_dashboard/pages/admin_dashboard.dart';
+export 'presentation/accountant_dashboard/pages/accountant_dashboard.dart';
+export 'presentation/employee_dashboard/pages/employee_dashboard.dart';
+export 'presentation/hr_dashboard/pages/hr_dashboard.dart';
 
 // ── Presentation — widgets ────────────────────────────────────────────────────
 export 'presentation/widgets/app_drawer.dart';

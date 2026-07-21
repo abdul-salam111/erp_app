@@ -8,7 +8,7 @@ import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
-import '../dashboard/blocs/dashboard_bloc.dart';
+import '../admin_dashboard/bloc/admin_dashboard_bloc.dart';
 
 // ─── Panel keys ───────────────────────────────────────────────────────────────
 
@@ -70,13 +70,13 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
       builder: (_) => _MonthPickerDialog(initial: current),
     );
     if (picked != null && context.mounted) {
-      context.read<DashboardBloc>().add(DashboardMonthChanged(picked));
+      context.read<AdminDashboardBloc>().add(DashboardMonthChanged(picked));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<DashboardBloc, DashboardState>(
+    return BlocConsumer<AdminDashboardBloc, AdminDashboardState>(
       listenWhen: (p, c) =>
           p.selectedPanelKey != c.selectedPanelKey ||
           (p.monthlyStatsDetailStatus != ApiStatus.SUCCESS &&
@@ -194,7 +194,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                         child: GestureDetector(
                           onTap: selected
                               ? null
-                              : () => context.read<DashboardBloc>().add(
+                              : () => context.read<AdminDashboardBloc>().add(
                                     MonthlyStatsDetailKeyChanged(p.key),
                                   ),
                           child: AnimatedContainer(
@@ -244,7 +244,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
     );
   }
 
-  List<Widget> _buildStatCards(DashboardState state) {
+  List<Widget> _buildStatCards(AdminDashboardState state) {
     final sym = currentUser.org.currencySymbol;
     final m   = state.monthlyStats;
 
@@ -294,7 +294,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
     ];
   }
 
-  Widget _buildChart(BuildContext context, DashboardState state) {
+  Widget _buildChart(BuildContext context, AdminDashboardState state) {
     final points = state.monthlyStatsDetail;
 
     if (points.isEmpty) {

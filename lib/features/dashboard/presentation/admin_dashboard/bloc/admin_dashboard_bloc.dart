@@ -10,16 +10,16 @@ import '../../../domain/usecases/get_monthly_stats_detail_usecase.dart';
 import '../../../domain/usecases/get_monthly_stats_usecase.dart';
 import '../../../domain/usecases/get_sale_order_summary_usecase.dart' show GetSaleOrderSummaryUsecase, SaleOrderSummaryParams;
 
-part 'dashboard_event.dart';
-part 'dashboard_state.dart';
+part 'admin_dashboard_event.dart';
+part 'admin_dashboard_state.dart';
 
-class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
+class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> {
   final GetDailyStatsUsecase           _getDailyStats;
   final GetMonthlyStatsUsecase         _getMonthlyStats;
   final GetMonthlyStatsDetailUsecase   _getMonthlyStatsDetail;
   final GetSaleOrderSummaryUsecase     _getSaleOrderSummary;
 
-  DashboardBloc({
+  AdminDashboardBloc({
     required GetDailyStatsUsecase          getDailyStats,
     required GetMonthlyStatsUsecase        getMonthlyStats,
     required GetMonthlyStatsDetailUsecase  getMonthlyStatsDetail,
@@ -28,7 +28,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         _getMonthlyStats        = getMonthlyStats,
         _getMonthlyStatsDetail  = getMonthlyStatsDetail,
         _getSaleOrderSummary    = getSaleOrderSummary,
-        super(DashboardState(
+        super(AdminDashboardState(
           saleOrderFromDate:        DateTime.now().subtract(const Duration(days: 30)),
           saleOrderToDate:          DateTime.now(),
           selectedMonth:            DateTime(DateTime.now().year, DateTime.now().month),
@@ -56,7 +56,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   Future<void> _onDashboardDataRequested(
     DashboardDataRequested event,
-    Emitter<DashboardState> emit,
+    Emitter<AdminDashboardState> emit,
   ) async {
     emit(state.copyWith(
       dailyStatsStatus:         ApiStatus.LOADING,
@@ -101,7 +101,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   Future<void> _onSaleOrderDateRangeChanged(
     SaleOrderDateRangeChanged event,
-    Emitter<DashboardState> emit,
+    Emitter<AdminDashboardState> emit,
   ) async {
     emit(state.copyWith(
       saleOrderFromDate:     event.fromDate,
@@ -120,7 +120,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   Future<void> _onDashboardMonthChanged(
     DashboardMonthChanged event,
-    Emitter<DashboardState> emit,
+    Emitter<AdminDashboardState> emit,
   ) async {
     emit(state.copyWith(
       selectedMonth:            event.month,
@@ -148,14 +148,14 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   void _onTodayOverviewExpansionToggled(
     TodayOverviewExpansionToggled event,
-    Emitter<DashboardState> emit,
+    Emitter<AdminDashboardState> emit,
   ) {
     emit(state.copyWith(todayOverviewExpanded: !state.todayOverviewExpanded));
   }
 
   Future<void> _onDailyStatsDateChanged(
     DailyStatsDateChanged event,
-    Emitter<DashboardState> emit,
+    Emitter<AdminDashboardState> emit,
   ) async {
     emit(state.copyWith(
       selectedDailyDate: event.date,
@@ -171,7 +171,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   Future<void> _onMonthlyStatsDetailKeyChanged(
     MonthlyStatsDetailKeyChanged event,
-    Emitter<DashboardState> emit,
+    Emitter<AdminDashboardState> emit,
   ) async {
     emit(state.copyWith(
       selectedPanelKey:         event.panelKey,

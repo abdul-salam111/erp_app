@@ -7,7 +7,7 @@ import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/order_entity.dart';
-import '../dashboard/blocs/dashboard_bloc.dart';
+import '../admin_dashboard/bloc/admin_dashboard_bloc.dart';
 import 'section_header.dart';
 
 
@@ -16,7 +16,7 @@ class NewOrdersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DashboardBloc, DashboardState>(
+    return BlocBuilder<AdminDashboardBloc, AdminDashboardState>(
       buildWhen: (p, c) =>
           p.dailyStatsStatus != c.dailyStatsStatus ||
           p.dailyStats       != c.dailyStats,
@@ -133,7 +133,7 @@ class _EmptyOrders extends StatelessWidget {
             width: 72,
             height: 72,
           ),
- 
+
           Text(
             AppConstants.noOrdersToday,
             textAlign: .center,

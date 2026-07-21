@@ -6,7 +6,7 @@ import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../dashboard/blocs/dashboard_bloc.dart';
+import '../admin_dashboard/bloc/admin_dashboard_bloc.dart';
 import 'section_header.dart';
 
 class TodayOverviewSection extends StatelessWidget {
@@ -34,13 +34,13 @@ class TodayOverviewSection extends StatelessWidget {
       lastDate: DateTime.now(),
     );
     if (picked != null && context.mounted) {
-      context.read<DashboardBloc>().add(DailyStatsDateChanged(picked));
+      context.read<AdminDashboardBloc>().add(DailyStatsDateChanged(picked));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DashboardBloc, DashboardState>(
+    return BlocBuilder<AdminDashboardBloc, AdminDashboardState>(
       buildWhen: (p, c) =>
           p.todayOverviewExpanded != c.todayOverviewExpanded ||
           p.dailyStatsStatus      != c.dailyStatsStatus      ||
@@ -81,7 +81,7 @@ class TodayOverviewSection extends StatelessWidget {
                   if (context.isPhone) ...[
                     const SizedBox(width: 10),
                     GestureDetector(
-                      onTap: () => context.read<DashboardBloc>().add(
+                      onTap: () => context.read<AdminDashboardBloc>().add(
                         const TodayOverviewExpansionToggled(),
                       ),
                       child: Row(

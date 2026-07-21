@@ -7,7 +7,7 @@ class AppConfig {
   static final AppConfig instance = AppConfig._();
   AppConfig._();
 
-  static const _rcKeyStagingUrl = 'mantic_erp_base_url';
+  static const _rcKeyStagingUrl = 'mantic_erp_staging_base_url';
   static const _rcKeyProductionUrl = 'mantic_erp_production_base_url';
   static const _defaultStagingUrl = 'https://erpstagingapi.manticapps.com/api';
   static const _defaultProductionUrl = 'https://erpapi.manticapps.com/api';
