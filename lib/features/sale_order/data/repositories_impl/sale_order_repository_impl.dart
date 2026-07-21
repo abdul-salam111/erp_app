@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../../domain/entities/party_option.dart';
 import '../../domain/entities/sale_order_entity.dart';
 import '../../domain/repositories/sale_order_repository.dart';
@@ -13,28 +13,28 @@ class SaleOrderRepositoryImpl extends BaseRepository
   SaleOrderRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Either<Failure, List<SaleOrderEntity>>> fetchOrders() {
+  Future<Result<List<SaleOrderEntity>>> fetchOrders() {
     return execute(
       call: () => dataSource.fetchOrders(),
     );
   }
 
   @override
-  Future<Either<Failure, SaleOrderDetail>> fetchOrderById(int id) {
+  Future<Result<SaleOrderDetail>> fetchOrderById(int id) {
     return execute(
       call: () => dataSource.fetchOrderById(id),
     );
   }
 
   @override
-  Future<Either<Failure, List<PartyOption>>> fetchParties() {
+  Future<Result<List<PartyOption>>> fetchParties() {
     return execute(
       call: () => dataSource.fetchParties(),
     );
   }
 
   @override
-  Future<Either<Failure, dynamic>> createSaleOrder() {
+  Future<Result<dynamic>> createSaleOrder() {
     return execute(
       call: () => dataSource.createSaleOrder(),
     );

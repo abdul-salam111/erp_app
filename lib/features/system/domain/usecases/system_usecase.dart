@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../repositories/system_repository.dart';
 
 class SystemUsecase implements Usecase<dynamic, NoParams> {
@@ -8,7 +8,7 @@ class SystemUsecase implements Usecase<dynamic, NoParams> {
   SystemUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, dynamic>> call(NoParams params) {
+  Future<Result<dynamic>> call(NoParams params) {
     return repository.performAction();
   }
 }

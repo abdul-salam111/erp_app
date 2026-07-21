@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../entities/stock_received_entity.dart';
 import '../repositories/inventory_repository.dart';
 
@@ -15,7 +15,7 @@ class GetStockReceivedUsecase
   GetStockReceivedUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<StockReceivedEntity>>> call(
+  Future<Result<List<StockReceivedEntity>>> call(
     StockReceivedParams params,
   ) {
     return repository.getStockReceived(params.dateType);

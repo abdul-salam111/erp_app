@@ -47,12 +47,12 @@ class CustomerRecievablesBloc
   ) async {
     emit(state.copyWith(partiesStatus: ApiStatus.LOADING));
     final result = await getPartyListUsecase(NoParams());
-    result.fold(
-      (failure) => emit(state.copyWith(
+    result.when(
+      failure: (failure) => emit(state.copyWith(
         partiesStatus: ApiStatus.FAILURE,
         message: failure.message,
       )),
-      (parties) => emit(state.copyWith(
+      success: (parties) => emit(state.copyWith(
         partiesStatus: ApiStatus.SUCCESS,
         parties: parties,
       )),

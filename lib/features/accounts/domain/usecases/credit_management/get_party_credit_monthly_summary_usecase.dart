@@ -1,6 +1,5 @@
-import 'package:fpdart/fpdart.dart';
-
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
 import '../../entities/credit_managment/party_credit_monthly_summary_entity.dart';
 import '../../repositories/i_accounts_repository.dart';
 
@@ -22,7 +21,7 @@ class GetPartyCreditMonthlySummaryUsecase
   GetPartyCreditMonthlySummaryUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<PartyCreditMonthlySummaryEntity>>> call(
+  Future<Result<List<PartyCreditMonthlySummaryEntity>>> call(
     GetPartyCreditMonthlySummaryParams params,
   ) =>
       repository.getPartyCreditMonthlySummary(

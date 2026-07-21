@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../../domain/entities/daily_stats_entity.dart';
 import '../../domain/entities/monthly_stats_detail_entity.dart';
 import '../../domain/entities/monthly_stats_entity.dart';
@@ -18,21 +18,21 @@ class DashboardRepositoryImpl extends BaseRepository
   DashboardRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Either<Failure, DailyStatsEntity>> getDailyStats({required String date}) {
+  Future<Result<DailyStatsEntity>> getDailyStats({required String date}) {
     return execute(
       call: () async => (await dataSource.getDailyStats(date: date)).toEntity(),
     );
   }
 
   @override
-  Future<Either<Failure, MonthlyStatsEntity>> getMonthlyStats({required String date}) {
+  Future<Result<MonthlyStatsEntity>> getMonthlyStats({required String date}) {
     return execute(
       call: () async => (await dataSource.getMonthlyStats(date: date)).toEntity(),
     );
   }
 
   @override
-  Future<Either<Failure, List<MonthlyStatDetailPoint>>> getMonthlyStatsDetail({
+  Future<Result<List<MonthlyStatDetailPoint>>> getMonthlyStatsDetail({
     required String date,
     required String panelKey,
   }) {
@@ -44,7 +44,7 @@ class DashboardRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, SaleOrderSummaryEntity>> getSaleOrderSummary({required String fromDate, required String toDate}) {
+  Future<Result<SaleOrderSummaryEntity>> getSaleOrderSummary({required String fromDate, required String toDate}) {
     return execute(
       call: () async =>
           (await dataSource.getSalesOrderSummaryByParty(fromDate: fromDate, toDate: toDate)).toEntity(),

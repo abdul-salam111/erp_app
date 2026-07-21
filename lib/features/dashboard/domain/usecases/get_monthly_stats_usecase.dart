@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../entities/monthly_stats_entity.dart';
 import '../repositories/dashboard_repository.dart';
 
@@ -17,7 +17,7 @@ class GetMonthlyStatsUsecase implements Usecase<MonthlyStatsEntity, MonthlyStats
   GetMonthlyStatsUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, MonthlyStatsEntity>> call(MonthlyStatsParams params) {
+  Future<Result<MonthlyStatsEntity>> call(MonthlyStatsParams params) {
     return repository.getMonthlyStats(date: params.date);
   }
 }

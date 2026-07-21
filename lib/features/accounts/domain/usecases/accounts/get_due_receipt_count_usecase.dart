@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
 import '../../entities/accounts/due_receipt_count_entity.dart';
 import '../../repositories/i_accounts_repository.dart';
 
@@ -15,7 +15,7 @@ class GetDueReceiptCountUsecase
   GetDueReceiptCountUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, DueReceiptCountEntity>> call(
+  Future<Result<DueReceiptCountEntity>> call(
     GetDueReceiptCountParams params,
   ) =>
       repository.getDueReceiptCount(dateType: params.dateType);

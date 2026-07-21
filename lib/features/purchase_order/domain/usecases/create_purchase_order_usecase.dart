@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../repositories/purchase_order_repository.dart';
 
 class CreatePurchaseOrderUsecase implements Usecase<dynamic, NoParams> {
@@ -8,7 +8,7 @@ class CreatePurchaseOrderUsecase implements Usecase<dynamic, NoParams> {
   CreatePurchaseOrderUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, dynamic>> call(NoParams params) {
+  Future<Result<dynamic>> call(NoParams params) {
     return repository.createPurchaseOrder();
   }
 }

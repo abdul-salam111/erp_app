@@ -61,13 +61,13 @@ class CashbookBloc extends Bloc<CashbookEvent, CashbookState> {
       ),
     );
 
-    result.fold(
-      (failure) => emit(state.copyWith(
+    result.when(
+      failure: (failure) => emit(state.copyWith(
         apiStatus: ApiStatus.FAILURE,
         message: failure.message,
         statements: [],
       )),
-      (statements) => emit(state.copyWith(
+      success: (statements) => emit(state.copyWith(
         apiStatus: ApiStatus.SUCCESS,
         statements: statements,
       )),
@@ -91,13 +91,13 @@ class CashbookBloc extends Bloc<CashbookEvent, CashbookState> {
       ),
     );
 
-    result.fold(
-      (failure) => emit(state.copyWith(
+    result.when(
+      failure: (failure) => emit(state.copyWith(
         isPrinting: false,
         pdfStatus: ApiStatus.FAILURE,
         message: failure.message,
       )),
-      (url) => emit(state.copyWith(
+      success: (url) => emit(state.copyWith(
         isPrinting: false,
         pdfStatus: ApiStatus.SUCCESS,
         pdfUrl: url,
@@ -111,12 +111,12 @@ class CashbookBloc extends Bloc<CashbookEvent, CashbookState> {
   ) async {
     emit(state.copyWith(accountsStatus: ApiStatus.LOADING));
     final result = await getCashbookAccountsUsecase(NoParams());
-    result.fold(
-      (failure) => emit(state.copyWith(
+    result.when(
+      failure: (failure) => emit(state.copyWith(
         accountsStatus: ApiStatus.FAILURE,
         message: failure.message,
       )),
-      (accounts) => emit(state.copyWith(
+      success: (accounts) => emit(state.copyWith(
         accountsStatus: ApiStatus.SUCCESS,
         accounts: accounts
             .where((a) =>

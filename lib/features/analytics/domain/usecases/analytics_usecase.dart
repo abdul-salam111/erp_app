@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../repositories/analytics_repository.dart';
 
 class AnalyticsUsecase implements Usecase<dynamic, NoParams> {
@@ -8,7 +8,7 @@ class AnalyticsUsecase implements Usecase<dynamic, NoParams> {
   AnalyticsUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, dynamic>> call(NoParams params) {
+  Future<Result<dynamic>> call(NoParams params) {
     return repository.performAction();
   }
 }

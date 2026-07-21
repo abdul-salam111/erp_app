@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
 import '../../repositories/i_accounts_repository.dart';
 
 class GetInvoicePdfParams {
@@ -17,7 +17,7 @@ class GetInvoicePdfUsecase implements Usecase<String, GetInvoicePdfParams> {
   GetInvoicePdfUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, String>> call(GetInvoicePdfParams params) =>
+  Future<Result<String>> call(GetInvoicePdfParams params) =>
       repository.getInvoicePdf(
         featureId: params.featureId,
         parentEntityId: params.parentEntityId,

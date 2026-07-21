@@ -1,6 +1,5 @@
-import 'package:fpdart/fpdart.dart';
-
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
 import '../../entities/credit_managment/party_revenue_and_recovery_entity.dart';
 import '../../repositories/i_accounts_repository.dart';
 
@@ -21,7 +20,7 @@ class GetPartyRevenueAndRecoveryUsecase
   GetPartyRevenueAndRecoveryUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, PartyRevenueAndRecoveryEntity>> call(
+  Future<Result<PartyRevenueAndRecoveryEntity>> call(
     GetPartyRevenueAndRecoveryParams params,
   ) =>
       repository.getPartyRevenueAndRecovery(

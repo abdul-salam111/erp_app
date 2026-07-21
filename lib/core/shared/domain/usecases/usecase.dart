@@ -1,8 +1,7 @@
-import 'package:fpdart/fpdart.dart';
-import '../../../errors/failures.dart';
+import '../../../utils/result.dart';
 
 abstract interface class Usecase<SuccessType, Params> {
-  Future<Either<Failure, SuccessType>> call(Params params);
+  Future<Result<SuccessType>> call(Params params);
 }
 
 class NoParams {}

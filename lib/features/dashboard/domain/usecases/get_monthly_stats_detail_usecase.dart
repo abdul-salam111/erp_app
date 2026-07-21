@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../entities/monthly_stats_detail_entity.dart';
 import '../repositories/dashboard_repository.dart';
 
@@ -19,7 +19,7 @@ class GetMonthlyStatsDetailUsecase
   GetMonthlyStatsDetailUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<MonthlyStatDetailPoint>>> call(
+  Future<Result<List<MonthlyStatDetailPoint>>> call(
     MonthlyStatsDetailParams params,
   ) {
     return repository.getMonthlyStatsDetail(

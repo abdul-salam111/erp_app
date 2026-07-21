@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
 import '../../entities/shared/ledger_statement_entity.dart';
 import '../../repositories/i_accounts_repository.dart';
 
@@ -21,7 +21,7 @@ class GetPartyStatementsUsecase
   GetPartyStatementsUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<LedgerStatementEntity>>> call(
+  Future<Result<List<LedgerStatementEntity>>> call(
     GetPartyStatementsParams params,
   ) =>
       repository.getPartyStatements(

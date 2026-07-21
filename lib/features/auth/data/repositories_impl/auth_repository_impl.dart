@@ -1,6 +1,6 @@
-import 'package:fpdart/fpdart.dart';
 import 'package:mantic_erp_app/features/auth/auth_exports.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../models/request_models/select_branch_request_model/select_branch_request_model.dart';
 
 class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
@@ -9,7 +9,7 @@ class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
   AuthRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Either<Failure, UserEntity>> loginUser({
+  Future<Result<UserEntity>> loginUser({
     required LoginRequestModel loginRequestModel,
   }) {
     return execute(
@@ -23,7 +23,7 @@ class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
   }
 
   @override
-  Future<Either<Failure, AuthToken>> selectBranch({
+  Future<Result<AuthToken>> selectBranch({
     required SelectBranchRequestModel request,
   }) {
     return execute(

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:fpdart/fpdart.dart';
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
 import '../../../accounts_exports.dart';
 
 class VendorPayableParams extends Equatable {
@@ -20,7 +20,7 @@ class VendorPayableUsecase
   VendorPayableUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<CustomerReceivableItemEntity>>> call(
+  Future<Result<List<CustomerReceivableItemEntity>>> call(
     VendorPayableParams params,
   ) {
     return repository.vendorPayable(

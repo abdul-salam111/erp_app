@@ -55,13 +55,13 @@ class CreditManagementDetailsCubit
       GetPartyCreditMonthlySummaryParams(toDate: toDate, partyId: partyId),
     );
     if (isClosed) return;
-    result.fold(
-      (f) => emit(state.copyWith(
+    result.when(
+      failure: (f) => emit(state.copyWith(
         summaryStatus: ApiStatus.FAILURE,
         summaryMessage: f.message,
         summaryItems: [],
       )),
-      (items) => emit(state.copyWith(
+      success: (items) => emit(state.copyWith(
         summaryStatus: ApiStatus.SUCCESS,
         summaryItems: items,
         clearSummaryMessage: true,
@@ -77,13 +77,13 @@ class CreditManagementDetailsCubit
       GetPartyUnpaidDebitsParams(toDate: toDate, partyId: partyId),
     );
     if (isClosed) return;
-    result.fold(
-      (f) => emit(state.copyWith(
+    result.when(
+      failure: (f) => emit(state.copyWith(
         unpaidStatus: ApiStatus.FAILURE,
         unpaidMessage: f.message,
         unpaidItems: [],
       )),
-      (items) => emit(state.copyWith(
+      success: (items) => emit(state.copyWith(
         unpaidStatus: ApiStatus.SUCCESS,
         unpaidItems: items,
         clearUnpaidMessage: true,
@@ -99,13 +99,13 @@ class CreditManagementDetailsCubit
       GetPartyTopReceiptsParams(toDate: toDate, partyId: partyId),
     );
     if (isClosed) return;
-    result.fold(
-      (f) => emit(state.copyWith(
+    result.when(
+      failure: (f) => emit(state.copyWith(
         receiptsStatus: ApiStatus.FAILURE,
         receiptsMessage: f.message,
         receiptsItems: [],
       )),
-      (items) => emit(state.copyWith(
+      success: (items) => emit(state.copyWith(
         receiptsStatus: ApiStatus.SUCCESS,
         receiptsItems: items,
         clearReceiptsMessage: true,
@@ -121,12 +121,12 @@ class CreditManagementDetailsCubit
       GetPartyRevenueAndRecoveryParams(toDate: toDate, partyId: partyId),
     );
     if (isClosed) return;
-    result.fold(
-      (f) => emit(state.copyWith(
+    result.when(
+      failure: (f) => emit(state.copyWith(
         revenueStatus: ApiStatus.FAILURE,
         revenueMessage: f.message,
       )),
-      (data) => emit(state.copyWith(
+      success: (data) => emit(state.copyWith(
         revenueStatus: ApiStatus.SUCCESS,
         revenueData: data,
         clearRevenueMessage: true,

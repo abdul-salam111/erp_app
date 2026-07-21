@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
 import '../../repositories/i_accounts_repository.dart';
 
 class GetPrintableFeaturesUsecase implements Usecase<List<int>, NoParams> {
@@ -8,6 +8,6 @@ class GetPrintableFeaturesUsecase implements Usecase<List<int>, NoParams> {
   GetPrintableFeaturesUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<int>>> call(NoParams params) =>
+  Future<Result<List<int>>> call(NoParams params) =>
       repository.getPrintableFeatures();
 }

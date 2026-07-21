@@ -42,13 +42,13 @@ class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionStat
       ),
     );
 
-    await result.fold(
-      (failure) async => emit(state.copyWith(
+    await result.when(
+      failure: (failure) async => emit(state.copyWith(
         status: ApiStatus.FAILURE,
         message: failure.message,
         clearLoadingIndex: true,
       )),
-      (authToken) async {
+      success: (authToken) async {
         if (authToken.accessToken == null) {
           emit(state.copyWith(
             status: ApiStatus.FAILURE,

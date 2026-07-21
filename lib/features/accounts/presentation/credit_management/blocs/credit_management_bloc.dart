@@ -51,23 +51,23 @@ class CreditManagementBloc
     );
 
     await Future.wait([
-      partiesFuture.then((r) => r.fold(
-            (f) => emit(state.copyWith(
+      partiesFuture.then((r) => r.when(
+            failure: (f) => emit(state.copyWith(
               partiesStatus: ApiStatus.FAILURE,
               message: f.message,
             )),
-            (parties) => emit(state.copyWith(
+            success: (parties) => emit(state.copyWith(
               partiesStatus: ApiStatus.SUCCESS,
               parties: parties,
               clearMessage: true,
             )),
           )),
-      agingFuture.then((r) => r.fold(
-            (f) => emit(state.copyWith(
+      agingFuture.then((r) => r.when(
+            failure: (f) => emit(state.copyWith(
               apiStatus: ApiStatus.FAILURE,
               message: f.message,
             )),
-            (data) => emit(state.copyWith(
+            success: (data) => emit(state.copyWith(
               apiStatus: ApiStatus.SUCCESS,
               agingData: data,
               clearMessage: true,

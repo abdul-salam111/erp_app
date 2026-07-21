@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../../data/models/response_models/purchase_order_detail/purchase_order_detail.dart';
 import '../repositories/purchase_order_repository.dart';
 
@@ -10,7 +10,7 @@ class GetPurchaseOrderByIdUsecase
   GetPurchaseOrderByIdUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, PurchaseOrderDetail>> call(int params) {
+  Future<Result<PurchaseOrderDetail>> call(int params) {
     return repository.fetchOrderById(params);
   }
 }

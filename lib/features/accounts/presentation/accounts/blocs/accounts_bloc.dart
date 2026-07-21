@@ -48,14 +48,14 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
     final result = await getDueReceiptCountUsecase.call(
       GetDueReceiptCountParams(dateType: dateType),
     );
-    result.fold(
-      (failure) => emit(
+    result.when(
+      failure: (failure) => emit(
         state.copyWith(
           recoveryDueStatus: ApiStatus.FAILURE,
           recoveryDueError: failure.message,
         ),
       ),
-      (data) => emit(
+      success: (data) => emit(
         state.copyWith(recoveryDueStatus: ApiStatus.SUCCESS, recoveryDue: data),
       ),
     );

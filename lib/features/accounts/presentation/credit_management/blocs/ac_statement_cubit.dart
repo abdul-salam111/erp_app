@@ -24,13 +24,13 @@ class AcStatementCubit extends Cubit<AcStatementState> {
         partyId: partyId,
       ),
     );
-    result.fold(
-      (failure) => emit(state.copyWith(
+    result.when(
+      failure: (failure) => emit(state.copyWith(
         status: ApiStatus.FAILURE,
         message: failure.message,
         statements: [],
       )),
-      (statements) => emit(state.copyWith(
+      success: (statements) => emit(state.copyWith(
         status: ApiStatus.SUCCESS,
         statements: statements,
         clearMessage: true,

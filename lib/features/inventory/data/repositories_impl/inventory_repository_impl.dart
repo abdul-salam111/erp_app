@@ -1,4 +1,4 @@
-import 'package:fpdart/fpdart.dart';
+import '../../../../core/utils/result.dart';
 import '../../inventory_exports.dart';
 
 class InventoryRepositoryImpl extends BaseRepository
@@ -8,7 +8,7 @@ class InventoryRepositoryImpl extends BaseRepository
   InventoryRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Either<Failure, List<StockReceivedEntity>>> getStockReceived(
+  Future<Result<List<StockReceivedEntity>>> getStockReceived(
     String dateType,
   ) async {
     final result = await execute(
@@ -18,7 +18,7 @@ class InventoryRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<CurrentStockEntity>>> getCurrentStock() async {
+  Future<Result<List<CurrentStockEntity>>> getCurrentStock() async {
     final result = await execute(call: () => dataSource.getCurrentStock());
     return result.map((models) => models.map(_toCurrentStockEntity).toList());
   }

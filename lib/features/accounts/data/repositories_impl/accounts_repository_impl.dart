@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../../accounts_exports.dart';
 
 class AccountsRepositoryImpl extends BaseRepository
@@ -11,7 +11,7 @@ class AccountsRepositoryImpl extends BaseRepository
   //! ─── Account Ledger ─────────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, List<LedgerStatementEntity>>> getAccountStatements({
+  Future<Result<List<LedgerStatementEntity>>> getAccountStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
@@ -27,7 +27,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<AccountListItemEntity>>> getAccountsList() async {
+  Future<Result<List<AccountListItemEntity>>> getAccountsList() async {
     final result = await execute(call: () => dataSource.getAccountsList());
     return result.map((models) => models.map((m) => m.toEntity()).toList());
   }
@@ -35,7 +35,7 @@ class AccountsRepositoryImpl extends BaseRepository
   //! ─── Party Ledger ───────────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, List<LedgerStatementEntity>>> getPartyStatements({
+  Future<Result<List<LedgerStatementEntity>>> getPartyStatements({
     required String fromDate,
     required String toDate,
     int? partyId,
@@ -51,7 +51,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<PartyListItemEntity>>> getPartyList() async {
+  Future<Result<List<PartyListItemEntity>>> getPartyList() async {
     final result = await execute(call: () => dataSource.getPartyList());
     return result.map((models) => models.map((m) => m.toEntity()).toList());
   }
@@ -59,7 +59,7 @@ class AccountsRepositoryImpl extends BaseRepository
   //! ─── Cashbook ───────────────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, List<LedgerStatementEntity>>> getCashbookStatements({
+  Future<Result<List<LedgerStatementEntity>>> getCashbookStatements({
     required String fromDate,
     required String toDate,
     int? accountId,
@@ -75,7 +75,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<CashbookAccountItemEntity>>>
+  Future<Result<List<CashbookAccountItemEntity>>>
   getCashbookAccounts() async {
     final result = await execute(call: () => dataSource.getCashbookAccounts());
     return result.map(
@@ -86,14 +86,14 @@ class AccountsRepositoryImpl extends BaseRepository
   //! ─── Position ───────────────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, List<BankCashItemEntity>>>
+  Future<Result<List<BankCashItemEntity>>>
   bankAndCashPosition() async {
     final result = await execute(call: () => dataSource.bankAndCashPosition());
     return result.map((models) => models.map((m) => m.toEntity()).toList());
   }
 
   @override
-  Future<Either<Failure, DueReceiptCountEntity>> getDueReceiptCount({
+  Future<Result<DueReceiptCountEntity>> getDueReceiptCount({
     required String dateType,
   }) async {
     final result = await execute(
@@ -105,7 +105,7 @@ class AccountsRepositoryImpl extends BaseRepository
   //! ─── Utilities ──────────────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, String>> getInvoicePdf({
+  Future<Result<String>> getInvoicePdf({
     required int featureId,
     required int parentEntityId,
   }) {
@@ -118,7 +118,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<int>>> getPrintableFeatures() {
+  Future<Result<List<int>>> getPrintableFeatures() {
     return execute(call: () => dataSource.getPrintableFeatures());
   }
 
@@ -127,7 +127,7 @@ class AccountsRepositoryImpl extends BaseRepository
   //! ─── Credit Management ──────────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, CustomerReceivableAgingEntity>>
+  Future<Result<CustomerReceivableAgingEntity>>
   getCustomerReceivableAging({
     required String toDate,
     int? partyId,
@@ -142,7 +142,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<PartyCreditMonthlySummaryEntity>>>
+  Future<Result<List<PartyCreditMonthlySummaryEntity>>>
   getPartyCreditMonthlySummary({
     required String toDate,
     required int partyId,
@@ -157,7 +157,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<PartyUnpaidDebitEntity>>> getPartyUnpaidDebits({
+  Future<Result<List<PartyUnpaidDebitEntity>>> getPartyUnpaidDebits({
     required String toDate,
     required int partyId,
   }) async {
@@ -171,7 +171,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<PartyTopReceiptEntity>>> getPartyTopReceipts({
+  Future<Result<List<PartyTopReceiptEntity>>> getPartyTopReceipts({
     required String toDate,
     required int partyId,
   }) async {
@@ -185,7 +185,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, PartyRevenueAndRecoveryEntity>>
+  Future<Result<PartyRevenueAndRecoveryEntity>>
   getPartyRevenueAndRecovery({
     required String toDate,
     required int partyId,
@@ -202,7 +202,7 @@ class AccountsRepositoryImpl extends BaseRepository
   //! ─── Customer Receivables ───────────────────────────────────────────────────
 
   @override
-  Future<Either<Failure, List<CustomerReceivableItemEntity>>>
+  Future<Result<List<CustomerReceivableItemEntity>>>
   getCustomerReceivables({
     required String fromDate,
     required String toDate,
@@ -219,7 +219,7 @@ class AccountsRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Either<Failure, List<CustomerReceivableItemEntity>>> vendorPayable({
+  Future<Result<List<CustomerReceivableItemEntity>>> vendorPayable({
     required String fromDate,
     required String toDate,
   }) async {

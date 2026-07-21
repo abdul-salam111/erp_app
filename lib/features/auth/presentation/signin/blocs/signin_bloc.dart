@@ -26,11 +26,11 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
     final result = await signinUsecase.call(
       LoginRequestModel(email: state.email, password: state.password),
     );
-    await result.fold(
-      (failure) async => emit(
+    await result.when(
+      failure: (failure) async => emit(
         state.copyWith(apiStatus: ApiStatus.FAILURE, message: failure.message),
       ),
-      (user) async {
+      success: (user) async {
         await SessionController.instance.saveUserInStorage(user);
         // Auto-save when user belongs to a single organization.
         if (user.organizations.length == 1) {

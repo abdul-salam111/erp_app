@@ -1,6 +1,5 @@
-import 'package:fpdart/fpdart.dart';
-
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
 import '../../../accounts_exports.dart';
 
 class GetPartyTopReceiptsParams {
@@ -21,7 +20,7 @@ class GetPartyTopReceiptsUsecase
   GetPartyTopReceiptsUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<PartyTopReceiptEntity>>> call( 
+  Future<Result<List<PartyTopReceiptEntity>>> call(
     GetPartyTopReceiptsParams params,
   ) =>
       repository.getPartyTopReceipts(

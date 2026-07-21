@@ -78,24 +78,24 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       )),
     ).wait;
 
-    dailyResult.fold(
-      (f) => emit(state.copyWith(dailyStatsStatus: ApiStatus.FAILURE, dailyStatsError: f.message)),
-      (d) => emit(state.copyWith(dailyStatsStatus: ApiStatus.SUCCESS, dailyStats: d)),
+    dailyResult.when(
+      failure: (f) => emit(state.copyWith(dailyStatsStatus: ApiStatus.FAILURE, dailyStatsError: f.message)),
+      success: (d) => emit(state.copyWith(dailyStatsStatus: ApiStatus.SUCCESS, dailyStats: d)),
     );
 
-    monthlyResult.fold(
-      (f) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message)),
-      (d) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d)),
+    monthlyResult.when(
+      failure: (f) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message)),
+      success: (d) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d)),
     );
 
-    detailResult.fold(
-      (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
-      (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
+    detailResult.when(
+      failure: (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
+      success: (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
     );
 
-    saleOrderResult.fold(
-      (f) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message)),
-      (d) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d)),
+    saleOrderResult.when(
+      failure: (f) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message)),
+      success: (d) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d)),
     );
   }
 
@@ -112,9 +112,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       fromDate: _toDateStr(event.fromDate),
       toDate:   _toDateStr(event.toDate),
     ));
-    result.fold(
-      (f) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message)),
-      (d) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d)),
+    result.when(
+      failure: (f) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message)),
+      success: (d) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d)),
     );
   }
 
@@ -135,14 +135,14 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       _getMonthlyStatsDetail(MonthlyStatsDetailParams(date: dateStr, panelKey: state.selectedPanelKey)),
     ).wait;
 
-    monthlyResult.fold(
-      (f) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message)),
-      (d) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d)),
+    monthlyResult.when(
+      failure: (f) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message)),
+      success: (d) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d)),
     );
 
-    detailResult.fold(
-      (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
-      (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
+    detailResult.when(
+      failure: (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
+      success: (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
     );
   }
 
@@ -163,9 +163,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     ));
 
     final result = await _getDailyStats(DailyStatsParams(date: _toDateStr(event.date)));
-    result.fold(
-      (f) => emit(state.copyWith(dailyStatsStatus: ApiStatus.FAILURE, dailyStatsError: f.message)),
-      (d) => emit(state.copyWith(dailyStatsStatus: ApiStatus.SUCCESS, dailyStats: d)),
+    result.when(
+      failure: (f) => emit(state.copyWith(dailyStatsStatus: ApiStatus.FAILURE, dailyStatsError: f.message)),
+      success: (d) => emit(state.copyWith(dailyStatsStatus: ApiStatus.SUCCESS, dailyStats: d)),
     );
   }
 
@@ -183,9 +183,9 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       MonthlyStatsDetailParams(date: dateStr, panelKey: event.panelKey),
     );
 
-    result.fold(
-      (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
-      (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
+    result.when(
+      failure: (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
+      success: (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
     );
   }
 }

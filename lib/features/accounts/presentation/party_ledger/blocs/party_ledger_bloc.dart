@@ -41,13 +41,13 @@ class PartyLedgerBloc extends Bloc<PartyLedgerEvent, PartyLedgerState> {
       ),
     );
 
-    result.fold(
-      (failure) => emit(state.copyWith(
+    result.when(
+      failure: (failure) => emit(state.copyWith(
         apiStatus: ApiStatus.FAILURE,
         message: failure.message,
         statements: [],
       )),
-      (statements) => emit(state.copyWith(
+      success: (statements) => emit(state.copyWith(
         apiStatus: ApiStatus.SUCCESS,
         statements: statements,
       )),
@@ -60,12 +60,12 @@ class PartyLedgerBloc extends Bloc<PartyLedgerEvent, PartyLedgerState> {
   ) async {
     emit(state.copyWith(partiesStatus: ApiStatus.LOADING));
     final result = await getPartyListUsecase(NoParams());
-    result.fold(
-      (failure) => emit(state.copyWith(
+    result.when(
+      failure: (failure) => emit(state.copyWith(
         partiesStatus: ApiStatus.FAILURE,
         message: failure.message,
       )),
-      (parties) => emit(state.copyWith(
+      success: (parties) => emit(state.copyWith(
         partiesStatus: ApiStatus.SUCCESS,
         parties: parties,
       )),
@@ -85,13 +85,13 @@ class PartyLedgerBloc extends Bloc<PartyLedgerEvent, PartyLedgerState> {
       ),
     );
 
-    result.fold(
-      (failure) => emit(state.copyWith(
+    result.when(
+      failure: (failure) => emit(state.copyWith(
         isPrinting: false,
         pdfStatus: ApiStatus.FAILURE,
         message: failure.message,
       )),
-      (url) => emit(state.copyWith(
+      success: (url) => emit(state.copyWith(
         isPrinting: false,
         pdfStatus: ApiStatus.SUCCESS,
         pdfUrl: url,

@@ -56,8 +56,8 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
       ),
     );
 
-    result.fold(
-      (failure) {
+    result.when(
+      failure: (failure) {
         debugPrint('[AccountLedger] _onSubmitted FAILURE: ${failure.message}');
         emit(state.copyWith(
           apiStatus: ApiStatus.FAILURE,
@@ -65,7 +65,7 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
           statements: [],
         ));
       },
-      (statements) {
+      success: (statements) {
         debugPrint('[AccountLedger] _onSubmitted SUCCESS: ${statements.length} statement(s)');
         emit(state.copyWith(
           apiStatus: ApiStatus.SUCCESS,
@@ -88,8 +88,8 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
       ),
     );
 
-    result.fold(
-      (failure) {
+    result.when(
+      failure: (failure) {
         debugPrint('[AccountLedger] _onPrintRequested FAILURE: ${failure.message}');
         emit(state.copyWith(
           isPrinting: false,
@@ -97,7 +97,7 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
           message: failure.message,
         ));
       },
-      (url) {
+      success: (url) {
         debugPrint('[AccountLedger] _onPrintRequested SUCCESS: $url');
         emit(state.copyWith(
           isPrinting: false,
@@ -114,15 +114,15 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
   ) async {
     emit(state.copyWith(accountsStatus: ApiStatus.LOADING));
     final result = await getAccountsListUsecase(NoParams());
-    result.fold(
-      (failure) {
+    result.when(
+      failure: (failure) {
         debugPrint('[AccountLedger] _onAccountsFetched FAILURE: ${failure.message}');
         emit(state.copyWith(
           accountsStatus: ApiStatus.FAILURE,
           message: failure.message,
         ));
       },
-      (accounts) {
+      success: (accounts) {
         debugPrint('[AccountLedger] _onAccountsFetched SUCCESS: ${accounts.length} account(s)');
         emit(state.copyWith(
           accountsStatus: ApiStatus.SUCCESS,

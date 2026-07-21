@@ -1,6 +1,5 @@
-import 'package:fpdart/fpdart.dart';
-
 import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
 import '../../entities/credit_managment/customer_receivable_aging_entity.dart';
 import '../../repositories/i_accounts_repository.dart';
 
@@ -23,7 +22,7 @@ class GetCustomerReceivableAgingUsecase
   GetCustomerReceivableAgingUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, CustomerReceivableAgingEntity>> call(
+  Future<Result<CustomerReceivableAgingEntity>> call(
     GetCustomerReceivableAgingParams params,
   ) =>
       repository.getCustomerReceivableAging(

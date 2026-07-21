@@ -1,4 +1,5 @@
 export './bloc_observer.dart';
+export './result.dart';
 export './currency_utils.dart';
 export './apptoast_utils.dart';
 export './date_utils.dart';

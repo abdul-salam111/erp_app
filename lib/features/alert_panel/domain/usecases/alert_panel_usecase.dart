@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../repositories/alert_panel_repository.dart';
 
 class AlertPanelUsecase implements Usecase<dynamic, NoParams> {
@@ -8,7 +8,7 @@ class AlertPanelUsecase implements Usecase<dynamic, NoParams> {
   AlertPanelUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, dynamic>> call(NoParams params) {
+  Future<Result<dynamic>> call(NoParams params) {
     return repository.performAction();
   }
 }

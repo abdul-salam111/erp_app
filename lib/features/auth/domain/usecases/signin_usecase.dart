@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../../auth_exports.dart';
 
 class SignInUsecase implements Usecase<UserEntity, LoginRequestModel> {
@@ -8,7 +8,7 @@ class SignInUsecase implements Usecase<UserEntity, LoginRequestModel> {
   SignInUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, UserEntity>> call(
+  Future<Result<UserEntity>> call(
     LoginRequestModel loginRequestModel,
   ) {
     return repository.loginUser(loginRequestModel: loginRequestModel);

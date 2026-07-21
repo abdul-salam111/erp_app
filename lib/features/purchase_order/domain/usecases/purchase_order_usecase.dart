@@ -1,5 +1,5 @@
-import 'package:fpdart/fpdart.dart';
 import '../../../../core/shared/shared_exports.dart';
+import '../../../../core/utils/result.dart';
 import '../entities/purchase_order_entity.dart';
 import '../repositories/purchase_order_repository.dart';
 
@@ -10,7 +10,7 @@ class PurchaseOrderUsecase
   PurchaseOrderUsecase({required this.repository});
 
   @override
-  Future<Either<Failure, List<PurchaseOrderEntity>>> call(NoParams params) {
+  Future<Result<List<PurchaseOrderEntity>>> call(NoParams params) {
     return repository.fetchOrders();
   }
 }

@@ -34,23 +34,23 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       _getCurrentStock(NoParams()),
     ).wait;
 
-    stockResult.fold(
-      (f) => emit(state.copyWith(
+    stockResult.when(
+      failure: (f) => emit(state.copyWith(
         stockReceivedStatus: ApiStatus.FAILURE,
         stockReceivedError: f.message,
       )),
-      (data) => emit(state.copyWith(
+      success: (data) => emit(state.copyWith(
         stockReceivedStatus: ApiStatus.SUCCESS,
         stockReceived: data,
       )),
     );
 
-    currentResult.fold(
-      (f) => emit(state.copyWith(
+    currentResult.when(
+      failure: (f) => emit(state.copyWith(
         currentStockStatus: ApiStatus.FAILURE,
         currentStockError: f.message,
       )),
-      (data) => emit(state.copyWith(
+      success: (data) => emit(state.copyWith(
         currentStockStatus: ApiStatus.SUCCESS,
         currentStock: data,
       )),
@@ -67,12 +67,12 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       StockReceivedParams(dateType: event.dateType),
     );
 
-    result.fold(
-      (f) => emit(state.copyWith(
+    result.when(
+      failure: (f) => emit(state.copyWith(
         stockReceivedStatus: ApiStatus.FAILURE,
         stockReceivedError: f.message,
       )),
-      (data) => emit(state.copyWith(
+      success: (data) => emit(state.copyWith(
         stockReceivedStatus: ApiStatus.SUCCESS,
         stockReceived: data,
       )),
