@@ -162,16 +162,18 @@ class _LoginCard extends StatelessWidget {
           crossAxisAlignment: .center,
           mainAxisSize: .min,
           children: [
-            // Logo badge
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF0F4FF),
-                borderRadius: BorderRadius.circular(18),
+            // Logo badge — tap 5× to switch environment
+            EnvSwitchDetector(
+              child: Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0F4FF),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                padding: const EdgeInsets.all(10),
+                child: Image.asset(AppImages.manticLogo, fit: .contain),
               ),
-              padding: const EdgeInsets.all(10),
-              child: Image.asset(AppImages.manticLogo, fit: .contain),
             ),
             const SizedBox(height: 20),
             const Text(

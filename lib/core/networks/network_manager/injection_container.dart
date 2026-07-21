@@ -1,11 +1,10 @@
-import 'dart:convert';
-import 'dart:io'; // <-- Add this for HttpClient
+import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart'; // <-- Add this for IOHttpClientAdapter
-import 'prints.dart';
+import 'package:dio/io.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 Dio getDio() {
-  Dio dio = Dio(
+  final dio = Dio(
     BaseOptions(
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
@@ -13,7 +12,6 @@ Dio getDio() {
     ),
   );
 
-  // Add HTTP adapter configuration for better connection handling
   dio.httpClientAdapter = IOHttpClientAdapter(
     createHttpClient: () {
       final client = HttpClient();
@@ -24,28 +22,13 @@ Dio getDio() {
   );
 
   dio.interceptors.add(
-    InterceptorsWrapper(
-      onRequest: (RequestOptions options, RequestInterceptorHandler handler) {
-        printValue(tag: 'API URL:', '${options.uri}');
-        printValue(tag: 'HEADER:', options.headers);
-        try {
-          printValue(tag: 'REQUEST BODY:', jsonEncode(options.data));
-        } catch (e) {
-          printValue(tag: "Request Body", e.toString());
-        }
-        return handler.next(options);
-      },
-
-      onResponse: (Response response, ResponseInterceptorHandler handler) {
-        printValue(tag: 'API RESPONSE:', response.data);
-        return handler.next(response);
-      },
-
-      onError: (DioException e, ErrorInterceptorHandler handler) {
-        printValue(tag: 'STATUS CODE:', "${e.response?.statusCode ?? ""}");
-        printValue(tag: 'ERROR DATA:', "${e.response?.data ?? ""}");
-        return handler.next(e);
-      },
+    PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+      error: true,
+      compact: true,
     ),
   );
 

@@ -11,6 +11,7 @@ import '../../../../core/services/current_user.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../../routes/route_names.dart';
 import '../../profile_exports.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
@@ -210,38 +211,40 @@ class _ProfileHeader extends StatelessWidget {
 
                     const SizedBox(height: 24),
 
-                    // Avatar
-                    Container(
-                      width: 92,
-                      height: 92,
-                      decoration: BoxDecoration(
-                        shape: .circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            AppColors.white.withValues(alpha: 0.30),
-                            AppColors.white.withValues(alpha: 0.12),
+                    // Avatar — tap 5× to switch environment
+                    EnvSwitchDetector(
+                      child: Container(
+                        width: 92,
+                        height: 92,
+                        decoration: BoxDecoration(
+                          shape: .circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              AppColors.white.withValues(alpha: 0.30),
+                              AppColors.white.withValues(alpha: 0.12),
+                            ],
+                          ),
+                          border: Border.all(
+                            color: AppColors.white.withValues(alpha: 0.50),
+                            width: 2.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.35),
+                              blurRadius: 24,
+                              spreadRadius: 2,
+                            ),
                           ],
                         ),
-                        border: Border.all(
-                          color: AppColors.white.withValues(alpha: 0.50),
-                          width: 2.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.35),
-                            blurRadius: 24,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          initials,
-                          style: const TextStyle(
-                            color: AppColors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700,
-                            height: 1,
+                        child: Center(
+                          child: Text(
+                            initials,
+                            style: const TextStyle(
+                              color: AppColors.white,
+                              fontSize: 30,
+                              fontWeight: FontWeight.w700,
+                              height: 1,
+                            ),
                           ),
                         ),
                       ),
