@@ -47,6 +47,7 @@ class EmployeeDashboard extends StatelessWidget {
             label: AppConstants.attendanceLabel,
             icon: Iconsax.calendar_tick,
             color: AppColors.green,
+            routeName: RouteNames.attendance,
           ),
           DrawerItem.tile(
             label: AppConstants.leaveRequestLabel,
@@ -680,6 +681,7 @@ class _WorkspaceMenuSection extends StatelessWidget {
       subtitle: AppConstants.attendanceSubtitle,
       icon: Iconsax.calendar_tick,
       color: AppColors.green,
+      routeName: RouteNames.attendance,
     ),
     _MenuMeta(
       label: AppConstants.leaveRequestLabel,
