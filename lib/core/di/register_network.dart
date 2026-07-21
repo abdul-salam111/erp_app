@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
-import '../utils/app_logger.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../networks/network_manager/dio_helper.dart';
 import 'app_dependencies.dart';
 
@@ -29,33 +28,11 @@ Dio _createDio() {
     },
   );
 
-  dio.interceptors.add(
-    InterceptorsWrapper(
-      onRequest: (options, handler) {
-        appLogger.d('[→] ${options.method} ${options.uri}');
-        appLogger.d('[→] Headers: ${options.headers}');
-        try {
-          appLogger.d('[→] Body: ${jsonEncode(options.data)}');
-        } catch (_) {}
-        return handler.next(options);
-      },
-      onResponse: (response, handler) {
-        appLogger.i(
-          '[←] ${response.statusCode} ${response.requestOptions.uri}',
-        );
-        appLogger.d('[←] Body: ${response.data}');
-        return handler.next(response);
-      },
-      onError: (e, handler) {
-        appLogger.e(
-          '[✗] ${e.response?.statusCode} ${e.requestOptions.method} ${e.requestOptions.uri}',
-          error: e,
-          stackTrace: e.stackTrace,
-        );
-        return handler.next(e);
-      },
-    ),
-  );
+  dio.interceptors.add(PrettyDioLogger(
+    requestHeader: true,
+    requestBody: true,
+    responseBody: true,
+  ));
 
   return dio;
 }

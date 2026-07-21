@@ -1,4 +1,3 @@
-export './app_logger.dart';
 export './bloc_observer.dart';
 export './currency_utils.dart';
 export './apptoast_utils.dart';
