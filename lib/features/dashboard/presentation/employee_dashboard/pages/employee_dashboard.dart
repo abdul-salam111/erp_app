@@ -115,14 +115,6 @@ class _EmployeeSliverAppBar extends StatelessWidget {
     return AppConstants.goodEveningMsg;
   }
 
-  String _initials(String name) {
-    final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.isEmpty || parts.first.isEmpty) return '?';
-    final first = parts.first[0];
-    final last = parts.length > 1 ? parts.last[0] : '';
-    return (first + last).toUpperCase();
-  }
-
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
@@ -300,79 +292,35 @@ class _EmployeeSliverAppBar extends StatelessWidget {
                       mainAxisSize: .min,
                       crossAxisAlignment: .start,
                       children: [
-                        Row(
+                        Text(
+                          '$_greeting 👋',
+                          style: context.labelSmall.copyWith(
+                            color: AppColors.white.withValues(alpha: 0.80),
+                            fontWeight: .w500,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          currentUser.fullName,
+                          style: context.titleLarge.copyWith(
+                            color: AppColors.white,
+                            fontWeight: .w700,
+                            height: 1.1,
+                          ),
+                          maxLines: 1,
+                          overflow: .ellipsis,
+                        ),
+                        const SizedBox(height: 7),
+                        const Row(
                           children: [
-                            GestureDetector(
-                              onTap: () =>
-                                  context.pushNamed(RouteNames.profile),
-                              child: Container(
-                                padding: const EdgeInsets.all(3),
-                                decoration: BoxDecoration(
-                                  shape: .circle,
-                                  border: Border.all(
-                                    color: AppColors.white.withValues(
-                                      alpha: 0.45,
-                                    ),
-                                    width: 2,
-                                  ),
-                                ),
-                                child: CircleAvatar(
-                                  radius: 27,
-                                  backgroundColor:
-                                      AppColors.white.withValues(alpha: 0.18),
-                                  child: Text(
-                                    _initials(currentUser.fullName),
-                                    style: context.titleMedium.copyWith(
-                                      color: AppColors.white,
-                                      fontWeight: .w700,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            _HeaderChip(
+                              icon: Iconsax.personalcard,
+                              label: 'EMP-0231',
                             ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                children: [
-                                  Text(
-                                    '$_greeting 👋',
-                                    style: context.labelSmall.copyWith(
-                                      color: AppColors.white.withValues(
-                                        alpha: 0.80,
-                                      ),
-                                      fontWeight: .w500,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 3),
-                                  Text(
-                                    currentUser.fullName,
-                                    style: context.titleLarge.copyWith(
-                                      color: AppColors.white,
-                                      fontWeight: .w700,
-                                      height: 1.1,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: .ellipsis,
-                                  ),
-                                  const SizedBox(height: 7),
-                                  Row(
-                                    children: [
-                                      const _HeaderChip(
-                                        icon: Iconsax.personalcard,
-                                        label: 'EMP-0231',
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Flexible(
-                                        child: _HeaderChip(
-                                          icon: Iconsax.buildings,
-                                          label: currentUser.org.name,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                            SizedBox(width: 6),
+                            _HeaderChip(
+                              icon: Iconsax.clock,
+                              label: '09:00 – 18:00',
                             ),
                           ],
                         ),
@@ -546,6 +494,7 @@ class _HeaderIconBtn extends StatelessWidget {
   }
 }
 
+
 // ─── Monthly snapshot ─────────────────────────────────────────────────────────
 
 class _MonthlySnapshotSection extends StatelessWidget {
@@ -576,32 +525,67 @@ class _MonthlySnapshotSection extends StatelessWidget {
       icon: Iconsax.money_send,
       color: AppColors.purple,
     ),
+    _StatMeta(
+      label: AppConstants.lastNetPayLabel,
+      value: 'Rs 1,62,400',
+      icon: Iconsax.wallet_money,
+      color: AppColors.tealDark,
+    ),
+    _StatMeta(
+      label: AppConstants.missingPunchesLabel,
+      value: '1',
+      icon: Iconsax.finger_scan,
+      color: AppColors.errorBright,
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final dividerColor = context.grey50;
     return Column(
       crossAxisAlignment: .start,
       children: [
         const SectionHeader(title: AppConstants.monthlySnapshotTitle),
         const SizedBox(height: 10),
-        GridView.builder(
-          shrinkWrap: true,
-          padding: .zero,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: _stats.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: context.gridColumnCount,
-            mainAxisExtent: Responsive.value<double>(
-              context,
-              phone: 54,
-              tablet: 60,
-              ipad: 66,
-            ),
-            mainAxisSpacing: context.gridSpacing,
-            crossAxisSpacing: context.gridSpacing,
+        Container(
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: .circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.black.withValues(alpha: 0.06),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
-          itemBuilder: (context, i) => _SnapshotCard(stat: _stats[i]),
+          child: Column(
+            children: List.generate((_stats.length / 2).ceil(), (row) {
+              final left = _stats[row * 2];
+              final right = row * 2 + 1 < _stats.length ? _stats[row * 2 + 1] : null;
+              return Column(
+                children: [
+                  if (row > 0)
+                    Divider(height: 1, thickness: 1, color: dividerColor),
+                  IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        Expanded(child: _StatItem(stat: left)),
+                        if (right != null) ...[
+                          VerticalDivider(
+                            width: 1,
+                            thickness: 1,
+                            color: dividerColor,
+                          ),
+                          Expanded(child: _StatItem(stat: right)),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }),
+          ),
         ),
       ],
     );
@@ -622,38 +606,27 @@ class _StatMeta {
   });
 }
 
-class _SnapshotCard extends StatelessWidget {
+class _StatItem extends StatelessWidget {
   final _StatMeta stat;
 
-  const _SnapshotCard({required this.stat});
+  const _StatItem({required this.stat});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: .symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: context.white,
-        borderRadius: .circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       child: Row(
         children: [
           Container(
-            width: 26,
-            height: 26,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
-              color: stat.color.withValues(alpha: 0.12),
-              borderRadius: .circular(8),
+              color: stat.color.withValues(alpha: 0.10),
+              borderRadius: .circular(9),
             ),
-            child: Icon(stat.icon, color: stat.color, size: 14),
+            child: Icon(stat.icon, color: stat.color, size: 16),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: .start,
@@ -664,7 +637,7 @@ class _SnapshotCard extends StatelessWidget {
                   style: context.labelMedium.copyWith(
                     fontWeight: .w700,
                     color: context.textPrimary,
-                    fontSize: 12,
+                    fontSize: 13,
                     height: 1,
                   ),
                   maxLines: 1,

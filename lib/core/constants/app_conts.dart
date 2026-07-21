@@ -81,6 +81,8 @@ class AppConstants {
   static const String overtimeMonthLabel = 'Overtime this month';
   static const String attendanceRateLabel = 'Attendance rate';
   static const String loanOutstandingLabel = 'Loan outstanding';
+  static const String lastNetPayLabel = 'Last net pay';
+  static const String missingPunchesLabel = 'Missing punches';
   static const String employeeLabel = 'Employee';
   static const String employeePortalTitle = 'Employee Portal';
   static const String checkInLabel = 'Check in';
