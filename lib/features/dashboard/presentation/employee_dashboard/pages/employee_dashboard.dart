@@ -64,6 +64,7 @@ class EmployeeDashboard extends StatelessWidget {
             label: AppConstants.overtimeLabel,
             icon: Iconsax.timer_1,
             color: AppColors.cyan,
+            routeName: RouteNames.overtime,
           ),
           DrawerItem.tile(
             label: AppConstants.salaryLabel,
@@ -692,6 +693,7 @@ class _WorkspaceMenuSection extends StatelessWidget {
       subtitle: AppConstants.overtimeSubtitle,
       icon: Iconsax.timer_1,
       color: AppColors.cyan,
+      routeName: RouteNames.overtime,
     ),
     _MenuMeta(
       label: AppConstants.salaryLabel,
