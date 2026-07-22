@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
-import '../../../../../features/leaves/domain/usecases/leaves_usecase.dart';
+import '../../../domain/usecases/leaves_usecase.dart';
+import '../models/leave_request_model.dart';
 import 'leaves_event.dart';
 import 'leaves_state.dart';
 
@@ -8,8 +9,21 @@ class LeavesBloc extends Bloc<LeavesEvent, LeavesState>
     with UsecaseExecuterMixin {
   final LeavesUsecase leavesUsecase;
 
-  LeavesBloc({required this.leavesUsecase}) : super(const LeavesState()) {
+  LeavesBloc({required this.leavesUsecase})
+      : super(LeavesState(
+          leaves: leavesDataFor(
+            DateTime(DateTime.now().year, DateTime.now().month),
+          ),
+        )) {
+    on<LeavesMonthChanged>(_onMonthChanged);
     on<LeavesSubmitted>(_onLeavesSubmitted);
+  }
+
+  void _onMonthChanged(LeavesMonthChanged event, Emitter<LeavesState> emit) {
+    emit(state.copyWith(
+      selectedMonth: event.month,
+      leaves: leavesDataFor(event.month),
+    ));
   }
 
   Future<void> _onLeavesSubmitted(

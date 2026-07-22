@@ -9,5 +9,6 @@ export './loading_popup.dart';
 export './overview_stat_card.dart';
 export './shimmer_box.dart';
 export './compact_date_picker.dart';
+export './month_navigator.dart';
 export './env_switch_detector.dart';
 export 'accounts_widgets/accounts_widgets.dart';

@@ -18,6 +18,7 @@ class CustomButton extends StatelessWidget {
   final bool isLoading;
   final int fontsize;
   final Size size;
+  final bool isOutlined;
 
   const CustomButton({
     super.key,
@@ -34,10 +35,44 @@ class CustomButton extends StatelessWidget {
     this.iconColor = AppColors.white,
     this.isLoading = false,
     this.size = const Size(double.infinity, 50),
+    this.isOutlined = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final child = isLoading
+        ? LoadingIndicator(size: 30)
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) Icon(icon, size: iconSize, color: isOutlined ? backgroundColor : iconColor),
+              if (icon != null) SizedBox(width: 8),
+              Text(
+                text,
+                style: GoogleFonts.roboto(
+                  color: isOutlined ? backgroundColor : textColor,
+                  fontSize: fontsize.toDouble(),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          );
+
+    if (isOutlined) {
+      return OutlinedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: backgroundColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radius),
+          ),
+          padding: EdgeInsets.all(padding),
+          minimumSize: size,
+        ),
+        child: child,
+      );
+    }
+
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
@@ -50,23 +85,7 @@ class CustomButton extends StatelessWidget {
         elevation: elevation,
         minimumSize: size,
       ),
-      child: isLoading
-          ? LoadingIndicator(size: 30)
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon != null) Icon(icon, size: iconSize, color: iconColor),
-                if (icon != null) SizedBox(width: 8),
-                Text(
-                  text,
-                  style: GoogleFonts.roboto(
-                    color: textColor,
-                    fontSize: fontsize.toDouble(),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
+      child: child,
     );
   }
 }

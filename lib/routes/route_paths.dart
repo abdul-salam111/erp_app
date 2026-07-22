@@ -31,4 +31,7 @@ class RoutePaths {
   static const String system_setup = '/system_setup';
   static const String attendance = '/attendance';
   static const String leaves = '/leaves';
+  static const String apply_leave = '/apply_leave';
+  static const String leave_detail = '/leave_detail';
+  static const String salary_mgmt = '/salary_mgmt';
 }

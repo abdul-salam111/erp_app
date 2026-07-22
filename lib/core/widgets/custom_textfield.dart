@@ -19,10 +19,12 @@ class CustomTextFormField extends StatefulWidget {
   final Color? borderColor;
   final Color? labelColor;
   final bool isRequired;
+  final bool boldLabel;
   final int labelFontSize;
   final bool readOnly;
   final double? fieldHeight;
   final EdgeInsetsGeometry? contentPadding;
+  final TextStyle? hintStyle;
 
   const CustomTextFormField({
     super.key,
@@ -31,6 +33,7 @@ class CustomTextFormField extends StatefulWidget {
     this.readOnly = false,
     this.prefixIcon,
     this.isRequired = false,
+    this.boldLabel = false,
     this.fillColor,
     this.borderColor,
     this.controller,
@@ -44,6 +47,7 @@ class CustomTextFormField extends StatefulWidget {
     this.maxLines = 1,
     this.fieldHeight = 56,
     this.contentPadding,
+    this.hintStyle,
   });
 
   @override
@@ -79,6 +83,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                   style: context.bodySmall.copyWith(
                     color: defaultLabelColor,
                     fontSize: widget.labelFontSize.toDouble(),
+                    fontWeight: widget.boldLabel ? .w600 : null,
                   ),
                 ),
                 if (widget.isRequired)
@@ -112,7 +117,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           decoration: InputDecoration(
             
             hintText: widget.hintText,
-            hintStyle: context.bodySmall.copyWith(color: context.textSecondary),
+            hintStyle: widget.hintStyle ?? context.bodySmall.copyWith(color: context.textSecondary),
             prefixIcon: widget.prefixIcon != null
                 ? Icon(widget.prefixIcon, color: context.grey500, size: 20)
                 : null,

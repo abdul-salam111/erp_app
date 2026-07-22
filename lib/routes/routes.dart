@@ -17,6 +17,8 @@ import '../features/analytics/analytics_exports.dart';
 import '../features/system/system_exports.dart';
 import '../features/attendance/attendance_exports.dart';
 import '../features/leaves/leaves_exports.dart';
+import '../features/leaves/presentation/leave_detail/views/leave_detail_view.dart';
+import '../features/salary_mgmt/salary_mgmt_exports.dart';
 
 
 class AppRoutes {
@@ -285,6 +287,22 @@ class AppRoutes {
         path: RoutePaths.leaves,
         name: RouteNames.leaves,
         builder: (context, state) => const LeavesView(),
+      ),
+      GoRoute(
+        path: RoutePaths.apply_leave,
+        name: RouteNames.apply_leave,
+        builder: (context, state) => const ApplyLeaveView(),
+      ),
+      GoRoute(
+        path: RoutePaths.leave_detail,
+        name: RouteNames.leave_detail,
+        builder: (context, state) =>
+            LeaveDetailView(args: state.extra as LeaveDetailArgs),
+      ),
+      GoRoute(
+        path: RoutePaths.salary_mgmt,
+        name: RouteNames.salary_mgmt,
+        builder: (context, state) => const SalaryMgmtView(),
       ),
     
      

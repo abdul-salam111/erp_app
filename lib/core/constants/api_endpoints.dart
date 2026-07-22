@@ -10,7 +10,8 @@ class ApiEndPoints {
   static const purchase   = _PurchaseOrders();
   static const sale       = _SaleOrders();
   static const attendance = _Attendance();
-  static const leaves     = _Leaves();
+  static const leaves      = _Leaves();
+  static const salaryMgmt  = _SalaryMgmt();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -115,7 +116,16 @@ final class _Leaves {
 
   static String get _base => '${ApiEndPoints._base}/leaves';
 
-  String get applyLeave  => '$_base/ApplyLeave';
-  String get getLeaves   => '$_base/GetLeaves';
+  String get applyLeave => '$_base/ApplyLeave';
+  String get getLeaves  => '$_base/GetLeaves';
 }
 
+// ─── Salary Management ────────────────────────────────────────────────────────
+
+final class _SalaryMgmt {
+  const _SalaryMgmt();
+
+  static String get _base => '${ApiEndPoints._base}/salary';
+
+  String get getSalary => '$_base/GetSalary';
+}
