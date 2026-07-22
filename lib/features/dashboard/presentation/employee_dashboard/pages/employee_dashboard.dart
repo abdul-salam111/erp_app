@@ -58,6 +58,7 @@ class EmployeeDashboard extends StatelessWidget {
             label: AppConstants.loanAdvanceLabel,
             icon: Iconsax.money_send,
             color: AppColors.purple,
+            routeName: RouteNames.loan_and_advance,
           ),
           DrawerItem.tile(
             label: AppConstants.overtimeLabel,
@@ -684,6 +685,7 @@ class _WorkspaceMenuSection extends StatelessWidget {
       subtitle: AppConstants.loanAdvanceSubtitle,
       icon: Iconsax.money_send,
       color: AppColors.purple,
+      routeName: RouteNames.loan_and_advance,
     ),
     _MenuMeta(
       label: AppConstants.overtimeLabel,
