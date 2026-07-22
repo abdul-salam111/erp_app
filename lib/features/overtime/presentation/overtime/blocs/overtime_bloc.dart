@@ -9,7 +9,7 @@ class OvertimeBloc extends Bloc<OvertimeEvent, OvertimeState>
   final OvertimeUsecase overtimeUsecase;
 
   OvertimeBloc({required this.overtimeUsecase})
-      : super(const OvertimeState()) {
+      : super(OvertimeState()) {
     on<OvertimeSubmitted>(_onOvertimeSubmitted);
   }
 

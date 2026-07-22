@@ -7,6 +7,7 @@
 export 'domain/entities/overtime_entity.dart';
 
 // Presentation — overtime screen
+export 'presentation/overtime/models/overtime_record.dart';
 export 'presentation/overtime/blocs/overtime_bloc.dart';
 export 'presentation/overtime/blocs/overtime_event.dart';
 export 'presentation/overtime/blocs/overtime_state.dart';

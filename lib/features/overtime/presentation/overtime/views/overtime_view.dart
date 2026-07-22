@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
+import '../../../../../core/theme/colors.dart';
+import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
-import '../../../../../core/widgets/custom_button.dart';
 import '../../../overtime_exports.dart';
 
 class OvertimeView extends StatelessWidget {
@@ -19,19 +21,12 @@ class OvertimeView extends StatelessWidget {
   }
 }
 
-class _OvertimeBody extends StatefulWidget {
+class _OvertimeBody extends StatelessWidget {
   const _OvertimeBody();
 
   @override
-  State<_OvertimeBody> createState() => _OvertimeBodyState();
-}
-
-class _OvertimeBodyState extends State<_OvertimeBody> {
-  final _formKey = GlobalKey<FormState>();
-
-  @override
   Widget build(BuildContext context) {
-    return BlocConsumer<OvertimeBloc, OvertimeState>(
+    return BlocListener<OvertimeBloc, OvertimeState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
           AppToastsUtils.showSuccessTop(context, 'Success!');
@@ -40,45 +35,560 @@ class _OvertimeBodyState extends State<_OvertimeBody> {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
       },
+      child: Scaffold(
+        appBar: const CustomAppBar(title: 'Overtime'),
+        body: SingleChildScrollView(
+          padding: context.pagePadding,
+          child: const Column(
+            crossAxisAlignment: .start,
+            children: [
+              _SummaryStrip(),
+              SizedBox(height: 16),
+              _OvertimeTable(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Summary strip ────────────────────────────────────────────────────────────
+
+class _SummaryStrip extends StatelessWidget {
+  const _SummaryStrip();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<OvertimeBloc, OvertimeState>(
       builder: (context, state) {
-        return UnfocusWrapper(
-          child: Scaffold(
-            appBar: CustomAppBar(title: 'Overtime'),
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    children: [
-                      // TODO: Add your UI widgets here
-                      const Text('Overtime View'),
-                      heightBox(context.screenHeight * 0.05),
-                      BlocBuilder<OvertimeBloc, OvertimeState>(
-                        buildWhen: (p, n) => p.apiStatus != n.apiStatus,
-                        builder: (context, state) {
-                          return CustomButton(
-                            isLoading: state.apiStatus == ApiStatus.LOADING,
-                            text: 'Submit',
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                context
-                                    .read<OvertimeBloc>()
-                                    .add(OvertimeSubmitted());
-                              }
-                            },
-                            radius: 10,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+        final records = state.records;
+
+        final totalHours = records.fold(0.0, (s, r) => s + r.hours);
+        final approvedHours = records
+            .where((r) =>
+                r.status == OvertimeStatus.approved ||
+                r.status == OvertimeStatus.paid)
+            .fold(0.0, (s, r) => s + r.hours);
+        final pendingHours = records
+            .where((r) => r.status == OvertimeStatus.pending)
+            .fold(0.0, (s, r) => s + r.hours);
+        final totalEarnings = records
+            .where((r) =>
+                r.status == OvertimeStatus.approved ||
+                r.status == OvertimeStatus.paid)
+            .fold(0.0, (s, r) => s + r.amount);
+
+        return Row(
+          children: [
+            _SummaryCard(
+              label: 'Total Hours',
+              value: '${totalHours.toStringAsFixed(1)}h',
+              icon: Icons.access_time_rounded,
+              color: AppColors.primary,
+            ),
+            const SizedBox(width: 8),
+            _SummaryCard(
+              label: 'Approved',
+              value: '${approvedHours.toStringAsFixed(1)}h',
+              icon: Icons.check_circle_outline_rounded,
+              color: AppColors.creditGreen,
+            ),
+            const SizedBox(width: 8),
+            _SummaryCard(
+              label: 'Pending',
+              value: '${pendingHours.toStringAsFixed(1)}h',
+              icon: Icons.hourglass_empty_rounded,
+              color: const Color(0xFFD97706),
+            ),
+            const SizedBox(width: 8),
+            _SummaryCard(
+              label: 'Earnings',
+              value: totalEarnings.asPKR,
+              icon: Icons.account_balance_wallet_outlined,
+              color: AppColors.purple,
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _SummaryCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _SummaryCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        decoration: BoxDecoration(
+          color: context.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: context.border),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadow,
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 14, color: color),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: context.labelMedium.copyWith(
+                fontWeight: .w700,
+                color: context.textPrimary,
+                fontSize: 12,
+              ),
+              maxLines: 1,
+              overflow: .ellipsis,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: context.labelSmall.copyWith(
+                color: context.textSecondary,
+                fontSize: 9.5,
+              ),
+              maxLines: 1,
+              overflow: .ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Table ────────────────────────────────────────────────────────────────────
+
+class _OvertimeTable extends StatelessWidget {
+  const _OvertimeTable();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<OvertimeBloc, OvertimeState>(
+      builder: (context, state) {
+        return Container(
+          decoration: BoxDecoration(
+            color: context.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: context.border),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow,
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12),
+                child: Text(
+                  'Overtime history',
+                  style: context.titleSmall.copyWith(fontWeight: .w600),
                 ),
               ),
-            ),
+              const Divider(height: 1, thickness: 1),
+              const _TableHeader(),
+              ...List.generate(state.records.length, (i) {
+                return _TableRow(
+                    record: state.records[i], isAlt: i.isOdd);
+              }),
+            ],
           ),
         );
       },
+    );
+  }
+}
+
+class _TableHeader extends StatelessWidget {
+  const _TableHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppColors.grey200,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Text(
+              'Date',
+              style: context.bodySmall.copyWith(fontWeight: .w600),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              'Hours',
+              textAlign: .center,
+              style: context.bodySmall.copyWith(fontWeight: .w600),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text(
+              'Type',
+              textAlign: .center,
+              style: context.bodySmall.copyWith(fontWeight: .w600),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              'Status',
+              textAlign: .end,
+              style: context.bodySmall.copyWith(fontWeight: .w600),
+            ),
+          ),
+          const SizedBox(width: 36),
+        ],
+      ),
+    );
+  }
+}
+
+class _TableRow extends StatelessWidget {
+  final OvertimeRecord record;
+  final bool isAlt;
+
+  const _TableRow({required this.record, required this.isAlt});
+
+  static final _dateFmt = DateFormat('dd MMM yyyy');
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: isAlt ? AppColors.tableRowAlt : AppColors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Text(
+              _dateFmt.format(record.date),
+              style: context.bodySmall.copyWith(color: context.textPrimary),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              '${record.hours}h',
+              textAlign: .center,
+              style: context.bodySmall.copyWith(fontWeight: .w600),
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text(
+              record.type.label,
+              textAlign: .center,
+              style: context.bodySmall,
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Align(
+              alignment: .centerRight,
+              child: _StatusBadge(status: record.status),
+            ),
+          ),
+          SizedBox(
+            width: 36,
+            child: GestureDetector(
+              onTap: () => _showDetail(context, record),
+              child: Icon(
+                Icons.remove_red_eye_outlined,
+                size: 18,
+                color: context.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDetail(BuildContext context, OvertimeRecord record) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _OvertimeDetailSheet(record: record),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  final OvertimeStatus status;
+
+  const _StatusBadge({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: status.bgColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        status.label,
+        style: context.labelSmall.copyWith(
+          color: status.color,
+          fontWeight: .w600,
+          fontSize: 11,
+        ),
+      ),
+    );
+  }
+}
+
+// ── Bottom Sheet ─────────────────────────────────────────────────────────────
+
+class _OvertimeDetailSheet extends StatelessWidget {
+  final OvertimeRecord record;
+
+  const _OvertimeDetailSheet({required this.record});
+
+  static final _dateFmt = DateFormat('dd MMM yyyy');
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+      child: Column(
+        mainAxisSize: .min,
+        crossAxisAlignment: .start,
+        children: [
+          // drag handle
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: context.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // title + status
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Text(
+                      record.type.label,
+                      style:
+                          context.titleSmall.copyWith(fontWeight: .w700),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _dateFmt.format(record.date),
+                      style: context.bodySmall
+                          .copyWith(color: context.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+              _StatusBadge(status: record.status),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          // amount summary cards
+          Row(
+            children: [
+              _AmountCard(
+                label: 'Hours Worked',
+                value: '${record.hours}h',
+                icon: Icons.access_time_rounded,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 10),
+              _AmountCard(
+                label: 'Rate / Hour',
+                value: record.ratePerHour.asPKR,
+                icon: Icons.sell_outlined,
+                color: const Color(0xFFD97706),
+              ),
+              const SizedBox(width: 10),
+              _AmountCard(
+                label: 'Total Amount',
+                value: record.amount.asPKR,
+                icon: Icons.account_balance_wallet_outlined,
+                color: AppColors.creditGreen,
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+
+          Divider(color: context.border, height: 1),
+          const SizedBox(height: 16),
+
+          _DetailRow(
+            icon: Icons.calendar_month_outlined,
+            label: 'Date',
+            value: _dateFmt.format(record.date),
+          ),
+          const SizedBox(height: 12),
+          _DetailRow(
+            icon: Icons.category_outlined,
+            label: 'Type',
+            value: record.type.label,
+          ),
+          if (record.approver != null) ...[
+            const SizedBox(height: 12),
+            _DetailRow(
+              icon: Icons.person_outline_rounded,
+              label: 'Approver',
+              value: record.approver!,
+            ),
+          ],
+          if (record.remarks != null) ...[
+            const SizedBox(height: 12),
+            _DetailRow(
+              icon: Icons.notes_rounded,
+              label: 'Remarks',
+              value: record.remarks!,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AmountCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _AmountCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
+        ),
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              style: context.bodySmall.copyWith(
+                color: color,
+                fontWeight: .w700,
+              ),
+              maxLines: 1,
+              overflow: .ellipsis,
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: context.labelSmall.copyWith(
+                color: context.textSecondary,
+                fontSize: 9.5,
+              ),
+              maxLines: 1,
+              overflow: .ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _DetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: context.primary.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, size: 18, color: context.primary),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            label,
+            style: context.bodySmall.copyWith(color: context.textSecondary),
+          ),
+        ),
+        Text(
+          value,
+          style: context.bodySmall.copyWith(fontWeight: .w600),
+        ),
+      ],
     );
   }
 }
