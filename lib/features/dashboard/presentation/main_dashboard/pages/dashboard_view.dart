@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../core/services/current_user.dart';
 import '../../../dashboard_exports.dart';
 
 class DashboardView extends StatelessWidget {
@@ -6,6 +7,6 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const EmployeeDashboard();
+    return currentUser.isAdmin ? const AdminDashboard() : const EmployeeDashboard();
   }
 }

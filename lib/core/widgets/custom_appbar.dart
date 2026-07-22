@@ -37,7 +37,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       backgroundColor: context.primary,
       actions: [
-        if (initials.isNotEmpty)
+        if (currentUser.isAdmin && initials.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: GestureDetector(

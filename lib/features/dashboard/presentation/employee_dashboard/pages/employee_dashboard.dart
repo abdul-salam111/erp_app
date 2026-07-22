@@ -526,18 +526,6 @@ class _MonthlySnapshotSection extends StatelessWidget {
       icon: Iconsax.money_send,
       color: AppColors.purple,
     ),
-    _StatMeta(
-      label: AppConstants.lastNetPayLabel,
-      value: 'Rs 1,62,400',
-      icon: Iconsax.wallet_money,
-      color: AppColors.tealDark,
-    ),
-    _StatMeta(
-      label: AppConstants.missingPunchesLabel,
-      value: '1',
-      icon: Iconsax.finger_scan,
-      color: AppColors.errorBright,
-    ),
   ];
 
   @override
@@ -713,6 +701,13 @@ class _WorkspaceMenuSection extends StatelessWidget {
       icon: Iconsax.document_text,
       color: AppColors.blueGrey,
       routeName: RouteNames.account_ledger,
+    ),
+    _MenuMeta(
+      label: AppConstants.profileLabel,
+      subtitle: AppConstants.profileSubtitle,
+      icon: Iconsax.profile_circle,
+      color: AppColors.tealDark,
+      routeName: RouteNames.profile,
     ),
   ];
 

@@ -13,6 +13,7 @@ class SessionController {
   UserEntity? loggedInUser;
   UserOrganizationEntity? selectedOrganization;
   bool islogin = false;
+  bool isAdmin = false;
 
   // Token returned by SelectBranch — takes priority over the branch pre-token.
   String? _sessionToken;
@@ -71,6 +72,7 @@ class SessionController {
     selectedOrganization = null;
     _sessionToken = null;
     islogin = false;
+    isAdmin = false;
     await storage.setValues(StorageKeys.loggedIn, 'false');
     await storage.clearValues(StorageKeys.userDetails);
     await storage.clearValues(StorageKeys.selectedOrganization);

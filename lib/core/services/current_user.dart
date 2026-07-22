@@ -8,6 +8,9 @@ class CurrentUser {
 
   UserEntity? get _user => SessionController.instance.loggedInUser;
 
+  // ── Role ──────────────────────────────────────────────
+  bool get isAdmin => SessionController.instance.isAdmin;
+
   // ── User ──────────────────────────────────────────────
   String get fullName => _user?.fullName ?? '';
   String get firstName => _user?.firstName ?? '';

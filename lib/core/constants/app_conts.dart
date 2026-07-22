@@ -167,6 +167,7 @@ class AppConstants {
   // ─── General ───────────────────────────────────────────
   static const String alertsTitle = 'Alerts';
   static const String profileLabel = 'Profile';
+  static const String profileSubtitle = 'View your info';
   static const String successSuccessMsg = 'Success!';
   static const String submitBtn = 'Submit';
   static const String todayLabel = 'Today';
