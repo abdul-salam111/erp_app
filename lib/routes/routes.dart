@@ -17,8 +17,8 @@ import '../features/analytics/analytics_exports.dart';
 import '../features/system/system_exports.dart';
 import '../features/attendance/attendance_exports.dart';
 import '../features/leaves/leaves_exports.dart';
-import '../features/leaves/presentation/leave_detail/views/leave_detail_view.dart';
 import '../features/salary_mgmt/salary_mgmt_exports.dart';
+import '../features/salary_mgmt/presentation/salary_detail/views/salary_detail_view.dart';
 
 
 class AppRoutes {
@@ -303,6 +303,12 @@ class AppRoutes {
         path: RoutePaths.salary_mgmt,
         name: RouteNames.salary_mgmt,
         builder: (context, state) => const SalaryMgmtView(),
+      ),
+      GoRoute(
+        path: RoutePaths.salary_detail,
+        name: RouteNames.salary_detail,
+        builder: (context, state) =>
+            SalaryDetailView(record: state.extra as SalaryRecord),
       ),
     
      

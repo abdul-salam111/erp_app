@@ -34,4 +34,5 @@ class RoutePaths {
   static const String apply_leave = '/apply_leave';
   static const String leave_detail = '/leave_detail';
   static const String salary_mgmt = '/salary_mgmt';
+  static const String salary_detail = '/salary_detail';
 }

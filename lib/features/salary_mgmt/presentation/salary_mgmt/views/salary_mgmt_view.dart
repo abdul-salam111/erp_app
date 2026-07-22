@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import '../../../../../core/constants/const_exports.dart';
@@ -7,6 +8,7 @@ import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../routes/route_exports.dart';
 import '../../../salary_mgmt_exports.dart';
 
 class SalaryMgmtView extends StatelessWidget {
@@ -96,7 +98,7 @@ class _TableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.indigoLight,
+        color: AppColors.grey200,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(0),
           topRight: Radius.circular(0),
@@ -116,7 +118,7 @@ class _TableHeader extends StatelessWidget {
             flex: 3,
             child: Text(
               'Net Pay',
-              textAlign: .end,
+              textAlign: .center,
               style: context.bodySmall.copyWith(fontWeight: .w600),
             ),
           ),
@@ -162,7 +164,7 @@ class _TableRow extends StatelessWidget {
             flex: 3,
             child: Text(
               record.netPay.asPKR,
-              textAlign: .end,
+              textAlign: .center,
               style: context.bodySmall,
             ),
           ),
@@ -177,7 +179,7 @@ class _TableRow extends StatelessWidget {
           SizedBox(
             width: 40,
             child: IconButton(
-              onPressed: () {},
+              onPressed: () => context.pushNamed(RouteNames.salary_detail, extra: record),
               icon: const Icon(Iconsax.eye, size: 18),
               padding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
@@ -189,3 +191,5 @@ class _TableRow extends StatelessWidget {
     );
   }
 }
+
+
