@@ -68,6 +68,7 @@ class EmployeeDashboard extends StatelessWidget {
             label: AppConstants.salaryLabel,
             icon: Iconsax.wallet_money,
             color: AppColors.primary,
+            routeName: RouteNames.salary_mgmt,
           ),
           DrawerItem.tile(
             label: AppConstants.acStatementsLabel,
@@ -695,6 +696,7 @@ class _WorkspaceMenuSection extends StatelessWidget {
       subtitle: AppConstants.salarySubtitle,
       icon: Iconsax.wallet_money,
       color: AppColors.primary,
+      routeName: RouteNames.salary_mgmt,
     ),
     _MenuMeta(
       label: AppConstants.acStatementsLabel,

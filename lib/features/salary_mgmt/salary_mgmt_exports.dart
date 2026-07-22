@@ -7,6 +7,7 @@
 export 'domain/entities/salary_mgmt_entity.dart';
 
 // Presentation — salary_mgmt screen
+export 'presentation/salary_mgmt/models/salary_record.dart';
 export 'presentation/salary_mgmt/blocs/salary_mgmt_bloc.dart';
 export 'presentation/salary_mgmt/blocs/salary_mgmt_event.dart';
 export 'presentation/salary_mgmt/blocs/salary_mgmt_state.dart';

@@ -9,7 +9,7 @@ class SalaryMgmtBloc extends Bloc<SalaryMgmtEvent, SalaryMgmtState>
   final SalaryMgmtUsecase salarymgmtUsecase;
 
   SalaryMgmtBloc({required this.salarymgmtUsecase})
-      : super(const SalaryMgmtState()) {
+      : super(SalaryMgmtState()) {
     on<SalaryMgmtSubmitted>(_onSalaryMgmtSubmitted);
   }
 
