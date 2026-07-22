@@ -15,6 +15,7 @@ import 'register_security.dart';
 import 'register_dashboard.dart';
 import 'register_system.dart';
 import 'register_attendance.dart';
+import 'register_leaves.dart';
 
 
 /// Global service locator instance.
@@ -39,4 +40,5 @@ Future<void> setupLocator() async {
   await registerDashboard();
   await registerSystem();
   await registerAttendance();
+  await registerLeaves();
 }

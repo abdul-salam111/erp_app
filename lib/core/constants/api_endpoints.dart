@@ -10,6 +10,7 @@ class ApiEndPoints {
   static const purchase   = _PurchaseOrders();
   static const sale       = _SaleOrders();
   static const attendance = _Attendance();
+  static const leaves     = _Leaves();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -105,5 +106,16 @@ final class _Attendance {
   static String get _base => '${ApiEndPoints._base}/attendance';
 
   String get getAttendance => '$_base/GetAttendance';
+}
+
+// ─── Leaves ──────────────────────────────────────────────────────────────────
+
+final class _Leaves {
+  const _Leaves();
+
+  static String get _base => '${ApiEndPoints._base}/leaves';
+
+  String get applyLeave  => '$_base/ApplyLeave';
+  String get getLeaves   => '$_base/GetLeaves';
 }
 

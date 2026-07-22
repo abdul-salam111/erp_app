@@ -16,6 +16,7 @@ import '../features/production/production_exports.dart';
 import '../features/analytics/analytics_exports.dart';
 import '../features/system/system_exports.dart';
 import '../features/attendance/attendance_exports.dart';
+import '../features/leaves/leaves_exports.dart';
 
 
 class AppRoutes {
@@ -279,6 +280,11 @@ class AppRoutes {
         path: RoutePaths.attendance,
         name: RouteNames.attendance,
         builder: (context, state) => const AttendanceView(),
+      ),
+      GoRoute(
+        path: RoutePaths.leaves,
+        name: RouteNames.leaves,
+        builder: (context, state) => const LeavesView(),
       ),
     
      

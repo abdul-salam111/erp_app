@@ -676,6 +676,7 @@ class _WorkspaceMenuSection extends StatelessWidget {
       subtitle: AppConstants.leaveRequestSubtitle,
       icon: Iconsax.calendar_remove,
       color: AppColors.errorBright,
+      routeName: RouteNames.leaves,
     ),
     _MenuMeta(
       label: AppConstants.loanAdvanceLabel,
