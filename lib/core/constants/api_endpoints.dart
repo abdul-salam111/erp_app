@@ -13,6 +13,7 @@ class ApiEndPoints {
   static const leaves         = _Leaves();
   static const salaryMgmt     = _SalaryMgmt();
   static const loanAndAdvance = _LoanAndAdvance();
+  static const overtime       = _Overtime();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -139,4 +140,14 @@ final class _LoanAndAdvance {
   static String get _base => '${ApiEndPoints._base}/loan-and-advance';
 
   String get getLoans => '$_base/GetLoans';
+}
+
+// ─── Overtime ─────────────────────────────────────────────────────────────────
+
+final class _Overtime {
+  const _Overtime();
+
+  static String get _base => '${ApiEndPoints._base}/overtime';
+
+  String get getOvertime => '$_base/GetOvertime';
 }

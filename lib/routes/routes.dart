@@ -20,6 +20,7 @@ import '../features/leaves/leaves_exports.dart';
 import '../features/salary_mgmt/salary_mgmt_exports.dart';
 import '../features/salary_mgmt/presentation/salary_detail/views/salary_detail_view.dart';
 import '../features/loan_and_advance/loan_and_advance_exports.dart';
+import '../features/overtime/overtime_exports.dart';
 
 
 class AppRoutes {
@@ -315,6 +316,11 @@ class AppRoutes {
         path: RoutePaths.loan_and_advance,
         name: RouteNames.loan_and_advance,
         builder: (context, state) => const LoanAndAdvanceView(),
+      ),
+      GoRoute(
+        path: RoutePaths.overtime,
+        name: RouteNames.overtime,
+        builder: (context, state) => const OvertimeView(),
       ),
     
      
