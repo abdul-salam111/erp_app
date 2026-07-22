@@ -79,8 +79,8 @@ class _ReceiptCard extends StatelessWidget {
                   const SizedBox(height: 14),
                   Text(
                     'SALARY PAYSLIP',
-                    style: context.titleSmall.copyWith(
-                      fontWeight: .w800,
+                    style: context.bodySmall.copyWith(
+                      fontWeight: .w700,
                       letterSpacing: 1.8,
                       color: context.textPrimary,
                     ),
@@ -100,7 +100,7 @@ class _ReceiptCard extends StatelessWidget {
                   _SectionLabel('EARNINGS', AppColors.creditGreen),
                   const SizedBox(height: 8),
                   ...record.earnings.map(
-                    (e) => _ReceiptRow(label: e.label, amount: e.amount.asPKR),
+                    (e) => _ReceiptRow(label: e.label, amount: e.amount.withCommas),
                   ),
                   const _DashDivider(),
                   const SizedBox(height: 6),
@@ -115,7 +115,7 @@ class _ReceiptCard extends StatelessWidget {
                   _SectionLabel('DEDUCTIONS', AppColors.debitRed),
                   const SizedBox(height: 8),
                   ...record.deductions.map(
-                    (d) => _ReceiptRow(label: d.label, amount: d.amount.asPKR),
+                    (d) => _ReceiptRow(label: d.label, amount: d.amount.withCommas),
                   ),
                   const _DashDivider(),
                   const SizedBox(height: 6),
@@ -299,9 +299,10 @@ class _ReceiptRow extends StatelessWidget {
           ),
           Text(
             amount,
-            style: context.labelMedium.copyWith(
+            style: context.bodySmall.copyWith(
+              fontSize: 14,
               color: amountColor ?? context.textPrimary,
-              fontWeight: amountBold ? .w700 : .w500,
+              fontWeight: .w700,
             ),
           ),
         ],
@@ -326,8 +327,8 @@ class _TotalRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: .spaceBetween,
         children: [
-          Text(label, style: context.labelMedium.copyWith(color: color, fontWeight: .w700)),
-          Text(amount, style: context.labelMedium.copyWith(color: color, fontWeight: .w700)),
+          Text(label, style: context.bodySmall.copyWith(color: color, fontWeight: .w700, fontSize: 14)),
+          Text(amount, style: context.bodySmall.copyWith(color: color, fontWeight: .w700, fontSize: 14)),
         ],
       ),
     );

@@ -35,4 +35,5 @@ class RouteNames {
   static const String leave_detail = 'leave_detail';
   static const String salary_mgmt = 'salary_mgmt';
   static const String salary_detail = 'salary_detail';
+  static const String loan_and_advance = 'loan_and_advance';
 }

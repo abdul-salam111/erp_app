@@ -3,15 +3,16 @@ import '../config/app_config.dart';
 class ApiEndPoints {
   static String get _base => AppConfig.instance.baseUrl;
 
-  static const auth       = _Auth();
-  static const dashboard  = _Dashboard();
-  static const accounts   = _Accounts();
-  static const modules    = _Modules();
-  static const purchase   = _PurchaseOrders();
-  static const sale       = _SaleOrders();
-  static const attendance = _Attendance();
-  static const leaves      = _Leaves();
-  static const salaryMgmt  = _SalaryMgmt();
+  static const auth           = _Auth();
+  static const dashboard      = _Dashboard();
+  static const accounts       = _Accounts();
+  static const modules        = _Modules();
+  static const purchase       = _PurchaseOrders();
+  static const sale           = _SaleOrders();
+  static const attendance     = _Attendance();
+  static const leaves         = _Leaves();
+  static const salaryMgmt     = _SalaryMgmt();
+  static const loanAndAdvance = _LoanAndAdvance();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -128,4 +129,14 @@ final class _SalaryMgmt {
   static String get _base => '${ApiEndPoints._base}/salary';
 
   String get getSalary => '$_base/GetSalary';
+}
+
+// ─── Loan and Advance ─────────────────────────────────────────────────────────
+
+final class _LoanAndAdvance {
+  const _LoanAndAdvance();
+
+  static String get _base => '${ApiEndPoints._base}/loan-and-advance';
+
+  String get getLoans => '$_base/GetLoans';
 }
