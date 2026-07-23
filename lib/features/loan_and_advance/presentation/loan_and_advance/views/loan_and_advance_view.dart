@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../core/widgets/custom_button.dart';
+import '../../../../../routes/route_exports.dart';
 import '../../../loan_and_advance_exports.dart';
 
 class LoanAndAdvanceView extends StatelessWidget {
@@ -36,6 +39,22 @@ class _LoanAndAdvanceBody extends StatelessWidget {
       },
       child: Scaffold(
         appBar: const CustomAppBar(title: 'Loans & Advances'),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: context.pagePadding.copyWith(top: 12, bottom: 15),
+            child: CustomButton(
+              text: 'Loan Request',
+              onPressed: () => context.pushNamed(RouteNames.apply_loan),
+              icon: Icons.add_rounded,
+              iconSize: 18,
+              isOutlined: true,
+              radius: 12,
+              elevation: 0,
+              fontsize: 14,
+              size: const Size(double.infinity, 48),
+            ),
+          ),
+        ),
         body: SingleChildScrollView(
           padding: context.pagePadding,
           child: const _LoanTable(),

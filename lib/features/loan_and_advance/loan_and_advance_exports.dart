@@ -12,3 +12,9 @@ export 'presentation/loan_and_advance/blocs/loan_and_advance_bloc.dart';
 export 'presentation/loan_and_advance/blocs/loan_and_advance_event.dart';
 export 'presentation/loan_and_advance/blocs/loan_and_advance_state.dart';
 export 'presentation/loan_and_advance/views/loan_and_advance_view.dart';
+
+// Presentation — apply loan screen
+export 'presentation/apply_loan/blocs/apply_loan_bloc.dart';
+export 'presentation/apply_loan/blocs/apply_loan_event.dart';
+export 'presentation/apply_loan/blocs/apply_loan_state.dart';
+export 'presentation/apply_loan/views/apply_loan_view.dart';

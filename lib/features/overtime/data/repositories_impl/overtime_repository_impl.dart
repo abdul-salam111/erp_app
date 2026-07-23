@@ -13,4 +13,9 @@ class OvertimeRepositoryImpl extends BaseRepository
   Future<Result<dynamic>> performAction() {
     return execute(call: () => dataSource.performAction());
   }
+
+  @override
+  Future<Result<dynamic>> applyOvertime(Map<String, dynamic> body) {
+    return execute(call: () => dataSource.applyOvertime(body));
+  }
 }

@@ -324,9 +324,19 @@ class AppRoutes {
         builder: (context, state) => const LoanAndAdvanceView(),
       ),
       GoRoute(
+        path: RoutePaths.apply_loan,
+        name: RouteNames.apply_loan,
+        builder: (context, state) => const ApplyLoanView(),
+      ),
+      GoRoute(
         path: RoutePaths.overtime,
         name: RouteNames.overtime,
         builder: (context, state) => const OvertimeView(),
+      ),
+      GoRoute(
+        path: RoutePaths.apply_overtime,
+        name: RouteNames.apply_overtime,
+        builder: (context, state) => const ApplyOvertimeView(),
       ),
       GoRoute(
         path: RoutePaths.choose_dashboard,

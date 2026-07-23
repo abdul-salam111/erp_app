@@ -3,6 +3,7 @@ import '../../../../core/constants/const_exports.dart';
 
 abstract interface class IRemoteOvertimeDataSource {
   Future<dynamic> performAction();
+  Future<dynamic> applyOvertime(Map<String, dynamic> body);
 }
 
 class RemoteOvertimeDataSourceImpl extends BaseRemoteDatasource
@@ -15,6 +16,15 @@ class RemoteOvertimeDataSourceImpl extends BaseRemoteDatasource
       url: ApiEndPoints.overtime.getOvertime,
       parser: (json) => json,
       body: {},
+    );
+  }
+
+  @override
+  Future<dynamic> applyOvertime(Map<String, dynamic> body) async {
+    return post(
+      url: ApiEndPoints.overtime.applyOvertime,
+      parser: (json) => json,
+      body: body,
     );
   }
 }

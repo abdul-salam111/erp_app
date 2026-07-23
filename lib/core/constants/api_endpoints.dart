@@ -139,7 +139,8 @@ final class _LoanAndAdvance {
 
   static String get _base => '${ApiEndPoints._base}/loan-and-advance';
 
-  String get getLoans => '$_base/GetLoans';
+  String get getLoans  => '$_base/GetLoans';
+  String get applyLoan => '$_base/ApplyLoan';
 }
 
 // ─── Overtime ─────────────────────────────────────────────────────────────────
@@ -149,5 +150,6 @@ final class _Overtime {
 
   static String get _base => '${ApiEndPoints._base}/overtime';
 
-  String get getOvertime => '$_base/GetOvertime';
+  String get getOvertime   => '$_base/GetOvertime';
+  String get applyOvertime => '$_base/ApplyOvertime';
 }

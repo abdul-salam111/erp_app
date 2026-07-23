@@ -79,14 +79,5 @@ final List<LoanRecord> dummyLoanRecords = [
     monthlyInstallment: 3334,
     totalPaid: 10000,
   ),
-  LoanRecord(
-    type: 'Medical Advance',
-    date: DateTime(2024, 9, 20),
-    endDate: DateTime(2025, 9, 20),
-    principal: 50000,
-    status: LoanStatus.overdue,
-    tenureMonths: 12,
-    monthlyInstallment: 4167,
-    totalPaid: 16668,
-  ),
+ 
 ];

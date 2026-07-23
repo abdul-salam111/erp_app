@@ -2,7 +2,9 @@ import '../../features/overtime/data/datasources/remote_overtime_datasource.dart
 import '../../features/overtime/data/repositories_impl/overtime_repository_impl.dart';
 import '../../features/overtime/domain/repositories/overtime_repository.dart';
 import '../../features/overtime/domain/usecases/overtime_usecase.dart';
+import '../../features/overtime/domain/usecases/apply_overtime_usecase.dart';
 import '../../features/overtime/presentation/overtime/blocs/overtime_bloc.dart';
+import '../../features/overtime/presentation/apply_overtime/blocs/apply_overtime_bloc.dart';
 import 'app_dependencies.dart';
 
 Future<void> registerOvertime() async {
@@ -20,9 +22,15 @@ Future<void> registerOvertime() async {
   sl.registerLazySingleton<OvertimeUsecase>(
     () => OvertimeUsecase(repository: sl()),
   );
+  sl.registerLazySingleton<ApplyOvertimeUsecase>(
+    () => ApplyOvertimeUsecase(repository: sl()),
+  );
 
   // BLoCs
   sl.registerFactory<OvertimeBloc>(
     () => OvertimeBloc(overtimeUsecase: sl()),
+  );
+  sl.registerFactory<ApplyOvertimeBloc>(
+    () => ApplyOvertimeBloc(applyOvertimeUsecase: sl()),
   );
 }

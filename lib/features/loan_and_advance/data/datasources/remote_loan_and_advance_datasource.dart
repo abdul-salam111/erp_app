@@ -2,8 +2,8 @@ import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/constants/const_exports.dart';
 
 abstract interface class IRemoteLoanAndAdvanceDataSource {
-  // TODO: Define your datasource methods here
   Future<dynamic> performAction();
+  Future<dynamic> applyLoan(Map<String, dynamic> body);
 }
 
 class RemoteLoanAndAdvanceDataSourceImpl extends BaseRemoteDatasource
@@ -14,8 +14,17 @@ class RemoteLoanAndAdvanceDataSourceImpl extends BaseRemoteDatasource
   Future<dynamic> performAction() async {
     return post(
       url: ApiEndPoints.loanAndAdvance.getLoans,
-      parser: (json) => json, // TODO: Replace with your model parser
-      body: {}, // TODO: Add your request body
+      parser: (json) => json,
+      body: {},
+    );
+  }
+
+  @override
+  Future<dynamic> applyLoan(Map<String, dynamic> body) async {
+    return post(
+      url: ApiEndPoints.loanAndAdvance.applyLoan,
+      parser: (json) => json,
+      body: body,
     );
   }
 }

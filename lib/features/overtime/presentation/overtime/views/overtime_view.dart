@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../core/widgets/custom_button.dart';
+import '../../../../../routes/route_exports.dart';
 import '../../../overtime_exports.dart';
 
 class OvertimeView extends StatelessWidget {
@@ -36,6 +39,22 @@ class _OvertimeBody extends StatelessWidget {
       },
       child: Scaffold(
         appBar: const CustomAppBar(title: 'Overtime'),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: context.pagePadding.copyWith(top: 12, bottom: 15),
+            child: CustomButton(
+              text: 'Overtime Request',
+              onPressed: () => context.pushNamed(RouteNames.apply_overtime),
+              icon: Icons.add_rounded,
+              iconSize: 18,
+              isOutlined: true,
+              radius: 12,
+              elevation: 0,
+              fontsize: 14,
+              size: const Size(double.infinity, 48),
+            ),
+          ),
+        ),
         body: SingleChildScrollView(
           padding: context.pagePadding,
           child: const Column(
@@ -267,12 +286,12 @@ class _TableHeader extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              'Hours',
+              'Hrs',
               textAlign: .center,
               style: context.bodySmall.copyWith(fontWeight: .w600),
             ),
           ),
-          Expanded(
+          Expanded( 
             flex: 3,
             child: Text(
               'Type',
@@ -281,14 +300,14 @@ class _TableHeader extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Text(
               'Status',
-              textAlign: .end,
+              textAlign: .center,
               style: context.bodySmall.copyWith(fontWeight: .w600),
             ),
           ),
-          const SizedBox(width: 36),
+          const SizedBox(width: 10),
         ],
       ),
     );
@@ -332,14 +351,15 @@ class _TableRow extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Align(
-              alignment: .centerRight,
+              alignment: .center,
               child: _StatusBadge(status: record.status),
+            
             ),
           ),
           SizedBox(
-            width: 36,
+            width: 10,
             child: GestureDetector(
               onTap: () => _showDetail(context, record),
               child: Icon(
@@ -373,12 +393,14 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      constraints: const BoxConstraints(minWidth: 72),
       decoration: BoxDecoration(
         color: status.bgColor,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         status.label,
+        textAlign: .center,
         style: context.labelSmall.copyWith(
           color: status.color,
           fontWeight: .w600,

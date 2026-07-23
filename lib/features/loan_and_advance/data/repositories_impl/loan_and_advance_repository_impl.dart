@@ -13,4 +13,9 @@ class LoanAndAdvanceRepositoryImpl extends BaseRepository
   Future<Result<dynamic>> performAction() {
     return execute(call: () => dataSource.performAction());
   }
+
+  @override
+  Future<Result<dynamic>> applyLoan(Map<String, dynamic> body) {
+    return execute(call: () => dataSource.applyLoan(body));
+  }
 }

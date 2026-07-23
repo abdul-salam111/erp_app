@@ -186,7 +186,7 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody> {
                       color: context.textSecondary,
                     ),
                     style: context.labelMedium.copyWith(
-                      color: context.textPrimary,
+                      color: context.textSecondary,
                     ),
                     onChanged: (v) {
                       if (v != null) setState(() => _leaveType = v);
@@ -359,7 +359,7 @@ class _DateField extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                style: context.labelMedium.copyWith(color: context.textPrimary),
+                style: context.labelMedium.copyWith(color: context.textSecondary),
               ),
             ),
             Icon(
