@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-
 import '../../core/constants/app_images.dart';
 import '../../core/di/app_dependencies.dart';
 import '../../core/services/services_exports.dart';
+import '../../core/theme/theme_exports.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -25,7 +25,6 @@ class _SplashViewState extends State<SplashView> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-
     return Scaffold(
       body: Stack(
         children: [
@@ -63,7 +62,7 @@ class _SplashViewState extends State<SplashView> {
           // ── Center content ───────────────────────────────────
           Center(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 // Logo ring + logo
                 Container(
@@ -91,7 +90,7 @@ class _SplashViewState extends State<SplashView> {
                           ),
                         ],
                       ),
-                      padding: const EdgeInsets.all(16),
+                      padding: const .all(16),
                       child: Image.asset(AppImages.manticLogo, fit: BoxFit.contain),
                     ),
                   ),
@@ -109,11 +108,10 @@ class _SplashViewState extends State<SplashView> {
                 const SizedBox(height: 32),
 
                 // App name
-                const Text(
+                Text(
                   'Mantic ERP',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 34,
+                  style: context.headlineLarge.copyWith(
+                    color: context.white,
                     fontWeight: FontWeight.w800,
                     letterSpacing: 1.2,
                   ),
@@ -133,10 +131,8 @@ class _SplashViewState extends State<SplashView> {
                 // Tagline
                 Text(
                   'Enterprise Resource Planning',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.60),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w400,
+                  style: context.bodyMedium.copyWith(
+                    color: context.white.withValues(alpha: 0.60),
                     letterSpacing: 2.5,
                   ),
                 )
@@ -157,10 +153,9 @@ class _SplashViewState extends State<SplashView> {
                 const SizedBox(height: 16),
                 Text(
                   'Powered by Mantic Solutions',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.30),
-                    fontSize: 11,
+                  textAlign: .center,
+                  style: context.labelSmall.copyWith(
+                    color: context.white.withValues(alpha: 0.30),
                     letterSpacing: 0.5,
                   ),
                 ),

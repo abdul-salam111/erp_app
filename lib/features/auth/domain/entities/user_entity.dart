@@ -7,6 +7,9 @@ class UserEntity extends Equatable {
   final String? email;
   final String? languageName;
   final List<UserOrganizationEntity> organizations;
+  // TODO: wire isAdmin and roles to API response fields when the API adds them
+  final bool isAdmin;
+  final List<String> roles;
 
   const UserEntity({
     this.id,
@@ -15,6 +18,8 @@ class UserEntity extends Equatable {
     this.email,
     this.languageName,
     this.organizations = const [],
+    this.isAdmin = false,
+    this.roles = const [],
   });
 
   String get fullName => '${firstName ?? ''} ${lastName ?? ''}'.trim();
@@ -26,6 +31,8 @@ class UserEntity extends Equatable {
         'email': email,
         'languageName': languageName,
         'organizations': organizations.map((o) => o.toJson()).toList(),
+        'isAdmin': isAdmin,
+        'roles': roles,
       };
 
   factory UserEntity.fromJson(Map<String, dynamic> json) => UserEntity(
@@ -38,11 +45,15 @@ class UserEntity extends Equatable {
             .map((o) =>
                 UserOrganizationEntity.fromJson(o as Map<String, dynamic>))
             .toList(),
+        isAdmin: json['isAdmin'] as bool? ?? false,
+        roles: (json['roles'] as List<dynamic>? ?? [])
+            .map((r) => r as String)
+            .toList(),
       );
 
   @override
   List<Object?> get props =>
-      [id, firstName, lastName, email, languageName, organizations];
+      [id, firstName, lastName, email, languageName, organizations, isAdmin, roles];
 }
 
 class UserOrganizationEntity extends Equatable {

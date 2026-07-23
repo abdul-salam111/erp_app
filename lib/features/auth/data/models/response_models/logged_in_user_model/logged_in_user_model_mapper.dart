@@ -11,6 +11,9 @@ extension LoggedInUserModelMapper on LoggedInUserModel {
       languageName: language?.name,
       organizations:
           organizations?.map((o) => o.toEntity()).toList() ?? const [],
+      // TODO: replace placeholders once API returns isAdmin and roles fields
+      isAdmin: false,
+      roles: const [],
     );
   }
 }

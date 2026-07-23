@@ -19,17 +19,29 @@ class SplashServices {
       if (!context.mounted) return;
 
       if (SessionController().islogin == true) {
-        if (SessionController().selectedOrganization == null) {
-          final orgs = SessionController().loggedInUser?.organizations ?? [];
-          if (orgs.length == 1) {
-            await SessionController().saveSelectedOrganization(orgs.first);
-            if (!context.mounted) return;
-            context.goNamed(RouteNames.dashboard);
+        final user = SessionController().loggedInUser;
+        final isAdmin = user?.isAdmin ?? false;
+
+        if (isAdmin) {
+          if (SessionController().selectedOrganization == null) {
+            final orgs = user?.organizations ?? [];
+            if (orgs.length == 1) {
+              await SessionController().saveSelectedOrganization(orgs.first);
+              if (!context.mounted) return;
+              context.goNamed(RouteNames.dashboard);
+            } else {
+              context.goNamed(RouteNames.organizationSelection);
+            }
           } else {
-            context.goNamed(RouteNames.organizationSelection);
+            context.goNamed(RouteNames.dashboard);
           }
         } else {
-          context.goNamed(RouteNames.dashboard);
+          final roles = user?.roles ?? [];
+          if (roles.length > 1) {
+            context.goNamed(RouteNames.choose_dashboard);
+          } else {
+            context.goNamed(RouteNames.employee_dashboard);
+          }
         }
       } else {
         context.goNamed(RouteNames.signin);

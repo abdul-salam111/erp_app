@@ -29,11 +29,20 @@ class _SignInViewState extends State<SignInView> {
           body: BlocConsumer<SignInBloc, SignInState>(
             listener: (context, state) {
               if (state.apiStatus == ApiStatus.SUCCESS) {
-                final orgs = state.user?.organizations ?? [];
-                if (orgs.length == 1) {
-                  context.goNamed(RouteNames.dashboard);
+                final user = state.user!;
+                if (user.isAdmin) {
+                  final orgs = user.organizations;
+                  if (orgs.length <= 1) {
+                    context.goNamed(RouteNames.dashboard);
+                  } else {
+                    context.goNamed(RouteNames.organizationSelection);
+                  }
                 } else {
-                  context.goNamed(RouteNames.organizationSelection);
+                  if (user.roles.length > 1) {
+                    context.goNamed(RouteNames.choose_dashboard);
+                  } else {
+                    context.goNamed(RouteNames.employee_dashboard);
+                  }
                 }
               }
               if (state.apiStatus == ApiStatus.FAILURE) {

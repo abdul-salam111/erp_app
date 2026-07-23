@@ -22,17 +22,17 @@ extension OvertimeStatusX on OvertimeStatus {
       };
 
   Color get color => switch (this) {
-        OvertimeStatus.pending  => const Color(0xFFD97706),
+        OvertimeStatus.pending  => AppColors.amber,
         OvertimeStatus.approved => AppColors.creditGreen,
         OvertimeStatus.rejected => AppColors.debitRed,
         OvertimeStatus.paid     => AppColors.primary,
       };
 
   Color get bgColor => switch (this) {
-        OvertimeStatus.pending  => const Color(0xFFFFFBEB),
-        OvertimeStatus.approved => const Color(0xFFECFDF5),
-        OvertimeStatus.rejected => const Color(0xFFFEF2F2),
-        OvertimeStatus.paid     => const Color(0xFFEFF6FF),
+        OvertimeStatus.pending  => AppColors.yellow.withValues(alpha: 0.15),
+        OvertimeStatus.approved => AppColors.creditContainer,
+        OvertimeStatus.rejected => AppColors.debitContainer,
+        OvertimeStatus.paid     => AppColors.primaryLight.withValues(alpha: 0.15),
       };
 }
 

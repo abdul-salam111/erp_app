@@ -21,6 +21,7 @@ import '../features/salary_mgmt/salary_mgmt_exports.dart';
 import '../features/salary_mgmt/presentation/salary_detail/views/salary_detail_view.dart';
 import '../features/loan_and_advance/loan_and_advance_exports.dart';
 import '../features/overtime/overtime_exports.dart';
+import '../features/choose_dashboard/choose_dashboard_view.dart';
 
 
 class AppRoutes {
@@ -322,9 +323,24 @@ class AppRoutes {
         name: RouteNames.overtime,
         builder: (context, state) => const OvertimeView(),
       ),
-    
-     
-     
+      GoRoute(
+        path: RoutePaths.choose_dashboard,
+        name: RouteNames.choose_dashboard,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ChooseDashboardView(),
+          transitionDuration: const Duration(milliseconds: 600),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final scale = Tween<double>(begin: 0.94, end: 1.0).animate(
+              CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+            );
+            return FadeTransition(
+              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+              child: ScaleTransition(scale: scale, child: child),
+            );
+          },
+        ),
+      ),
     ],
   );
 }

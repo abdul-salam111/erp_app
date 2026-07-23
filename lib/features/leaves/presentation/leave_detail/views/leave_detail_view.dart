@@ -222,9 +222,9 @@ class _FileCard extends StatelessWidget {
   }
 
   Color _extColor(BuildContext context) => switch (_ext) {
-        'PDF'  => const Color(0xFFE53935),
-        'PNG' || 'JPG' || 'JPEG' => const Color(0xFF1E88E5),
-        'DOC' || 'DOCX'          => const Color(0xFF1565C0),
+        'PDF'                    => AppColors.errorBright,
+        'PNG' || 'JPG' || 'JPEG' => AppColors.info,
+        'DOC' || 'DOCX'          => AppColors.primaryDark,
         _                        => context.textSecondary,
       };
 
@@ -257,7 +257,7 @@ class _FileCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   _ext,
-                  style: TextStyle(
+                  style: context.labelSmall.copyWith(
                     fontSize: 8,
                     fontWeight: FontWeight.w700,
                     color: color,

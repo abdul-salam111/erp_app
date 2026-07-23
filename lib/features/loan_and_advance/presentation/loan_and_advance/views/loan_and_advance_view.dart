@@ -313,7 +313,7 @@ class _LoanDetailSheet extends StatelessWidget {
                 amount: record.remaining,
                 color: record.status == LoanStatus.overdue
                     ? AppColors.debitRed
-                    : const Color(0xFF6B7280),
+                    : context.textSecondary,
               ),
             ],
           ),

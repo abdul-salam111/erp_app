@@ -106,7 +106,7 @@ class _SummaryStrip extends StatelessWidget {
                   label: 'Pending',
                   value: '${pendingHours.toStringAsFixed(1)}h',
                   icon: Icons.hourglass_empty_rounded,
-                  color: const Color(0xFFD97706),
+                  color: AppColors.amber,
                 ),
                 const SizedBox(width: 8),
                 _SummaryCard(
@@ -466,7 +466,7 @@ class _OvertimeDetailSheet extends StatelessWidget {
                 label: 'Rate / Hour',
                 value: record.ratePerHour.asPKR,
                 icon: Icons.sell_outlined,
-                color: const Color(0xFFD97706),
+                color: AppColors.amber,
               ),
               const SizedBox(width: 10),
               _AmountCard(

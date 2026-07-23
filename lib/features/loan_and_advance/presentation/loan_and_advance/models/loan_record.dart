@@ -12,14 +12,14 @@ extension LoanStatusX on LoanStatus {
 
   Color get color => switch (this) {
         LoanStatus.active => AppColors.creditGreen,
-        LoanStatus.closed => const Color(0xFF6B7280),
+        LoanStatus.closed => AppColors.grey500,
         LoanStatus.overdue => AppColors.debitRed,
       };
 
   Color get bgColor => switch (this) {
-        LoanStatus.active => const Color(0xFFECFDF5),
-        LoanStatus.closed => const Color(0xFFF3F4F6),
-        LoanStatus.overdue => const Color(0xFFFEF2F2),
+        LoanStatus.active => AppColors.creditContainer,
+        LoanStatus.closed => AppColors.grey50,
+        LoanStatus.overdue => AppColors.debitContainer,
       };
 }
 
