@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
@@ -16,8 +15,6 @@ class VendorPayableTable extends StatelessWidget {
     required this.scrollController,
   });
 
-  static final _fmt = NumberFormat('#,##0.00', 'en_US');
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -32,7 +29,7 @@ class VendorPayableTable extends StatelessWidget {
               itemCount: items.length,
               separatorBuilder: (_, __) =>
                   Divider(height: 1, thickness: 1, color: AppColors.grey200),
-              itemBuilder: (_, i) => _VendorRow(item: items[i], fmt: _fmt),
+              itemBuilder: (_, i) => _VendorRow(item: items[i]),
             ),
           ),
         ],
@@ -99,9 +96,8 @@ class _HeaderText extends StatelessWidget {
 
 class _VendorRow extends StatefulWidget {
   final CustomerReceivableItemEntity item;
-  final NumberFormat fmt;
 
-  const _VendorRow({required this.item, required this.fmt});
+  const _VendorRow({required this.item});
 
   @override
   State<_VendorRow> createState() => _VendorRowState();
@@ -113,7 +109,6 @@ class _VendorRowState extends State<_VendorRow> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
-    final fmt = widget.fmt;
 
     return ColoredBox(
       color: _expanded
@@ -163,7 +158,7 @@ class _VendorRowState extends State<_VendorRow> {
                   Expanded(
                     flex: 4,
                     child: Text(
-                      fmt.format(item.opening),
+                      item.opening.withTwoDecimals,
                       textAlign: .end,
                       maxLines: 1,
                       overflow: .ellipsis,
@@ -207,21 +202,18 @@ class _VendorRowState extends State<_VendorRow> {
                               label: AppConstants.debit,
                               amount: item.debit,
                               isDr: true,
-                              fmt: fmt,
                               align: CrossAxisAlignment.start,
                             ),
                             _ExpandedCell(
                               label: AppConstants.credit,
                               amount: item.credit,
                               isDr: false,
-                              fmt: fmt,
                               align: CrossAxisAlignment.center,
                             ),
                             _ExpandedCell(
                               label: AppConstants.balanceLabel,
                               amount: item.balance,
                               isDr: item.balanceIsDr,
-                              fmt: fmt,
                               highlight: true,
                               align: CrossAxisAlignment.end,
                             ),
@@ -244,7 +236,6 @@ class _ExpandedCell extends StatelessWidget {
   final String label;
   final double amount;
   final bool isDr;
-  final NumberFormat fmt;
   final bool highlight;
   final CrossAxisAlignment align;
 
@@ -252,7 +243,6 @@ class _ExpandedCell extends StatelessWidget {
     required this.label,
     required this.amount,
     required this.isDr,
-    required this.fmt,
     this.highlight = false,
     this.align = CrossAxisAlignment.start,
   });
@@ -280,7 +270,7 @@ class _ExpandedCell extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(
-            fmt.format(amount),
+            amount.withTwoDecimals,
             textAlign: textAlign,
             style: context.bodySmall.copyWith(
               fontWeight: highlight ? .w700 : .w500,
@@ -295,4 +285,3 @@ class _ExpandedCell extends StatelessWidget {
     );
   }
 }
-

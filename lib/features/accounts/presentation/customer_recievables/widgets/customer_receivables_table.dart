@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
@@ -16,8 +15,6 @@ class CustomerReceivablesTable extends StatelessWidget {
     required this.scrollController,
   });
 
-  static final _fmt = NumberFormat('#,##0.00', 'en_US');
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -32,8 +29,7 @@ class CustomerReceivablesTable extends StatelessWidget {
               itemCount: items.length,
               separatorBuilder: (_, __) =>
                   Divider(height: 1, thickness: 1, color: AppColors.grey200),
-              itemBuilder: (_, i) =>
-                  _CustomerRow(item: items[i], fmt: _fmt),
+              itemBuilder: (_, i) => _CustomerRow(item: items[i]),
             ),
           ),
         ],
@@ -100,9 +96,8 @@ class _HeaderText extends StatelessWidget {
 
 class _CustomerRow extends StatefulWidget {
   final CustomerReceivableItemEntity item;
-  final NumberFormat fmt;
 
-  const _CustomerRow({required this.item, required this.fmt});
+  const _CustomerRow({required this.item});
 
   @override
   State<_CustomerRow> createState() => _CustomerRowState();
@@ -114,7 +109,6 @@ class _CustomerRowState extends State<_CustomerRow> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
-    final fmt = widget.fmt;
 
     return ColoredBox(
       color: _expanded
@@ -167,7 +161,7 @@ class _CustomerRowState extends State<_CustomerRow> {
                   Expanded(
                     flex: 4,
                     child: Text(
-                      fmt.format(item.opening),
+                      item.opening.withTwoDecimals,
                       textAlign: .end,
                       maxLines: 1,
                       overflow: .ellipsis,
@@ -195,7 +189,7 @@ class _CustomerRowState extends State<_CustomerRow> {
               ),
             ),
           ),
-       
+
           // ── Expanded section ──────────────────────────────────────────────
           AnimatedSize(
             duration: const Duration(milliseconds: 220),
@@ -214,21 +208,18 @@ class _CustomerRowState extends State<_CustomerRow> {
                               label: AppConstants.debit,
                               amount: item.debit,
                               isDr: true,
-                              fmt: fmt,
                               align: CrossAxisAlignment.start,
                             ),
                             _ExpandedCell(
                               label: AppConstants.credit,
                               amount: item.credit,
                               isDr: false,
-                              fmt: fmt,
                               align: CrossAxisAlignment.center,
                             ),
                             _ExpandedCell(
                               label: AppConstants.balanceLabel,
                               amount: item.balance,
                               isDr: item.balanceIsDr,
-                              fmt: fmt,
                               highlight: true,
                               align: CrossAxisAlignment.end,
                             ),
@@ -251,7 +242,6 @@ class _ExpandedCell extends StatelessWidget {
   final String label;
   final double amount;
   final bool isDr;
-  final NumberFormat fmt;
   final bool highlight;
   final CrossAxisAlignment align;
 
@@ -259,7 +249,6 @@ class _ExpandedCell extends StatelessWidget {
     required this.label,
     required this.amount,
     required this.isDr,
-    required this.fmt,
     this.highlight = false,
     this.align = CrossAxisAlignment.start,
   });
@@ -287,7 +276,7 @@ class _ExpandedCell extends StatelessWidget {
           ),
           const SizedBox(height: 3),
           Text(
-            fmt.format(amount),
+            amount.withTwoDecimals,
             textAlign: textAlign,
             style: context.bodySmall.copyWith(
               fontWeight: highlight ? .w700 : .w500,
@@ -302,4 +291,3 @@ class _ExpandedCell extends StatelessWidget {
     );
   }
 }
-

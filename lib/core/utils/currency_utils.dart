@@ -10,6 +10,11 @@ extension CurrencyFormatting on num {
     return NumberFormat("#,##0", "en_US").format(this);
   }
 
+  /// Format with commas and 2 decimal places: 1000 -> 1,000.00
+  String get withTwoDecimals {
+    return NumberFormat("#,##0.00", "en_US").format(this);
+  }
+
   /// Format as USD currency: 1000 -> $1,000.00
   String get asCurrency {
     return NumberFormat.currency(locale: "en_US", symbol: "\$").format(this);

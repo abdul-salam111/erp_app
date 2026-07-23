@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/colors.dart';
@@ -56,8 +55,8 @@ class _LoanTable extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             color: context.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: context.border),
+            borderRadius: .circular(12),
+            border: .all(color: context.border),
             boxShadow: [
               BoxShadow(
                 color: AppColors.shadow,
@@ -70,7 +69,7 @@ class _LoanTable extends StatelessWidget {
             crossAxisAlignment: .start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const .symmetric(horizontal: 16, vertical: 12),
                 child: Text(
                   'Loan & advance history',
                   style: context.titleSmall.copyWith(fontWeight: .w600),
@@ -96,7 +95,7 @@ class _TableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: AppColors.grey200,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      padding: const .symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
           Expanded(
@@ -143,8 +142,6 @@ class _TableRow extends StatelessWidget {
 
   const _TableRow({required this.record, required this.isAlt});
 
-  static final _dateFmt = DateFormat('dd MMM yyyy');
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -162,7 +159,7 @@ class _TableRow extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              _dateFmt.format(record.date),
+              record.date.displayDate,
               textAlign: .center,
               style: context.bodySmall,
             ),
@@ -240,8 +237,6 @@ class _LoanDetailSheet extends StatelessWidget {
 
   const _LoanDetailSheet({required this.record});
 
-  static final _dateFmt = DateFormat('dd MMM yyyy');
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -280,7 +275,7 @@ class _LoanDetailSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Applied on ${_dateFmt.format(record.date)}',
+                      'Applied on ${record.date.displayDate}',
                       style: context.bodySmall.copyWith(
                         color: context.textSecondary,
                       ),
@@ -361,13 +356,13 @@ class _LoanDetailSheet extends StatelessWidget {
           _DetailRow(
             icon: Icons.calendar_month_outlined,
             label: 'Disbursement Date',
-            value: _dateFmt.format(record.date),
+            value: record.date.displayDate,
           ),
           const SizedBox(height: 12),
           _DetailRow(
             icon: Icons.event_available_outlined,
             label: 'End Date',
-            value: _dateFmt.format(record.endDate),
+            value: record.endDate.displayDate,
           ),
           const SizedBox(height: 12),
           _DetailRow(

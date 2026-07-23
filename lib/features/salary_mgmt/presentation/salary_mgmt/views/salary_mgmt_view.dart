@@ -2,7 +2,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
@@ -143,9 +142,6 @@ class _TableRow extends StatelessWidget {
 
   const _TableRow({required this.record, required this.isAlt});
 
-  static final _monthFmt = DateFormat('MMM yyyy');
-  static final _dateFmt = DateFormat('dd MMM yyyy');
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -156,7 +152,7 @@ class _TableRow extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              _monthFmt.format(record.month),
+              record.month.shortMonthYear,
               style: context.bodySmall.copyWith(color: AppColors.primary),
             ),
           ),
@@ -171,7 +167,7 @@ class _TableRow extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              _dateFmt.format(record.disbursed),
+              record.disbursed.displayDate,
               textAlign: .end,
               style: context.bodySmall,
             ),

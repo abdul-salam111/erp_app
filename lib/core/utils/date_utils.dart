@@ -144,6 +144,21 @@ extension DateTimeExtensions on DateTime {
     return DateFormat('hh:mm a').format(this);
   }
 
+  /// Format as "dd MMM yyyy" (e.g., 15 Jan 2024)
+  String get displayDate {
+    return DateFormat('dd MMM yyyy').format(this);
+  }
+
+  /// Format as "MMM yyyy" (e.g., Jan 2024)
+  String get shortMonthYear {
+    return DateFormat('MMM yyyy').format(this);
+  }
+
+  /// Format as "MMMM yyyy" (e.g., January 2024)
+  String get monthYear {
+    return DateFormat('MMMM yyyy').format(this);
+  }
+
   /// Format as "dd MMM yyyy, hh:mm a"
   String get fullFormat {
     return DateFormat('dd MMM yyyy, hh:mm a').format(this);

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/colors.dart';
@@ -302,8 +301,6 @@ class _TableRow extends StatelessWidget {
 
   const _TableRow({required this.record, required this.isAlt});
 
-  static final _dateFmt = DateFormat('dd MMM yyyy');
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -314,7 +311,7 @@ class _TableRow extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              _dateFmt.format(record.date),
+              record.date.displayDate,
               style: context.bodySmall.copyWith(color: context.textPrimary),
             ),
           ),
@@ -399,8 +396,6 @@ class _OvertimeDetailSheet extends StatelessWidget {
 
   const _OvertimeDetailSheet({required this.record});
 
-  static final _dateFmt = DateFormat('dd MMM yyyy');
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -439,7 +434,7 @@ class _OvertimeDetailSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      _dateFmt.format(record.date),
+                      record.date.displayDate,
                       style: context.bodySmall.copyWith(
                         color: context.textSecondary,
                       ),
@@ -485,7 +480,7 @@ class _OvertimeDetailSheet extends StatelessWidget {
           _DetailRow(
             icon: Icons.calendar_month_outlined,
             label: 'Date',
-            value: _dateFmt.format(record.date),
+            value: record.date.displayDate,
           ),
           const SizedBox(height: 12),
           _DetailRow(

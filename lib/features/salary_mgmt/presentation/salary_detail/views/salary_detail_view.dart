@@ -1,6 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart';
 import '../../../../../core/services/current_user.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
@@ -13,10 +12,6 @@ class SalaryDetailView extends StatelessWidget {
   final SalaryRecord record;
   const SalaryDetailView({super.key, required this.record});
 
-  static final _monthFmt = DateFormat('MMMM yyyy');
-  static final _dateFmt = DateFormat('dd MMM yyyy');
-  static final _refFmt = DateFormat('yyyyMM');
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +21,7 @@ class SalaryDetailView extends StatelessWidget {
         padding: context.pagePadding.copyWith(top: 20, bottom: 32),
         child: Column(
           children: [
-            _ReceiptCard(record: record, monthFmt: _monthFmt, dateFmt: _dateFmt, refFmt: _refFmt),
+            _ReceiptCard(record: record),
             const SizedBox(height: 20),
             CustomButton(
               text: 'Download Payslip',
@@ -47,16 +42,8 @@ class SalaryDetailView extends StatelessWidget {
 
 class _ReceiptCard extends StatelessWidget {
   final SalaryRecord record;
-  final DateFormat monthFmt;
-  final DateFormat dateFmt;
-  final DateFormat refFmt;
 
-  const _ReceiptCard({
-    required this.record,
-    required this.monthFmt,
-    required this.dateFmt,
-    required this.refFmt,
-  });
+  const _ReceiptCard({required this.record});
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +74,7 @@ class _ReceiptCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    monthFmt.format(record.month),
+                    record.month.monthYear,
                     style: context.labelMedium.copyWith(color: context.textSecondary),
                   ),
                   const SizedBox(height: 14),
@@ -161,7 +148,7 @@ class _ReceiptCard extends StatelessWidget {
                   const SizedBox(height: 14),
                   _ReceiptRow(
                     label: 'Disbursed On',
-                    amount: dateFmt.format(record.disbursed),
+                    amount: record.disbursed.displayDate,
                   ),
                   _ReceiptRow(
                     label: 'Status',
@@ -173,7 +160,7 @@ class _ReceiptCard extends StatelessWidget {
                   const _DashDivider(),
                   const SizedBox(height: 12),
                   Text(
-                    'REF: PAY-${refFmt.format(record.month)}-0231',
+                    'REF: PAY-${record.month.format('yyyyMM')}-0231',
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
                       fontSize: 10,
@@ -182,7 +169,7 @@ class _ReceiptCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    'Generated: ${DateFormat('dd MMM yyyy').format(DateTime.now())}',
+                    'Generated: ${DateTime.now().displayDate}',
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
                       fontSize: 10,
