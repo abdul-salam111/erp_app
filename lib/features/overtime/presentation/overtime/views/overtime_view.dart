@@ -41,11 +41,7 @@ class _OvertimeBody extends StatelessWidget {
           padding: context.pagePadding,
           child: const Column(
             crossAxisAlignment: .start,
-            children: [
-              _SummaryStrip(),
-              SizedBox(height: 16),
-              _OvertimeTable(),
-            ],
+            children: [_SummaryStrip(), SizedBox(height: 16), _OvertimeTable()],
           ),
         ),
       ),
@@ -66,47 +62,60 @@ class _SummaryStrip extends StatelessWidget {
 
         final totalHours = records.fold(0.0, (s, r) => s + r.hours);
         final approvedHours = records
-            .where((r) =>
-                r.status == OvertimeStatus.approved ||
-                r.status == OvertimeStatus.paid)
+            .where(
+              (r) =>
+                  r.status == OvertimeStatus.approved ||
+                  r.status == OvertimeStatus.paid,
+            )
             .fold(0.0, (s, r) => s + r.hours);
         final pendingHours = records
             .where((r) => r.status == OvertimeStatus.pending)
             .fold(0.0, (s, r) => s + r.hours);
         final totalEarnings = records
-            .where((r) =>
-                r.status == OvertimeStatus.approved ||
-                r.status == OvertimeStatus.paid)
+            .where(
+              (r) =>
+                  r.status == OvertimeStatus.approved ||
+                  r.status == OvertimeStatus.paid,
+            )
             .fold(0.0, (s, r) => s + r.amount);
 
-        return Row(
+        return Column(
           children: [
-            _SummaryCard(
-              label: 'Total Hours',
-              value: '${totalHours.toStringAsFixed(1)}h',
-              icon: Icons.access_time_rounded,
-              color: AppColors.primary,
+            Row(
+              children: [
+                _SummaryCard(
+                  label: 'Total Hours',
+                  value: '${totalHours.toStringAsFixed(1)}h',
+                  icon: Icons.access_time_rounded,
+                  color: AppColors.primary,
+                ),
+                const SizedBox(width: 8),
+                _SummaryCard(
+                  label: 'Approved',
+                  value: '${approvedHours.toStringAsFixed(1)}h',
+                  icon: Icons.check_circle_outline_rounded,
+                  color: AppColors.creditGreen,
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            _SummaryCard(
-              label: 'Approved',
-              value: '${approvedHours.toStringAsFixed(1)}h',
-              icon: Icons.check_circle_outline_rounded,
-              color: AppColors.creditGreen,
-            ),
-            const SizedBox(width: 8),
-            _SummaryCard(
-              label: 'Pending',
-              value: '${pendingHours.toStringAsFixed(1)}h',
-              icon: Icons.hourglass_empty_rounded,
-              color: const Color(0xFFD97706),
-            ),
-            const SizedBox(width: 8),
-            _SummaryCard(
-              label: 'Earnings',
-              value: totalEarnings.asPKR,
-              icon: Icons.account_balance_wallet_outlined,
-              color: AppColors.purple,
+                const SizedBox(height: 8),
+          
+            Row(
+              children: [
+                _SummaryCard(
+                  label: 'Pending',
+                  value: '${pendingHours.toStringAsFixed(1)}h',
+                  icon: Icons.hourglass_empty_rounded,
+                  color: const Color(0xFFD97706),
+                ),
+                const SizedBox(width: 8),
+                _SummaryCard(
+                  label: 'Earnings',
+                  value: totalEarnings.asPKR,
+                  icon: Icons.account_balance_wallet_outlined,
+                  color: AppColors.purple,
+                ),
+              ],
             ),
           ],
         );
@@ -132,7 +141,7 @@ class _SummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         decoration: BoxDecoration(
           color: context.white,
           borderRadius: BorderRadius.circular(10),
@@ -145,39 +154,45 @@ class _SummaryCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: .start,
+        child: Row(
+       
           children: [
             Container(
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(6),
               ),
-              child: Icon(icon, size: 14, color: color),
+              child: Icon(icon, size: 13, color: color),
             ),
-            const SizedBox(height: 8),
-            Text(
+          widthBox(10),
+            Column(
+              crossAxisAlignment: .start,
+              children: [
+              Text(
               value,
               style: context.labelMedium.copyWith(
                 fontWeight: .w700,
                 color: context.textPrimary,
-                fontSize: 12,
+                fontSize: 11,
               ),
               maxLines: 1,
               overflow: .ellipsis,
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 1),
             Text(
               label,
               style: context.labelSmall.copyWith(
                 color: context.textSecondary,
-                fontSize: 9.5,
+                fontSize: 9,
               ),
               maxLines: 1,
               overflow: .ellipsis,
             ),
+              ],
+            ),
+           
           ],
         ),
       ),
@@ -212,7 +227,9 @@ class _OvertimeTable extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 12),
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 child: Text(
                   'Overtime history',
                   style: context.titleSmall.copyWith(fontWeight: .w600),
@@ -221,8 +238,7 @@ class _OvertimeTable extends StatelessWidget {
               const Divider(height: 1, thickness: 1),
               const _TableHeader(),
               ...List.generate(state.records.length, (i) {
-                return _TableRow(
-                    record: state.records[i], isAlt: i.isOdd);
+                return _TableRow(record: state.records[i], isAlt: i.isOdd);
               }),
             ],
           ),
@@ -419,14 +435,14 @@ class _OvertimeDetailSheet extends StatelessWidget {
                   children: [
                     Text(
                       record.type.label,
-                      style:
-                          context.titleSmall.copyWith(fontWeight: .w700),
+                      style: context.titleSmall.copyWith(fontWeight: .w700),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       _dateFmt.format(record.date),
-                      style: context.bodySmall
-                          .copyWith(color: context.textSecondary),
+                      style: context.bodySmall.copyWith(
+                        color: context.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -584,10 +600,7 @@ class _DetailRow extends StatelessWidget {
             style: context.bodySmall.copyWith(color: context.textSecondary),
           ),
         ),
-        Text(
-          value,
-          style: context.bodySmall.copyWith(fontWeight: .w600),
-        ),
+        Text(value, style: context.bodySmall.copyWith(fontWeight: .w600)),
       ],
     );
   }

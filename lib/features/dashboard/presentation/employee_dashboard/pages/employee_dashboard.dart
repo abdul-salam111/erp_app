@@ -42,6 +42,7 @@ class EmployeeDashboard extends StatelessWidget {
             label: AppConstants.noticesLabel,
             icon: Iconsax.notification_bing,
             color: AppColors.orange,
+            routeName: RouteNames.alert_panel,
           ),
           DrawerItem.tile(
             label: AppConstants.attendanceLabel,
@@ -666,6 +667,7 @@ class _WorkspaceMenuSection extends StatelessWidget {
       subtitle: AppConstants.noticesSubtitle,
       icon: Iconsax.notification_bing,
       color: AppColors.orange,
+      routeName: RouteNames.alert_panel,
     ),
     _MenuMeta(
       label: AppConstants.attendanceLabel,
