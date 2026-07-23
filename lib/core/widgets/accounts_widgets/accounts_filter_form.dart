@@ -20,6 +20,7 @@ class AccountsFilterForm extends StatelessWidget {
   final VoidCallback onPickFrom;
   final VoidCallback onPickTo;
   final VoidCallback onView;
+  final bool showAccountSelector;
 
   const AccountsFilterForm({
     super.key,
@@ -35,6 +36,7 @@ class AccountsFilterForm extends StatelessWidget {
     required this.onPickFrom,
     required this.onPickTo,
     required this.onView,
+    this.showAccountSelector = true,
   });
 
   @override
@@ -68,20 +70,22 @@ class AccountsFilterForm extends StatelessWidget {
         child: Column(
           crossAxisAlignment: .start,
           children: [
-            FormLabel(text: label),
-            const SizedBox(height: 6),
-            if (isLoading)
-              const ShimmerBox(height: 56, radius: 10)
-            else
-              SearchableDropdown(
-                items: items,
-                subtitles: subtitles,
-                controller: controller,
-                hintText: hintText,
-                onChanged: onItemChanged,
-                fieldHeight: 40,
-              ),
-            const SizedBox(height: 10),
+            if (showAccountSelector) ...[
+              FormLabel(text: label),
+              const SizedBox(height: 6),
+              if (isLoading)
+                const ShimmerBox(height: 56, radius: 10)
+              else
+                SearchableDropdown(
+                  items: items,
+                  subtitles: subtitles,
+                  controller: controller,
+                  hintText: hintText,
+                  onChanged: onItemChanged,
+                  fieldHeight: 40,
+                ),
+              const SizedBox(height: 10),
+            ],
             Row(
               children: [
                 Expanded(

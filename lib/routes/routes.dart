@@ -206,6 +206,11 @@ class AppRoutes {
         builder: (context, state) => const AccountLedgerView(),
       ),
       GoRoute(
+        path: RoutePaths.employee_account_ledger,
+        name: RouteNames.employee_account_ledger,
+        builder: (context, state) => const AccountLedgerView(isEmployeeMode: true),
+      ),
+      GoRoute(
         path: RoutePaths.organizationSelection,
         name: RouteNames.organizationSelection,
         builder: (context, state) => const OrganizationSelectionView(),

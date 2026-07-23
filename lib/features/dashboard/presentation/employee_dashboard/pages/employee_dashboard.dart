@@ -77,7 +77,7 @@ class EmployeeDashboard extends StatelessWidget {
             label: AppConstants.acStatementsLabel,
             icon: Iconsax.document_text,
             color: AppColors.blueGrey,
-            routeName: RouteNames.account_ledger,
+            routeName: RouteNames.employee_account_ledger,
           ),
         ],
       ),
@@ -709,7 +709,7 @@ class _WorkspaceMenuSection extends StatelessWidget {
       subtitle: AppConstants.acStatementsSubtitle,
       icon: Iconsax.document_text,
       color: AppColors.blueGrey,
-      routeName: RouteNames.account_ledger,
+      routeName: RouteNames.employee_account_ledger,
     ),
     _MenuMeta(
       label: AppConstants.profileLabel,

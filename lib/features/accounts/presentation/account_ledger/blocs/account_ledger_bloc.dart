@@ -25,8 +25,6 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
         (e, emit) => emit(state.copyWith(selectedAccountId: e.accountId)));
     on<AccountLedgerFilterCollapsed>(
         (e, emit) => emit(state.copyWith(filterCollapsed: e.collapsed)));
-
-    add(const AccountLedgerAccountsFetched());
   }
 
   static AccountLedgerState _initialState() {

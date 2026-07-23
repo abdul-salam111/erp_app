@@ -38,4 +38,5 @@ class RoutePaths {
   static const String loan_and_advance = '/loan_and_advance';
   static const String overtime = '/overtime';
   static const String choose_dashboard = '/choose_dashboard';
+  static const String employee_account_ledger = '/employee_account_ledger';
 }

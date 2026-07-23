@@ -11,13 +11,14 @@ import '../widgets/statements_body.dart';
 // ─── View ─────────────────────────────────────────────────────────────────────
 
 class AccountLedgerView extends StatelessWidget {
-  const AccountLedgerView({super.key});
+  final bool isEmployeeMode;
+  const AccountLedgerView({super.key, this.isEmployeeMode = false});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => sl<AccountLedgerBloc>(),
-      child: const _AccountLedgerBody(),
+      child: _AccountLedgerBody(isEmployeeMode: isEmployeeMode),
     );
   }
 }
@@ -25,7 +26,8 @@ class AccountLedgerView extends StatelessWidget {
 // ─── Body ─────────────────────────────────────────────────────────────────────
 
 class _AccountLedgerBody extends StatefulWidget {
-  const _AccountLedgerBody();
+  final bool isEmployeeMode;
+  const _AccountLedgerBody({this.isEmployeeMode = false});
 
   @override
   State<_AccountLedgerBody> createState() => _AccountLedgerBodyState();
@@ -41,6 +43,13 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
     _accountController = TextEditingController();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.isEmployeeMode) {
+        _fetch();
+      } else {
+        context.read<AccountLedgerBloc>().add(const AccountLedgerAccountsFetched());
+      }
+    });
   }
 
   @override
@@ -60,7 +69,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
 
   void _fetch() {
     final bloc = context.read<AccountLedgerBloc>();
-    if (bloc.state.selectedAccountId == null) {
+    if (!widget.isEmployeeMode && bloc.state.selectedAccountId == null) {
       AppToastsUtils.showErrorTop(
         context,
         AppConstants.pleaseSelectAnAccountFirstErrorMsg,
@@ -70,7 +79,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
     bloc.add(AccountLedgerSubmitted(
       fromDate: bloc.state.fromDate.format('yyyy-MM-dd'),
       toDate: bloc.state.toDate.format('yyyy-MM-dd'),
-      accountId: bloc.state.selectedAccountId,
+      accountId: widget.isEmployeeMode ? 95 : bloc.state.selectedAccountId,
     ));
   }
 
@@ -133,8 +142,8 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                 alignment: Alignment.topCenter,
                 child: state.filterCollapsed
                     ? AccountsCompactFilterBar(
-                        label: _accountController.text,
-                        placeholder: AppConstants.selectAccount,
+                        label: widget.isEmployeeMode ? '' : _accountController.text,
+                        placeholder: widget.isEmployeeMode ? '' : AppConstants.selectAccount,
                         fromDate: state.fromDate,
                         toDate: state.toDate,
                         onExpand: () {
@@ -166,6 +175,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                         onPickFrom: () => _pickDate(true),
                         onPickTo: () => _pickDate(false),
                         onView: _fetch,
+                        showAccountSelector: !widget.isEmployeeMode,
                       ),
               ),
             ),
