@@ -56,7 +56,7 @@ class AppConstants {
   static const String employeeDashboardTitle = 'Employee Dashboard';
   static const String myWorkspaceTitle = 'My Workspace';
   static const String noticeBoardTitle = 'Notice Board';
-  static const String monthlySnapshotTitle = 'Monthly Data';
+  static const String monthlySnapshotTitle = 'Overview';
   static const String noticesLabel = 'Notices';
   static const String attendanceLabel = 'Attendance';
   static const String leaveRequestLabel = 'Leave Request';
@@ -77,10 +77,10 @@ class AppConstants {
   static const String shiftLabel = 'Shift';
   static const String workedLabel = 'worked';
   static const String onTimeLabel = 'On time';
-  static const String leaveBalanceLabel = 'Leave balance';
+  static const String leavesThisMonthLabel = 'Leaves this month';
   static const String overtimeMonthLabel = 'Overtime this month';
   static const String attendanceRateLabel = 'Attendance rate';
-  static const String loanOutstandingLabel = 'Loan outstanding';
+  static const String loanOutstandingLabel = 'Total loan outstanding';
   static const String lastNetPayLabel = 'Last net pay';
   static const String missingPunchesLabel = 'Missing punches';
   static const String employeeLabel = 'Employee';

@@ -18,7 +18,7 @@ class UserEntity extends Equatable {
     this.email,
     this.languageName,
     this.organizations = const [],
-    this.isAdmin = false,
+    this.isAdmin = true,
     this.roles = const [],
   });
 

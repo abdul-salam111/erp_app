@@ -43,12 +43,12 @@ class ErrorInterceptor extends Interceptor {
       DioExceptionType.connectionTimeout ||
       DioExceptionType.sendTimeout ||
       DioExceptionType.receiveTimeout =>
-        RequestTimeoutException(error.message ?? 'Request timeout'),
+        RequestTimeoutException('Request timed out. Please check your connection and try again.'),
       DioExceptionType.connectionError =>
-        NoInternetException(error.message ?? 'No internet connection'),
+        NoInternetException('No internet connection. Please check your network and try again.'),
       DioExceptionType.badCertificate =>
-        BadRequestException(error.message ?? 'SSL certificate error'),
-      _ => FetchDataException(error.message ?? 'Unknown error occurred'),
+        BadRequestException('Secure connection failed. Please try again.'),
+      _ => FetchDataException('Something went wrong. Please try again.'),
     };
   }
 

@@ -14,68 +14,49 @@ class AppException implements Exception {
 
 // No Internet Exception
 class NoInternetException extends AppException {
-  NoInternetException([String? message])
-      : super(message, "No Internet Connection: ");
+  NoInternetException([String? message]) : super(message, '');
 }
 
-// Unauthorized Exception
 class UnauthorizedException extends AppException {
-  UnauthorizedException([String? message])
-      : super(message, "Unauthorized Request: ");
+  UnauthorizedException([String? message]) : super(message, '');
 }
 
-// Request Timeout Exception
 class RequestTimeoutException extends AppException {
-  RequestTimeoutException([String? message])
-      : super(message, "");
+  RequestTimeoutException([String? message]) : super(message, '');
 }
 
-// Fetch Data Exception
 class FetchDataException extends AppException {
-  FetchDataException([String? message])
-      : super(message, "Error Fetching Data: ");
+  FetchDataException([String? message]) : super(message, '');
 }
 
-// Bad Request Exception
 class BadRequestException extends AppException {
-  BadRequestException([String? message]) : super(message, "Invalid Request: ");
+  BadRequestException([String? message]) : super(message, '');
 }
 
-// Resource Not Found Exception
 class NotFoundException extends AppException {
-  NotFoundException([String? message]) : super(message, "Resource Not Found: ");
+  NotFoundException([String? message]) : super(message, '');
 }
 
-// Internal Server Error Exception
 class InternalServerErrorException extends AppException {
-  InternalServerErrorException([String? message])
-      : super(message, "Internal Server Error: ");
+  InternalServerErrorException([String? message]) : super(message, '');
 }
 
-// Service Unavailable Exception
 class ServiceUnavailableException extends AppException {
-  ServiceUnavailableException([String? message])
-      : super(message, "Service Unavailable: ");
+  ServiceUnavailableException([String? message]) : super(message, '');
 }
 
-// Invalid Input Exception
 class InvalidInputException extends AppException {
-  InvalidInputException([String? message]) : super(message, "");
+  InvalidInputException([String? message]) : super(message, '');
 }
 
-// Forbidden Exception
 class ForbiddenException extends AppException {
-  ForbiddenException([String? message]) : super(message, "Forbidden Access: ");
+  ForbiddenException([String? message]) : super(message, '');
 }
 
-// Too Many Requests Exception
 class TooManyRequestsException extends AppException {
-  TooManyRequestsException([String? message])
-      : super(message, "Too Many Requests: ");
+  TooManyRequestsException([String? message]) : super(message, '');
 }
 
-// Method Not Allowed Exception
 class MethodNotAllowedException extends AppException {
-  MethodNotAllowedException([String? message])
-      : super(message, "Method Not Allowed: ");
+  MethodNotAllowedException([String? message]) : super(message, '');
 }

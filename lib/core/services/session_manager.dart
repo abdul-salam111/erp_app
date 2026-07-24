@@ -48,7 +48,9 @@ class SessionController {
     try {
       final userData = await storage.readValues(StorageKeys.userDetails);
       if (userData != null) {
-        loggedInUser = UserEntity.fromJson(jsonDecode(userData));
+        final decoded = jsonDecode(userData) as Map<String, dynamic>;
+        decoded['isAdmin'] = false;
+        loggedInUser = UserEntity.fromJson(decoded);
       }
 
       final orgData = await storage.readValues(StorageKeys.selectedOrganization);

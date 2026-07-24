@@ -507,8 +507,8 @@ class _MonthlySnapshotSection extends StatelessWidget {
 
   static const _stats = <_StatMeta>[
     _StatMeta(
-      label: AppConstants.leaveBalanceLabel,
-      value: '12 days',
+      label: AppConstants.leavesThisMonthLabel,
+      value: '2 days',
       icon: Iconsax.calendar_1,
       color: AppColors.green,
     ),
