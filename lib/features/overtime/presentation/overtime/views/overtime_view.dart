@@ -57,9 +57,9 @@ class _OvertimeBody extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           padding: context.pagePadding,
-          child: const Column(
+          child: Column(
             crossAxisAlignment: .start,
-            children: [_SummaryStrip(), SizedBox(height: 16), _OvertimeTable()],
+            children: const [_SummaryStrip(), SizedBox(height: 16), _OvertimeTable()],
           ),
         ),
       ),
@@ -75,29 +75,72 @@ class _SummaryStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OvertimeBloc, OvertimeState>(
-      builder: (context, state) {
-        final records = state.records;
+      builder: (context, state) => _SummaryContent(records: state.records),
+    );
+  }
+}
 
-        final totalHours = records.fold(0.0, (s, r) => s + r.hours);
-        final approvedHours = records
-            .where(
-              (r) =>
-                  r.status == OvertimeStatus.approved ||
-                  r.status == OvertimeStatus.paid,
-            )
-            .fold(0.0, (s, r) => s + r.hours);
-        final pendingHours = records
-            .where((r) => r.status == OvertimeStatus.pending)
-            .fold(0.0, (s, r) => s + r.hours);
-        final totalEarnings = records
-            .where(
-              (r) =>
-                  r.status == OvertimeStatus.approved ||
-                  r.status == OvertimeStatus.paid,
-            )
-            .fold(0.0, (s, r) => s + r.amount);
+class _SummaryContent extends StatefulWidget {
+  final List<OvertimeRecord> records;
+  const _SummaryContent({required this.records});
 
-        return Column(
+  @override
+  State<_SummaryContent> createState() => _SummaryContentState();
+}
+
+class _SummaryContentState extends State<_SummaryContent>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _fade;
+  late final Animation<Offset> _slide;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
+    _slide = Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
+    _ctrl.forward();
+  }
+
+  @override
+  void didUpdateWidget(_SummaryContent old) {
+    super.didUpdateWidget(old);
+    if (old.records != widget.records) {
+      _ctrl.reset();
+      _ctrl.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final records = widget.records;
+    final totalHours = records.fold(0.0, (s, r) => s + r.hours);
+    final approvedHours = records
+        .where((r) => r.status == OvertimeStatus.approved || r.status == OvertimeStatus.paid)
+        .fold(0.0, (s, r) => s + r.hours);
+    final pendingHours = records
+        .where((r) => r.status == OvertimeStatus.pending)
+        .fold(0.0, (s, r) => s + r.hours);
+    final totalEarnings = records
+        .where((r) => r.status == OvertimeStatus.approved || r.status == OvertimeStatus.paid)
+        .fold(0.0, (s, r) => s + r.amount);
+
+    return FadeTransition(
+      opacity: _fade,
+      child: SlideTransition(
+        position: _slide,
+        child: Column(
           children: [
             Row(
               children: [
@@ -116,8 +159,7 @@ class _SummaryStrip extends StatelessWidget {
                 ),
               ],
             ),
-                const SizedBox(height: 8),
-          
+            const SizedBox(height: 8),
             Row(
               children: [
                 _SummaryCard(
@@ -136,8 +178,8 @@ class _SummaryStrip extends StatelessWidget {
               ],
             ),
           ],
-        );
-      },
+        ),
+      ),
     );
   }
 }
@@ -226,42 +268,121 @@ class _OvertimeTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OvertimeBloc, OvertimeState>(
-      builder: (context, state) {
-        return Container(
-          decoration: BoxDecoration(
-            color: context.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: context.border),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadow,
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+      builder: (context, state) => _OvertimeContent(records: state.records),
+    );
+  }
+}
+
+class _OvertimeContent extends StatefulWidget {
+  final List<OvertimeRecord> records;
+  const _OvertimeContent({required this.records});
+
+  @override
+  State<_OvertimeContent> createState() => _OvertimeContentState();
+}
+
+class _OvertimeContentState extends State<_OvertimeContent>
+    with SingleTickerProviderStateMixin {
+  static const _offscreen = Offset(0, 0.06);
+
+  late AnimationController _ctrl;
+  late List<Animation<double>> _fades;
+  late List<Animation<Offset>> _slides;
+
+  void _buildAnimations() {
+    final count = widget.records.length;
+    _fades = [
+      _fade(0.00, 0.45),
+      for (int i = 0; i < count; i++) _fade(0.10 + i * 0.07, 0.55 + i * 0.07),
+    ];
+    _slides = [
+      _slide(0.00, 0.45),
+      for (int i = 0; i < count; i++) _slide(0.10 + i * 0.07, 0.55 + i * 0.07),
+    ];
+  }
+
+  Animation<double> _fade(double start, double end) => CurvedAnimation(
+        parent: _ctrl,
+        curve: Interval(start, end, curve: Curves.easeOut),
+      );
+
+  Animation<Offset> _slide(double start, double end) =>
+      Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
+        CurvedAnimation(
+          parent: _ctrl,
+          curve: Interval(start, end, curve: Curves.easeOutCubic),
+        ),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 750));
+    _buildAnimations();
+    _ctrl.forward();
+  }
+
+  @override
+  void didUpdateWidget(_OvertimeContent old) {
+    super.didUpdateWidget(old);
+    if (old.records != widget.records) {
+      _ctrl.reset();
+      _buildAnimations();
+      _ctrl.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.border),
+        boxShadow: [
+          BoxShadow(color: AppColors.shadow, blurRadius: 8, offset: const Offset(0, 2)),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          FadeTransition(
+            opacity: _fades[0],
+            child: SlideTransition(
+              position: _slides[0],
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Text(
+                      'Overtime history',
+                      style: context.titleSmall.copyWith(fontWeight: .w600),
+                    ),
+                  ),
+                  const Divider(height: 1, thickness: 1),
+                  const _TableHeader(),
+                ],
               ),
-            ],
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                child: Text(
-                  'Overtime history',
-                  style: context.titleSmall.copyWith(fontWeight: .w600),
-                ),
+          ...List.generate(widget.records.length, (i) {
+            return FadeTransition(
+              opacity: _fades[i + 1],
+              child: SlideTransition(
+                position: _slides[i + 1],
+                child: _TableRow(record: widget.records[i], isAlt: i.isOdd),
               ),
-              const Divider(height: 1, thickness: 1),
-              const _TableHeader(),
-              ...List.generate(state.records.length, (i) {
-                return _TableRow(record: state.records[i], isAlt: i.isOdd);
-              }),
-            ],
-          ),
-        );
-      },
+            );
+          }),
+        ],
+      ),
     );
   }
 }

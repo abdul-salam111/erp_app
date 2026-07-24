@@ -53,7 +53,8 @@ class _ApplyLeaveBody extends StatefulWidget {
   State<_ApplyLeaveBody> createState() => _ApplyLeaveBodyState();
 }
 
-class _ApplyLeaveBodyState extends State<_ApplyLeaveBody> {
+class _ApplyLeaveBodyState extends State<_ApplyLeaveBody>
+    with SingleTickerProviderStateMixin {
   DateTime _requestDate = DateTime.now();
   DateTimeRange _dateRange = DateTimeRange(
     start: DateTime.now(),
@@ -64,9 +65,47 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody> {
   final List<PlatformFile> _pickedFiles = [];
 
   static const _leaveTypes = ['Sick', 'Annual', 'Other'];
+  static const _offscreen = Offset(0, 0.06);
+  static const _itemCount = 6;
+
+  late final AnimationController _ctrl;
+  late final List<Animation<double>> _fades;
+  late final List<Animation<Offset>> _slides;
+
+  Animation<double> _fade(double start, double end) => CurvedAnimation(
+        parent: _ctrl,
+        curve: Interval(start, end, curve: Curves.easeOut),
+      );
+
+  Animation<Offset> _slide(double start, double end) =>
+      Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
+        CurvedAnimation(
+          parent: _ctrl,
+          curve: Interval(start, end, curve: Curves.easeOutCubic),
+        ),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 750),
+    );
+    _fades = [
+      for (int i = 0; i < _itemCount; i++)
+        _fade(i * 0.08, 0.45 + i * 0.08),
+    ];
+    _slides = [
+      for (int i = 0; i < _itemCount; i++)
+        _slide(i * 0.08, 0.45 + i * 0.08),
+    ];
+    _ctrl.forward();
+  }
 
   @override
   void dispose() {
+    _ctrl.dispose();
     _detailController.dispose();
     super.dispose();
   }
@@ -144,7 +183,6 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody> {
         }
       },
       child: Scaffold(
-        backgroundColor: context.white,
         appBar: CustomAppBar(title: 'Leave Application'),
         body: SingleChildScrollView(
           padding: context.pagePadding.copyWith(top: 20, bottom: 24),
@@ -152,55 +190,71 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody> {
             crossAxisAlignment: .start,
             children: [
               // ── Request Date ──
-              _FormLabel('Request Date'),
-              const SizedBox(height: 5),
-              _DateField(text: _fmt(_requestDate), onTap: _pickRequestDate),
+              _Animated(fade: _fades[0], slide: _slides[0], child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  _FormLabel('Request Date'),
+                  const SizedBox(height: 5),
+                  _DateField(text: _fmt(_requestDate), onTap: _pickRequestDate),
+                ],
+              )),
               const SizedBox(height: 16),
 
               // ── Leave Date Range ──
-              _FormLabel('Leave Date(s)'),
-              const SizedBox(height: 5),
-              _DateField(
-                text: '${_fmt(_dateRange.start)}  –  ${_fmt(_dateRange.end)}',
-                icon: Iconsax.calendar_2,
-                onTap: _pickDateRange,
-              ),
+              _Animated(fade: _fades[1], slide: _slides[1], child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  _FormLabel('Leave Date(s)'),
+                  const SizedBox(height: 5),
+                  _DateField(
+                    text: '${_fmt(_dateRange.start)}  –  ${_fmt(_dateRange.end)}',
+                    icon: Iconsax.calendar_2,
+                    onTap: _pickDateRange,
+                  ),
+                ],
+              )),
               const SizedBox(height: 16),
 
               // ── Leave Type ──
-              _FormLabel('Leave Type'),
-              const SizedBox(height: 5),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: context.border),
-                  borderRadius: .circular(8),
-                  color: context.surface,
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _leaveType,
-                    isExpanded: true,
-                    icon: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: context.textSecondary,
+              _Animated(fade: _fades[2], slide: _slides[2], child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  _FormLabel('Leave Type'),
+                  const SizedBox(height: 5),
+                  Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: context.border),
+                      borderRadius: .circular(8),
+                      color: context.surface,
                     ),
-                    style: context.labelMedium.copyWith(
-                      color: context.textSecondary,
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _leaveType,
+                        isExpanded: true,
+                        icon: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: context.textSecondary,
+                        ),
+                        style: context.labelMedium.copyWith(
+                          color: context.textSecondary,
+                        ),
+                        onChanged: (v) {
+                          if (v != null) setState(() => _leaveType = v);
+                        },
+                        items: _leaveTypes
+                            .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                            .toList(),
+                      ),
                     ),
-                    onChanged: (v) {
-                      if (v != null) setState(() => _leaveType = v);
-                    },
-                    items: _leaveTypes
-                        .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                        .toList(),
                   ),
-                ),
-              ),
+                ],
+              )),
               const SizedBox(height: 16),
 
               // ── Detail ──
-              CustomTextFormField(
+              _Animated(fade: _fades[3], slide: _slides[3], child: CustomTextFormField(
                 label: 'Detail',
                 boldLabel: true,
                 labelFontSize: 13,
@@ -215,98 +269,94 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody> {
                 fieldHeight: null,
                 contentPadding: const EdgeInsets.all(12),
                 keyboardType: TextInputType.multiline,
-              ),
+              )),
               const SizedBox(height: 16),
 
               // ── Upload Documents ──
-              _FormLabel('Documents'),
-              const SizedBox(height: 5),
-              GestureDetector(
-                onTap: _pickFiles,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 22),
-                  decoration: BoxDecoration(
-                    borderRadius: .circular(12),
-                    border: Border.all(
-                      color: context.primary.withValues(alpha: 0.35),
-                      width: 1.5,
+              _Animated(fade: _fades[4], slide: _slides[4], child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  _FormLabel('Documents'),
+                  const SizedBox(height: 5),
+                  GestureDetector(
+                    onTap: _pickFiles,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 22),
+                      decoration: BoxDecoration(
+                        borderRadius: .circular(12),
+                        border: Border.all(
+                          color: context.primary.withValues(alpha: 0.35),
+                          width: 1.5,
+                        ),
+                        color: context.primary.withValues(alpha: 0.03),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(Iconsax.document_upload, size: 32, color: context.primary),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Upload documents',
+                            style: context.labelMedium.copyWith(
+                              color: context.primary,
+                              fontWeight: .w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'PDF, Word, JPG, PNG',
+                            style: context.labelSmall.copyWith(color: context.textSecondary),
+                          ),
+                        ],
+                      ),
                     ),
-                    color: context.primary.withValues(alpha: 0.03),
                   ),
-                  child: Column(
-                    children: [
-                      Icon(
-                        Iconsax.document_upload,
-                        size: 32,
-                        color: context.primary,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Upload documents',
-                        style: context.labelMedium.copyWith(
-                          color: context.primary,
-                          fontWeight: .w600,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'PDF, Word, JPG, PNG',
-                        style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                  if (_pickedFiles.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: List.generate(_pickedFiles.length, (i) {
+                        final file = _pickedFiles[i];
+                        return Chip(
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                          label: Text(
+                            file.name,
+                            style: context.labelSmall.copyWith(color: context.textPrimary),
+                            overflow: .ellipsis,
+                            maxLines: 1,
+                          ),
+                          deleteIcon: const Icon(Icons.close, size: 14),
+                          onDeleted: () => _removeFile(i),
+                          backgroundColor: context.grey50,
+                          side: BorderSide(color: context.border),
+                          shape: RoundedRectangleBorder(borderRadius: .circular(8)),
+                        );
+                      }),
+                    ),
+                  ],
+                ],
+              )),
+              heightBox(20),
 
-              // ── Picked file chips ──
-              if (_pickedFiles.isNotEmpty) ...[
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 6,
-                  children: List.generate(_pickedFiles.length, (i) {
-                    final file = _pickedFiles[i];
-                    return Chip(
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 4,
-                        vertical: 0,
+              // ── Submit ──
+              _Animated(fade: _fades[5], slide: _slides[5], child:
+                BlocBuilder<ApplyLeaveBloc, ApplyLeaveState>(
+                  builder: (context, state) {
+                    final loading = state.apiStatus == ApiStatus.LOADING;
+                    return Padding(
+                      padding: context.pagePadding.copyWith(top: 12, bottom: 20),
+                      child: CustomButton(
+                        text: 'Submit Application',
+                        onPressed: _submit,
+                        isLoading: loading,
+                        radius: 12,
+                        elevation: 0,
                       ),
-                      label: Text(
-                        file.name,
-                        style: context.labelSmall.copyWith(
-                          color: context.textPrimary,
-                        ),
-                        overflow: .ellipsis,
-                        maxLines: 1,
-                      ),
-                      deleteIcon: const Icon(Icons.close, size: 14),
-                      onDeleted: () => _removeFile(i),
-                      backgroundColor: context.grey50,
-                      side: BorderSide(color: context.border),
-                      shape: RoundedRectangleBorder(borderRadius: .circular(8)),
                     );
-                  }),
+                  },
                 ),
-              ],
-
-              BlocBuilder<ApplyLeaveBloc, ApplyLeaveState>(
-                builder: (context, state) {
-                  final loading = state.apiStatus == ApiStatus.LOADING;
-                  return Padding(
-                    padding: context.pagePadding.copyWith(top: 12, bottom: 20),
-                    child: CustomButton(
-                      text: 'Submit Application',
-                      onPressed: _submit,
-                      isLoading: loading,
-                      radius: 12,
-                      elevation: 0,
-                    ),
-                  );
-                },
               ),
             ],
           ),
@@ -314,6 +364,20 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody> {
       ),
     );
   }
+}
+
+class _Animated extends StatelessWidget {
+  final Animation<double> fade;
+  final Animation<Offset> slide;
+  final Widget child;
+
+  const _Animated({required this.fade, required this.slide, required this.child});
+
+  @override
+  Widget build(BuildContext context) => FadeTransition(
+        opacity: fade,
+        child: SlideTransition(position: slide, child: child),
+      );
 }
 
 class _FormLabel extends StatelessWidget {
@@ -346,7 +410,7 @@ class _DateField extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
           border: Border.all(color: context.border),
           borderRadius: .circular(8),
@@ -359,7 +423,9 @@ class _DateField extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                style: context.labelMedium.copyWith(color: context.textSecondary),
+                style: context.labelMedium.copyWith(
+                  color: context.textSecondary,
+                ),
               ),
             ),
             Icon(

@@ -61,7 +61,7 @@ class _LeavesBody extends StatelessWidget {
           ),
         ),
       ),
-      backgroundColor: context.white,
+   
       appBar: CustomAppBar(title: 'Leave Requests'),
       body: BlocBuilder<LeavesBloc, LeavesState>(
         builder: (context, state) {
@@ -113,7 +113,7 @@ class _LeavesBody extends StatelessWidget {
 
 // ─── Main content ─────────────────────────────────────────────────────────────
 
-class _LeavesContent extends StatelessWidget {
+class _LeavesContent extends StatefulWidget {
   final List<LeaveRequest> leaves;
   final int total;
   final int sick;
@@ -127,16 +127,93 @@ class _LeavesContent extends StatelessWidget {
   });
 
   @override
+  State<_LeavesContent> createState() => _LeavesContentState();
+}
+
+class _LeavesContentState extends State<_LeavesContent>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late List<Animation<double>> _fades;
+  late List<Animation<Offset>> _slides;
+
+  static const _offscreen = Offset(0, 0.06);
+
+  void _buildAnimations() {
+    final count = widget.leaves.length;
+    // index 0 = stats card, 1..N = leave tiles
+    _fades = [
+      _fade(0.00, 0.45),
+      for (int i = 0; i < count; i++)
+        _fade(0.20 + i * 0.07, 0.55 + i * 0.07),
+    ];
+    _slides = [
+      _slide(0.00, 0.45),
+      for (int i = 0; i < count; i++)
+        _slide(0.20 + i * 0.07, 0.55 + i * 0.07),
+    ];
+  }
+
+  Animation<double> _fade(double start, double end) => CurvedAnimation(
+        parent: _ctrl,
+        curve: Interval(start, end, curve: Curves.easeOut),
+      );
+
+  Animation<Offset> _slide(double start, double end) =>
+      Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
+        CurvedAnimation(
+          parent: _ctrl,
+          curve: Interval(start, end, curve: Curves.easeOutCubic),
+        ),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 750),
+    );
+    _buildAnimations();
+    _ctrl.forward();
+  }
+
+  @override
+  void didUpdateWidget(_LeavesContent old) {
+    super.didUpdateWidget(old);
+    if (old.leaves != widget.leaves) {
+      _ctrl.reset();
+      _buildAnimations();
+      _ctrl.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: .stretch,
       children: [
-        _StatsCard(total: total, sick: sick, other: other),
+        FadeTransition(
+          opacity: _fades[0],
+          child: SlideTransition(
+            position: _slides[0],
+            child: _StatsCard(
+              total: widget.total,
+              sick: widget.sick,
+              other: widget.other,
+            ),
+          ),
+        ),
         const SizedBox(height: 14),
-        if (leaves.isEmpty)
+        if (widget.leaves.isEmpty)
           const _EmptyState()
         else
-          _LeaveList(leaves: leaves),
+          _LeaveList(leaves: widget.leaves, fades: _fades, slides: _slides),
       ],
     );
   }
@@ -262,18 +339,32 @@ class _StatsCardState extends State<_StatsCard> {
 
 class _LeaveList extends StatelessWidget {
   final List<LeaveRequest> leaves;
-  const _LeaveList({required this.leaves});
+  final List<Animation<double>> fades;
+  final List<Animation<Offset>> slides;
+
+  const _LeaveList({
+    required this.leaves,
+    required this.fades,
+    required this.slides,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: List.generate(leaves.length, (i) {
         final isLast = i == leaves.length - 1;
-        return Column(
-          children: [
-            _LeaveTile(leave: leaves[i]),
-            if (!isLast) Divider(height: 1, thickness: 1, color: context.border),
-          ],
+        // fades/slides index 0 is the stats card, tiles start at 1
+        return FadeTransition(
+          opacity: fades[i + 1],
+          child: SlideTransition(
+            position: slides[i + 1],
+            child: Column(
+              children: [
+                _LeaveTile(leave: leaves[i]),
+                if (!isLast) Divider(height: 1, thickness: 1, color: context.border),
+              ],
+            ),
+          ),
         );
       }),
     );

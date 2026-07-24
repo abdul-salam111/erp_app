@@ -8,9 +8,53 @@ import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../salary_mgmt_exports.dart';
 
-class SalaryDetailView extends StatelessWidget {
+class SalaryDetailView extends StatefulWidget {
   final SalaryRecord record;
   const SalaryDetailView({super.key, required this.record});
+
+  @override
+  State<SalaryDetailView> createState() => _SalaryDetailViewState();
+}
+
+class _SalaryDetailViewState extends State<SalaryDetailView>
+    with SingleTickerProviderStateMixin {
+  static const _offscreen = Offset(0, 0.06);
+  static const _itemCount = 2;
+
+  late final AnimationController _ctrl;
+  late final List<Animation<double>> _fades;
+  late final List<Animation<Offset>> _slides;
+
+  Animation<double> _fade(double start, double end) => CurvedAnimation(
+        parent: _ctrl,
+        curve: Interval(start, end, curve: Curves.easeOut),
+      );
+
+  Animation<Offset> _slide(double start, double end) =>
+      Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
+        CurvedAnimation(
+          parent: _ctrl,
+          curve: Interval(start, end, curve: Curves.easeOutCubic),
+        ),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 750),
+    );
+    _fades = [for (int i = 0; i < _itemCount; i++) _fade(i * 0.08, 0.45 + i * 0.08)];
+    _slides = [for (int i = 0; i < _itemCount; i++) _slide(i * 0.08, 0.45 + i * 0.08)];
+    _ctrl.forward();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +65,27 @@ class SalaryDetailView extends StatelessWidget {
         padding: context.pagePadding.copyWith(top: 20, bottom: 32),
         child: Column(
           children: [
-            _ReceiptCard(record: record),
+            FadeTransition(
+              opacity: _fades[0],
+              child: SlideTransition(
+                position: _slides[0],
+                child: _ReceiptCard(record: widget.record),
+              ),
+            ),
             const SizedBox(height: 20),
-            CustomButton(
-              text: 'Download Payslip',
-              icon: Iconsax.document_download,
-              isOutlined: true,
-              onPressed: () {},
-              radius: 10,
-              backgroundColor: AppColors.primary,
+            FadeTransition(
+              opacity: _fades[1],
+              child: SlideTransition(
+                position: _slides[1],
+                child: CustomButton(
+                  text: 'Download Payslip',
+                  icon: Iconsax.document_download,
+                  isOutlined: true,
+                  onPressed: () {},
+                  radius: 10,
+                  backgroundColor: AppColors.primary,
+                ),
+              ),
             ),
           ],
         ),

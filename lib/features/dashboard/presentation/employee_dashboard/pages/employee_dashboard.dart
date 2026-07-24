@@ -111,13 +111,19 @@ class EmployeeDashboard extends StatelessWidget {
 class _EmployeeSliverAppBar extends StatelessWidget {
   const _EmployeeSliverAppBar();
 
-  static const double _expandedHeight = 218;
+  static const double _expandedHeight = 229;
 
   String get _greeting {
     final hour = DateTime.now().hour;
     if (hour < 12) return AppConstants.goodMorning;
     if (hour < 17) return AppConstants.goodAfternoon;
     return AppConstants.goodEveningMsg;
+  }
+
+  String get _initials {
+    final parts = currentUser.fullName.trim().split(' ');
+    if (parts.length >= 2) return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    return parts.first.isNotEmpty ? parts.first[0].toUpperCase() : '?';
   }
 
   @override
@@ -304,28 +310,53 @@ class _EmployeeSliverAppBar extends StatelessWidget {
                             fontWeight: .w500,
                           ),
                         ),
-                        const SizedBox(height: 3),
-                        Text(
-                          currentUser.fullName,
-                          style: context.titleLarge.copyWith(
-                            color: AppColors.white,
-                            fontWeight: .w700,
-                            height: 1.1,
-                          ),
-                          maxLines: 1,
-                          overflow: .ellipsis,
-                        ),
-                        const SizedBox(height: 7),
-                        const Row(
+                        const SizedBox(height: 8),
+                        Row(
+                          crossAxisAlignment: .center,
                           children: [
-                            _HeaderChip(
-                              icon: Iconsax.briefcase,
-                              label: 'Software Engineer',
+                            CircleAvatar(
+                              radius: 26,
+                              backgroundColor: AppColors.white.withValues(alpha: 0.20),
+                              child: Text(
+                                _initials,
+                                style: context.titleSmall.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: .w700,
+                                  fontSize: 18,
+                                ),
+                              ),
                             ),
-                            SizedBox(width: 6),
-                            _HeaderChip(
-                              icon: Iconsax.personalcard,
-                              label: 'EMP-0231',
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: .start,
+                                children: [
+                                  Text(
+                                    currentUser.fullName,
+                                    style: context.titleLarge.copyWith(
+                                      color: AppColors.white,
+                                      fontWeight: .w700,
+                                      height: 1.1,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: .ellipsis,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  const Row(
+                                    children: [
+                                      _HeaderChip(
+                                        icon: Iconsax.briefcase,
+                                        label: 'Software Engineer',
+                                      ),
+                                      SizedBox(width: 6),
+                                      _HeaderChip(
+                                        icon: Iconsax.personalcard,
+                                        label: 'EMP-0231',
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

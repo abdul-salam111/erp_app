@@ -41,16 +41,49 @@ class _ApplyOvertimeBody extends StatefulWidget {
   State<_ApplyOvertimeBody> createState() => _ApplyOvertimeBodyState();
 }
 
-class _ApplyOvertimeBodyState extends State<_ApplyOvertimeBody> {
+class _ApplyOvertimeBodyState extends State<_ApplyOvertimeBody>
+    with SingleTickerProviderStateMixin {
   DateTime _date = DateTime.now();
   String _overtimeType = 'Pre-Approved';
   final _hoursController = TextEditingController();
   final _reasonController = TextEditingController();
 
   static const _overtimeTypes = ['Pre-Approved', 'Emergency', 'Weekend'];
+  static const _offscreen = Offset(0, 0.06);
+  static const _itemCount = 5;
+
+  late final AnimationController _ctrl;
+  late final List<Animation<double>> _fades;
+  late final List<Animation<Offset>> _slides;
+
+  Animation<double> _fade(double start, double end) => CurvedAnimation(
+        parent: _ctrl,
+        curve: Interval(start, end, curve: Curves.easeOut),
+      );
+
+  Animation<Offset> _slide(double start, double end) =>
+      Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
+        CurvedAnimation(
+          parent: _ctrl,
+          curve: Interval(start, end, curve: Curves.easeOutCubic),
+        ),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 750),
+    );
+    _fades = [for (int i = 0; i < _itemCount; i++) _fade(i * 0.08, 0.45 + i * 0.08)];
+    _slides = [for (int i = 0; i < _itemCount; i++) _slide(i * 0.08, 0.45 + i * 0.08)];
+    _ctrl.forward();
+  }
 
   @override
   void dispose() {
+    _ctrl.dispose();
     _hoursController.dispose();
     _reasonController.dispose();
     super.dispose();
@@ -102,54 +135,63 @@ class _ApplyOvertimeBodyState extends State<_ApplyOvertimeBody> {
             crossAxisAlignment: .start,
             children: [
               // ── Date ──
-              _FormLabel('Date'),
-              const SizedBox(height: 6),
-              _DateField(text: _fmt(_date), onTap: _pickDate),
+              _Animated(fade: _fades[0], slide: _slides[0], child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  _FormLabel('Date'),
+                  const SizedBox(height: 6),
+                  _DateField(text: _fmt(_date), onTap: _pickDate),
+                ],
+              )),
               const SizedBox(height: 16),
 
               // ── Overtime Type ──
-              _FormLabel('Overtime Type'),
-              const SizedBox(height: 6),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: context.border),
-                  borderRadius: .circular(8),
-                  color: context.surface,
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _overtimeType,
-                    isExpanded: true,
-                    icon: Icon(Icons.keyboard_arrow_down_rounded,
-                        color: context.textSecondary),
-                    style: context.labelMedium.copyWith(color: context.textSecondary),
-                    onChanged: (v) {
-                      if (v != null) setState(() => _overtimeType = v);
-                    },
-                    items: _overtimeTypes
-                        .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                        .toList(),
+              _Animated(fade: _fades[1], slide: _slides[1], child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  _FormLabel('Overtime Type'),
+                  const SizedBox(height: 6),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: context.border),
+                      borderRadius: .circular(8),
+                      color: context.surface,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _overtimeType,
+                        isExpanded: true,
+                        icon: Icon(Icons.keyboard_arrow_down_rounded,
+                            color: context.textSecondary),
+                        style: context.labelMedium.copyWith(color: context.textSecondary),
+                        onChanged: (v) {
+                          if (v != null) setState(() => _overtimeType = v);
+                        },
+                        items: _overtimeTypes
+                            .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                            .toList(),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                ],
+              )),
               const SizedBox(height: 16),
 
               // ── Hours ──
-              CustomTextFormField(
+              _Animated(fade: _fades[2], slide: _slides[2], child: CustomTextFormField(
                 label: 'Hours',
                 boldLabel: true,
                 labelFontSize: 13,
                 labelColor: context.textPrimary,
                 hintText: 'e.g. 2.5',
                 controller: _hoursController,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-              ),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              )),
               const SizedBox(height: 16),
 
               // ── Reason ──
-              CustomTextFormField(
+              _Animated(fade: _fades[3], slide: _slides[3], child: CustomTextFormField(
                 label: 'Reason',
                 boldLabel: true,
                 labelFontSize: 13,
@@ -164,16 +206,18 @@ class _ApplyOvertimeBodyState extends State<_ApplyOvertimeBody> {
                 fieldHeight: null,
                 contentPadding: const EdgeInsets.all(12),
                 keyboardType: TextInputType.multiline,
-              ),
+              )),
               const SizedBox(height: 24),
 
-              BlocBuilder<ApplyOvertimeBloc, ApplyOvertimeState>(
-                builder: (context, state) => CustomButton(
-                  text: 'Submit Request',
-                  onPressed: _submit,
-                  isLoading: state.apiStatus == ApiStatus.LOADING,
-                  radius: 12,
-                  elevation: 0,
+              _Animated(fade: _fades[4], slide: _slides[4], child:
+                BlocBuilder<ApplyOvertimeBloc, ApplyOvertimeState>(
+                  builder: (context, state) => CustomButton(
+                    text: 'Submit Request',
+                    onPressed: _submit,
+                    isLoading: state.apiStatus == ApiStatus.LOADING,
+                    radius: 12,
+                    elevation: 0,
+                  ),
                 ),
               ),
             ],
@@ -182,6 +226,20 @@ class _ApplyOvertimeBodyState extends State<_ApplyOvertimeBody> {
       ),
     );
   }
+}
+
+class _Animated extends StatelessWidget {
+  final Animation<double> fade;
+  final Animation<Offset> slide;
+  final Widget child;
+
+  const _Animated({required this.fade, required this.slide, required this.child});
+
+  @override
+  Widget build(BuildContext context) => FadeTransition(
+        opacity: fade,
+        child: SlideTransition(position: slide, child: child),
+      );
 }
 
 class _FormLabel extends StatelessWidget {

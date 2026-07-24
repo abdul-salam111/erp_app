@@ -70,39 +70,130 @@ class _LoanTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoanAndAdvanceBloc, LoanAndAdvanceState>(
-      builder: (context, state) {
-        return Container(
-          decoration: BoxDecoration(
-            color: context.white,
-            borderRadius: .circular(12),
-            border: .all(color: context.border),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.shadow,
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+      builder: (context, state) => _LoanContent(records: state.records),
+    );
+  }
+}
+
+class _LoanContent extends StatefulWidget {
+  final List<LoanRecord> records;
+  const _LoanContent({required this.records});
+
+  @override
+  State<_LoanContent> createState() => _LoanContentState();
+}
+
+class _LoanContentState extends State<_LoanContent>
+    with SingleTickerProviderStateMixin {
+  static const _offscreen = Offset(0, 0.06);
+
+  late AnimationController _ctrl;
+  late List<Animation<double>> _fades;
+  late List<Animation<Offset>> _slides;
+
+  void _buildAnimations() {
+    final count = widget.records.length;
+    _fades = [
+      _fade(0.00, 0.45),
+      for (int i = 0; i < count; i++)
+        _fade(0.10 + i * 0.07, 0.55 + i * 0.07),
+    ];
+    _slides = [
+      _slide(0.00, 0.45),
+      for (int i = 0; i < count; i++)
+        _slide(0.10 + i * 0.07, 0.55 + i * 0.07),
+    ];
+  }
+
+  Animation<double> _fade(double start, double end) => CurvedAnimation(
+        parent: _ctrl,
+        curve: Interval(start, end, curve: Curves.easeOut),
+      );
+
+  Animation<Offset> _slide(double start, double end) =>
+      Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
+        CurvedAnimation(
+          parent: _ctrl,
+          curve: Interval(start, end, curve: Curves.easeOutCubic),
+        ),
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 750),
+    );
+    _buildAnimations();
+    _ctrl.forward();
+  }
+
+  @override
+  void didUpdateWidget(_LoanContent old) {
+    super.didUpdateWidget(old);
+    if (old.records != widget.records) {
+      _ctrl.reset();
+      _buildAnimations();
+      _ctrl.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(12),
+        border: .all(color: context.border),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.shadow,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          child: Column(
-            crossAxisAlignment: .start,
-            children: [
-              Padding(
-                padding: const .symmetric(horizontal: 16, vertical: 12),
-                child: Text(
-                  'Loan & advance history',
-                  style: context.titleSmall.copyWith(fontWeight: .w600),
-                ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          FadeTransition(
+            opacity: _fades[0],
+            child: SlideTransition(
+              position: _slides[0],
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: Text(
+                      'Loan & advance history',
+                      style: context.titleSmall.copyWith(fontWeight: .w600),
+                    ),
+                  ),
+                  const Divider(height: 1, thickness: 1),
+                  const _TableHeader(),
+                ],
               ),
-              const Divider(height: 1, thickness: 1),
-              const _TableHeader(),
-              ...List.generate(state.records.length, (i) {
-                return _TableRow(record: state.records[i], isAlt: i.isOdd);
-              }),
-            ],
+            ),
           ),
-        );
-      },
+          ...List.generate(widget.records.length, (i) {
+            return FadeTransition(
+              opacity: _fades[i + 1],
+              child: SlideTransition(
+                position: _slides[i + 1],
+                child: _TableRow(record: widget.records[i], isAlt: i.isOdd),
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 }
