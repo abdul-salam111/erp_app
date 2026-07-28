@@ -12,7 +12,7 @@ extension LoggedInUserModelMapper on LoggedInUserModel {
       organizations:
           organizations?.map((o) => o.toEntity()).toList() ?? const [],
       // TODO: replace placeholders once API returns isAdmin and roles fields
-      isAdmin: false,
+      isAdmin: true,
       roles: const [],
     );
   }

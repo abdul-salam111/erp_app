@@ -13,7 +13,7 @@ class AppColors {
   /// Primary brand color - Main actions, CTAs
   static const Color primary = Color(0xff1B84FF);
   static const Color primaryDark = Color(0xFF074DBF);
-  static const Color primaryLight = Color(0xFFFFA558);
+  static const Color primaryLight = Color.fromARGB(255, 88, 188, 255);
 
   /// Secondary brand color - Accents, highlights
   static const Color secondary = Color(0xff0036F8);

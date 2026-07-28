@@ -49,7 +49,7 @@ class SessionController {
       final userData = await storage.readValues(StorageKeys.userDetails);
       if (userData != null) {
         final decoded = jsonDecode(userData) as Map<String, dynamic>;
-        decoded['isAdmin'] = false;
+        decoded['isAdmin'] = true;
         loggedInUser = UserEntity.fromJson(decoded);
       }
 
