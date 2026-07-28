@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../../core/debug/api_debug_cubit.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
@@ -136,11 +137,37 @@ class _Circle extends StatelessWidget {
   }
 }
 
-class _LoginCard extends StatelessWidget {
+class _LoginCard extends StatefulWidget {
   const _LoginCard({required this.formKey, required this.state});
 
   final GlobalKey<FormState> formKey;
   final SignInState state;
+
+  @override
+  State<_LoginCard> createState() => _LoginCardState();
+}
+
+class _LoginCardState extends State<_LoginCard> {
+  int _debugTapCount = 0;
+  DateTime? _firstDebugTap;
+
+  void _onTitleTap() {
+    final now = DateTime.now();
+    if (_firstDebugTap == null || now.difference(_firstDebugTap!) > const Duration(seconds: 3)) {
+      _firstDebugTap = now;
+      _debugTapCount = 1;
+    } else {
+      _debugTapCount++;
+    }
+    if (_debugTapCount >= 5) {
+      _debugTapCount = 0;
+      _firstDebugTap = null;
+      context.read<ApiDebugCubit>().toggleEnabled();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('API Debugger toggled')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +193,7 @@ class _LoginCard extends StatelessWidget {
         ],
       ),
       child: Form(
-        key: formKey,
+        key: widget.formKey,
         child: Column(
           crossAxisAlignment: .center,
           mainAxisSize: .min,
@@ -185,13 +212,16 @@ class _LoginCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Mantic ERP',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF0D1B3E),
-                letterSpacing: -0.5,
+            GestureDetector(
+              onTap: _onTitleTap,
+              child: const Text(
+                'Mantic ERP',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF0D1B3E),
+                  letterSpacing: -0.5,
+                ),
               ),
             ),
             const SizedBox(height: 4),
@@ -266,7 +296,7 @@ class _LoginCard extends StatelessWidget {
                   isLoading: state.apiStatus == ApiStatus.LOADING,
                   text: AppConstants.signInBtn,
                   onPressed: () {
-                    if (formKey.currentState!.validate()) {
+                    if (widget.formKey.currentState!.validate()) {
                       context.read<SignInBloc>().add(SignInSubmitted());
                     }
                   },

@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../core/constants/app_enums.dart';
+import '../../../../core/debug/api_debug_cubit.dart';
+import '../../../../core/debug/api_debug_state.dart';
 import '../../../../core/di/di_exports.dart';
 import '../../../../core/services/current_user.dart';
 import '../../../../core/theme/colors.dart';
@@ -92,6 +94,22 @@ class _ProfileBody extends StatelessWidget {
                         curve: Curves.easeOutCubic,
                       )
                       .fadeIn(delay: 140.ms, duration: 320.ms),
+
+                  const SizedBox(height: 14),
+
+                  BlocBuilder<ApiDebugCubit, ApiDebugState>(
+                    builder: (context, dbgState) {
+                      if (!dbgState.isEnabled) return const SizedBox.shrink();
+                      return SwitchListTile(
+                        title: const Text('API Debugger'),
+                        value: dbgState.isEnabled,
+                        onChanged: (_) => context.read<ApiDebugCubit>().toggleEnabled(),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        tileColor: context.white,
+                      );
+                    },
+                  ),
 
                   const SizedBox(height: 28),
 
