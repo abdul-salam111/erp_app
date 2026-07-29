@@ -1,4 +1,4 @@
-import 'api_debug_entry.dart';
+import '../api_debug_entry.dart';
 
 class ApiDebugState {
   final bool isEnabled;

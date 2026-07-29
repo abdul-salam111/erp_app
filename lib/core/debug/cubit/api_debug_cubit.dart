@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'api_debug_entry.dart';
+import '../api_debug_entry.dart';
 import 'api_debug_state.dart';
 
 const _kDebugEnabledKey = 'apiDebugEnabled';

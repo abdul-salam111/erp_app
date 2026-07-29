@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../di/app_dependencies.dart';
-import 'api_debug_cubit.dart';
+import '../../routes/routes.dart';
+import '../theme/theme_exports.dart';
+import 'cubit/api_debug_cubit.dart';
 import 'api_debug_entry.dart';
-import 'api_debug_state.dart';
+import 'cubit/api_debug_state.dart';
 
 // ─── Root layer ───────────────────────────────────────────────────────────────
 
@@ -67,9 +69,11 @@ class _ApiDebugLayerBodyState extends State<_ApiDebugLayerBody> {
   }
 
   void _openListSheet(BuildContext context) {
+    final navContext = AppRoutes.navigatorKey.currentContext;
+    if (navContext == null) return;
     final cubit = context.read<ApiDebugCubit>();
     showModalBottomSheet<void>(
-      context: context,
+      context: navContext,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => BlocProvider.value(
@@ -94,8 +98,8 @@ class _FabContent extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-          width: 64,
-          height: 64,
+          width: 60,
+          height: 30,
           decoration: BoxDecoration(
             color: const Color(0xFF1A1A2E),
             borderRadius: BorderRadius.circular(16),
@@ -113,18 +117,9 @@ class _FabContent extends StatelessWidget {
               Icon(
                 hasPending ? Icons.sync_rounded : Icons.api_rounded,
                 color: accent,
-                size: 22,
+                size: 15,
               ),
-              const SizedBox(height: 2),
-              const Text(
-                'API',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.5,
-                ),
-              ),
+          
             ],
           ),
         ),
@@ -268,6 +263,8 @@ class _SimulateTokenRow extends StatelessWidget {
                 onChanged: (_) => context.read<ApiDebugCubit>().toggleSimulateExpiredToken(),
                 activeThumbColor: Colors.amberAccent,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                inactiveThumbColor: AppColors.chartPrimary,
+                
               ),
             ],
           ),

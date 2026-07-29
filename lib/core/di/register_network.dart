@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../debug/api_debug_cubit.dart';
+import '../debug/cubit/api_debug_cubit.dart';
 import '../debug/api_debug_interceptor.dart';
 import '../networks/network_manager/dio_client.dart';
 import '../networks/network_manager/dio_helper.dart';

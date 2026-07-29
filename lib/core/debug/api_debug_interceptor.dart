@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'api_debug_cubit.dart';
+import 'cubit/api_debug_cubit.dart';
 import 'api_debug_entry.dart';
 
 class ApiDebugInterceptor extends Interceptor {

@@ -25,7 +25,10 @@ import '../features/choose_dashboard/choose_dashboard_view.dart';
 
 
 class AppRoutes {
+  static final navigatorKey = GlobalKey<NavigatorState>();
+
   static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: RoutePaths.splash,
     redirect: (context, state) {
       final isLoggedIn = SessionController.instance.islogin;

@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../core/constants/app_enums.dart';
-import '../../../../core/debug/api_debug_cubit.dart';
-import '../../../../core/debug/api_debug_state.dart';
+import '../../../../core/debug/cubit/api_debug_cubit.dart';
+import '../../../../core/debug/cubit/api_debug_state.dart';
 import '../../../../core/di/di_exports.dart';
 import '../../../../core/services/current_user.dart';
 import '../../../../core/theme/colors.dart';

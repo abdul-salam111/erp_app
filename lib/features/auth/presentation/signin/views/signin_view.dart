@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import '../../../../../core/debug/api_debug_cubit.dart';
+import '../../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
