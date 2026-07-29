@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -119,7 +118,6 @@ class _FabContent extends StatelessWidget {
                 color: accent,
                 size: 15,
               ),
-          
             ],
           ),
         ),
@@ -164,11 +162,11 @@ class _DebugListSheet extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _SheetHandle(),
-              _SheetHeader(),
-              _SimulateTokenRow(),
+              const _SheetHandle(),
+              const _SheetHeader(),
+              const _SimulateTokenRow(),
               const Divider(color: Colors.white12, height: 1),
-              _ColumnHeaders(),
+              const _ColumnHeaders(),
               const Divider(color: Colors.white12, height: 1),
               Expanded(child: _EntryList(scrollController: scrollController)),
             ],
@@ -180,6 +178,8 @@ class _DebugListSheet extends StatelessWidget {
 }
 
 class _SheetHandle extends StatelessWidget {
+  const _SheetHandle();
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -197,6 +197,8 @@ class _SheetHandle extends StatelessWidget {
 }
 
 class _SheetHeader extends StatelessWidget {
+  const _SheetHeader();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ApiDebugCubit, ApiDebugState>(
@@ -245,6 +247,8 @@ class _SheetHeader extends StatelessWidget {
 }
 
 class _SimulateTokenRow extends StatelessWidget {
+  const _SimulateTokenRow();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ApiDebugCubit, ApiDebugState>(
@@ -264,7 +268,6 @@ class _SimulateTokenRow extends StatelessWidget {
                 activeThumbColor: Colors.amberAccent,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 inactiveThumbColor: AppColors.chartPrimary,
-                
               ),
             ],
           ),
@@ -275,17 +278,19 @@ class _SimulateTokenRow extends StatelessWidget {
 }
 
 class _ColumnHeaders extends StatelessWidget {
+  const _ColumnHeaders();
+
   @override
   Widget build(BuildContext context) {
     const style = TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 0.5);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 7),
       child: Row(
         children: [
-          const SizedBox(width: 52, child: Text('METHOD', style: style)),
-          const Expanded(child: Text('ENDPOINT', style: style)),
-          const SizedBox(width: 40, child: Text('CODE', style: style, textAlign: TextAlign.center)),
-          const SizedBox(width: 48, child: Text('TIME', style: style, textAlign: TextAlign.right)),
+          SizedBox(width: 52, child: Text('METHOD', style: style)),
+          Expanded(child: Text('ENDPOINT', style: style)),
+          SizedBox(width: 40, child: Text('CODE', style: style, textAlign: TextAlign.center)),
+          SizedBox(width: 48, child: Text('TIME', style: style, textAlign: TextAlign.right)),
         ],
       ),
     );
@@ -380,12 +385,12 @@ class _MethodBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = switch (method.toUpperCase()) {
-      'GET' => Colors.greenAccent,
-      'POST' => Colors.blueAccent,
-      'PUT' => Colors.orangeAccent,
-      'PATCH' => Colors.purpleAccent,
+      'GET'    => Colors.greenAccent,
+      'POST'   => Colors.blueAccent,
+      'PUT'    => Colors.orangeAccent,
+      'PATCH'  => Colors.purpleAccent,
       'DELETE' => Colors.redAccent,
-      _ => Colors.white54,
+      _        => Colors.white54,
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
@@ -422,40 +427,18 @@ class _StatusBadge extends StatelessWidget {
   }
 }
 
-// ─── Detail sheet ────────────────────────────────────────────────────────────
+// ─── Detail sheet ─────────────────────────────────────────────────────────────
 
-class _DebugDetailSheet extends StatefulWidget {
+class _DebugDetailSheet extends StatelessWidget {
   const _DebugDetailSheet({required this.entry});
   final ApiDebugEntry entry;
 
-  @override
-  State<_DebugDetailSheet> createState() => _DebugDetailSheetState();
-}
-
-class _DebugDetailSheetState extends State<_DebugDetailSheet> {
-  late ApiDebugEntry _entry;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    _entry = widget.entry;
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
-      final entries = context.read<ApiDebugCubit>().state.entries;
-      final updated = entries.firstWhere((e) => e.id == _entry.id, orElse: () => _entry);
-      setState(() => _entry = updated);
-      if (_entry.isCompleted) {
-        _timer?.cancel();
-        _timer = null;
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+  static String _prettyJson(dynamic value) {
+    try {
+      return const JsonEncoder.withIndent('  ').convert(value);
+    } catch (_) {
+      return value.toString();
+    }
   }
 
   @override
@@ -466,134 +449,159 @@ class _DebugDetailSheetState extends State<_DebugDetailSheet> {
       maxChildSize: 0.95,
       expand: false,
       builder: (_, scrollController) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFF1A1A2E),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            children: [
-              // Handle
-              Center(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 10, bottom: 4),
-                  width: 36,
-                  height: 4,
-                  decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
-                ),
+        return BlocBuilder<ApiDebugCubit, ApiDebugState>(
+          buildWhen: (p, c) {
+            final pIdx = p.entries.indexWhere((e) => e.id == entry.id);
+            final cIdx = c.entries.indexWhere((e) => e.id == entry.id);
+            if (pIdx == -1 && cIdx == -1) return false;
+            if (pIdx == -1 || cIdx == -1) return true;
+            return p.entries[pIdx] != c.entries[cIdx];
+          },
+          builder: (context, state) {
+            final current = state.entries.firstWhere(
+              (e) => e.id == entry.id,
+              orElse: () => entry,
+            );
+            return Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFF1A1A2E),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
-              // Title row
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
-                child: Row(
-                  children: [
-                    _MethodBadge(method: _entry.method),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        _entry.shortPath,
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
-                        overflow: TextOverflow.ellipsis,
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 10, bottom: 4),
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white24,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      _entry.elapsedLabel,
-                      style: TextStyle(
-                        color: _entry.isCompleted ? Colors.greenAccent : Colors.amberAccent,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(color: Colors.white12, height: 1),
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    _DetailSection(
-                      title: 'Full URL',
-                      copyText: _entry.url,
-                      child: Text(_entry.url, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-                    ),
-                    const SizedBox(height: 12),
-                    _DetailSection(
-                      title: 'Request Headers',
-                      copyText: _entry.headers.entries.map((e) => '${e.key}: ${e.value}').join('\n'),
-                      child: Column(
-                        crossAxisAlignment: .start,
-                        children: _entry.headers.entries.map((e) {
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 4),
-                            child: Row(
-                              crossAxisAlignment: .start,
-                              children: [
-                                Text('${e.key}: ', style: const TextStyle(color: Colors.white38, fontSize: 11)),
-                                Expanded(
-                                  child: Text(
-                                    '${e.value}',
-                                    style: const TextStyle(color: Colors.white70, fontSize: 11),
-                                  ),
-                                ),
-                              ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+                    child: Row(
+                      children: [
+                        _MethodBadge(method: current.method),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            current.shortPath,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
                             ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                    if (_entry.requestBody != null) ...[
-                      const SizedBox(height: 12),
-                      _DetailSection(
-                        title: 'Request Body',
-                        copyText: _prettyJson(_entry.requestBody),
-                        child: Text(
-                          _prettyJson(_entry.requestBody),
-                          style: const TextStyle(color: Colors.white70, fontSize: 11, fontFamily: 'monospace'),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    ],
-                    const SizedBox(height: 12),
-                    _DetailSection(
-                      title: _entry.isError ? 'Error' : 'Response (${_entry.statusCode ?? '…'})',
-                      copyText: _entry.isError
-                          ? (_entry.errorMessage ?? '—')
-                          : (_entry.responseBody ?? '—'),
-                      child: _entry.isError
-                          ? Text(
-                              _entry.errorMessage ?? '—',
-                              style: const TextStyle(color: Colors.redAccent, fontSize: 12),
-                            )
-                          : Text(
-                              _entry.responseBody ?? (
-                                _entry.isCompleted ? '(empty)' : 'Waiting…'
-                              ),
+                        const SizedBox(width: 8),
+                        Text(
+                          current.elapsedLabel,
+                          style: TextStyle(
+                            color: current.isCompleted ? Colors.greenAccent : Colors.amberAccent,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(color: Colors.white12, height: 1),
+                  Expanded(
+                    child: ListView(
+                      controller: scrollController,
+                      padding: const EdgeInsets.all(16),
+                      children: [
+                        _DetailSection(
+                          title: 'Full URL',
+                          copyText: current.url,
+                          child: Text(
+                            current.url,
+                            style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _DetailSection(
+                          title: 'Request Headers',
+                          copyText: current.headers.entries
+                              .map((e) => '${e.key}: ${e.value}')
+                              .join('\n'),
+                          child: Column(
+                            crossAxisAlignment: .start,
+                            children: current.headers.entries.map((e) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 4),
+                                child: Row(
+                                  crossAxisAlignment: .start,
+                                  children: [
+                                    Text(
+                                      '${e.key}: ',
+                                      style: const TextStyle(color: Colors.white38, fontSize: 11),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        '${e.value}',
+                                        style: const TextStyle(color: Colors.white70, fontSize: 11),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        if (current.requestBody != null) ...[
+                          const SizedBox(height: 12),
+                          _DetailSection(
+                            title: 'Request Body',
+                            copyText: _prettyJson(current.requestBody),
+                            child: Text(
+                              _prettyJson(current.requestBody),
                               style: const TextStyle(
                                 color: Colors.white70,
                                 fontSize: 11,
                                 fontFamily: 'monospace',
                               ),
                             ),
+                          ),
+                        ],
+                        const SizedBox(height: 12),
+                        _DetailSection(
+                          title: current.isError
+                              ? 'Error'
+                              : 'Response (${current.statusCode ?? '…'})',
+                          copyText: current.isError
+                              ? (current.errorMessage ?? '—')
+                              : (current.responseBody ?? '—'),
+                          child: current.isError
+                              ? Text(
+                                  current.errorMessage ?? '—',
+                                  style: const TextStyle(color: Colors.redAccent, fontSize: 12),
+                                )
+                              : Text(
+                                  current.responseBody ??
+                                      (current.isCompleted ? '(empty)' : 'Waiting…'),
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 11,
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
-  }
-
-  static String _prettyJson(dynamic value) {
-    try {
-      return const JsonEncoder.withIndent('  ').convert(value);
-    } catch (_) {
-      return value.toString();
-    }
   }
 }
 

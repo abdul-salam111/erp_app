@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
+import '../../../../../core/theme/colors.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../routes/route_names.dart';
@@ -26,8 +27,8 @@ class _SignInViewState extends State<SignInView> {
       create: (_) => sl<SignInBloc>(),
       child: UnfocusWrapper(
         child: Scaffold(
-          backgroundColor: const Color(0xFFF0F4FF),
-          body: BlocConsumer<SignInBloc, SignInState>(
+          backgroundColor: AppColors.loginBackground,
+          body: BlocListener<SignInBloc, SignInState>(
             listener: (context, state) {
               if (state.apiStatus == ApiStatus.SUCCESS) {
                 final user = state.user!;
@@ -50,29 +51,27 @@ class _SignInViewState extends State<SignInView> {
                 AppToastsUtils.showErrorTop(context, state.message.toString());
               }
             },
-            builder: (context, state) {
-              return Stack(
-                children: [
-                  const _BackgroundDecoration(),
-                  SafeArea(
-                    child: Center(
-                      child: SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: Responsive.value<double>(
-                            context,
-                            phone: 20,
-                            tablet: 64,
-                            ipad: 120,
-                          ),
-                          vertical: 24,
+            child: Stack(
+              children: [
+                const _BackgroundDecoration(),
+                SafeArea(
+                  child: Center(
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Responsive.value<double>(
+                          context,
+                          phone: 20,
+                          tablet: 64,
+                          ipad: 120,
                         ),
-                        child: _LoginCard(formKey: _formKey, state: state),
+                        vertical: 24,
                       ),
+                      child: _LoginCard(formKey: _formKey),
                     ),
                   ),
-                ],
-              );
-            },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -89,31 +88,28 @@ class _BackgroundDecoration extends StatelessWidget {
     return SizedBox.expand(
       child: Stack(
         children: [
-          // Large blurred circle — top left
           Positioned(
             top: -size.height * 0.12,
             left: -size.width * 0.2,
             child: _Circle(
               diameter: size.width * 0.75,
-              color: const Color(0xff1B84FF).withValues(alpha: 0.12),
+              color: AppColors.primary.withValues(alpha: 0.12),
             ),
           ),
-          // Medium circle — bottom right
           Positioned(
             bottom: -size.height * 0.08,
             right: -size.width * 0.15,
             child: _Circle(
               diameter: size.width * 0.6,
-              color: const Color(0xFF074DBF).withValues(alpha: 0.09),
+              color: AppColors.primaryDark.withValues(alpha: 0.09),
             ),
           ),
-          // Small accent — top right
           Positioned(
             top: size.height * 0.08,
             right: -size.width * 0.06,
             child: _Circle(
               diameter: size.width * 0.28,
-              color: const Color(0xff1B84FF).withValues(alpha: 0.07),
+              color: AppColors.primary.withValues(alpha: 0.07),
             ),
           ),
         ],
@@ -138,10 +134,9 @@ class _Circle extends StatelessWidget {
 }
 
 class _LoginCard extends StatefulWidget {
-  const _LoginCard({required this.formKey, required this.state});
+  const _LoginCard({required this.formKey});
 
   final GlobalKey<FormState> formKey;
-  final SignInState state;
 
   @override
   State<_LoginCard> createState() => _LoginCardState();
@@ -177,16 +172,16 @@ class _LoginCardState extends State<_LoginCard> {
         Responsive.value<double>(context, phone: 24, tablet: 32, ipad: 40),
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xff1B84FF).withValues(alpha: 0.08),
+            color: AppColors.primary.withValues(alpha: 0.08),
             blurRadius: 40,
             offset: const Offset(0, 12),
           ),
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -198,13 +193,12 @@ class _LoginCardState extends State<_LoginCard> {
           crossAxisAlignment: .center,
           mainAxisSize: .min,
           children: [
-            // Logo badge — tap 5× to switch environment
             EnvSwitchDetector(
               child: Container(
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF0F4FF),
+                  color: AppColors.loginBackground,
                   borderRadius: BorderRadius.circular(18),
                 ),
                 padding: const EdgeInsets.all(10),
@@ -219,7 +213,7 @@ class _LoginCardState extends State<_LoginCard> {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0D1B3E),
+                  color: AppColors.navyDark,
                   letterSpacing: -0.5,
                 ),
               ),
@@ -229,15 +223,14 @@ class _LoginCardState extends State<_LoginCard> {
               'Sign in to your account',
               style: TextStyle(
                 fontSize: 13,
-                color: Color(0xFF717171),
+                color: AppColors.grey500,
               ),
             ),
             const SizedBox(height: 28),
-            // Thin divider line
             Row(
               children: [
                 Expanded(
-                  child: Container(height: 1, color: const Color(0xFFEDEDED)),
+                  child: Container(height: 1, color: AppColors.grey200),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -246,12 +239,12 @@ class _LoginCardState extends State<_LoginCard> {
                     height: 6,
                     decoration: const BoxDecoration(
                       shape: .circle,
-                      color: Color(0xff1B84FF),
+                      color: AppColors.primary,
                     ),
                   ),
                 ),
                 Expanded(
-                  child: Container(height: 1, color: const Color(0xFFEDEDED)),
+                  child: Container(height: 1, color: AppColors.grey200),
                 ),
               ],
             ),
@@ -305,11 +298,11 @@ class _LoginCardState extends State<_LoginCard> {
               },
             ),
             const SizedBox(height: 20),
-            Text(
+            const Text(
               'Powered by Mantic Solutions',
               style: TextStyle(
                 fontSize: 11,
-                color: const Color(0xFFACACAC),
+                color: AppColors.grey300,
                 letterSpacing: 0.3,
               ),
             ),

@@ -189,6 +189,9 @@ class AppColors {
   // SURFACE VARIANTS
   // ============================================
 
+  static const Color loginBackground = Color(0xFFF0F4FF);
+  static const Color navyDark        = Color(0xFF0D1B3E);
+
   static const Color surfaceHeader = Color(0xFFF5F5F5);
   static const Color tableRowAlt = Color(0xFFF9FAFB);
   static const Color shimmerBase = Color(0xFFE8E8E8);

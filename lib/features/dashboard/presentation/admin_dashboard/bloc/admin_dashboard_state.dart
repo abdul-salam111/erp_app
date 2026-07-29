@@ -1,5 +1,13 @@
 part of 'admin_dashboard_bloc.dart';
 
+// Sentinel so copyWith can distinguish "not provided" from an explicit null,
+// enabling callers to clear nullable fields by passing null.
+const _unset = _Unset();
+
+final class _Unset {
+  const _Unset();
+}
+
 final class AdminDashboardState extends Equatable {
   // ── UI state ──────────────────────────────────────────────────────────────
   final DateTime saleOrderFromDate;
@@ -51,44 +59,44 @@ final class AdminDashboardState extends Equatable {
   });
 
   AdminDashboardState copyWith({
-    DateTime?                   saleOrderFromDate,
-    DateTime?                   saleOrderToDate,
-    DateTime?                   selectedMonth,
-    DateTime?                   selectedDailyDate,
-    bool?                       todayOverviewExpanded,
-    String?                     selectedPanelKey,
-    ApiStatus?                  dailyStatsStatus,
-    DailyStatsEntity?           dailyStats,
-    String?                     dailyStatsError,
-    ApiStatus?                  monthlyStatsStatus,
-    MonthlyStatsEntity?         monthlyStats,
-    String?                     monthlyStatsError,
-    ApiStatus?                  monthlyStatsDetailStatus,
+    DateTime?                    saleOrderFromDate,
+    DateTime?                    saleOrderToDate,
+    DateTime?                    selectedMonth,
+    DateTime?                    selectedDailyDate,
+    bool?                        todayOverviewExpanded,
+    String?                      selectedPanelKey,
+    ApiStatus?                   dailyStatsStatus,
+    Object?                      dailyStats = _unset,
+    String?                      dailyStatsError,
+    ApiStatus?                   monthlyStatsStatus,
+    Object?                      monthlyStats = _unset,
+    String?                      monthlyStatsError,
+    ApiStatus?                   monthlyStatsDetailStatus,
     List<MonthlyStatDetailPoint>? monthlyStatsDetail,
-    String?                     monthlyStatsDetailError,
-    ApiStatus?                  saleOrderSummaryStatus,
-    SaleOrderSummaryEntity?     saleOrderSummary,
-    String?                     saleOrderSummaryError,
+    String?                      monthlyStatsDetailError,
+    ApiStatus?                   saleOrderSummaryStatus,
+    Object?                      saleOrderSummary = _unset,
+    String?                      saleOrderSummaryError,
   }) {
     return AdminDashboardState(
-      saleOrderFromDate:         saleOrderFromDate         ?? this.saleOrderFromDate,
-      saleOrderToDate:           saleOrderToDate           ?? this.saleOrderToDate,
-      selectedMonth:             selectedMonth             ?? this.selectedMonth,
-      selectedDailyDate:         selectedDailyDate         ?? this.selectedDailyDate,
-      todayOverviewExpanded:     todayOverviewExpanded     ?? this.todayOverviewExpanded,
-      selectedPanelKey:          selectedPanelKey          ?? this.selectedPanelKey,
-      dailyStatsStatus:          dailyStatsStatus          ?? this.dailyStatsStatus,
-      dailyStats:                dailyStats                ?? this.dailyStats,
-      dailyStatsError:           dailyStatsError           ?? this.dailyStatsError,
-      monthlyStatsStatus:        monthlyStatsStatus        ?? this.monthlyStatsStatus,
-      monthlyStats:              monthlyStats              ?? this.monthlyStats,
-      monthlyStatsError:         monthlyStatsError         ?? this.monthlyStatsError,
-      monthlyStatsDetailStatus:  monthlyStatsDetailStatus  ?? this.monthlyStatsDetailStatus,
-      monthlyStatsDetail:        monthlyStatsDetail        ?? this.monthlyStatsDetail,
-      monthlyStatsDetailError:   monthlyStatsDetailError   ?? this.monthlyStatsDetailError,
-      saleOrderSummaryStatus:    saleOrderSummaryStatus    ?? this.saleOrderSummaryStatus,
-      saleOrderSummary:          saleOrderSummary          ?? this.saleOrderSummary,
-      saleOrderSummaryError:     saleOrderSummaryError     ?? this.saleOrderSummaryError,
+      saleOrderFromDate:        saleOrderFromDate        ?? this.saleOrderFromDate,
+      saleOrderToDate:          saleOrderToDate          ?? this.saleOrderToDate,
+      selectedMonth:            selectedMonth            ?? this.selectedMonth,
+      selectedDailyDate:        selectedDailyDate        ?? this.selectedDailyDate,
+      todayOverviewExpanded:    todayOverviewExpanded    ?? this.todayOverviewExpanded,
+      selectedPanelKey:         selectedPanelKey         ?? this.selectedPanelKey,
+      dailyStatsStatus:         dailyStatsStatus         ?? this.dailyStatsStatus,
+      dailyStats:               dailyStats == _unset     ? this.dailyStats     : dailyStats as DailyStatsEntity?,
+      dailyStatsError:          dailyStatsError          ?? this.dailyStatsError,
+      monthlyStatsStatus:       monthlyStatsStatus       ?? this.monthlyStatsStatus,
+      monthlyStats:             monthlyStats == _unset   ? this.monthlyStats   : monthlyStats as MonthlyStatsEntity?,
+      monthlyStatsError:        monthlyStatsError        ?? this.monthlyStatsError,
+      monthlyStatsDetailStatus: monthlyStatsDetailStatus ?? this.monthlyStatsDetailStatus,
+      monthlyStatsDetail:       monthlyStatsDetail       ?? this.monthlyStatsDetail,
+      monthlyStatsDetailError:  monthlyStatsDetailError  ?? this.monthlyStatsDetailError,
+      saleOrderSummaryStatus:   saleOrderSummaryStatus   ?? this.saleOrderSummaryStatus,
+      saleOrderSummary:         saleOrderSummary == _unset ? this.saleOrderSummary : saleOrderSummary as SaleOrderSummaryEntity?,
+      saleOrderSummaryError:    saleOrderSummaryError    ?? this.saleOrderSummaryError,
     );
   }
 

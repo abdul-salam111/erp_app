@@ -4,15 +4,35 @@ import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/services/current_user.dart';
 import '../../../dashboard_exports.dart';
 
-class DashboardView extends StatelessWidget {
+class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    
+  State<DashboardView> createState() => _DashboardViewState();
+}
+
+class _DashboardViewState extends State<DashboardView> {
+  AdminDashboardBloc? _adminBloc;
+
+  @override
+  void initState() {
+    super.initState();
     if (currentUser.isAdmin) {
-      return BlocProvider(
-        create: (_) => sl<AdminDashboardBloc>()..add(const DashboardDataRequested()),
+      _adminBloc = sl<AdminDashboardBloc>()..add(const DashboardDataRequested());
+    }
+  }
+
+  @override
+  void dispose() {
+    _adminBloc?.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_adminBloc != null) {
+      return BlocProvider.value(
+        value: _adminBloc!,
         child: const AdminDashboard(),
       );
     }

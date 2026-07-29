@@ -15,6 +15,7 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
     with WidgetsBindingObserver {
   final _controller = ForceUpdateController();
   bool _isDialogShowing = false;
+  bool _prevShouldShowForce = false;
 
   // TODO: replace with ManticERP's actual App Store URL once published
   static const _appStoreUrl = 'https://apps.apple.com/us/app/YOUR_ERP_APP_ID';
@@ -40,7 +41,11 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
 
   void _onControllerUpdate() {
     if (!mounted) return;
-    setState(() {});
+    final shouldShowForce = _controller.shouldShowForceUpdate;
+    if (shouldShowForce != _prevShouldShowForce) {
+      _prevShouldShowForce = shouldShowForce;
+      setState(() {});
+    }
     if (_controller.shouldShowOptionalUpdate &&
         !_isDialogShowing &&
         !_controller.isChecking) {

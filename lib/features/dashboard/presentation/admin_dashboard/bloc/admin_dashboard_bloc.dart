@@ -78,25 +78,29 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
       )),
     ).wait;
 
+    var s = state;
+
     dailyResult.when(
-      failure: (f) => emit(state.copyWith(dailyStatsStatus: ApiStatus.FAILURE, dailyStatsError: f.message)),
-      success: (d) => emit(state.copyWith(dailyStatsStatus: ApiStatus.SUCCESS, dailyStats: d)),
+      failure: (f) => s = s.copyWith(dailyStatsStatus: ApiStatus.FAILURE, dailyStatsError: f.message),
+      success: (d) => s = s.copyWith(dailyStatsStatus: ApiStatus.SUCCESS, dailyStats: d),
     );
 
     monthlyResult.when(
-      failure: (f) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message)),
-      success: (d) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d)),
+      failure: (f) => s = s.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message),
+      success: (d) => s = s.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d),
     );
 
     detailResult.when(
-      failure: (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
-      success: (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
+      failure: (f) => s = s.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message),
+      success: (d) => s = s.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d),
     );
 
     saleOrderResult.when(
-      failure: (f) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message)),
-      success: (d) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d)),
+      failure: (f) => s = s.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message),
+      success: (d) => s = s.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d),
     );
+
+    emit(s);
   }
 
   Future<void> _onSaleOrderDateRangeChanged(
