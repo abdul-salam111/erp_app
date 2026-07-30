@@ -55,7 +55,9 @@ class _RecoveryListSectionState extends State<RecoveryListSection> {
                   decoration: BoxDecoration(
                     color: context.grey50,
                     borderRadius: .circular(10),
-                    border: Border.all(color: AppColors.grey200),
+                    border: const Border(
+                      bottom: BorderSide(color: AppColors.grey200),
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -81,6 +83,8 @@ class _RecoveryListSectionState extends State<RecoveryListSection> {
                           decoration: InputDecoration(
                             isDense: true,
                             border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
                             hintText: 'Search by name or invoice…',
                             hintStyle: context.bodySmall.copyWith(
                               color: context.textSecondary,

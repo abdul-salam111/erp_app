@@ -6,10 +6,14 @@ import 'session_manager.dart';
 
 class SplashServices {
   void isLoggedIn(BuildContext context) {
-    Future.delayed(Duration(seconds: 2), () {
-      if (!context.mounted) return;
-      checkLoginStatus(context);
-    });
+    _isLoggedInAsync(context);
+  }
+
+  Future<void> _isLoggedInAsync(BuildContext context) async {
+    await Future.wait([
+      checkLoginStatus(context),
+      Future.delayed(const Duration(seconds: 3)),
+    ]);
   }
 
   Future<void> checkLoginStatus(BuildContext context) async {

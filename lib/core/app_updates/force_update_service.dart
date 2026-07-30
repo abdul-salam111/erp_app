@@ -87,7 +87,6 @@ class ForceUpdateService {
   }
 
   Future<ForceUpdateConfig> getConfig() async {
-    await _remoteConfig.fetchAndActivate();
     try {
       final raw = _remoteConfig.getString(_rcKey);
       final map = jsonDecode(raw) as Map<String, dynamic>;

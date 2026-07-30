@@ -14,10 +14,12 @@ import 'routes/route_exports.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await AppConfig.instance.initialize();
   Bloc.observer = AppBlocObserver();
-  await setupLocator();
-  await ForceUpdateService().initialize();
+  await Future.wait([
+    AppConfig.instance.initialize(),
+    ForceUpdateService().initialize(),
+    setupLocator(),
+  ]);
   runApp(const MyApp());
 }
 
