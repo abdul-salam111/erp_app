@@ -15,6 +15,8 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
     on<TodayOverviewExpansionToggled>(_onTodayOverviewExpansionToggled);
     on<RecoveryFilterChanged>(_onRecoveryFilterChanged);
     on<RecoveryDueFetched>(_onRecoveryDueFetched);
+    on<RecoveryPageChanged>(_onRecoveryPageChanged);
+    on<RecoverySearchChanged>(_onRecoverySearchChanged);
     add(const RecoveryDueFetched());
   }
 
@@ -30,8 +32,22 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
     Emitter<AccountsState> emit,
   ) {
     if (state.selectedFilter == event.filter) return;
-    emit(state.copyWith(selectedFilter: event.filter));
+    emit(state.copyWith(selectedFilter: event.filter, currentPage: 0));
     add(RecoveryDueFetched(filter: event.filter));
+  }
+
+  void _onRecoveryPageChanged(
+    RecoveryPageChanged event,
+    Emitter<AccountsState> emit,
+  ) {
+    emit(state.copyWith(currentPage: event.page));
+  }
+
+  void _onRecoverySearchChanged(
+    RecoverySearchChanged event,
+    Emitter<AccountsState> emit,
+  ) {
+    emit(state.copyWith(searchQuery: event.query, currentPage: 0));
   }
 
   Future<void> _onRecoveryDueFetched(

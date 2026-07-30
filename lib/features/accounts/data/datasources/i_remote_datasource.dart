@@ -19,7 +19,6 @@ abstract interface class IRemoteAccountsDataSource {
     int? partyId,
   });
 
-
   Future<List<PartyListItemModel>> getPartyList();
 
   //! ─── Cashbook ───────────────────────────────────────────────────────────────

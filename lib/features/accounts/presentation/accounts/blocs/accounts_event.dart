@@ -29,3 +29,19 @@ final class RecoveryDueFetched extends AccountsEvent {
   @override
   List<Object> get props => [filter];
 }
+
+final class RecoveryPageChanged extends AccountsEvent {
+  final int page;
+  const RecoveryPageChanged(this.page);
+
+  @override
+  List<Object> get props => [page];
+}
+
+final class RecoverySearchChanged extends AccountsEvent {
+  final String query;
+  const RecoverySearchChanged(this.query);
+
+  @override
+  List<Object> get props => [query];
+}

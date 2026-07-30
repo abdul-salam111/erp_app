@@ -114,11 +114,71 @@ class _AccountsBodyState extends State<_AccountsBody>
           backgroundColor: context.white,
           appBar: CustomAppBar(title: AppConstants.accountsLabel),
         
-          body: SingleChildScrollView(
-            padding: context.pagePadding,
-            child: Column(
-              crossAxisAlignment: .start,
-              children: [
+          body: Column(
+            crossAxisAlignment: .start,
+            children: [
+              // ── Sticky filter badges ──────────────────────────────────────
+              Container(
+                color: context.white,
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.pagePadding.left,
+                  vertical: 10,
+                ),
+                child: BlocBuilder<AccountsBloc, AccountsState>(
+                  buildWhen: (p, c) => p.selectedFilter != c.selectedFilter,
+                  builder: (context, state) => Row(
+                    children: [
+                      Expanded(
+                        child: _RecoveryFilterBadge(
+                          label: AppConstants.todayLabel,
+                          selected: state.selectedFilter == FilterType.today,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.today),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _RecoveryFilterBadge(
+                          label: AppConstants.weekLabel,
+                          selected: state.selectedFilter == FilterType.week,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.week),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _RecoveryFilterBadge(
+                          label: AppConstants.monthLabel,
+                          selected: state.selectedFilter == FilterType.month,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.month),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _RecoveryFilterBadge(
+                          label: AppConstants.oldestLabel,
+                          selected: state.selectedFilter == FilterType.oldest,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.oldest),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(height: 1, thickness: 1, color: AppColors.grey200),
+              // ── Scrollable content ────────────────────────────────────────
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: context.pagePadding,
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
                 // [0] ── Section header ──────────────────────────────────────
                 FadeTransition(
                   opacity: _fades[0],
@@ -167,54 +227,6 @@ class _AccountsBodyState extends State<_AccountsBody>
                             : null,
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                // [0b] ── Filter badges ──────────────────────────────────────
-                BlocBuilder<AccountsBloc, AccountsState>(
-                  buildWhen: (p, c) => p.selectedFilter != c.selectedFilter,
-                  builder: (context, state) => Row(
-                    children: [
-                      Expanded(
-                        child: _RecoveryFilterBadge(
-                          label: AppConstants.todayLabel,
-                          selected: state.selectedFilter == FilterType.today,
-                          onTap: () => context.read<AccountsBloc>().add(
-                            const RecoveryFilterChanged(FilterType.today),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: _RecoveryFilterBadge(
-                          label: AppConstants.weekLabel,
-                          selected: state.selectedFilter == FilterType.week,
-                          onTap: () => context.read<AccountsBloc>().add(
-                            const RecoveryFilterChanged(FilterType.week),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: _RecoveryFilterBadge(
-                          label: AppConstants.monthLabel,
-                          selected: state.selectedFilter == FilterType.month,
-                          onTap: () => context.read<AccountsBloc>().add(
-                            const RecoveryFilterChanged(FilterType.month),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: _RecoveryFilterBadge(
-                          label: AppConstants.oldestLabel,
-                          selected: state.selectedFilter == FilterType.oldest,
-                          onTap: () => context.read<AccountsBloc>().add(
-                            const RecoveryFilterChanged(FilterType.oldest),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -334,8 +346,11 @@ class _AccountsBodyState extends State<_AccountsBody>
                 // [3] ── Quick actions ────────────────────────────────────────
                 const AccountsQuickActions(),
                 const SizedBox(height: 8),
-              ],
-            ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
