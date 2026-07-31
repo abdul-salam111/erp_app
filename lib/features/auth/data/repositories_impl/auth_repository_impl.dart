@@ -30,4 +30,18 @@ class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
       call: () => dataSource.selectBranch(request: request),
     );
   }
+
+  @override
+  Future<Result<List<String>>> getUserFeatures({required String token}) {
+    return execute(
+      call: () => dataSource.getUserFeatures(token: token),
+    );
+  }
+
+  @override
+  Future<Result<List<String>>> getUserRoles({required String token}) {
+    return execute(
+      call: () => dataSource.getUserRoles(token: token),
+    );
+  }
 }

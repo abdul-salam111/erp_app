@@ -1,6 +1,9 @@
 import 'dart:core';
 
 class AppConstants {
+  // ─── Roles ─────────────────────────────────────────────
+  static const List<String> adminRoles = ['admin', 'mis_cp_admin'];
+
   // ─── Auth ──────────────────────────────────────────────
   static const String signInTitle = 'Sign In';
   static const String youHaveLoggedinSuccessfully =

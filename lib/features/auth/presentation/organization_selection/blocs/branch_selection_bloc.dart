@@ -1,16 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/services/session_manager.dart';
+import '../../../auth_exports.dart';
 import '../../../data/models/request_models/select_branch_request_model/select_branch_request_model.dart';
-import '../../../domain/usecases/select_branch_usecase.dart';
-import 'branch_selection_event.dart';
-import 'branch_selection_state.dart';
 
 class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionState> {
   final SelectBranchUsecase selectBranchUsecase;
+  final GetUserFeaturesUsecase getUserFeaturesUsecase;
+  final GetUserRolesUsecase getUserRolesUsecase;
 
-  BranchSelectionBloc({required this.selectBranchUsecase})
-      : super(const BranchSelectionState()) {
+  BranchSelectionBloc({
+    required this.selectBranchUsecase,
+    required this.getUserFeaturesUsecase,
+    required this.getUserRolesUsecase,
+  }) : super(const BranchSelectionState()) {
     on<BranchSelectedEvent>(_onBranchSelected);
   }
 
@@ -49,7 +52,8 @@ class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionStat
         clearLoadingIndex: true,
       )),
       success: (authToken) async {
-        if (authToken.accessToken == null) {
+        final finalToken = authToken.accessToken;
+        if (finalToken == null) {
           emit(state.copyWith(
             status: ApiStatus.FAILURE,
             message: AppConstants.branchTokenUnavailable,
@@ -58,7 +62,36 @@ class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionStat
           return;
         }
         await SessionController.instance.saveSelectedOrganization(event.org);
-        await SessionController.instance.updateActiveToken(authToken.accessToken!);
+        await SessionController.instance.updateActiveToken(finalToken);
+
+        final rolesResult = await getUserRolesUsecase(finalToken);
+        await rolesResult.when(
+          failure: (_) async {},
+          success: (roles) async {
+            await SessionController.instance.saveUserRoles(roles);
+            final user = SessionController.instance.loggedInUser;
+            if (user != null) {
+              final enrichedUser = UserEntity(
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                languageName: user.languageName,
+                organizations: user.organizations,
+                isAdmin: SessionController.instance.isAdmin,
+                roles: roles,
+              );
+              await SessionController.instance.saveUserInStorage(enrichedUser);
+            }
+          },
+        );
+
+        final featuresResult = await getUserFeaturesUsecase(finalToken);
+        featuresResult.when(
+          failure: (_) {},
+          success: (features) async =>
+              SessionController.instance.saveUserFeatures(features),
+        );
         emit(state.copyWith(
           status: ApiStatus.SUCCESS,
           clearLoadingIndex: true,

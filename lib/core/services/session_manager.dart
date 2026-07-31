@@ -12,8 +12,10 @@ class SessionController {
 
   UserEntity? loggedInUser;
   UserOrganizationEntity? selectedOrganization;
+  List<String> userFeatures = [];
+  List<String> userRoles = [];
   bool islogin = false;
-  bool isAdmin = false;
+  bool isAdmin = false; 
 
   // Token returned by SelectBranch — takes priority over the branch pre-token.
   String? _sessionToken;
@@ -44,12 +46,24 @@ class SessionController {
     await storage.setValues(StorageKeys.token, token);
   }
 
+  bool hasFeature(String featureKey) => userFeatures.contains(featureKey);
+
+  Future<void> saveUserFeatures(List<String> features) async {
+    userFeatures = features;
+    await storage.setValues(StorageKeys.userFeatures, jsonEncode(features));
+  }
+
+  Future<void> saveUserRoles(List<String> roles) async {
+    userRoles = roles;
+    isAdmin = roles.any((r) => AppConstants.adminRoles.contains(r));
+    await storage.setValues(StorageKeys.userRoles, jsonEncode(roles));
+  }
+
   Future<void> getUserFromStorage() async {
     try {
       final userData = await storage.readValues(StorageKeys.userDetails);
       if (userData != null) {
         final decoded = jsonDecode(userData) as Map<String, dynamic>;
-        decoded['isAdmin'] = true;
         loggedInUser = UserEntity.fromJson(decoded);
       }
 
@@ -64,6 +78,17 @@ class SessionController {
 
       final storedToken = await storage.readValues(StorageKeys.token);
       if (storedToken != null) _sessionToken = storedToken;
+
+      final featuresJson = await storage.readValues(StorageKeys.userFeatures);
+      if (featuresJson != null) {
+        userFeatures = List<String>.from(jsonDecode(featuresJson) as List);
+      }
+
+      final rolesJson = await storage.readValues(StorageKeys.userRoles);
+      if (rolesJson != null) {
+        userRoles = List<String>.from(jsonDecode(rolesJson) as List);
+        isAdmin = userRoles.any((r) => AppConstants.adminRoles.contains(r));
+      }
     } catch (e) {
       throw Exception(e);
     }
@@ -72,6 +97,8 @@ class SessionController {
   Future<void> clearSession() async {
     loggedInUser = null;
     selectedOrganization = null;
+    userFeatures = [];
+    userRoles = [];
     _sessionToken = null;
     islogin = false;
     isAdmin = false;
@@ -79,5 +106,7 @@ class SessionController {
     await storage.clearValues(StorageKeys.userDetails);
     await storage.clearValues(StorageKeys.selectedOrganization);
     await storage.clearValues(StorageKeys.token);
+    await storage.clearValues(StorageKeys.userFeatures);
+    await storage.clearValues(StorageKeys.userRoles);
   }
 }

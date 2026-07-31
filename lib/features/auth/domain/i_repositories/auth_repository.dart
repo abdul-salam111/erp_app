@@ -10,4 +10,7 @@ abstract interface class IAuthRepostiory {
   Future<Result<AuthToken>> selectBranch({
     required SelectBranchRequestModel request,
   });
+
+  Future<Result<List<String>>> getUserFeatures({required String token});
+  Future<Result<List<String>>> getUserRoles({required String token});
 }

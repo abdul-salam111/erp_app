@@ -11,6 +11,9 @@ abstract interface class IAuthRemoteDatasource {
   Future<AuthToken> selectBranch({
     required SelectBranchRequestModel request,
   });
+
+  Future<List<String>> getUserFeatures({required String token});
+  Future<List<String>> getUserRoles({required String token});
 }
 
 class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
@@ -36,6 +39,24 @@ class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
       url: ApiEndPoints.auth.selectBranch,
       parser: (json) => AuthToken.fromJson(json),
       body: request.toJson(),
+    );
+  }
+
+  @override
+  Future<List<String>> getUserFeatures({required String token}) async {
+    return getList<String>(
+      url: ApiEndPoints.auth.getUserFeatures,
+      parser: (json) => json as String,
+      authToken: token,
+    );
+  }
+
+  @override
+  Future<List<String>> getUserRoles({required String token}) async {
+    return getList<String>(
+      url: ApiEndPoints.auth.getUserRoles,
+      parser: (json) => json as String,
+      authToken: token,
     );
   }
 }

@@ -9,10 +9,14 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
     with UsecaseExecuterMixin {
   final SignInUsecase signinUsecase;
   final SelectBranchUsecase selectBranchUsecase;
+  final GetUserFeaturesUsecase getUserFeaturesUsecase;
+  final GetUserRolesUsecase getUserRolesUsecase;
 
   SignInBloc({
     required this.signinUsecase,
     required this.selectBranchUsecase,
+    required this.getUserFeaturesUsecase,
+    required this.getUserRolesUsecase,
   }) : super(const SignInState()) {
     on<SignInSubmitted>(_onSignInSubmitted);
     on<EmailChangedEvent>(
@@ -68,11 +72,40 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
               message: failure.message,
             )),
             success: (authToken) async {
-              if (authToken.accessToken != null) {
-                await SessionController.instance
-                    .updateActiveToken(authToken.accessToken!);
+              final finalToken = authToken.accessToken;
+              UserEntity enrichedUser = user;
+              if (finalToken != null) {
+                await SessionController.instance.updateActiveToken(finalToken);
+
+                final rolesResult = await getUserRolesUsecase(finalToken);
+                await rolesResult.when(
+                  failure: (_) async {},
+                  success: (roles) async {
+                    await SessionController.instance.saveUserRoles(roles);
+                    enrichedUser = UserEntity(
+                      id: user.id,
+                      firstName: user.firstName,
+                      lastName: user.lastName,
+                      email: user.email,
+                      languageName: user.languageName,
+                      organizations: user.organizations,
+                      isAdmin: SessionController.instance.isAdmin,
+                      roles: roles,
+                    );
+                    await SessionController.instance
+                        .saveUserInStorage(enrichedUser);
+                  },
+                );
+
+                final featuresResult = await getUserFeaturesUsecase(finalToken);
+                featuresResult.when(
+                  failure: (_) {},
+                  success: (features) async =>
+                      SessionController.instance.saveUserFeatures(features),
+                );
               }
-              emit(state.copyWith(apiStatus: ApiStatus.SUCCESS, user: user));
+              emit(state.copyWith(
+                  apiStatus: ApiStatus.SUCCESS, user: enrichedUser));
             },
           );
         } else {

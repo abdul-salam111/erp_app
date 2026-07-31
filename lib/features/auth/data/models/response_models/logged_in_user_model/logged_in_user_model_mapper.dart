@@ -9,7 +9,7 @@ extension LoggedInUserModelMapper on LoggedInUserModel {
       lastName: lastName,
       organizations:
           organizations?.map((o) => o.toEntity()).toList() ?? const [],
-      isAdmin: true,
+      isAdmin: false,
       roles: const [],
     );
   }

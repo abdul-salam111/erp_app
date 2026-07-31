@@ -52,7 +52,11 @@ class _OrganizationSelectionBodyState
       listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, state) {
         if (state.status == ApiStatus.SUCCESS) {
-          context.pushNamed(RouteNames.dashboard);
+          if (SessionController.instance.isAdmin) {
+            context.pushNamed(RouteNames.dashboard);
+          } else {
+            context.pushNamed(RouteNames.choose_dashboard);
+          }
         }
         if (state.status == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(

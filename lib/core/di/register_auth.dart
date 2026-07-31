@@ -19,12 +19,27 @@ Future<void> registerAuth() async {
   sl.registerLazySingleton<SelectBranchUsecase>(
     () => SelectBranchUsecase(repository: sl()),
   );
+  sl.registerLazySingleton<GetUserFeaturesUsecase>(
+    () => GetUserFeaturesUsecase(repository: sl()),
+  );
+  sl.registerLazySingleton<GetUserRolesUsecase>(
+    () => GetUserRolesUsecase(repository: sl()),
+  );
 
   // Blocs
   sl.registerFactory<SignInBloc>(
-    () => SignInBloc(signinUsecase: sl(), selectBranchUsecase: sl()),
+    () => SignInBloc(
+      signinUsecase: sl(),
+      selectBranchUsecase: sl(),
+      getUserFeaturesUsecase: sl(),
+      getUserRolesUsecase: sl(),
+    ),
   );
   sl.registerFactory<BranchSelectionBloc>(
-    () => BranchSelectionBloc(selectBranchUsecase: sl()),
+    () => BranchSelectionBloc(
+      selectBranchUsecase: sl(),
+      getUserFeaturesUsecase: sl(),
+      getUserRolesUsecase: sl(),
+    ),
   );
 }

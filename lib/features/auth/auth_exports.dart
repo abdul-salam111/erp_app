@@ -8,6 +8,8 @@ export './data/models/response_models/logged_in_user_model/logged_in_user_model_
 export './domain/i_repositories/auth_repository.dart';
 export './domain/usecases/signin_usecase.dart';
 export './domain/usecases/select_branch_usecase.dart';
+export './domain/usecases/get_user_features_usecase.dart';
+export './domain/usecases/get_user_roles_usecase.dart';
 
 // Presentation — signin screen
 export './presentation/signin/blocs/signin_bloc.dart';

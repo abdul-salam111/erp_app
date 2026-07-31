@@ -15,7 +15,7 @@ class AppConfig {
 
   static const _storage = FlutterSecureStorage();
 
-  AppEnvironment _environment = AppEnvironment.staging;
+  AppEnvironment _environment = AppEnvironment.production;
   AppEnvironment get environment => _environment;
 
   String _stagingUrl = _defaultStagingUrl;

@@ -23,9 +23,11 @@ final class _Auth {
 
   static String get _execBase => '${ApiEndPoints._base}/ExecutiveApp';
 
-  String get login        => '$_execBase/Auth/Login';
-  String get selectBranch => '$_execBase/Auth/SelectBranch';
-  String get signup       => '${ApiEndPoints._base}/user/signinUid';
+  String get login           => '$_execBase/Auth/Login';
+  String get selectBranch    => '$_execBase/Auth/SelectBranch';
+  String get getUserFeatures => '$_execBase/User/GetUserFeatures';
+  String get getUserRoles    => '$_execBase/User/GetUserRoles';
+  String get signup          => '${ApiEndPoints._base}/user/signinUid';
 }
 
 // ─── Dashboard ──────────────────────────────────────────────────────────────

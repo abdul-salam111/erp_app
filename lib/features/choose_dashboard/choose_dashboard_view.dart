@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../core/services/current_user.dart';
+import '../../core/services/session_manager.dart';
 import '../../core/theme/colors.dart';
 import '../../core/theme/theme_utils.dart';
 import '../../core/utils/utils_exports.dart';
@@ -10,25 +11,28 @@ import '../../routes/route_names.dart';
 class ChooseDashboardView extends StatelessWidget {
   const ChooseDashboardView({super.key});
 
-  static final _options = [
-    _DashboardOption(
-      title: 'Working Dashboard',
-      subtitle: 'Access ERP modules, reports & management tools',
-      icon: Iconsax.briefcase,
-      color: AppColors.primary,
-      routeName: RouteNames.dashboard,
-    ),
-    _DashboardOption(
-      title: 'Employee Dashboard',
-      subtitle: 'View your attendance, leaves, salary & more',
-      icon: Iconsax.people,
-      color: AppColors.creditGreen,
-      routeName: RouteNames.employee_dashboard,
-    ),
+  static const _roleColors = [
+    AppColors.primary,
+    AppColors.creditGreen,
+    AppColors.deepPurple,
+    AppColors.teal,
+    AppColors.amber,
+    AppColors.cyan,
+  ];
+
+  static const _roleIcons = [
+    Iconsax.briefcase,
+    Iconsax.people,
+    Iconsax.setting_2,
+    Iconsax.chart,
+    Iconsax.shield_tick,
+    Iconsax.element_4,
   ];
 
   @override
   Widget build(BuildContext context) {
+    final roles = SessionController.instance.userRoles;
+
     return Scaffold(
       backgroundColor: context.background,
       body: CustomScrollView(
@@ -36,13 +40,26 @@ class ChooseDashboardView extends StatelessWidget {
           _Header(userName: currentUser.firstName),
           SliverPadding(
             padding: context.pagePadding.copyWith(top: 24, bottom: 32),
-            sliver: SliverList.separated(
-              itemCount: _options.length,
-              separatorBuilder: (_, __) =>
-                  SizedBox(height: context.gridSpacing + 4),
-              itemBuilder: (context, i) =>
-                  _DashboardCard(option: _options[i]),
-            ),
+            sliver: roles.isEmpty
+                ? SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        'No roles assigned',
+                        style: context.bodyMedium
+                            .copyWith(color: context.textSecondary),
+                      ),
+                    ),
+                  )
+                : SliverList.separated(
+                    itemCount: roles.length,
+                    separatorBuilder: (_, __) =>
+                        SizedBox(height: context.gridSpacing + 4),
+                    itemBuilder: (context, i) => _RoleCard(
+                      roleName: roles[i],
+                      color: _roleColors[i % _roleColors.length],
+                      icon: _roleIcons[i % _roleIcons.length],
+                    ),
+                  ),
           ),
         ],
       ),
@@ -135,25 +152,16 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _DashboardOption {
-  final String title;
-  final String subtitle;
-  final IconData icon;
+class _RoleCard extends StatelessWidget {
+  final String roleName;
   final Color color;
-  final String routeName;
+  final IconData icon;
 
-  const _DashboardOption({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
+  const _RoleCard({
+    required this.roleName,
     required this.color,
-    required this.routeName,
+    required this.icon,
   });
-}
-
-class _DashboardCard extends StatelessWidget {
-  final _DashboardOption option;
-  const _DashboardCard({required this.option});
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +170,7 @@ class _DashboardCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: option.color.withValues(alpha: 0.12),
+            color: color.withValues(alpha: 0.12),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -177,29 +185,24 @@ class _DashboardCard extends StatelessWidget {
         color: context.surface,
         borderRadius: .circular(16),
         child: InkWell(
-          onTap: () => context.goNamed(option.routeName),
+          onTap: () => context.goNamed(RouteNames.dashboard),
           borderRadius: .circular(16),
           child: ClipRRect(
             borderRadius: .circular(16),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(
-                    color: option.color.withValues(alpha: 0.18)),
+                border: Border.all(color: color.withValues(alpha: 0.18)),
                 borderRadius: .circular(16),
               ),
               child: IntrinsicHeight(
                 child: Row(
                   crossAxisAlignment: .stretch,
                   children: [
-                    // Accent bar
                     Container(
                       width: 4,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            option.color,
-                            option.color.withValues(alpha: 0.4),
-                          ],
+                          colors: [color, color.withValues(alpha: 0.4)],
                           begin: .topCenter,
                           end: .bottomCenter,
                         ),
@@ -207,19 +210,17 @@ class _DashboardCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: Padding(
-                        padding:
-                            const .fromLTRB(14, 18, 14, 18),
+                        padding: const EdgeInsets.fromLTRB(14, 18, 14, 18),
                         child: Row(
                           children: [
-                            // Icon badge
                             Container(
                               width: 52,
                               height: 52,
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    option.color,
-                                    option.color.withValues(alpha: 0.65),
+                                    color,
+                                    color.withValues(alpha: 0.65),
                                   ],
                                   begin: .topLeft,
                                   end: .bottomRight,
@@ -227,52 +228,34 @@ class _DashboardCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(13),
                                 boxShadow: [
                                   BoxShadow(
-                                    color:
-                                        option.color.withValues(alpha: 0.3),
+                                    color: color.withValues(alpha: 0.3),
                                     blurRadius: 8,
                                     offset: const Offset(0, 3),
                                   ),
                                 ],
                               ),
-                              child: Icon(
-                                option.icon,
-                                color: AppColors.white,
-                                size: 26,
-                              ),
+                              child: Icon(icon,
+                                  color: AppColors.white, size: 26),
                             ),
                             const SizedBox(width: 14),
-                            // Title + subtitle
                             Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
-                                mainAxisAlignment: .center,
-                                children: [
-                                  Text(
-                                    option.title,
-                                    style: context.titleSmall
-                                        .copyWith(fontWeight: .w600),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    option.subtitle,
-                                    style: context.bodySmall.copyWith(
-                                        color: context.textSecondary),
-                                  ),
-                                ],
+                              child: Text(
+                                roleName,
+                                style: context.titleSmall
+                                    .copyWith(fontWeight: .w600),
                               ),
                             ),
                             const SizedBox(width: 8),
-                            // Arrow
                             Container(
                               width: 32,
                               height: 32,
                               decoration: BoxDecoration(
-                                color: option.color.withValues(alpha: 0.1),
+                                color: color.withValues(alpha: 0.1),
                                 borderRadius: .circular(8),
                               ),
                               child: Icon(
                                 Iconsax.arrow_right_3,
-                                color: option.color,
+                                color: color,
                                 size: 16,
                               ),
                             ),
