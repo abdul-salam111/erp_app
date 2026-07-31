@@ -22,7 +22,7 @@ Future<void> registerAuth() async {
 
   // Blocs
   sl.registerFactory<SignInBloc>(
-    () => SignInBloc(signinUsecase: sl()),
+    () => SignInBloc(signinUsecase: sl(), selectBranchUsecase: sl()),
   );
   sl.registerFactory<BranchSelectionBloc>(
     () => BranchSelectionBloc(selectBranchUsecase: sl()),

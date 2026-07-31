@@ -9,8 +9,8 @@ class AppConfig {
 
   static const _rcKeyStagingUrl = 'mantic_erp_staging_base_url';
   static const _rcKeyProductionUrl = 'mantic_erp_production_base_url';
-  static const _defaultStagingUrl = 'https://erpstagingapi.manticapps.com/api';
-  static const _defaultProductionUrl = 'https://erpapi.manticapps.com/api';
+  static const _defaultStagingUrl = 'https://erp30api.manticapps.com/api';
+  static const _defaultProductionUrl = 'https://erp30api.manticapps.com/api';
   static const _envStorageKey = 'app_environment';
 
   static const _storage = FlutterSecureStorage();

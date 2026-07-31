@@ -21,10 +21,10 @@ class ApiEndPoints {
 final class _Auth {
   const _Auth();
 
-  static String get _base => '${ApiEndPoints._base}/mis';
+  static String get _execBase => '${ApiEndPoints._base}/ExecutiveApp';
 
-  String get login        => '$_base/auth/Authlogin';
-  String get selectBranch => '$_base/Auth/SelectBranch';
+  String get login        => '$_execBase/Auth/Login';
+  String get selectBranch => '$_execBase/Auth/SelectBranch';
   String get signup       => '${ApiEndPoints._base}/user/signinUid';
 }
 

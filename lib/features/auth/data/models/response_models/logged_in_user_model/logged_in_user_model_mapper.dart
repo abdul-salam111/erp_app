@@ -7,11 +7,8 @@ extension LoggedInUserModelMapper on LoggedInUserModel {
       id: misUserId,
       firstName: firstName,
       lastName: lastName,
-      email: email,
-      languageName: language?.name,
       organizations:
           organizations?.map((o) => o.toEntity()).toList() ?? const [],
-      // TODO: replace placeholders once API returns isAdmin and roles fields
       isAdmin: true,
       roles: const [],
     );
@@ -23,13 +20,6 @@ extension OrganizationMapper on Organization {
     return UserOrganizationEntity(
       id: id,
       name: name,
-      tenantName: tenant?.name,
-      productName: product?.name,
-      countryName: country?.name,
-      countryIso2: country?.iso2,
-      currencyCode: currency?.code,
-      currencySymbol: currency?.symbol,
-      currencyDecimals: currency?.decimals,
       branches: branches?.map((b) => b.toEntity()).toList() ?? const [],
     );
   }
