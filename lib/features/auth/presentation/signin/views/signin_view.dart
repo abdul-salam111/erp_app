@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
+import '../../../../../core/services/session_manager.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -31,15 +32,30 @@ class _SignInViewState extends State<SignInView> {
           body: BlocListener<SignInBloc, SignInState>(
             listener: (context, state) {
               if (state.apiStatus == ApiStatus.SUCCESS) {
+                if (state.message != null) {
+                  AppToastsUtils.showErrorTop(
+                    context,
+                    'Roles check failed: ${state.message}',
+                  );
+                }
                 final user = state.user!;
                 if (user.organizations.length > 1) {
                   // Multi-org: role is unknown until org is selected and
                   // SelectBranch + GetUserRoles complete in BranchSelectionBloc.
                   context.goNamed(RouteNames.organizationSelection);
-                } else if (user.isAdmin) {
-                  context.goNamed(RouteNames.dashboard);
                 } else {
-                  context.goNamed(RouteNames.choose_dashboard);
+                  final roles = SessionController.instance.userRoles;
+                  final isAdmin = roles.any(
+                    (r) => AppConstants.adminRoles
+                        .contains(r.toLowerCase().trim()),
+                  );
+                  if (isAdmin) {
+                    context.goNamed(RouteNames.dashboard);
+                  } else if (roles.length <= 1) {
+                    context.goNamed(RouteNames.dashboard);
+                  } else {
+                    context.goNamed(RouteNames.choose_dashboard);
+                  }
                 }
               }
               if (state.apiStatus == ApiStatus.FAILURE) {

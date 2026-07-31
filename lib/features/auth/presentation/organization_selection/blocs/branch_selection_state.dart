@@ -17,10 +17,11 @@ class BranchSelectionState extends Equatable {
     String? message,
     int? loadingOrgIndex,
     bool clearLoadingIndex = false,
+    bool clearMessage = false,
   }) {
     return BranchSelectionState(
       status: status ?? this.status,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       loadingOrgIndex: clearLoadingIndex ? null : (loadingOrgIndex ?? this.loadingOrgIndex),
     );
   }

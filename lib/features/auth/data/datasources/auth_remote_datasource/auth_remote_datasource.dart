@@ -44,8 +44,9 @@ class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
 
   @override
   Future<List<String>> getUserFeatures({required String token}) async {
-    return getList<String>(
+    return postList<String>(
       url: ApiEndPoints.auth.getUserFeatures,
+      body: {},
       parser: (json) => json as String,
       authToken: token,
     );
@@ -53,8 +54,9 @@ class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
 
   @override
   Future<List<String>> getUserRoles({required String token}) async {
-    return getList<String>(
+    return postList<String>(
       url: ApiEndPoints.auth.getUserRoles,
+      body: {},
       parser: (json) => json as String,
       authToken: token,
     );

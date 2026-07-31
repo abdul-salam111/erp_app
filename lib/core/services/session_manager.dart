@@ -55,7 +55,9 @@ class SessionController {
 
   Future<void> saveUserRoles(List<String> roles) async {
     userRoles = roles;
-    isAdmin = roles.any((r) => AppConstants.adminRoles.contains(r));
+    isAdmin = roles.any(
+      (r) => AppConstants.adminRoles.contains(r.toLowerCase().trim()),
+    );
     await storage.setValues(StorageKeys.userRoles, jsonEncode(roles));
   }
 
@@ -87,7 +89,9 @@ class SessionController {
       final rolesJson = await storage.readValues(StorageKeys.userRoles);
       if (rolesJson != null) {
         userRoles = List<String>.from(jsonDecode(rolesJson) as List);
-        isAdmin = userRoles.any((r) => AppConstants.adminRoles.contains(r));
+        isAdmin = userRoles.any(
+          (r) => AppConstants.adminRoles.contains(r.toLowerCase().trim()),
+        );
       }
     } catch (e) {
       throw Exception(e);

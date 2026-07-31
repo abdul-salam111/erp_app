@@ -52,7 +52,19 @@ class _OrganizationSelectionBodyState
       listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, state) {
         if (state.status == ApiStatus.SUCCESS) {
-          if (SessionController.instance.isAdmin) {
+          if (state.message != null) {
+            AppToastsUtils.showErrorTop(
+              context,
+              'Roles fetch failed: ${state.message}',
+            );
+          }
+          final roles = SessionController.instance.userRoles;
+          final isAdmin = roles.any(
+            (r) => AppConstants.adminRoles.contains(r.toLowerCase().trim()),
+          );
+          if (isAdmin) {
+            context.pushNamed(RouteNames.dashboard);
+          } else if (roles.length <= 1) {
             context.pushNamed(RouteNames.dashboard);
           } else {
             context.pushNamed(RouteNames.choose_dashboard);

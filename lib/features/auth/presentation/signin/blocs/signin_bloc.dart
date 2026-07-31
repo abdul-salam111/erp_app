@@ -74,12 +74,14 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
             success: (authToken) async {
               final finalToken = authToken.accessToken;
               UserEntity enrichedUser = user;
+              String? rolesError;
               if (finalToken != null) {
                 await SessionController.instance.updateActiveToken(finalToken);
-
                 final rolesResult = await getUserRolesUsecase(finalToken);
                 await rolesResult.when(
-                  failure: (_) async {},
+                  failure: (f) async {
+                    rolesError = f.message;
+                  },
                   success: (roles) async {
                     await SessionController.instance.saveUserRoles(roles);
                     enrichedUser = UserEntity(
@@ -105,7 +107,10 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
                 );
               }
               emit(state.copyWith(
-                  apiStatus: ApiStatus.SUCCESS, user: enrichedUser));
+                apiStatus: ApiStatus.SUCCESS,
+                user: enrichedUser,
+                message: rolesError,
+              ));
             },
           );
         } else {

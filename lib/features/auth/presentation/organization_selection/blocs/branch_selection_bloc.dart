@@ -64,9 +64,12 @@ class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionStat
         await SessionController.instance.saveSelectedOrganization(event.org);
         await SessionController.instance.updateActiveToken(finalToken);
 
+        String? rolesErrorMsg;
         final rolesResult = await getUserRolesUsecase(finalToken);
         await rolesResult.when(
-          failure: (_) async {},
+          failure: (f) async {
+            rolesErrorMsg = f.message;
+          },
           success: (roles) async {
             await SessionController.instance.saveUserRoles(roles);
             final user = SessionController.instance.loggedInUser;
@@ -95,6 +98,8 @@ class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionStat
         emit(state.copyWith(
           status: ApiStatus.SUCCESS,
           clearLoadingIndex: true,
+          message: rolesErrorMsg,
+          clearMessage: rolesErrorMsg == null,
         ));
       },
     );
