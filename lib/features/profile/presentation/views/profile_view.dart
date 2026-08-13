@@ -683,13 +683,20 @@ class _ActionsCard extends StatelessWidget {
             ),
             Divider(height: 1, thickness: 1, indent: 70, color: context.border),
           ],
-          _ActionRow(
-            icon: Iconsax.logout,
-            label: AppConstants.logOut,
-            subtitle: AppConstants.signOutOfYourAccount,
-            iconColor: context.error,
-            iconBg: context.error.withValues(alpha: 0.10),
-            onTap: () => _confirmLogout(context),
+          BlocBuilder<ProfileBloc, ProfileState>(
+            buildWhen: (p, c) => p.logoutStatus != c.logoutStatus,
+            builder: (context, state) {
+              final isLoggingOut = state.logoutStatus == ApiStatus.LOADING;
+              return _ActionRow(
+                icon: Iconsax.logout,
+                label: AppConstants.logOut,
+                subtitle: AppConstants.signOutOfYourAccount,
+                iconColor: context.error,
+                iconBg: context.error.withValues(alpha: 0.10),
+                isLoading: isLoggingOut,
+                onTap: isLoggingOut ? null : () => _confirmLogout(context),
+              );
+            },
           ),
         ],
       ),
@@ -703,7 +710,8 @@ class _ActionRow extends StatelessWidget {
   final String subtitle;
   final Color iconColor;
   final Color iconBg;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isLoading;
 
   const _ActionRow({
     required this.icon,
@@ -712,6 +720,7 @@ class _ActionRow extends StatelessWidget {
     required this.iconColor,
     required this.iconBg,
     required this.onTap,
+    this.isLoading = false,
   });
 
   @override
@@ -761,11 +770,21 @@ class _ActionRow extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 13,
-                color: iconColor.withValues(alpha: 0.60),
-              ),
+              if (isLoading)
+                SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation(iconColor),
+                  ),
+                )
+              else
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 13,
+                  color: iconColor.withValues(alpha: 0.60),
+                ),
             ],
           ),
         ),
