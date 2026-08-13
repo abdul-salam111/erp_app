@@ -13,4 +13,5 @@ abstract interface class IAuthRepostiory {
 
   Future<Result<List<String>>> getUserFeatures({required String token});
   Future<Result<List<String>>> getUserRoles({required String token});
+  Future<Result<bool>> deleteToken({required String accessToken});
 }

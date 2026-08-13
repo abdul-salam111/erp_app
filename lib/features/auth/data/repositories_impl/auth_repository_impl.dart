@@ -44,4 +44,11 @@ class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
       call: () => dataSource.getUserRoles(token: token),
     );
   }
+
+  @override
+  Future<Result<bool>> deleteToken({required String accessToken}) {
+    return execute(
+      call: () => dataSource.deleteToken(accessToken: accessToken),
+    );
+  }
 }

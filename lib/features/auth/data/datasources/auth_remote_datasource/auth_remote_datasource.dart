@@ -1,6 +1,7 @@
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../auth_exports.dart';
+import '../../models/request_models/delete_token_request_model/delete_token_request_model.dart';
 import '../../models/request_models/select_branch_request_model/select_branch_request_model.dart';
 
 abstract interface class IAuthRemoteDatasource {
@@ -14,6 +15,7 @@ abstract interface class IAuthRemoteDatasource {
 
   Future<List<String>> getUserFeatures({required String token});
   Future<List<String>> getUserRoles({required String token});
+  Future<bool> deleteToken({required String accessToken});
 }
 
 class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
@@ -59,6 +61,16 @@ class IAuthRemoteDatasourceImpl extends BaseRemoteDatasource
       body: {},
       parser: (json) => json as String,
       authToken: token,
+    );
+  }
+
+  @override
+  Future<bool> deleteToken({required String accessToken}) async {
+    return post(
+      url: ApiEndPoints.auth.deleteToken,
+      parser: (json) => json as bool,
+      body: DeleteTokenRequestModel(accessToken: accessToken).toJson(),
+      authToken: accessToken,
     );
   }
 }

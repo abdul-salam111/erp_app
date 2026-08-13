@@ -25,6 +25,9 @@ Future<void> registerAuth() async {
   sl.registerLazySingleton<GetUserRolesUsecase>(
     () => GetUserRolesUsecase(repository: sl()),
   );
+  sl.registerLazySingleton<DeleteTokenUsecase>(
+    () => DeleteTokenUsecase(repository: sl()),
+  );
 
   // Blocs
   sl.registerFactory<SignInBloc>(

@@ -4,7 +4,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../core/debug/cubit/api_debug_state.dart';
@@ -100,7 +99,7 @@ class _ProfileBody extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       child: _InfoRow(
                         icon: Iconsax.buildings,
-                        label: AppConstants.nameLabel,
+                        label: AppConstants.organizationTitle,
                         value: currentUser.org.name,
                         isLast: true,
                       ),
@@ -552,10 +551,7 @@ class _CardContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      clipBehavior: .antiAlias,
-      padding: padding,
       decoration: BoxDecoration(
-        color: context.white,
         borderRadius: .circular(16),
         border: Border.all(color: context.border),
         boxShadow: [
@@ -566,7 +562,17 @@ class _CardContainer extends StatelessWidget {
           ),
         ],
       ),
-      child: child,
+      // Material (not a color on the Container above) so ListTile/InkWell
+      // descendants (e.g. SwitchListTile) paint their splashes correctly.
+      child: Material(
+        color: context.white,
+        borderRadius: .circular(16),
+        clipBehavior: .antiAlias,
+        child: Padding(
+          padding: padding,
+          child: child,
+        ),
+      ),
     );
   }
 }

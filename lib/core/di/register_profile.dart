@@ -6,6 +6,6 @@ final _sl = GetIt.instance;
 Future<void> profileDependencies() async {
   // BLoC — Profile screen
   _sl.registerFactory<ProfileBloc>(
-    () => ProfileBloc(/* inject usecases */),
+    () => ProfileBloc(deleteTokenUsecase: _sl()),
   );
 }
