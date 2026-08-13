@@ -4,6 +4,7 @@ import 'package:dio/io.dart';
 import '../interceptors/error_interceptor.dart';
 import '../interceptors/logging_interceptor.dart';
 import '../interceptors/retry_interceptor.dart';
+import '../interceptors/token_refresh_interceptor.dart';
 
 class DioClient {
   DioClient._();
@@ -27,6 +28,7 @@ class DioClient {
     );
 
     dio.interceptors.addAll([
+      TokenRefreshInterceptor(),
       ErrorInterceptor(),
       RetryInterceptor(dio: dio),
       buildLoggingInterceptor(),

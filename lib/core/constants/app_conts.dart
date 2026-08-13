@@ -183,6 +183,7 @@ class AppConstants {
   static const String personalInformationTitle = 'Personal Information';
   static const String fullNameLabel = 'Full Name';
   static const String userIDLabel = 'User ID';
+  static const String roleLabel = 'Role';
   static const String organizationTitle = 'Organization';
   static const String nameLabel = 'Name';
   static const String tenantLabel = 'Tenant';

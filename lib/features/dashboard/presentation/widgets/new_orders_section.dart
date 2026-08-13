@@ -14,12 +14,28 @@ import 'section_header.dart';
 class NewOrdersSection extends StatelessWidget {
   const NewOrdersSection({super.key});
 
+  String _formatDate(DateTime d) =>
+      '${d.shortMonthName} ${d.day.toString().padLeft(2, '0')}';
+
+  Future<void> _pickDate(BuildContext context, DateTime current) async {
+    final picked = await showCompactDatePicker(
+      context: context,
+      initialDate: current,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && context.mounted) {
+      context.read<AdminDashboardBloc>().add(DailyStatsDateChanged(picked));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AdminDashboardBloc, AdminDashboardState>(
       buildWhen: (p, c) =>
           p.dailyStatsStatus != c.dailyStatsStatus ||
-          p.dailyStats       != c.dailyStats,
+          p.dailyStats       != c.dailyStats       ||
+          p.selectedDailyDate != c.selectedDailyDate,
       builder: (context, state) {
         final isLoading = state.dailyStatsStatus == ApiStatus.INITIAL ||
                           state.dailyStatsStatus == ApiStatus.LOADING;
@@ -30,19 +46,21 @@ class NewOrdersSection extends StatelessWidget {
           children: [
             SectionHeader(
               title: AppConstants.newOrders,
-              trailing: TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  padding: .symmetric(horizontal: 10, vertical: 4),
-                  minimumSize: .zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                child: Text(
-                  AppConstants.viewAll,
-                  style: context.labelMedium.copyWith(
-                    color: context.primary,
-                    fontWeight: .w600,
-                  ),
+              trailing: GestureDetector(
+                onTap: () => _pickDate(context, state.selectedDailyDate),
+                child: Row(
+                  mainAxisSize: .min,
+                  children: [
+                    Icon(Icons.calendar_today_outlined, color: context.primary, size: 13),
+                    const SizedBox(width: 4),
+                    Text(
+                      _formatDate(state.selectedDailyDate),
+                      style: context.labelMedium.copyWith(
+                        color: context.primary,
+                        fontWeight: .w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

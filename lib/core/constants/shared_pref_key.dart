@@ -8,6 +8,8 @@ class StorageKeys {
   static const String selectedOrganization = 'selectedOrganization';
   static const String userFeatures = 'userFeatures';
   static const String userRoles = 'userRoles';
+  static const String userEmail = 'userEmail';
+  static const String userPassword = 'userPassword';
 }
 
 extension LocalStorageGetters on LocalStorage {

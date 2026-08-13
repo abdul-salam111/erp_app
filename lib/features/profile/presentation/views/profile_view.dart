@@ -33,9 +33,20 @@ class ProfileView extends StatelessWidget {
 class _ProfileBody extends StatelessWidget {
   const _ProfileBody();
 
+  static String get _roleDisplay {
+    if (currentUser.isAdmin) return 'Administrator';
+    final roles = currentUser.roles
+        .map((r) => r.trim())
+        .where((r) => r.isNotEmpty)
+        .map((r) => r[0].toUpperCase() + r.substring(1))
+        .toList();
+    return roles.isEmpty ? 'Employee' : roles.join(', ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final hasMultiOrgs = (currentUser.organizations?.length ?? 0) > 1;
+    final hasOrganization = currentUser.org.name.isNotEmpty;
 
     return BlocListener<ProfileBloc, ProfileState>(
       listenWhen: (p, c) => p.logoutStatus != c.logoutStatus,
@@ -48,7 +59,7 @@ class _ProfileBody extends StatelessWidget {
         backgroundColor: context.background,
         body: CustomScrollView(
           slivers: [
-            _ProfileHeader(),
+            _ProfileHeader(roleDisplay: _roleDisplay),
             SliverPadding(
               padding: context.pagePadding.copyWith(top: 28, bottom: 48),
               sliver: SliverList(
@@ -64,9 +75,9 @@ class _ProfileBody extends StatelessWidget {
                         value: currentUser.fullName,
                       ),
                       _InfoRow(
-                        icon: Iconsax.sms,
-                        label: AppConstants.emailLabel,
-                        value: currentUser.email,
+                        icon: Iconsax.shield_tick,
+                        label: AppConstants.roleLabel,
+                        value: _roleDisplay,
                         isLast: true,
                       ),
                     ],
@@ -80,6 +91,30 @@ class _ProfileBody extends StatelessWidget {
                         curve: Curves.easeOutCubic,
                       )
                       .fadeIn(delay: 60.ms, duration: 320.ms),
+
+                  if (hasOrganization) ...[
+                    const SizedBox(height: 14),
+
+                    // ── Organization ───────────────────────────────────
+                    _CardContainer(
+                      padding: EdgeInsets.zero,
+                      child: _InfoRow(
+                        icon: Iconsax.buildings,
+                        label: AppConstants.nameLabel,
+                        value: currentUser.org.name,
+                        isLast: true,
+                      ),
+                    )
+                        .animate()
+                        .slideY(
+                          begin: 0.25,
+                          end: 0,
+                          delay: 100.ms,
+                          duration: 420.ms,
+                          curve: Curves.easeOutCubic,
+                        )
+                        .fadeIn(delay: 100.ms, duration: 320.ms),
+                  ],
 
                   const SizedBox(height: 14),
 
@@ -100,22 +135,31 @@ class _ProfileBody extends StatelessWidget {
                   BlocBuilder<ApiDebugCubit, ApiDebugState>(
                     builder: (context, dbgState) {
                       if (!dbgState.isEnabled) return const SizedBox.shrink();
-                      return SwitchListTile(
-                        title: const Text('API Debugger'),
-                        value: dbgState.isEnabled,
-                        onChanged: (_) => context.read<ApiDebugCubit>().toggleEnabled(),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                        tileColor: context.white,
+                      return Column(
+                        children: [
+                          _CardContainer(
+                            padding: EdgeInsets.zero,
+                            child: SwitchListTile(
+                              title: const Text('API Debugger'),
+                              value: dbgState.isEnabled,
+                              onChanged: (_) =>
+                                  context.read<ApiDebugCubit>().toggleEnabled(),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                        ],
                       );
                     },
                   ),
 
-                  const SizedBox(height: 28),
-
-                  const _AppVersion()
-                      .animate()
-                      .fadeIn(delay: 260.ms, duration: 400.ms),
+                  _CardContainer(
+                    child: const _AppVersion(),
+                  ).animate().fadeIn(delay: 260.ms, duration: 400.ms),
                 ]),
               ),
             ),
@@ -129,6 +173,9 @@ class _ProfileBody extends StatelessWidget {
 // ─── Header ───────────────────────────────────────────────────────────────────
 
 class _ProfileHeader extends StatelessWidget {
+  final String roleDisplay;
+  const _ProfileHeader({required this.roleDisplay});
+
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
@@ -168,17 +215,16 @@ class _ProfileHeader extends StatelessWidget {
               // Content
               Padding(
                 padding: EdgeInsets.only(
-                  top: top + 8,
-                  bottom: 52,
+                  top: top + 2,
+                  bottom: 26,
                   left: context.pagePadding.left,
                   right: context.pagePadding.right,
                 ),
                 child: Column(
                   crossAxisAlignment: .center,
                   children: [
-                    // Top bar: back + logout
+                    // Top bar: back
                     Row(
-                      mainAxisAlignment: .spaceBetween,
                       children: [
                         GestureDetector(
                           onTap: () => context.pop(),
@@ -195,45 +241,16 @@ class _ProfileHeader extends StatelessWidget {
                             ),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () => _confirmLogout(context),
-                          child: Container(
-                            padding: .symmetric(horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: AppColors.white.withValues(alpha: 0.15),
-                              borderRadius: .circular(10),
-                            ),
-                            child: Row(
-                              mainAxisSize: .min,
-                              children: [
-                                const Icon(
-                                  Iconsax.logout,
-                                  color: AppColors.white,
-                                  size: 15,
-                                ),
-                                const SizedBox(width: 6),
-                                const Text(
-                                  'Logout',
-                                  style: TextStyle(
-                                    color: AppColors.white,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                       ],
                     ).animate().fadeIn(delay: 0.ms, duration: 300.ms),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 10),
 
                     // Avatar — tap 5× to switch environment
                     EnvSwitchDetector(
                       child: Container(
-                        width: 92,
-                        height: 92,
+                        width: 68,
+                        height: 68,
                         decoration: BoxDecoration(
                           shape: .circle,
                           gradient: RadialGradient(
@@ -259,7 +276,7 @@ class _ProfileHeader extends StatelessWidget {
                             initials,
                             style: const TextStyle(
                               color: AppColors.white,
-                              fontSize: 30,
+                              fontSize: 22,
                               fontWeight: FontWeight.w700,
                               height: 1,
                             ),
@@ -277,7 +294,7 @@ class _ProfileHeader extends StatelessWidget {
                         )
                         .fadeIn(delay: 0.ms, duration: 300.ms),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 8),
 
                     // Name
                     Text(
@@ -287,9 +304,9 @@ class _ProfileHeader extends StatelessWidget {
                         fontWeight: .w700,
                         fontSize: Responsive.value(
                           context,
-                          phone: 18,
-                          tablet: 20,
-                          ipad: 22,
+                          phone: 16,
+                          tablet: 18,
+                          ipad: 20,
                         ),
                       ),
                       textAlign: .center,
@@ -303,6 +320,45 @@ class _ProfileHeader extends StatelessWidget {
                           curve: Curves.easeOutCubic,
                         )
                         .fadeIn(delay: 100.ms, duration: 280.ms),
+
+                    const SizedBox(height: 6),
+
+                    // Role badge
+                    Container(
+                      padding: .symmetric(horizontal: 12, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: AppColors.white.withValues(alpha: 0.18),
+                        borderRadius: .circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: .min,
+                        children: [
+                          Icon(
+                            Iconsax.shield_tick,
+                            color: AppColors.white.withValues(alpha: 0.95),
+                            size: 12,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            roleDisplay,
+                            style: context.labelSmall.copyWith(
+                              color: AppColors.white,
+                              fontWeight: .w600,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                        .animate()
+                        .slideY(
+                          begin: 0.3,
+                          end: 0,
+                          delay: 130.ms,
+                          duration: 380.ms,
+                          curve: Curves.easeOutCubic,
+                        )
+                        .fadeIn(delay: 130.ms, duration: 280.ms),
 
                     const SizedBox(height: 6),
 
@@ -324,48 +380,6 @@ class _ProfileHeader extends StatelessWidget {
                           curve: Curves.easeOutCubic,
                         )
                         .fadeIn(delay: 160.ms, duration: 280.ms),
-
-                    const SizedBox(height: 14),
-
-                    // Org badge
-                    Container(
-                      padding: .symmetric(horizontal: 14, vertical: 7),
-                      decoration: BoxDecoration(
-                        color: AppColors.white.withValues(alpha: 0.15),
-                        borderRadius: .circular(20),
-                        border: Border.all(
-                          color: AppColors.white.withValues(alpha: 0.28),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: .min,
-                        children: [
-                          Icon(
-                            Iconsax.buildings,
-                            color: AppColors.white.withValues(alpha: 0.90),
-                            size: 13,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            currentUser.org.name,
-                            style: context.labelSmall.copyWith(
-                              color: AppColors.white.withValues(alpha: 0.95),
-                              fontWeight: .w600,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                        .animate()
-                        .slideY(
-                          begin: 0.3,
-                          end: 0,
-                          delay: 220.ms,
-                          duration: 380.ms,
-                          curve: Curves.easeOutCubic,
-                        )
-                        .fadeIn(delay: 220.ms, duration: 280.ms),
                   ],
                 ),
               ),
@@ -376,70 +390,70 @@ class _ProfileHeader extends StatelessWidget {
     );
   }
 
-  static void _confirmLogout(BuildContext context) {
-    showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
-          'Sign Out',
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
-        ),
-        content: const Text(
-          'Are you sure you want to sign out of your account?',
-          style: TextStyle(fontSize: 14),
-        ),
-        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text('Cancel'),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(dialogContext).pop();
-                    context.read<ProfileBloc>().add(const LogoutRequested());
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.error,
-                    foregroundColor: AppColors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Sign Out',
-                    style: TextStyle(fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   static String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));
     if (parts.length >= 2) return '${parts.first[0]}${parts[1][0]}'.toUpperCase();
     if (name.isNotEmpty) return name[0].toUpperCase();
     return '?';
   }
+}
+
+void _confirmLogout(BuildContext context) {
+  showDialog<void>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: const Text(
+        'Sign Out',
+        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
+      ),
+      content: const Text(
+        'Are you sure you want to sign out of your account?',
+        style: TextStyle(fontSize: 14),
+      ),
+      actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      actions: [
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Cancel'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                  context.read<ProfileBloc>().add(const LogoutRequested());
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.error,
+                  foregroundColor: AppColors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Sign Out',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 
 // ─── Wave clip ────────────────────────────────────────────────────────────────
@@ -520,6 +534,39 @@ class _SectionCard extends StatelessWidget {
           ...children,
         ],
       ),
+    );
+  }
+}
+
+// ─── Plain card container (for content without a section header) ─────────────
+
+class _CardContainer extends StatelessWidget {
+  final Widget child;
+  final EdgeInsetsGeometry padding;
+
+  const _CardContainer({
+    required this.child,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      clipBehavior: .antiAlias,
+      padding: padding,
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(16),
+        border: Border.all(color: context.border),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 }
@@ -619,13 +666,24 @@ class _ActionsCard extends StatelessWidget {
       ),
       child: Column(
         children: [
+          if (hasMultiOrgs) ...[
+            _ActionRow(
+              icon: Iconsax.refresh_circle,
+              label: AppConstants.switchOrganization,
+              subtitle: AppConstants.changeToADifferentOrganization,
+              iconColor: context.primary,
+              iconBg: context.primary.withValues(alpha: 0.10),
+              onTap: () => context.pushNamed(RouteNames.organizationSelection),
+            ),
+            Divider(height: 1, thickness: 1, indent: 70, color: context.border),
+          ],
           _ActionRow(
-            icon: Iconsax.refresh_circle,
-            label: AppConstants.switchOrganization,
-            subtitle: AppConstants.changeToADifferentOrganization,
-            iconColor: context.primary,
-            iconBg: context.primary.withValues(alpha: 0.10),
-            onTap: () => context.pushNamed(RouteNames.organizationSelection),
+            icon: Iconsax.logout,
+            label: AppConstants.logOut,
+            subtitle: AppConstants.signOutOfYourAccount,
+            iconColor: context.error,
+            iconBg: context.error.withValues(alpha: 0.10),
+            onTap: () => _confirmLogout(context),
           ),
         ],
       ),

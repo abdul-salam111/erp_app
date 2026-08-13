@@ -83,6 +83,38 @@ class UserOrganizationEntity extends Equatable {
 
   String? get activeAccessToken => branches.firstOrNull?.accessToken;
 
+  UserBranchEntity? get activeBranch => branches.firstOrNull;
+
+  /// Returns a copy with the active (first) branch's session fields replaced —
+  /// used after login/SelectBranch/refresh to persist the latest token data.
+  UserOrganizationEntity withUpdatedActiveBranchToken({
+    required String? accessToken,
+    required String? refreshToken,
+    required DateTime? tokenExpiration,
+  }) {
+    if (branches.isEmpty) return this;
+    final updatedBranches = [
+      branches.first.copyWith(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        tokenExpiration: tokenExpiration,
+      ),
+      ...branches.skip(1),
+    ];
+    return UserOrganizationEntity(
+      id: id,
+      name: name,
+      tenantName: tenantName,
+      productName: productName,
+      countryName: countryName,
+      countryIso2: countryIso2,
+      currencyCode: currencyCode,
+      currencySymbol: currencySymbol,
+      currencyDecimals: currencyDecimals,
+      branches: updatedBranches,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
@@ -144,6 +176,19 @@ class UserBranchEntity extends Equatable {
 
   bool get isTokenExpired =>
       tokenExpiration != null && tokenExpiration!.isBefore(DateTime.now());
+
+  UserBranchEntity copyWith({
+    String? accessToken,
+    String? refreshToken,
+    DateTime? tokenExpiration,
+  }) =>
+      UserBranchEntity(
+        id: id,
+        name: name,
+        accessToken: accessToken ?? this.accessToken,
+        refreshToken: refreshToken ?? this.refreshToken,
+        tokenExpiration: tokenExpiration ?? this.tokenExpiration,
+      );
 
   Map<String, dynamic> toJson() => {
         'id': id,

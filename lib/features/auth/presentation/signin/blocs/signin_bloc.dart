@@ -40,6 +40,10 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
         state.copyWith(apiStatus: ApiStatus.FAILURE, message: failure.message),
       ),
       success: (user) async {
+        await SessionController.instance.saveCredentials(
+          state.email,
+          state.password,
+        );
         await SessionController.instance.saveUserInStorage(user);
 
         if (user.organizations.length == 1) {
@@ -76,7 +80,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
               UserEntity enrichedUser = user;
               String? rolesError;
               if (finalToken != null) {
-                await SessionController.instance.updateActiveToken(finalToken);
+                await SessionController.instance.updateActiveSession(authToken);
                 final rolesResult = await getUserRolesUsecase(finalToken);
                 await rolesResult.when(
                   failure: (f) async {

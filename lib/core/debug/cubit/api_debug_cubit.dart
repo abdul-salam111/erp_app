@@ -7,9 +7,30 @@ const _kDebugEnabledKey = 'apiDebugEnabled';
 
 class ApiDebugCubit extends Cubit<ApiDebugState> {
   ApiDebugCubit()
-      : super(const ApiDebugState(isEnabled: false, entries: []));
+      : super(const ApiDebugState(isEnabled: false, entries: [])) {
+    _instance = this;
+  }
 
   static const _storage = FlutterSecureStorage();
+
+  // Only one ApiDebugCubit is ever created (a DI singleton) — this lets
+  // non-widget code (the token-refresh interceptor) read/consume the
+  // "simulate expired token" switch without depending on the DI container.
+  static ApiDebugCubit? _instance;
+
+  static ApiDebugCubit? get instance => _instance;
+
+  static bool get simulateExpiredToken =>
+      _instance?.state.simulateExpiredToken ?? false;
+
+  /// Turns the simulated-expiry switch back off after a refresh caused by it
+  /// has been triggered once, so it behaves like a one-shot test trigger.
+  static void consumeSimulatedExpiry() {
+    final inst = _instance;
+    if (inst != null && inst.state.simulateExpiredToken) {
+      inst.emit(inst.state.copyWith(simulateExpiredToken: false));
+    }
+  }
 
   Future<void> init() async {
     final value = await _storage.read(key: _kDebugEnabledKey);

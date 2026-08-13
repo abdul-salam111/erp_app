@@ -310,9 +310,15 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
         .map((p) => FlSpot(p.date.day.toDouble(), p.amount))
         .toList();
 
+    final minAmount = points.fold(0.0, (m, p) => p.amount < m ? p.amount : m);
     final maxAmount = points.fold(0.0, (m, p) => p.amount > m ? p.amount : m);
-    final maxY      = maxAmount == 0 ? 100.0 : (maxAmount * 1.3).ceilToDouble();
-    final interval  = (maxY / 4).ceilToDouble().clamp(1.0, double.infinity);
+
+    final minY = minAmount < 0 ? minAmount : 0.0;
+    final maxY = maxAmount > 0
+        ? maxAmount
+        : (minY == 0 ? 100.0 : 0.0);
+    final interval =
+        ((maxY - minY) / 4).ceilToDouble().clamp(1.0, double.infinity);
 
     return AnimatedBuilder(
       animation: _chartAnim,
@@ -362,7 +368,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
               topTitles:    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
             ),
             borderData: FlBorderData(show: false),
-            minY: 0,
+            minY: minY,
             maxY: maxY,
             lineTouchData: LineTouchData(
               touchTooltipData: LineTouchTooltipData(
@@ -381,8 +387,10 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                 barWidth: 2.2,
                 dotData:  const FlDotData(show: false),
                 belowBarData: BarAreaData(
-                  show:  true,
-                  color: context.primary.withValues(alpha: 0.10),
+                  show:          true,
+                  color:         context.primary.withValues(alpha: 0.10),
+                  applyCutOffY:  true,
+                  cutOffY:       0,
                 ),
               ),
             ],

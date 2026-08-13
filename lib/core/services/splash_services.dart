@@ -18,6 +18,12 @@ class SplashServices {
 
   Future<void> checkLoginStatus(BuildContext context) async {
     try {
+      // Wired here (not main.dart) since splash owns session bootstrap —
+      // uses the router directly, not this context, because the silent
+      // token-refresh interceptor can fire this long after splash is gone.
+      SessionController.instance.onOrganizationUnavailable =
+          () => AppRoutes.router.goNamed(RouteNames.organizationSelection);
+
       await SessionController().getUserFromStorage();
 
       if (!context.mounted) return;
