@@ -396,9 +396,9 @@ class _CustomerTile extends StatelessWidget {
   const _CustomerTile({required this.invoice});
 
   CustomerStatus get _status {
-    if (invoice.flgPostpone) return CustomerStatus.partial;
-    if (invoice.isPartiallyPaid) return CustomerStatus.partial;
-    return CustomerStatus.actionRequired;
+    return invoice.status.trim().toLowerCase().contains('partial')
+        ? CustomerStatus.partial
+        : CustomerStatus.actionRequired;
   }
 
   @override
@@ -438,14 +438,31 @@ class _CustomerTile extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  invoice.party.fullName,
-                  style: context.bodySmall.copyWith(
-                    fontWeight: .w700,
-                    color: context.textPrimary,
-                  ),
-                  maxLines: 1,
-                  overflow: .ellipsis,
+                child: Column(
+                  crossAxisAlignment: .start,
+                  mainAxisSize: .min,
+                  children: [
+                    Text(
+                      invoice.party.fullName,
+                      style: context.bodySmall.copyWith(
+                        fontWeight: .w700,
+                        color: context.textPrimary,
+                      ),
+                      maxLines: 1,
+                      overflow: .ellipsis,
+                    ),
+                    if (invoice.party.locationName.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        invoice.party.locationName,
+                        style: context.labelSmall.copyWith(
+                          color: context.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: .ellipsis,
+                      ),
+                    ],
+                  ],
                 ),
               ),
               const SizedBox(width: 8),

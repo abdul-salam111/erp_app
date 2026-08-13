@@ -32,6 +32,7 @@ extension RecoveryInvoiceModelX on RecoveryInvoiceModel {
       fullName: party.fullName,
       partyTypeId: party.partyTypeId,
       locationId: party.locationId,
+      locationName: party.locationName,
     ),
     status: status,
     overDueDays: overDueDays,

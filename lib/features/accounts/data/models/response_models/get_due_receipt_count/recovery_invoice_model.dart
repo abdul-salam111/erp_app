@@ -3,12 +3,14 @@ class RecoveryInvoicePartyModel {
   final String fullName;
   final int partyTypeId;
   final int locationId;
+  final String locationName;
 
   const RecoveryInvoicePartyModel({
     required this.id,
     required this.fullName,
     required this.partyTypeId,
     required this.locationId,
+    this.locationName = '',
   });
 
   factory RecoveryInvoicePartyModel.fromJson(Map<String, dynamic> json) =>
@@ -17,6 +19,7 @@ class RecoveryInvoicePartyModel {
         fullName: json['FullName'] as String,
         partyTypeId: (json['PartyTypeId'] as num).toInt(),
         locationId: (json['LocationId'] as num).toInt(),
+        locationName: json['LocationName'] as String? ?? '',
       );
 }
 

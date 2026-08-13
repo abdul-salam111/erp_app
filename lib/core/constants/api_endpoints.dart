@@ -17,12 +17,9 @@ class ApiEndPoints {
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
-
 final class _Auth {
   const _Auth();
-
   static String get _execBase => '${ApiEndPoints._base}/ExecutiveApp';
-
   String get login           => '$_execBase/Auth/Login';
   String get selectBranch    => '$_execBase/Auth/SelectBranch';
   String get getUserFeatures => '$_execBase/User/GetUserFeatures';

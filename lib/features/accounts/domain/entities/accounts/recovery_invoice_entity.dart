@@ -5,16 +5,19 @@ class RecoveryInvoicePartyEntity extends Equatable {
   final String fullName;
   final int partyTypeId;
   final int locationId;
+  final String locationName;
 
   const RecoveryInvoicePartyEntity({
     required this.id,
     required this.fullName,
     required this.partyTypeId,
     required this.locationId,
+    this.locationName = '',
   });
 
   @override
-  List<Object> get props => [id, fullName, partyTypeId, locationId];
+  List<Object> get props =>
+      [id, fullName, partyTypeId, locationId, locationName];
 }
 
 class RecoveryInvoiceEntity extends Equatable {
@@ -50,9 +53,6 @@ class RecoveryInvoiceEntity extends Equatable {
     }
     return '?';
   }
-
-  bool get isPartiallyPaid =>
-      remainingAmount > 0 && remainingAmount < docAmount;
 
   @override
   List<Object> get props => [

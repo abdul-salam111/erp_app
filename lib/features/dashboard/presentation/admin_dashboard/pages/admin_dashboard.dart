@@ -49,12 +49,6 @@ class AdminDashboard extends StatelessWidget {
             color: AppColors.blueGrey,
             routeName: RouteNames.scan_document,
           ),
-          DrawerItem.tile(
-            label: AppConstants.employeeLabel,
-            icon: Iconsax.user_octagon,
-            color: AppColors.indigo,
-            routeName: RouteNames.employee_dashboard,
-          ),
           DrawerItem.divider(),
           DrawerItem.category(AppConstants.modules),
           DrawerItem.expandable(

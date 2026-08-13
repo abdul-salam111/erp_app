@@ -641,12 +641,16 @@ class _DrawerHeader extends StatelessWidget {
                                 size:  11,
                               ),
                               const SizedBox(width: 5),
-                              Text(
-                                orgName,
-                                style: context.labelSmall.copyWith(
-                                  color:      AppColors.white.withValues(alpha: 0.92),
-                                  fontWeight: .w600,
-                                  fontSize:   11,
+                              Flexible(
+                                child: Text(
+                                  orgName,
+                                  overflow: .ellipsis,
+                                  maxLines: 1,
+                                  style: context.labelSmall.copyWith(
+                                    color:      AppColors.white.withValues(alpha: 0.92),
+                                    fontWeight: .w600,
+                                    fontSize:   11,
+                                  ),
                                 ),
                               ),
                               if (onOrgTap != null) ...[
