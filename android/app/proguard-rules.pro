@@ -1,18 +1,7 @@
-## Flutter wrapper
--keep class io.flutter.app.** { *; }
--keep class io.flutter.plugin.** { *; }
--keep class io.flutter.util.** { *; }
--keep class io.flutter.view.** { *; }
--keep class io.flutter.** { *; }
--keep class io.flutter.plugins.** { *; }
+## Flutter's Gradle plugin already merges the correct consumer ProGuard
+## rules for the engine and every plugin automatically — no hand-written
+## io.flutter.** keep rules needed (and keeping them defeats R8 shrinking
+## across the app's ~15 native plugins).
 
 ## Suppress warnings for Play Core deferred components (not used in this app)
 -dontwarn com.google.android.play.core.**
-
-## Keep model classes used with json_serializable / freezed
--keep class com.manticerp.softronix.** { *; }
-
-## Gson / JSON serialization
--keepattributes Signature
--keepattributes *Annotation*
--dontwarn sun.misc.**
