@@ -68,39 +68,39 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
     final dailyDateStr  = _toDateStr(state.selectedDailyDate);
     final monthDateStr  = _toMonthDateStr(state.selectedMonth);
 
-    final (dailyResult, monthlyResult, detailResult, saleOrderResult) = await (
-      _getDailyStats(DailyStatsParams(date: dailyDateStr)),
-      _getMonthlyStats(MonthlyStatsParams(date: monthDateStr)),
-      _getMonthlyStatsDetail(MonthlyStatsDetailParams(date: monthDateStr, panelKey: state.selectedPanelKey)),
+    await Future.wait([
+      _getDailyStats(DailyStatsParams(date: dailyDateStr)).then((result) {
+        if (emit.isDone) return;
+        result.when(
+          failure: (f) => emit(state.copyWith(dailyStatsStatus: ApiStatus.FAILURE, dailyStatsError: f.message)),
+          success: (d) => emit(state.copyWith(dailyStatsStatus: ApiStatus.SUCCESS, dailyStats: d)),
+        );
+      }),
+      _getMonthlyStats(MonthlyStatsParams(date: monthDateStr)).then((result) {
+        if (emit.isDone) return;
+        result.when(
+          failure: (f) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message)),
+          success: (d) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d)),
+        );
+      }),
+      _getMonthlyStatsDetail(MonthlyStatsDetailParams(date: monthDateStr, panelKey: state.selectedPanelKey)).then((result) {
+        if (emit.isDone) return;
+        result.when(
+          failure: (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
+          success: (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
+        );
+      }),
       _getSaleOrderSummary(SaleOrderSummaryParams(
         fromDate: _toDateStr(state.saleOrderFromDate),
         toDate:   _toDateStr(state.saleOrderToDate),
-      )),
-    ).wait;
-
-    var s = state;
-
-    dailyResult.when(
-      failure: (f) => s = s.copyWith(dailyStatsStatus: ApiStatus.FAILURE, dailyStatsError: f.message),
-      success: (d) => s = s.copyWith(dailyStatsStatus: ApiStatus.SUCCESS, dailyStats: d),
-    );
-
-    monthlyResult.when(
-      failure: (f) => s = s.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message),
-      success: (d) => s = s.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d),
-    );
-
-    detailResult.when(
-      failure: (f) => s = s.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message),
-      success: (d) => s = s.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d),
-    );
-
-    saleOrderResult.when(
-      failure: (f) => s = s.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message),
-      success: (d) => s = s.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d),
-    );
-
-    emit(s);
+      )).then((result) {
+        if (emit.isDone) return;
+        result.when(
+          failure: (f) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message)),
+          success: (d) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d)),
+        );
+      }),
+    ]);
   }
 
   Future<void> _onSaleOrderDateRangeChanged(
@@ -134,20 +134,22 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
 
     final dateStr = _toMonthDateStr(event.month);
 
-    final (monthlyResult, detailResult) = await (
-      _getMonthlyStats(MonthlyStatsParams(date: dateStr)),
-      _getMonthlyStatsDetail(MonthlyStatsDetailParams(date: dateStr, panelKey: state.selectedPanelKey)),
-    ).wait;
-
-    monthlyResult.when(
-      failure: (f) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message)),
-      success: (d) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d)),
-    );
-
-    detailResult.when(
-      failure: (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
-      success: (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
-    );
+    await Future.wait([
+      _getMonthlyStats(MonthlyStatsParams(date: dateStr)).then((result) {
+        if (emit.isDone) return;
+        result.when(
+          failure: (f) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.FAILURE, monthlyStatsError: f.message)),
+          success: (d) => emit(state.copyWith(monthlyStatsStatus: ApiStatus.SUCCESS, monthlyStats: d)),
+        );
+      }),
+      _getMonthlyStatsDetail(MonthlyStatsDetailParams(date: dateStr, panelKey: state.selectedPanelKey)).then((result) {
+        if (emit.isDone) return;
+        result.when(
+          failure: (f) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.FAILURE, monthlyStatsDetailError: f.message)),
+          success: (d) => emit(state.copyWith(monthlyStatsDetailStatus: ApiStatus.SUCCESS, monthlyStatsDetail: d)),
+        );
+      }),
+    ]);
   }
 
   void _onTodayOverviewExpansionToggled(

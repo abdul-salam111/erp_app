@@ -58,10 +58,14 @@ class ErrorInterceptor extends Interceptor {
       final data = response!.data;
       if (data is Map) {
         return data['message'] as String? ??
+            data['Message'] as String? ??
             data['error'] as String? ??
+            data['Error'] as String? ??
             data['msg'] as String? ??
             data['detail'] as String? ??
-            data['errorMessage'] as String?;
+            data['Detail'] as String? ??
+            data['errorMessage'] as String? ??
+            data['ErrorMessage'] as String?;
       }
       if (data is String) return data;
     } catch (_) {}

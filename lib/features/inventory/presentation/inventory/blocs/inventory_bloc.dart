@@ -29,32 +29,34 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
       currentStockStatus: ApiStatus.LOADING,
     ));
 
-    final (stockResult, currentResult) = await (
-      _getStockReceived(const StockReceivedParams()),
-      _getCurrentStock(NoParams()),
-    ).wait;
-
-    stockResult.when(
-      failure: (f) => emit(state.copyWith(
-        stockReceivedStatus: ApiStatus.FAILURE,
-        stockReceivedError: f.message,
-      )),
-      success: (data) => emit(state.copyWith(
-        stockReceivedStatus: ApiStatus.SUCCESS,
-        stockReceived: data,
-      )),
-    );
-
-    currentResult.when(
-      failure: (f) => emit(state.copyWith(
-        currentStockStatus: ApiStatus.FAILURE,
-        currentStockError: f.message,
-      )),
-      success: (data) => emit(state.copyWith(
-        currentStockStatus: ApiStatus.SUCCESS,
-        currentStock: data,
-      )),
-    );
+    await Future.wait([
+      _getStockReceived(const StockReceivedParams()).then((result) {
+        if (emit.isDone) return;
+        result.when(
+          failure: (f) => emit(state.copyWith(
+            stockReceivedStatus: ApiStatus.FAILURE,
+            stockReceivedError: f.message,
+          )),
+          success: (data) => emit(state.copyWith(
+            stockReceivedStatus: ApiStatus.SUCCESS,
+            stockReceived: data,
+          )),
+        );
+      }),
+      _getCurrentStock(NoParams()).then((result) {
+        if (emit.isDone) return;
+        result.when(
+          failure: (f) => emit(state.copyWith(
+            currentStockStatus: ApiStatus.FAILURE,
+            currentStockError: f.message,
+          )),
+          success: (data) => emit(state.copyWith(
+            currentStockStatus: ApiStatus.SUCCESS,
+            currentStock: data,
+          )),
+        );
+      }),
+    ]);
   }
 
   Future<void> _onStockReceivedDateTypeChanged(

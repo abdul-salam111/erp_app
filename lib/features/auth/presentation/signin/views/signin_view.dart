@@ -30,6 +30,8 @@ class _SignInViewState extends State<SignInView> {
         child: Scaffold(
           backgroundColor: AppColors.loginBackground,
           body: BlocListener<SignInBloc, SignInState>(
+            listenWhen: (previous, current) =>
+                previous.apiStatus != current.apiStatus,
             listener: (context, state) {
               if (state.apiStatus == ApiStatus.SUCCESS) {
                 if (state.message != null) {
