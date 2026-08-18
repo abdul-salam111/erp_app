@@ -20,7 +20,6 @@ void main() async {
     ForceUpdateService().initialize(),
     setupLocator(),
   ]);
-
   runApp(const MyApp());
 }
 

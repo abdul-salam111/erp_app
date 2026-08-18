@@ -87,7 +87,7 @@ class AppConstants {
   static const String lastNetPayLabel = 'Last net pay';
   static const String missingPunchesLabel = 'Missing punches';
   static const String employeeLabel = 'Employee';
-  static const String employeePortalTitle = 'Employee Portal';
+  static const String employeePortalTitle = 'Mantic ERP';
   static const String checkInLabel = 'Check in';
   static const String totalHoursLabel = 'Total hours';
   static const String presentLabel = 'Present';

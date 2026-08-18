@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
+import '../../../../../core/services/services_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -16,6 +17,7 @@ class AccountLedgerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     return BlocProvider(
       create: (_) => sl<AccountLedgerBloc>(),
       child: _AccountLedgerBody(isEmployeeMode: isEmployeeMode),
@@ -79,7 +81,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
     bloc.add(AccountLedgerSubmitted(
       fromDate: bloc.state.fromDate.format('yyyy-MM-dd'),
       toDate: bloc.state.toDate.format('yyyy-MM-dd'),
-      accountId: widget.isEmployeeMode ? 95 : bloc.state.selectedAccountId,
+      accountId: widget.isEmployeeMode ? currentUser.id : bloc.state.selectedAccountId,
     ));
   }
 
@@ -121,6 +123,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
             context,
             AppConstants.invoiceReadySuccessMsg,
           );
+   
         }
       },
       child: Scaffold(
