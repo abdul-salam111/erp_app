@@ -3,6 +3,22 @@ BRANCH LOG
 A quick summary of what work lives on which branch.
 
 ============================================================
+production
+============================================================
+
+The main/default branch going forward. Created from the old main
+branch and then brought up to date with 1.0.0 on 2026-08-20, so it
+now matches 1.0.0 exactly. Used as the base for releases.
+
+============================================================
+staging
+============================================================
+
+Used for testing changes before they're considered stable. Has
+earlier login/session and dashboard work that hasn't been folded
+into 1.0.0 / production yet.
+
+============================================================
 1.0.1
 ============================================================
 
