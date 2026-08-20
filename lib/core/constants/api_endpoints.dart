@@ -107,9 +107,9 @@ final class _Modules {
 final class _Attendance {
   const _Attendance();
 
-  static String get _base => '${ApiEndPoints._base}/attendance';
+  static String get _base => '${ApiEndPoints._base}/ExecutiveApp/hr/attendance';
 
-  String get getAttendance => '$_base/GetAttendance';
+  String get getMonth => '$_base/GetMonth';
 }
 
 // ─── Leaves ──────────────────────────────────────────────────────────────────

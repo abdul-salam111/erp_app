@@ -2,8 +2,7 @@ import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/constants/const_exports.dart';
 
 abstract interface class IRemoteAttendanceDataSource {
-  // TODO: Define your datasource methods here
-  Future<dynamic> performAction();
+  Future<dynamic> getMonth({required int year, required int month});
 }
 
 class RemoteAttendanceDataSourceImpl extends BaseRemoteDatasource
@@ -11,11 +10,14 @@ class RemoteAttendanceDataSourceImpl extends BaseRemoteDatasource
   RemoteAttendanceDataSourceImpl({required super.dioHelper});
 
   @override
-  Future<dynamic> performAction() async {
+  Future<dynamic> getMonth({required int year, required int month}) async {
     return post(
-      url: ApiEndPoints.attendance.getAttendance,
-      parser: (json) => json, // TODO: Replace with your model parser
-      body: {}, // TODO: Add your request body
+      url: ApiEndPoints.attendance.getMonth,
+      body: {
+        'Year': year,
+        'Month': month,
+      },
+      parser: (json) => json,
     );
   }
 }

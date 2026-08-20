@@ -36,7 +36,12 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState>
     await executeUsecase(
       emit: emit,
       currentState: state,
-      usecase: () => attendanceUsecase.call(NoParams()),
+      usecase: () => attendanceUsecase.call(
+        GetMonthParams(
+          year: state.selectedMonth.year,
+          month: state.selectedMonth.month,
+        ),
+      ),
       stateBuilder: (status, {data, error}) =>
           state.copyWith(apiStatus: status, data: data, message: error),
     );
