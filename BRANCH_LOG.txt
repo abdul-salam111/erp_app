@@ -19,5 +19,19 @@ sections. Moved here from 1.0.0 on 2026-08-20.
 1.0.0
 ============================================================
 
-Kept clean at the last stable state. The Profile and Attendance
-work above was removed from here and moved to 1.0.1 on 2026-08-20.
+The main stable branch. Kept clean of the API integration work
+above, which was moved to 1.0.1 on 2026-08-20.
+
+Overall, this branch covers the app being built up from scratch:
+
+- Initial project setup.
+- Login and branch selection flow, with session handling so users
+  stay signed in and get logged out properly.
+- Role-based dashboards, so each user sees the screens relevant to
+  their role.
+- Accounts screen built out and polished.
+- General app stability improvements — better error handling,
+  smoother loading states, and a debug tool for checking API calls
+  during development.
+- Various housekeeping: app configuration, version updates, and
+  iOS-specific setup (permissions, deployment settings).
