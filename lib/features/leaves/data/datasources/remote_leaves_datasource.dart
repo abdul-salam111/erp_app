@@ -4,6 +4,8 @@ import '../../../../core/constants/const_exports.dart';
 abstract interface class IRemoteLeavesDataSource {
   Future<dynamic> getLeaves();
   Future<dynamic> applyLeave(Map<String, dynamic> body);
+  Future<dynamic> getBalances();
+  Future<dynamic> getById(int id);
 }
 
 class RemoteLeavesDataSourceImpl extends BaseRemoteDatasource
@@ -23,6 +25,24 @@ class RemoteLeavesDataSourceImpl extends BaseRemoteDatasource
     return post(
       url: ApiEndPoints.leaves.applyLeave,
       body: body,
+      parser: (json) => json,
+    );
+  }
+
+  @override
+  Future<dynamic> getBalances() async {
+    return post(
+      url: ApiEndPoints.leaves.getBalances,
+      body: const {},
+      parser: (json) => json,
+    );
+  }
+
+  @override
+  Future<dynamic> getById(int id) async {
+    return post(
+      url: ApiEndPoints.leaves.getById,
+      body: {'Id': id},
       parser: (json) => json,
     );
   }

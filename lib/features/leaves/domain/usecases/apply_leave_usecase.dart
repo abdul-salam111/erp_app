@@ -3,26 +3,27 @@ import '../../../../core/shared/shared_exports.dart';
 import '../repositories/leaves_repository.dart';
 
 class ApplyLeaveParams {
-  final String requestDate;
   final String fromDate;
   final String toDate;
-  final String leaveType;
-  final String detail;
+  // TODO: Replace with a real policy id once GetPolicies is wired.
+  final int? leavePolicyId;
+  final String reason;
+  final List<int> attachmentFileIds;
 
   const ApplyLeaveParams({
-    required this.requestDate,
     required this.fromDate,
     required this.toDate,
-    required this.leaveType,
-    required this.detail,
+    required this.leavePolicyId,
+    required this.reason,
+    this.attachmentFileIds = const [],
   });
 
   Map<String, dynamic> toJson() => {
-        'requestDate': requestDate,
-        'fromDate': fromDate,
-        'toDate': toDate,
-        'leaveType': leaveType,
-        'detail': detail,
+        'FromDate': fromDate,
+        'ToDate': toDate,
+        'LeavePolicyId': leavePolicyId,
+        'Reason': reason,
+        'AttachmentFileIds': attachmentFileIds,
       };
 }
 

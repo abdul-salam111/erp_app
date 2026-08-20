@@ -22,11 +22,11 @@ class ApplyLeaveBloc extends Bloc<ApplyLeaveEvent, ApplyLeaveState>
       currentState: state,
       usecase: () => applyLeaveUsecase.call(
         ApplyLeaveParams(
-          requestDate: event.requestDate,
           fromDate: event.fromDate,
           toDate: event.toDate,
-          leaveType: event.leaveType,
-          detail: event.detail,
+          leavePolicyId: event.leavePolicyId,
+          reason: event.reason,
+          attachmentFileIds: event.attachmentFileIds,
         ),
       ),
       stateBuilder: (status, {data, error}) =>

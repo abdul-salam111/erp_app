@@ -17,4 +17,14 @@ class LeavesRepositoryImpl extends BaseRepository implements LeavesRepository {
   Future<Result<dynamic>> applyLeave(Map<String, dynamic> body) {
     return execute(call: () => dataSource.applyLeave(body));
   }
+
+  @override
+  Future<Result<dynamic>> getBalances() {
+    return execute(call: () => dataSource.getBalances());
+  }
+
+  @override
+  Future<Result<dynamic>> getById(int id) {
+    return execute(call: () => dataSource.getById(id));
+  }
 }

@@ -34,6 +34,9 @@ const _monthNames = [
 String _fmt(DateTime d) =>
     '${d.day.toString().padLeft(2, '0')}-${_monthNames[d.month - 1]}-${d.year}';
 
+String _apiFmt(DateTime d) =>
+    '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
 class ApplyLeaveView extends StatelessWidget {
   const ApplyLeaveView({super.key});
 
@@ -158,11 +161,13 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody>
   void _submit() {
     context.read<ApplyLeaveBloc>().add(
       ApplyLeaveSubmitted(
-        requestDate: _fmt(_requestDate),
-        fromDate: _fmt(_dateRange.start),
-        toDate: _fmt(_dateRange.end),
-        leaveType: _leaveType,
-        detail: _detailController.text.trim(),
+        fromDate: _apiFmt(_dateRange.start),
+        toDate: _apiFmt(_dateRange.end),
+        // TODO: Replace with the selected policy id once GetPolicies is wired.
+        leavePolicyId: null,
+        reason: _detailController.text.trim(),
+        // TODO: Replace with uploaded attachment ids once the upload flow is wired.
+        attachmentFileIds: const [],
       ),
     );
   }

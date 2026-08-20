@@ -8,20 +8,21 @@ abstract class ApplyLeaveEvent extends Equatable {
 }
 
 class ApplyLeaveSubmitted extends ApplyLeaveEvent {
-  final String requestDate;
   final String fromDate;
   final String toDate;
-  final String leaveType;
-  final String detail;
+  final int? leavePolicyId;
+  final String reason;
+  final List<int> attachmentFileIds;
 
   const ApplyLeaveSubmitted({
-    required this.requestDate,
     required this.fromDate,
     required this.toDate,
-    required this.leaveType,
-    required this.detail,
+    required this.leavePolicyId,
+    required this.reason,
+    this.attachmentFileIds = const [],
   });
 
   @override
-  List<Object?> get props => [requestDate, fromDate, toDate, leaveType, detail];
+  List<Object?> get props =>
+      [fromDate, toDate, leavePolicyId, reason, attachmentFileIds];
 }
