@@ -1,48 +1,23 @@
 BRANCH LOG
 
-Tracks what work landed on which branch, so it's clear where to look
-without digging through git log across branches.
+A quick summary of what work lives on which branch.
 
 ============================================================
 1.0.1
 ============================================================
 
-Real API integration work for HR module endpoints (profile,
-attendance, leaves), built against the Postman collection
-("Mantic Erp"). Moved here from 1.0.0 on 2026-08-20.
+API integration work for the Profile, Attendance, and Leaves
+sections. Moved here from 1.0.0 on 2026-08-20.
 
-- Profile — GetMyProfile (ExecutiveApp/hr/profile/GetMyProfile):
-  full datasource/repository/usecase/DI plumbing. Not called from
-  UI yet.
-
-- Attendance — GetMonth (ExecutiveApp/hr/attendance/GetMonth, body
-  {Year, Month}): replaced the performAction placeholder end-to-end.
-  Not called from UI yet.
-
-- Leaves:
-  - Fixed base path to ExecutiveApp/hr/leave (was a placeholder
-    /leaves path).
-  - Added GetBalances (GetLeaveBalancesUsecase) — plumbing only,
-    unwired.
-  - Added GetById (GetLeaveByIdUsecase, takes an int id) — plumbing
-    only, unwired. Note: LeaveDetailView has no bloc yet, so wiring
-    this later means giving that screen a bloc too.
-  - Apply Leave is live — Create endpoint (was pointed at a
-    placeholder /ApplyLeave path with the wrong body shape). Request
-    body now sends FromDate/ToDate/LeavePolicyId/Reason/
-    AttachmentFileIds. Two open TODOs before this is fully correct:
-      - LeavePolicyId is hardcoded null — the form's Sick/Annual/
-        Other dropdown isn't wired to real policy ids yet (needs
-        GetPolicies).
-      - AttachmentFileIds is hardcoded [] — picked files aren't
-        uploaded anywhere yet (needs a file-upload endpoint, likely
-        Create (with attachment)).
+- Profile: basic setup done, not active yet.
+- Attendance: monthly data integration done, not active yet.
+- Leaves: balances and leave-details lookup set up but not active
+  yet. Apply Leave is fully working, though it still needs the
+  leave-type selection and attachments to be connected properly.
 
 ============================================================
 1.0.0
 ============================================================
 
-Reverted the profile and attendance commits (d588475, a191197) via
-git revert on 2026-08-20 so this branch stays on the last known-good
-state. The leaves changes above were never committed here (moved
-straight to 1.0.1 from the working tree).
+Kept clean at the last stable state. The Profile and Attendance
+work above was removed from here and moved to 1.0.1 on 2026-08-20.
