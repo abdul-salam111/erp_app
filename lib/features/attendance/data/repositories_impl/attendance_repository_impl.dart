@@ -10,9 +10,9 @@ class AttendanceRepositoryImpl extends BaseRepository
   AttendanceRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Result<dynamic>> getMonth({required int year, required int month}) {
+  Future<Result<dynamic>> performAction() {
     return execute(
-      call: () => dataSource.getMonth(year: year, month: month),
+      call: () => dataSource.performAction(),
     );
   }
 }
