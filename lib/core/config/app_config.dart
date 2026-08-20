@@ -36,7 +36,6 @@ class AppConfig {
       _rcKeyProductionUrl: _defaultProductionUrl,
     });
     try {
-      
       await rc.fetchAndActivate();
     } catch (_) {}
 

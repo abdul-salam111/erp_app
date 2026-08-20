@@ -14,7 +14,6 @@ class ApiEndPoints {
   static const salaryMgmt     = _SalaryMgmt();
   static const loanAndAdvance = _LoanAndAdvance();
   static const overtime       = _Overtime();
-  static const profile        = _Profile();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -153,14 +152,4 @@ final class _Overtime {
 
   String get getOvertime   => '$_base/GetOvertime';
   String get applyOvertime => '$_base/ApplyOvertime';
-}
-
-// ─── Profile ──────────────────────────────────────────────────────────────────
-
-final class _Profile {
-  const _Profile();
-
-  static String get _base => '${ApiEndPoints._base}/ExecutiveApp/hr/profile';
-
-  String get getMyProfile => '$_base/GetMyProfile';
 }
