@@ -5,6 +5,7 @@ import 'core/app_updates/force_update_gate.dart';
 import 'core/app_updates/force_update_service.dart';
 import 'core/config/app_config.dart';
 import 'core/debug/api_debug_overlay.dart';
+import 'core/debug/dev_flags.dart';
 import 'core/di/app_dependencies.dart';
 import 'core/theme/theme_exports.dart';
 import 'core/utils/utils_exports.dart';
@@ -39,9 +40,8 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             routerConfig: AppRoutes.router,
             builder: (context, child) {
-              return ApiDebugLayer(
-                child: ForceUpdateGate(child: child ?? const SizedBox.shrink()),
-              );
+              final gate = ForceUpdateGate(child: child ?? const SizedBox.shrink());
+              return kDevTools ? ApiDebugLayer(child: gate) : gate;
             },
           );
         },

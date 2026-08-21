@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/debug/cubit/api_debug_cubit.dart';
+import '../../../../../core/debug/dev_flags.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/services/session_manager.dart';
@@ -219,9 +220,21 @@ class _LoginCardState extends State<_LoginCard> {
               ),
             ),
             const SizedBox(height: 20),
-            GestureDetector(
-              onTap: _onTitleTap,
-              child: const Text(
+            if (kDevTools)
+              GestureDetector(
+                onTap: _onTitleTap,
+                child: const Text(
+                  'Mantic ERP',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.navyDark,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              )
+            else
+              const Text(
                 'Mantic ERP',
                 style: TextStyle(
                   fontSize: 22,
@@ -230,7 +243,6 @@ class _LoginCardState extends State<_LoginCard> {
                   letterSpacing: -0.5,
                 ),
               ),
-            ),
             const SizedBox(height: 4),
             const Text(
               'Sign in to your account',

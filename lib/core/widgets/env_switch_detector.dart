@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/app_config.dart';
+import '../debug/dev_flags.dart';
 
 class EnvSwitchDetector extends StatefulWidget {
   final Widget child;
@@ -40,6 +41,7 @@ class _EnvSwitchDetectorState extends State<EnvSwitchDetector> {
 
   @override
   Widget build(BuildContext context) {
+    if (!kDevTools) return widget.child;
     return GestureDetector(
       onTap: _onTap,
       behavior: HitTestBehavior.opaque,
