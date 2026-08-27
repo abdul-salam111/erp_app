@@ -7,7 +7,6 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../core/debug/cubit/api_debug_state.dart';
-import '../../../../core/debug/dev_flags.dart';
 import '../../../../core/di/di_exports.dart';
 import '../../../../core/services/current_user.dart';
 import '../../../../core/theme/colors.dart';
@@ -132,31 +131,30 @@ class _ProfileBody extends StatelessWidget {
 
                   const SizedBox(height: 14),
 
-                  if (kDevTools)
-                    BlocBuilder<ApiDebugCubit, ApiDebugState>(
-                      builder: (context, dbgState) {
-                        if (!dbgState.isEnabled) return const SizedBox.shrink();
-                        return Column(
-                          children: [
-                            _CardContainer(
-                              padding: EdgeInsets.zero,
-                              child: SwitchListTile(
-                                title: const Text('API Debugger'),
-                                value: dbgState.isEnabled,
-                                onChanged: (_) =>
-                                    context.read<ApiDebugCubit>().toggleEnabled(),
-                                contentPadding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
+                  BlocBuilder<ApiDebugCubit, ApiDebugState>(
+                    builder: (context, dbgState) {
+                      if (!dbgState.isEnabled) return const SizedBox.shrink();
+                      return Column(
+                        children: [
+                          _CardContainer(
+                            padding: EdgeInsets.zero,
+                            child: SwitchListTile(
+                              title: const Text('API Debugger'),
+                              value: dbgState.isEnabled,
+                              onChanged: (_) =>
+                                  context.read<ApiDebugCubit>().toggleEnabled(),
+                              contentPadding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
                             ),
-                            const SizedBox(height: 14),
-                          ],
-                        );
-                      },
-                    ),
+                          ),
+                          const SizedBox(height: 14),
+                        ],
+                      );
+                    },
+                  ),
 
                   _CardContainer(
                     child: const _AppVersion(),
