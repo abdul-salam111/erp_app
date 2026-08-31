@@ -7,6 +7,7 @@ import '../../../../core/utils/utils_exports.dart';
 import '../../../../routes/route_exports.dart';
 import 'section_header.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
+import '../../../../core/constants/system_permission_keys.dart';
 
 class QuickActionsSection extends StatefulWidget {
   const QuickActionsSection({super.key});
@@ -34,24 +35,28 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
       icon: Iconsax.card,
       color: AppColors.errorBright,
       routeName: RouteNames.credit_management,
+      permissionKey: SystemPermissionKeys.creditManagement,
     ),
     _MenuItem(
       label: AppConstants.inventoryLabel,
       icon: Iconsax.element_3,
       color: AppColors.teal,
       routeName: RouteNames.inventory,
+      permissionKey: SystemPermissionKeys.inventory,
     ),
     _MenuItem(
       label: AppConstants.purchaseLabel,
       icon: Iconsax.shopping_bag,
       color: AppColors.purple,
       routeName: RouteNames.purchase_order,
+      permissionKey: SystemPermissionKeys.purchaseOrder,
     ),
     _MenuItem(
       label: AppConstants.salesLabel,
       icon: Iconsax.truck,
       color: AppColors.green,
       routeName: RouteNames.sale_order,
+      permissionKey: SystemPermissionKeys.saleOrder,
     ),
     _MenuItem(
       label: AppConstants.productionLabel,
@@ -84,8 +89,6 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
   final _pageController = PageController();
   int _currentPage = 0;
 
-  int get _pageCount => (_items.length / _itemsPerPage).ceil();
-
   @override
   void dispose() {
     _pageController.dispose();
@@ -103,6 +106,11 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
     final spacing = context.gridSpacing;
     final pageHeight = 2 * cardHeight + spacing;
 
+    final visibleItems = _items
+        .where((i) => i.permissionKey == null || featureAccess.has(i.permissionKey!))
+        .toList();
+    final pageCount = (visibleItems.length / _itemsPerPage).ceil();
+
     return Column(
       crossAxisAlignment: .start,
       children: [
@@ -112,12 +120,12 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
           height: pageHeight,
           child: PageView.builder(
             controller: _pageController,
-            itemCount: _pageCount,
+            itemCount: pageCount,
             onPageChanged: (page) => setState(() => _currentPage = page),
             itemBuilder: (context, pageIndex) {
               final start = pageIndex * _itemsPerPage;
-              final end = (start + _itemsPerPage).clamp(0, _items.length);
-              final pageItems = _items.sublist(start, end);
+              final end = (start + _itemsPerPage).clamp(0, visibleItems.length);
+              final pageItems = visibleItems.sublist(start, end);
               return GridView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 physics: const NeverScrollableScrollPhysics(),
@@ -138,7 +146,7 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
         Row(
           mainAxisAlignment: .center,
           children: List.generate(
-            _pageCount,
+            pageCount,
             (i) => _PageDot(active: i == _currentPage),
           ),
         ),
@@ -227,11 +235,13 @@ class _MenuItem {
   final IconData icon;
   final Color color;
   final String? routeName;
+  final String? permissionKey;
 
   const _MenuItem({
     required this.label,
     required this.icon,
     required this.color,
     required this.routeName,
+    this.permissionKey,
   });
 }

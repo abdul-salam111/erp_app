@@ -10,3 +10,4 @@ export './responsive.dart';
 export './validators.dart';
 export './widget_utils.dart';
 export './type_conversion.dart';
+export './feature_access.dart';

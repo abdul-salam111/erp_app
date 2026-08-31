@@ -96,8 +96,6 @@ class SessionController {
     }
   }
 
-  bool hasFeature(String featureKey) => userFeatures.contains(featureKey);
-
   Future<void> saveUserFeatures(List<String> features) async {
     userFeatures = features;
     await storage.setValues(StorageKeys.userFeatures, jsonEncode(features));

@@ -117,6 +117,7 @@ class _AccountsBodyState extends State<_AccountsBody>
           body: Column(
             crossAxisAlignment: .start,
             children: [
+              if (featureAccess.has(SystemPermissionKeys.recoveryDue)) ...[
               // ── Sticky filter badges ──────────────────────────────────────
               Container(
                 color: context.white,
@@ -172,6 +173,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                 ),
               ),
               const Divider(height: 1, thickness: 1, color: AppColors.grey200),
+              ],
               // ── Scrollable content ────────────────────────────────────────
               Expanded(
                 child: SingleChildScrollView(
@@ -179,6 +181,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                   child: Column(
                     crossAxisAlignment: .start,
                     children: [
+                if (featureAccess.has(SystemPermissionKeys.recoveryDue)) ...[
                 // [0] ── Section header ──────────────────────────────────────
                 FadeTransition(
                   opacity: _fades[0],
@@ -343,6 +346,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                   ),
                 ),
                 const SizedBox(height: 16),
+                ],
                 // [3] ── Quick actions ────────────────────────────────────────
                 const AccountsQuickActions(),
                 const SizedBox(height: 8),

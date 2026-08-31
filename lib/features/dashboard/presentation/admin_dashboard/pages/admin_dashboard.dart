@@ -61,36 +61,43 @@ class AdminDashboard extends StatelessWidget {
                 icon: Iconsax.document_text,
                 color: AppColors.primary,
                 routeName: RouteNames.account_ledger,
+                permissionKey: SystemPermissionKeys.accountLedger,
               ),
               DrawerItem.tile(
                 label: AppConstants.partyStatementsLabel,
                 icon: Iconsax.people,
                 color: AppColors.purple,
+                permissionKey: SystemPermissionKeys.partyLedger,
               ),
               DrawerItem.tile(
                 label: AppConstants.bankCashPositionLabel,
                 icon: Iconsax.bank,
                 color: AppColors.tealDark,
+                permissionKey: SystemPermissionKeys.bankCashPosition,
               ),
               DrawerItem.tile(
                 label: AppConstants.cashbookLabel,
                 icon: Iconsax.book,
                 color: AppColors.green,
+                permissionKey: SystemPermissionKeys.cashBook,
               ),
               DrawerItem.tile(
                 label: AppConstants.creditManagementLabel,
                 icon: Iconsax.card,
                 color: AppColors.errorBright,
+                permissionKey: SystemPermissionKeys.creditManagement,
               ),
               DrawerItem.tile(
                 label: AppConstants.customerReceivableLabel,
                 icon: Iconsax.receive_square,
                 color: AppColors.orange,
+                permissionKey: SystemPermissionKeys.customerReceivables,
               ),
               DrawerItem.tile(
                 label: AppConstants.vendorPayableLabel,
                 icon: Iconsax.send_square,
                 color: AppColors.blueGrey,
+                permissionKey: SystemPermissionKeys.vendorPayable,
               ),
             ],
           ),
@@ -241,20 +248,28 @@ class AdminDashboard extends StatelessWidget {
           const _AdminSliverAppBar(),
           SliverPadding(
             padding: context.pagePadding.copyWith(top: 20),
-            sliver: const SliverToBoxAdapter(
+            sliver: SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: .start,
                 children: [
-                  TodayOverviewSection(),
-                  SizedBox(height: 20),
-                  QuickActionsSection(),
-                  SizedBox(height: 20),
-                  NewOrdersSection(),
-                  SizedBox(height: 20),
-                  MonthOverviewSection(),
-                  SizedBox(height: 20),
-                  SaleOrdersSection(),
-                  SizedBox(height: 12),
+                  if (featureAccess.has(SystemPermissionKeys.todaysOverview)) ...[
+                    const TodayOverviewSection(),
+                    const SizedBox(height: 20),
+                  ],
+                  const QuickActionsSection(),
+                  const SizedBox(height: 20),
+                  if (featureAccess.has(SystemPermissionKeys.todaysOverview)) ...[
+                    const NewOrdersSection(),
+                    const SizedBox(height: 20),
+                  ],
+                  if (featureAccess.has(SystemPermissionKeys.monthlyOverview)) ...[
+                    const MonthOverviewSection(),
+                    const SizedBox(height: 20),
+                  ],
+                  if (featureAccess.has(SystemPermissionKeys.dashboardSaleOrderStatus)) ...[
+                    const SaleOrdersSection(),
+                    const SizedBox(height: 12),
+                  ],
                 ],
               ),
             ),

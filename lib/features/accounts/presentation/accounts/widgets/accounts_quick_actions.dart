@@ -25,36 +25,42 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
       icon: Iconsax.document_text,
       color: AppColors.primary,
       routeName: RouteNames.account_ledger,
+      permissionKey: SystemPermissionKeys.accountLedger,
     ),
     _QAItem(
       label: AppConstants.partyStatementsLabel,
       icon: Iconsax.people,
       color: AppColors.purple,
       routeName: RouteNames.party_ledger,
+      permissionKey: SystemPermissionKeys.partyLedger,
     ),
     _QAItem(
       label: AppConstants.bankCashPositionLabel,
       icon: Iconsax.bank,
       color: AppColors.tealDark,
       routeName: RouteNames.bank_and_cash_position,
+      permissionKey: SystemPermissionKeys.bankCashPosition,
     ),
     _QAItem(
       label: AppConstants.cashbookLabel,
       icon: Iconsax.book,
       color: AppColors.green,
       routeName: RouteNames.cashbook,
+      permissionKey: SystemPermissionKeys.cashBook,
     ),
     _QAItem(
       label: AppConstants.customerReceivableLabel,
       icon: Iconsax.receive_square,
       color: AppColors.orange,
       routeName: RouteNames.customer_recievables,
+      permissionKey: SystemPermissionKeys.customerReceivables,
     ),
     _QAItem(
       label: AppConstants.vendorPayableLabel,
       icon: Iconsax.send_square,
       color: AppColors.blueGrey,
       routeName: RouteNames.vendor_payable,
+      permissionKey: SystemPermissionKeys.vendorPayable,
     ),
   ];
 
@@ -82,6 +88,10 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
       ipad: 130,
     );
 
+    final visibleItems = _items
+        .where((i) => i.permissionKey == null || featureAccess.has(i.permissionKey!))
+        .toList();
+
     return Column(
       crossAxisAlignment: .start,
       children: [
@@ -91,7 +101,7 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
           shrinkWrap: true,
           padding: const EdgeInsets.symmetric(horizontal: 2),
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: _items.length,
+          itemCount: visibleItems.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             mainAxisExtent: cardHeight,
@@ -112,7 +122,7 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
                   begin: const Offset(-0.22, 0),
                   end:   Offset.zero,
                 ).animate(curve),
-                child: _QACard(item: _items[i]),
+                child: _QACard(item: visibleItems[i]),
               ),
             );
           },
@@ -184,10 +194,12 @@ class _QAItem {
   final IconData icon;
   final Color color;
   final String? routeName;
+  final String? permissionKey;
   const _QAItem({
     required this.label,
     required this.icon,
     required this.color,
     this.routeName,
+    this.permissionKey,
   });
 }

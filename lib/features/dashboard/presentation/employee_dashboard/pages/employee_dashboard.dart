@@ -6,6 +6,7 @@ import 'package:mantic_erp_app/core/constants/app_conts.dart';
 import 'package:mantic_erp_app/core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/routes/route_exports.dart';
 import '../../../../../core/services/current_user.dart';
+import '../../../../../core/constants/system_permission_keys.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../widgets/dashboard_widgets.dart';
@@ -78,6 +79,7 @@ class EmployeeDashboard extends StatelessWidget {
             icon: Iconsax.document_text,
             color: AppColors.blueGrey,
             routeName: RouteNames.employee_account_ledger,
+            permissionKey: SystemPermissionKeys.accountLedger,
           ),
         ],
       ),
@@ -741,6 +743,7 @@ class _WorkspaceMenuSection extends StatelessWidget {
       icon: Iconsax.document_text,
       color: AppColors.blueGrey,
       routeName: RouteNames.employee_account_ledger,
+      permissionKey: SystemPermissionKeys.accountLedger,
     ),
     _MenuMeta(
       label: AppConstants.profileLabel,
@@ -760,6 +763,10 @@ class _WorkspaceMenuSection extends StatelessWidget {
       ipad: 104,
     );
 
+    final visibleItems = _items
+        .where((i) => i.permissionKey == null || featureAccess.has(i.permissionKey!))
+        .toList();
+
     return Column(
       crossAxisAlignment: .start,
       children: [
@@ -769,14 +776,14 @@ class _WorkspaceMenuSection extends StatelessWidget {
           shrinkWrap: true,
           padding: .zero,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: _items.length,
+          itemCount: visibleItems.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: context.gridColumnCount,
             mainAxisExtent: cardHeight,
             mainAxisSpacing: context.gridSpacing,
             crossAxisSpacing: context.gridSpacing,
           ),
-          itemBuilder: (context, i) => _WorkspaceCard(item: _items[i]),
+          itemBuilder: (context, i) => _WorkspaceCard(item: visibleItems[i]),
         ),
       ],
     );
@@ -867,6 +874,7 @@ class _MenuMeta {
   final IconData icon;
   final Color color;
   final String? routeName;
+  final String? permissionKey;
 
   const _MenuMeta({
     required this.label,
@@ -874,6 +882,7 @@ class _MenuMeta {
     required this.icon,
     required this.color,
     this.routeName,
+    this.permissionKey,
   });
 }
 

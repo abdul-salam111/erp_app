@@ -5,6 +5,7 @@ import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../routes/route_exports.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
+import '../../../../core/utils/feature_access.dart';
 
 // ─── Drawer item model ────────────────────────────────────────────────────────
 
@@ -17,12 +18,14 @@ class DrawerItem {
   final String?          routeName;
   final Color?           color;
   final List<DrawerItem> children;
+  final String?          permissionKey;
 
   const DrawerItem.tile({
     required this.label,
     required this.icon,
     this.routeName,
     this.color,
+    this.permissionKey,
   })  : _type    = _DrawerItemType.tile,
         children = const [];
 
@@ -32,14 +35,16 @@ class DrawerItem {
     required this.children,
     this.color,
   })  : _type     = _DrawerItemType.expandable,
-        routeName = null;
+        routeName = null,
+        permissionKey = null;
 
   const DrawerItem.category(this.label)
       : _type    = _DrawerItemType.category,
         icon      = null,
         routeName = null,
         color     = null,
-        children  = const [];
+        children  = const [],
+        permissionKey = null;
 
   const DrawerItem.divider()
       : _type    = _DrawerItemType.divider,
@@ -47,7 +52,19 @@ class DrawerItem {
         icon      = null,
         routeName = null,
         color     = null,
-        children  = const [];
+        children  = const [],
+        permissionKey = null;
+}
+
+// ─── Permission helpers ─────────────────────────────────────────────────────
+
+bool _tileVisible(DrawerItem item) =>
+    item.permissionKey == null || featureAccess.has(item.permissionKey!);
+
+bool _expandableVisible(DrawerItem item) {
+  final tiles = item.children.where((c) => c._type == _DrawerItemType.tile);
+  if (tiles.isEmpty) return true;
+  return tiles.any(_tileVisible);
 }
 
 // ─── App Drawer ───────────────────────────────────────────────────────────────
@@ -146,9 +163,11 @@ class _AppDrawerState extends State<AppDrawer>
 
       switch (item._type) {
         case _DrawerItemType.tile:
+          if (!_tileVisible(item)) continue;
           addAnimated(_DrawerTile(item: item));
           if (nextIsNavItem) addAnimated(_tileDivider(context), increment: false);
         case _DrawerItemType.expandable:
+          if (!_expandableVisible(item)) continue;
           addAnimated(_ExpandableTile(item: item));
           if (nextIsNavItem) addAnimated(_tileDivider(context), increment: false);
         case _DrawerItemType.category:
@@ -369,6 +388,7 @@ class _ExpandableTileState extends State<_ExpandableTile>
   Widget _buildChildren(BuildContext context) {
     final tiles = widget.item.children
         .where((c) => c._type == _DrawerItemType.tile)
+        .where(_tileVisible)
         .toList();
 
     return Column(
