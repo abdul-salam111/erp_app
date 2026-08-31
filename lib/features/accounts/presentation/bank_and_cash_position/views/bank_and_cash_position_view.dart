@@ -54,8 +54,21 @@ class _BankAndCashPositionBodyState extends State<_BankAndCashPositionBody> {
   }
 
   void _onScroll() {
-    final collapsed = _scrollController.position.pixels > 80;
-    if (collapsed != _collapsed) setState(() => _collapsed = collapsed);
+    final position = _scrollController.position;
+    final pixels = position.pixels;
+    // Collapsing the hero + summary frees ~240 px. If the list isn't tall
+    // enough for that headroom, collapsing would snap the scroll back to 0
+    // and instantly re-expand, causing oscillation. Only collapse when the
+    // list can sustain the collapsed layout, and only uncollapse near the top.
+    if (!_collapsed) {
+      if (pixels > 80 && position.maxScrollExtent > 300) {
+        setState(() => _collapsed = true);
+      }
+    } else {
+      if (pixels < 20) {
+        setState(() => _collapsed = false);
+      }
+    }
   }
 
   @override
