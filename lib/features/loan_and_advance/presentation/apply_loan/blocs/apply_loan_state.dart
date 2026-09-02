@@ -15,11 +15,12 @@ class ApplyLoanState extends Equatable {
   ApplyLoanState copyWith({
     dynamic data,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
   }) {
     return ApplyLoanState(
       data: data ?? this.data,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
     );
   }

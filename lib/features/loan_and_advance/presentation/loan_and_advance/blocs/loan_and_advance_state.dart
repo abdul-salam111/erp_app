@@ -18,12 +18,13 @@ class LoanAndAdvanceState extends Equatable {
   LoanAndAdvanceState copyWith({
     dynamic data,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
     List<LoanRecord>? records,
   }) {
     return LoanAndAdvanceState(
       data: data ?? this.data,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
       records: records ?? this.records,
     );

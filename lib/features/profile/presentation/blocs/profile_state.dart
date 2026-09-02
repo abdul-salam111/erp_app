@@ -18,12 +18,13 @@ class ProfileState extends Equatable {
   ProfileState copyWith({
     dynamic data,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
     ApiStatus? logoutStatus,
   }) {
     return ProfileState(
       data: data ?? this.data,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
       logoutStatus: logoutStatus ?? this.logoutStatus,
     );

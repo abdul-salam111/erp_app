@@ -20,13 +20,14 @@ class SignInState extends Equatable {
   SignInState copyWith({
     UserEntity? user,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
     String? email,
     String? password,
   }) {
     return SignInState(
       user: user ?? this.user,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
       email: email ?? this.email,
       password: password ?? this.password,

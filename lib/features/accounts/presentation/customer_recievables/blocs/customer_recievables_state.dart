@@ -23,13 +23,14 @@ class CustomerRecievablesState extends Equatable {
     List<CustomerReceivableItemEntity>? items,
     List<PartyListItemEntity>? parties,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
     ApiStatus? partiesStatus,
   }) {
     return CustomerRecievablesState(
       items: items ?? this.items,
       parties: parties ?? this.parties,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
       partiesStatus: partiesStatus ?? this.partiesStatus,
     );

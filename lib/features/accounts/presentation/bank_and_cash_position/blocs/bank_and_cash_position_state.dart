@@ -16,11 +16,12 @@ class BankAndCashPositionState extends Equatable {
   BankAndCashPositionState copyWith({
     List<BankCashItemEntity>? items,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
   }) {
     return BankAndCashPositionState(
       items: items ?? this.items,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
     );
   }

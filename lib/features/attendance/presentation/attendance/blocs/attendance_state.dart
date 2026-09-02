@@ -26,13 +26,14 @@ class AttendanceState extends Equatable {
   AttendanceState copyWith({
     dynamic data,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
     DateTime? selectedMonth,
     Map<int, AttendanceDay>? attendanceData,
   }) {
     return AttendanceState(
       data: data ?? this.data,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
       selectedMonth: selectedMonth ?? this.selectedMonth,
       attendanceData: attendanceData ?? this.attendanceData,

@@ -15,11 +15,12 @@ class AlertPanelState extends Equatable {
   AlertPanelState copyWith({
     dynamic data,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
   }) {
     return AlertPanelState(
       data: data ?? this.data,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
     );
   }

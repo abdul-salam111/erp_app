@@ -41,6 +41,7 @@ class SaleOrderState extends Equatable {
   SaleOrderState copyWith({
     List<SaleOrderEntity>? orders,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
     String? searchQuery,
     int? currentPage,
@@ -48,7 +49,7 @@ class SaleOrderState extends Equatable {
   }) {
     return SaleOrderState(
       orders: orders ?? this.orders,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
       searchQuery: searchQuery ?? this.searchQuery,
       currentPage: currentPage ?? this.currentPage,

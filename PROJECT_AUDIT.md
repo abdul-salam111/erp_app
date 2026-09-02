@@ -11,7 +11,6 @@
 
 ## Medium-Severity Findings
 
-- **"Sticky message" state bug in 20+ state classes** (`message: message ?? this.message` in `copyWith`) — an error message can never be cleared back to null, so stale error banners can reappear or fail to re-display. Three files (`credit_management_state.dart`, `ac_statement_state.dart`, `branch_selection_state.dart`) already fixed this locally with an explicit `clearMessage` flag — the fix is known, just not applied everywhere.
 - **`signin_bloc.dart` does too much** — full login → save credentials → save user → auto-select org → select branch → fetch roles → fetch features orchestration lives directly in the bloc, with one branch (`failure: (_) {}` at line 108) silently swallowing feature-fetch errors while the sibling branch surfaces role-fetch errors. This orchestration belongs in a usecase
 .
 - **`SessionController` is a bare mutable singleton** with public mutable fields and no synchronization outside the Dio interceptor's `QueuedInterceptor` — a secondary race-condition surface if session state is ever touched from outside the network layer.

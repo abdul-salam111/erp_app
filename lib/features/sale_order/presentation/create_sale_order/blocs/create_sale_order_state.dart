@@ -70,6 +70,7 @@ class CreateSaleOrderState extends Equatable {
   CreateSaleOrderState copyWith({
     dynamic data,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
     int? editingOrderId,
     String? docNbr,
@@ -96,7 +97,7 @@ class CreateSaleOrderState extends Equatable {
   }) {
     return CreateSaleOrderState(
       data: data ?? this.data,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
       editingOrderId: editingOrderId ?? this.editingOrderId,
       docNbr: docNbr ?? this.docNbr,

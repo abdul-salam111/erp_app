@@ -18,12 +18,13 @@ class OvertimeState extends Equatable {
   OvertimeState copyWith({
     dynamic data,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
     List<OvertimeRecord>? records,
   }) {
     return OvertimeState(
       data: data ?? this.data,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
       records: records ?? this.records,
     );

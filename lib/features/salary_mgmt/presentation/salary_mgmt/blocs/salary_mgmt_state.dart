@@ -18,12 +18,13 @@ class SalaryMgmtState extends Equatable {
   SalaryMgmtState copyWith({
     dynamic data,
     String? message,
+    bool clearMessage = false,
     ApiStatus? apiStatus,
     List<SalaryRecord>? records,
   }) {
     return SalaryMgmtState(
       data: data ?? this.data,
-      message: message ?? this.message,
+      message: clearMessage ? null : (message ?? this.message),
       apiStatus: apiStatus ?? this.apiStatus,
       records: records ?? this.records,
     );
