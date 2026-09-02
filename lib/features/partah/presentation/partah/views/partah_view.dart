@@ -273,7 +273,7 @@ class _StepDot extends StatelessWidget {
     final iconColor = isDone || isActive ? Colors.white : context.textSecondary;
 
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         AnimatedContainer(
           duration: const Duration(milliseconds: 220),
@@ -281,7 +281,7 @@ class _StepDot extends StatelessWidget {
           height: 34,
           decoration: BoxDecoration(
             color: bg,
-            shape: BoxShape.circle,
+            shape: .circle,
             boxShadow: isActive
                 ? [
                     BoxShadow(color: context.primary.withAlpha(60), blurRadius: 8, offset: const Offset(0, 3)),
@@ -298,7 +298,7 @@ class _StepDot extends StatelessWidget {
           style: context.labelSmall.copyWith(
             fontSize: 9,
             color: isActive ? context.primary : context.textSecondary,
-            fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+            fontWeight: isActive ? .w700 : .w500,
           ),
         ),
       ],
@@ -370,16 +370,16 @@ class _FooterMetric extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: [
         Text(
           label,
-          style: context.labelSmall.copyWith(fontSize: 10, color: context.textSecondary, fontWeight: FontWeight.w600),
+          style: context.labelSmall.copyWith(fontSize: 10, color: context.textSecondary, fontWeight: .w600),
         ),
         heightBox(3),
         Text(
           value,
-          style: context.titleSmall.copyWith(color: color, fontWeight: FontWeight.w800, fontSize: highlight ? 22 : 19),
+          style: context.titleSmall.copyWith(color: color, fontWeight: .w800, fontSize: highlight ? 22 : 19),
         ),
       ],
     );
@@ -482,7 +482,7 @@ class _PartahShimmer extends StatelessWidget {
                   return _sBox(h: 2, r: 2).withMargin(const EdgeInsets.only(bottom: 20)).expanded();
                 }
                 return Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: .min,
                   children: [_sBox(w: 34, h: 34, r: 17), heightBox(5), _sBox(w: 28, h: 8)],
                 );
               }),
@@ -515,7 +515,7 @@ class _PartahShimmer extends StatelessWidget {
             color: context.surface,
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 Row(children: [_footerMetric().expanded(), widthBox(12), _footerMetric().expanded()]),
                 heightBox(8),
@@ -544,7 +544,7 @@ class _PartahShimmer extends StatelessWidget {
       );
 
   Widget _footerMetric() => Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: [_sBox(w: 70, h: 10), heightBox(5), _sBox(w: 90, h: 16)],
       );
 }
@@ -577,7 +577,7 @@ class _NavBtn extends StatelessWidget {
     final iconWidget = Icon(icon, size: 14, color: labelColor);
     final labelWidget = Text(
       label,
-      style: context.labelMedium.copyWith(color: labelColor, fontWeight: FontWeight.w700),
+      style: context.labelMedium.copyWith(color: labelColor, fontWeight: .w700),
     );
 
     return InkWell(
@@ -595,8 +595,8 @@ class _NavBtn extends StatelessWidget {
               : null,
         ),
         child: Row(
-          mainAxisSize: stretch ? MainAxisSize.max : MainAxisSize.min,
-          mainAxisAlignment: stretch ? MainAxisAlignment.center : MainAxisAlignment.start,
+          mainAxisSize: stretch ? .max : .min,
+          mainAxisAlignment: stretch ? .center : .start,
           children: iconOnRight ? [labelWidget, widthBox(6), iconWidget] : [iconWidget, widthBox(6), labelWidget],
         ),
       ),
@@ -623,23 +623,23 @@ class _SaveSuccessDialog extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             Container(
               width: 68,
               height: 68,
-              decoration: BoxDecoration(color: context.success.withAlpha(20), shape: BoxShape.circle),
+              decoration: BoxDecoration(color: context.success.withAlpha(20), shape: .circle),
               child: Icon(Icons.check_rounded, size: 38, color: context.success),
             ),
             heightBox(16),
             Text(
               'Report Saved!',
-              style: context.titleLarge.copyWith(fontWeight: FontWeight.w800, color: context.textPrimary),
+              style: context.titleLarge.copyWith(fontWeight: .w800, color: context.textPrimary),
             ),
             heightBox(6),
             Text(
               'Your Partah report has been saved successfully.',
-              textAlign: TextAlign.center,
+              textAlign: .center,
               style: context.bodySmall.copyWith(color: context.textSecondary),
             ),
             heightBox(24),
@@ -655,7 +655,7 @@ class _SaveSuccessDialog extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'Done',
-                    style: context.labelLarge.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
+                    style: context.labelLarge.copyWith(color: Colors.white, fontWeight: .w700),
                   ),
                 ),
               ),

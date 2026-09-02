@@ -150,13 +150,13 @@ class _MillTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Text(
           'Select your mill type',
           style: context.labelSmall.copyWith(
             color: context.textSecondary,
-            fontWeight: FontWeight.w700,
+            fontWeight: .w700,
             letterSpacing: 0.4,
           ),
         ),
@@ -217,7 +217,7 @@ class _MillTypeChip extends StatelessWidget {
               label,
               style: context.labelMedium.copyWith(
                 color: isSelected ? context.primary : context.textPrimary,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                fontWeight: isSelected ? .w700 : .w500,
               ),
             ),
           ],
@@ -242,16 +242,16 @@ class _ContextBanner extends StatelessWidget {
         border: Border.all(color: context.primary.withAlpha(40)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Icon(Icons.edit_note_rounded, size: 18, color: context.primary),
           widthBox(10),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Text(
                 'Edit your product list',
-                style: context.labelMedium.copyWith(color: context.primary, fontWeight: FontWeight.w700),
+                style: context.labelMedium.copyWith(color: context.primary, fontWeight: .w700),
               ),
               heightBox(4),
               Text(
@@ -295,7 +295,7 @@ class _ProductsTable extends StatelessWidget {
                   flex: 5,
                   child: Text(
                     'Product Name',
-                    style: context.labelSmall.copyWith(color: context.textSecondary, fontWeight: FontWeight.w600),
+                    style: context.labelSmall.copyWith(color: context.textSecondary, fontWeight: .w600),
                   ),
                 ),
                 widthBox(8),
@@ -303,7 +303,7 @@ class _ProductsTable extends StatelessWidget {
                   flex: 3,
                   child: Text(
                     'Bag Size',
-                    style: context.labelSmall.copyWith(color: context.textSecondary, fontWeight: FontWeight.w600),
+                    style: context.labelSmall.copyWith(color: context.textSecondary, fontWeight: .w600),
                   ),
                 ),
                 widthBox(32),
@@ -325,13 +325,13 @@ class _ProductsTable extends StatelessWidget {
             onTap: onAdd,
             borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: .center,
               children: [
                 Icon(Icons.add_rounded, size: 16, color: context.primary),
                 widthBox(6),
                 Text(
                   'Add Product',
-                  style: context.labelMedium.copyWith(color: context.primary, fontWeight: FontWeight.w600),
+                  style: context.labelMedium.copyWith(color: context.primary, fontWeight: .w600),
                 ),
               ],
             ).withPadding(const EdgeInsets.symmetric(vertical: 11)),
@@ -359,8 +359,8 @@ class _ProductRow extends StatelessWidget {
           width: 22,
           child: Text(
             '${index + 1}',
-            style: context.labelSmall.copyWith(color: context.primary, fontWeight: FontWeight.w700),
-            textAlign: TextAlign.center,
+            style: context.labelSmall.copyWith(color: context.primary, fontWeight: .w700),
+            textAlign: .center,
           ),
         ),
         widthBox(10),
@@ -417,12 +417,12 @@ class _InlineField extends StatelessWidget {
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
       textCapitalization: textCapitalization,
-      style: context.bodySmall.copyWith(color: context.textPrimary, fontWeight: FontWeight.w500),
+      style: context.bodySmall.copyWith(color: context.textPrimary, fontWeight: .w500),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: context.bodySmall.copyWith(color: context.textSecondary),
         suffixText: suffixText,
-        suffixStyle: context.labelSmall.copyWith(color: context.textSecondary, fontWeight: FontWeight.w600),
+        suffixStyle: context.labelSmall.copyWith(color: context.textSecondary, fontWeight: .w600),
         isDense: true,
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         fillColor: context.background,

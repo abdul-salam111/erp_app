@@ -61,8 +61,8 @@ class UnpaidInvoicesSection extends StatelessWidget {
           header: const Row(
             children: [
               TableHeaderCell('Inv No', flex: 2),
-              TableHeaderCell('Receivable', flex: 2, align: TextAlign.center),
-              TableHeaderCell('Age', flex: 2, align: TextAlign.center),
+              TableHeaderCell('Receivable', flex: 2, align: .center),
+              TableHeaderCell('Age', flex: 2, align: .center),
               SizedBox(width: 20),
             ],
           ),

@@ -11,7 +11,7 @@ class AppThemes {
 
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-    brightness: Brightness.light,
+    brightness: .light,
     scaffoldBackgroundColor: AppColors.backgroundLight,
     colorScheme: ColorScheme.light(
       primary: AppColors.primary,
@@ -57,7 +57,7 @@ class AppThemes {
       surfaceTintColor: Colors.transparent,
       titleTextStyle: GoogleFonts.montserrat(
         color: AppColors.textPrimaryLight,
-        fontWeight: FontWeight.bold,
+        fontWeight: .bold,
         fontSize: 18,
       ),
       iconTheme: IconThemeData(color: AppColors.textPrimaryLight),
@@ -140,7 +140,7 @@ class AppThemes {
 
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
-    brightness: Brightness.dark,
+    brightness: .dark,
     scaffoldBackgroundColor: AppColors.backgroundDark,
 
     colorScheme: ColorScheme.dark(
@@ -187,7 +187,7 @@ class AppThemes {
       surfaceTintColor: Colors.transparent,
       titleTextStyle: GoogleFonts.montserrat(
         color: AppColors.textPrimaryDark,
-        fontWeight: FontWeight.bold,
+        fontWeight: .bold,
         fontSize: 18,
       ),
       iconTheme: IconThemeData(color: AppColors.textPrimaryDark),
@@ -272,85 +272,85 @@ class AppThemes {
     displayLarge: GoogleFonts.roboto(
       color: color,
       fontSize: 57,
-      fontWeight: FontWeight.w400,
+      fontWeight: .w400,
       letterSpacing: -0.25,
     ),
     displayMedium: GoogleFonts.roboto(
       color: color,
       fontSize: 45,
-      fontWeight: FontWeight.w400,
+      fontWeight: .w400,
     ),
     displaySmall: GoogleFonts.roboto(
       color: color,
       fontSize: 36,
-      fontWeight: FontWeight.w400,
+      fontWeight: .w400,
     ),
     headlineLarge: GoogleFonts.roboto(
       color: color,
       fontSize: 32,
-      fontWeight: FontWeight.w400,
+      fontWeight: .w400,
     ),
     headlineMedium: GoogleFonts.roboto(
       color: color,
       fontSize: 28,
-      fontWeight: FontWeight.w400,
+      fontWeight: .w400,
     ),
     headlineSmall: GoogleFonts.roboto(
       color: color,
       fontSize: 24,
-      fontWeight: FontWeight.w400,
+      fontWeight: .w400,
     ),
     titleLarge: GoogleFonts.roboto(
       color: color,
       fontSize: 22,
-      fontWeight: FontWeight.w500,
+      fontWeight: .w500,
     ),
     titleMedium: GoogleFonts.roboto(
       color: color,
       fontSize: 16,
-      fontWeight: FontWeight.w500,
+      fontWeight: .w500,
       letterSpacing: 0.15,
     ),
     titleSmall: GoogleFonts.roboto(
       color: color,
       fontSize: 14,
-      fontWeight: FontWeight.w500,
+      fontWeight: .w500,
       letterSpacing: 0.1,
     ),
     bodyLarge: GoogleFonts.roboto(
       color: color,
       fontSize: 16,
-      fontWeight: FontWeight.w400,
+      fontWeight: .w400,
       letterSpacing: 0.5,
     ),
     bodyMedium: GoogleFonts.roboto(
       color: color,
       fontSize: 14,
-      fontWeight: FontWeight.w400,
+      fontWeight: .w400,
       letterSpacing: 0.25,
     ),
     bodySmall: GoogleFonts.roboto(
       color: color,
       fontSize: 12,
-      fontWeight: FontWeight.w400,
+      fontWeight: .w400,
       letterSpacing: 0.4,
     ),
     labelLarge: GoogleFonts.roboto(
       color: color,
       fontSize: 14,
-      fontWeight: FontWeight.w500,
+      fontWeight: .w500,
       letterSpacing: 0.1,
     ),
     labelMedium: GoogleFonts.roboto(
       color: color,
       fontSize: 12,
-      fontWeight: FontWeight.w500,
+      fontWeight: .w500,
       letterSpacing: 0.5,
     ),
     labelSmall: GoogleFonts.roboto(
       color: color,
       fontSize: 11,
-      fontWeight: FontWeight.w500,
+      fontWeight: .w500,
       letterSpacing: 0.5,
     ),
   );

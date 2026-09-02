@@ -419,7 +419,7 @@ class _DashPainter extends CustomPainter {
     final paint = Paint()
       ..color = color
       ..strokeWidth = 1
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = .round;
 
     const dashWidth = 5.0;
     const gap = 4.0;

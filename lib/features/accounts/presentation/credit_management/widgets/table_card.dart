@@ -81,7 +81,7 @@ class TableHeaderCell extends StatelessWidget {
     this.text, {
     super.key,
     this.flex = 1,
-    this.align = TextAlign.start,
+    this.align = .start,
   });
 
   @override

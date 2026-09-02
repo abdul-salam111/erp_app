@@ -276,7 +276,7 @@ class _ProfileHeader extends StatelessWidget {
                             style: const TextStyle(
                               color: AppColors.white,
                               fontSize: 22,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: .w700,
                               height: 1,
                             ),
                           ),
@@ -404,7 +404,7 @@ void _confirmLogout(BuildContext context) {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: const Text(
         'Sign Out',
-        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
+        style: TextStyle(fontWeight: .w700, fontSize: 17),
       ),
       content: const Text(
         'Are you sure you want to sign out of your account?',
@@ -444,7 +444,7 @@ void _confirmLogout(BuildContext context) {
                 ),
                 child: const Text(
                   'Sign Out',
-                  style: TextStyle(fontWeight: FontWeight.w700),
+                  style: TextStyle(fontWeight: .w700),
                 ),
               ),
             ),

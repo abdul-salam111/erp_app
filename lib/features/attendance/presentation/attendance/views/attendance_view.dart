@@ -307,7 +307,7 @@ class _StatusChip extends StatelessWidget {
             style: const TextStyle(
               color: AppColors.white,
               fontSize: 10,
-              fontWeight: FontWeight.w700,
+              fontWeight: .w700,
             ),
           ),
         ),

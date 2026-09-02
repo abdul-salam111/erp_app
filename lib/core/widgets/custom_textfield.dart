@@ -71,7 +71,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     final defaultLabelColor = widget.labelColor ?? context.textSecondary;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         // Label with optional required asterisk
         if (widget.label != null)
@@ -91,7 +91,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                     text: " *",
                     style: context.bodyMedium.copyWith(
                       color: context.error,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: .bold,
                       fontSize: widget.labelFontSize.toDouble(),
                     ),
                   ),

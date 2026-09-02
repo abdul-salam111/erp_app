@@ -259,7 +259,7 @@ class _FileCard extends StatelessWidget {
                   _ext,
                   style: context.labelSmall.copyWith(
                     fontSize: 8,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: .w700,
                     color: color,
                     letterSpacing: 0.3,
                   ),

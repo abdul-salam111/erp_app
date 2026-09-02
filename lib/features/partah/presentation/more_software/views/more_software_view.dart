@@ -149,7 +149,7 @@ class _Header extends StatelessWidget {
         'More Software',
         style: context.titleMedium.copyWith(
           color: Colors.white,
-          fontWeight: FontWeight.w700,
+          fontWeight: .w700,
         ),
       ),
       flexibleSpace: FlexibleSpaceBar(
@@ -167,14 +167,14 @@ class _Header extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: .min,
+                crossAxisAlignment: .start,
                 children: [
                   Text(
                     'Powered by Softronix',
                     style: context.headlineSmall.copyWith(
                       color: Colors.white,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: .w800,
                       letterSpacing: -0.3,
                     ),
                   ),
@@ -271,7 +271,7 @@ class _SoftwareCardState extends State<_SoftwareCard> with SingleTickerProviderS
               ),
               padding: const EdgeInsets.all(16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   Container(
                     width: 56,
@@ -283,19 +283,19 @@ class _SoftwareCardState extends State<_SoftwareCard> with SingleTickerProviderS
                     padding: const EdgeInsets.all(10),
                     child: Image.asset(
                       s.iconPath,
-                      fit: BoxFit.contain,
+                      fit: .contain,
                     ),
                   ),
                   heightBox(12),
                   Text(
                     s.name,
                     style: context.titleSmall.copyWith(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: .w700,
                       color: context.textPrimary,
                       fontSize: 13,
                     ),
                     maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: .ellipsis,
                   ),
                   heightBox(4),
                   Text(
@@ -306,7 +306,7 @@ class _SoftwareCardState extends State<_SoftwareCard> with SingleTickerProviderS
                       fontSize: 10,
                     ),
                     maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                    overflow: .ellipsis,
                   ),
                   const Spacer(),
                   Align(
@@ -385,13 +385,13 @@ class _VisitBannerState extends State<_VisitBanner> {
             widthBox(14),
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   Text(
                     'Visit Softronix',
                     style: context.titleSmall.copyWith(
                       color: Colors.white,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: .w700,
                     ),
                   ),
                   heightBox(2),

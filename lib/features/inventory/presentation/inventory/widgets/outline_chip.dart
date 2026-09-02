@@ -26,7 +26,7 @@ class InventoryOutlineChip extends StatelessWidget {
           label,
           style: context.labelSmall.copyWith(
             color: context.textSecondary,
-            fontWeight: FontWeight.w500,
+            fontWeight: .w500,
           ),
         ),
       ),

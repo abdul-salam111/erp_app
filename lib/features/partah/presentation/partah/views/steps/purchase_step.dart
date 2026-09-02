@@ -13,13 +13,13 @@ class PurchaseStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final bag = calculator.totalInput.asBagWeight;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 _StepHeader(
                   icon: Icons.shopping_bag_outlined,
@@ -120,7 +120,7 @@ class _StepHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Row(
           children: [
@@ -130,7 +130,7 @@ class _StepHeader extends StatelessWidget {
               title,
               style: context.headlineSmall.copyWith(
                 color: context.textPrimary,
-                fontWeight: FontWeight.w800,
+                fontWeight: .w800,
                 fontSize: 14,
               ),
             ),
@@ -201,13 +201,13 @@ class _GainAmountRow extends StatelessWidget {
         ),
         widthBox(10),
         Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             Text(
               'Gain Amount',
               style: context.labelMedium.copyWith(
                 color: context.textPrimary,
-                fontWeight: FontWeight.w600,
+                fontWeight: .w600,
                 fontSize: 15,
               ),
             ),
@@ -219,7 +219,7 @@ class _GainAmountRow extends StatelessWidget {
         ).expanded(),
         Text(
           'Rs ${amount.abs().withCommas}',
-          style: context.labelMedium.copyWith(color: color, fontWeight: FontWeight.w800, fontSize: 16),
+          style: context.labelMedium.copyWith(color: color, fontWeight: .w800, fontSize: 16),
         ),
       ],
     ).withPadding(const EdgeInsets.symmetric(horizontal: 12, vertical: 10));
@@ -259,13 +259,13 @@ class _FieldRow extends StatelessWidget {
         ),
         widthBox(10),
         Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
             Text(
               label,
               style: context.labelMedium.copyWith(
                 color: context.textPrimary,
-                fontWeight: FontWeight.w600,
+                fontWeight: .w600,
                 fontSize: 15,
               ),
             ),
@@ -289,23 +289,23 @@ class _FieldRow extends StatelessWidget {
             onTap: () {
               controller.selection = TextSelection(baseOffset: 0, extentOffset: controller.text.length);
             },
-            textAlign: TextAlign.center,
+            textAlign: .center,
             style: context.labelMedium.copyWith(
               color: context.textPrimary,
-              fontWeight: FontWeight.w800,
+              fontWeight: .w800,
               fontSize: 16,
             ),
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: context.labelMedium.copyWith(
                 color: context.textDisabled,
-                fontWeight: FontWeight.w500,
+                fontWeight: .w500,
                 fontSize: 16,
               ),
               suffixText: suffixText,
               suffixStyle: context.labelSmall.copyWith(
                 color: context.textSecondary,
-                fontWeight: FontWeight.w600,
+                fontWeight: .w600,
                 fontSize: 13,
               ),
               isDense: true,

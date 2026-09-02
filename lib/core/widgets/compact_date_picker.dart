@@ -77,7 +77,7 @@ class _CompactDatePickerDialogState extends State<_CompactDatePickerDialog> {
           ),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             CalendarDatePicker(
               initialDate: _selected,
@@ -91,7 +91,7 @@ class _CompactDatePickerDialogState extends State<_CompactDatePickerDialog> {
               color: Theme.of(context).dividerColor,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: .end,
               children: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),

@@ -85,7 +85,7 @@ class _TableHeader extends StatelessWidget {
 
   static const _cellStyle = TextStyle(
     color: Colors.white,
-    fontWeight: FontWeight.w600,
+    fontWeight: .w600,
     fontSize: 11,
   );
 

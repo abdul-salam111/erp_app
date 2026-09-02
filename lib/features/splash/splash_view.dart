@@ -69,7 +69,7 @@ class _SplashViewState extends State<SplashView> {
                   width: 130,
                   height: 130,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                    shape: .circle,
                     color: Colors.white.withValues(alpha: 0.08),
                     border: Border.all(
                       color: Colors.white.withValues(alpha: 0.18),
@@ -80,7 +80,7 @@ class _SplashViewState extends State<SplashView> {
                     padding: const EdgeInsets.all(18),
                     child: Container(
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        shape: .circle,
                         color: Colors.white,
                         boxShadow: [
                           BoxShadow(
@@ -91,7 +91,7 @@ class _SplashViewState extends State<SplashView> {
                         ],
                       ),
                       padding: const .all(16),
-                      child: Image.asset(AppImages.manticLogo, fit: BoxFit.contain),
+                      child: Image.asset(AppImages.manticLogo, fit: .contain),
                     ),
                   ),
                 )
@@ -112,7 +112,7 @@ class _SplashViewState extends State<SplashView> {
                   'Mantic ERP',
                   style: context.headlineLarge.copyWith(
                     color: context.white,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: .w800,
                     letterSpacing: 1.2,
                   ),
                 )
@@ -179,7 +179,7 @@ class _GlowCircle extends StatelessWidget {
       width: diameter,
       height: diameter,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
+        shape: .circle,
         color: Colors.white.withValues(alpha: opacity),
       ),
     );
@@ -213,7 +213,7 @@ class _PulsingDotsState extends State<_PulsingDots>
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: .min,
       children: List.generate(3, (i) {
         return AnimatedBuilder(
           animation: _ctrl,
@@ -226,7 +226,7 @@ class _PulsingDotsState extends State<_PulsingDots>
               width: 7 * scale,
               height: 7 * scale,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                shape: .circle,
                 color: Colors.white.withValues(alpha: 0.5 + 0.5 * scale),
               ),
             );

@@ -139,7 +139,7 @@ class StockReceivedSection extends StatelessWidget {
                                     ? context.primary
                                     : context.textSecondary,
                                 fontWeight:
-                                    sel ? FontWeight.w600 : FontWeight.w500,
+                                    sel ? .w600 : .w500,
                               ),
                             ),
                           ),

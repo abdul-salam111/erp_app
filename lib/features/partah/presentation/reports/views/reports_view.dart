@@ -35,7 +35,7 @@ class _ReportsBody extends StatelessWidget {
       builder: (dialogContext) => AlertDialog(
         backgroundColor: context.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text('Delete Report?', style: context.titleMedium.copyWith(fontWeight: FontWeight.w700)),
+        title: Text('Delete Report?', style: context.titleMedium.copyWith(fontWeight: .w700)),
         content: Text(
           'This report from ${record.createdAt.displayDate} will be permanently deleted.',
           style: context.bodyMedium.copyWith(color: context.textSecondary),
@@ -52,7 +52,7 @@ class _ReportsBody extends StatelessWidget {
             },
             child: Text(
               'Delete',
-              style: context.labelMedium.copyWith(color: context.error, fontWeight: FontWeight.w700),
+              style: context.labelMedium.copyWith(color: context.error, fontWeight: .w700),
             ),
           ),
         ],
@@ -148,11 +148,11 @@ class _ReportCard extends StatelessWidget {
           ),
           widthBox(10),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Text(
                 record.createdAt.displayDate,
-                style: context.labelMedium.copyWith(fontWeight: FontWeight.w700, color: context.textPrimary),
+                style: context.labelMedium.copyWith(fontWeight: .w700, color: context.textPrimary),
               ),
               Text(
                 record.createdAt.time12Hour,
@@ -161,11 +161,11 @@ class _ReportCard extends StatelessWidget {
             ],
           ).expanded(),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: .end,
             children: [
               Text(
                 'Rs ${net.abs().withCommas}',
-                style: context.titleMedium.copyWith(color: profitColor, fontWeight: FontWeight.w800),
+                style: context.titleMedium.copyWith(color: profitColor, fontWeight: .w800),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
@@ -174,7 +174,7 @@ class _ReportCard extends StatelessWidget {
                   isProfit ? 'PROFIT' : 'LOSS',
                   style: context.labelSmall.copyWith(
                     color: profitColor,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: .w800,
                     fontSize: 9,
                     letterSpacing: 0.8,
                   ),
@@ -228,7 +228,7 @@ class _ReportsShimmer extends StatelessWidget {
               _rBox(w: 36, h: 36, r: 9),
               widthBox(10),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   _rBox(w: 110, h: 12, r: 6),
                   heightBox(6),
@@ -237,7 +237,7 @@ class _ReportsShimmer extends StatelessWidget {
               ).expanded(),
               widthBox(12),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: .end,
                 children: [
                   _rBox(w: 80, h: 14, r: 6),
                   heightBox(6),

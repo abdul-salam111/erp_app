@@ -230,14 +230,14 @@ class _OrderRowState extends State<_OrderRow> {
                                   _DetailChip(
                                     label: AppConstants.rowsLabel,
                                     value: order.rowsCount.toString(),
-                                    textAlign: TextAlign.center,
+                                    textAlign: .center,
                                   ),
                                   _DetailChip(
                                     label: AppConstants.remarksLabel,
                                     value: order.remarks?.isNotEmpty == true
                                         ? order.remarks!
                                         : '—',
-                                    textAlign: TextAlign.end,
+                                    textAlign: .end,
                                   ),
                                 ],
                               ),
@@ -271,15 +271,15 @@ class _DetailChip extends StatelessWidget {
   const _DetailChip({
     required this.label,
     required this.value,
-    this.textAlign = TextAlign.start,
+    this.textAlign = .start,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: textAlign == TextAlign.end
+      crossAxisAlignment: textAlign == .end
           ? .end
-          : textAlign == TextAlign.center
+          : textAlign == .center
               ? .center
               : .start,
       children: [

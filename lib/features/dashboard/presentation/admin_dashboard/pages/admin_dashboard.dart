@@ -321,8 +321,8 @@ class _AdminSliverAppBar extends StatelessWidget {
       automaticallyImplyLeading: false,
       expandedHeight: _expandedHeight,
       systemOverlayStyle: const SystemUiOverlayStyle(
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: .dark,
+        statusBarIconBrightness: .light,
       ),
       leadingWidth: hPad + 38,
       leading: Padding(

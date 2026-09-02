@@ -747,7 +747,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
     final labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         LinearProgressIndicator(
           value: strength / 4,

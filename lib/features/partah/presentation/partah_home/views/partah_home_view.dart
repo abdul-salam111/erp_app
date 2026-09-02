@@ -26,7 +26,7 @@ class PartahHomeView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 32),
             sliver: SliverToBoxAdapter(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 children: [
                   // ── Main feature — Partah full width ──
                   SizedBox(
@@ -63,7 +63,7 @@ class PartahHomeView extends StatelessWidget {
                       Text(
                         'Discover & Support',
                         style: context.titleSmall.copyWith(
-                          fontWeight: FontWeight.w700,
+                          fontWeight: .w700,
                           color: context.textPrimary,
                           letterSpacing: 0.2,
                         ),
@@ -234,7 +234,7 @@ class _HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: .start,
         children: [
           Row(
             children: [
@@ -248,7 +248,7 @@ class _HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
             currentUser.org.name.isNotEmpty ? currentUser.org.name : 'Mantic ERP',
             style: context.headlineMedium.copyWith(
               color: Colors.white,
-              fontWeight: FontWeight.w700,
+              fontWeight: .w700,
               letterSpacing: -0.5,
             ),
           ),
@@ -282,7 +282,7 @@ class _HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
                 'Home',
                 style: context.titleMedium.copyWith(
                   color: Colors.white,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: .w700,
                 ),
               ),
             ),
@@ -340,7 +340,7 @@ class _ProfileAvatar extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          shape: BoxShape.circle,
+          shape: .circle,
           color: Colors.white.withAlpha(50),
           border: Border.all(color: Colors.white.withAlpha(80), width: 2),
         ),
@@ -349,7 +349,7 @@ class _ProfileAvatar extends StatelessWidget {
             initials,
             style: const TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.w700,
+              fontWeight: .w700,
               fontSize: 14,
             ),
           ),
@@ -412,7 +412,7 @@ class _MenuCard extends StatelessWidget {
               width: 90,
               height: 90,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                shape: .circle,
                 color: Colors.white.withAlpha(18),
               ),
             ),
@@ -424,7 +424,7 @@ class _MenuCard extends StatelessWidget {
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                shape: .circle,
                 color: Colors.white.withAlpha(12),
               ),
             ),
@@ -432,9 +432,9 @@ class _MenuCard extends StatelessWidget {
           Positioned.fill(
             child: Column(
               crossAxisAlignment:
-                  centered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+                  centered ? .center : .start,
               mainAxisAlignment:
-                  centered ? MainAxisAlignment.center : MainAxisAlignment.start,
+                  centered ? .center : .start,
               children: [
                 Container(
                   width: iconSize,
@@ -452,7 +452,7 @@ class _MenuCard extends StatelessWidget {
                   card.title,
                   style: context.titleMedium.copyWith(
                     color: Colors.white,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: .w700,
                     fontSize: 18,
                   ),
                 ),
@@ -539,14 +539,14 @@ class _InfoCard extends StatelessWidget {
 
   Widget _stackedContent(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         _iconBox(),
         heightBox(8),
         Text(
           card.title,
           style: context.titleSmall.copyWith(
-            fontWeight: FontWeight.w700,
+            fontWeight: .w700,
             color: context.textPrimary,
           ),
         ),
@@ -573,12 +573,12 @@ class _InfoCard extends StatelessWidget {
         widthBox(14),
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Text(
                 card.title,
                 style: context.titleSmall.copyWith(
-                  fontWeight: FontWeight.w700,
+                  fontWeight: .w700,
                   color: context.textPrimary,
                 ),
               ),

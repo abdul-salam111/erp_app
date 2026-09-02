@@ -97,8 +97,8 @@ class _BaseWeightSheet extends StatelessWidget {
       ),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: .min,
+        crossAxisAlignment: .start,
         children: [
           Center(
             child: Container(
@@ -108,7 +108,7 @@ class _BaseWeightSheet extends StatelessWidget {
             ),
           ),
           heightBox(20),
-          Text('Base Bag Weight', style: context.titleMedium.copyWith(fontWeight: FontWeight.w700)),
+          Text('Base Bag Weight', style: context.titleMedium.copyWith(fontWeight: .w700)),
           heightBox(4),
           Text(
             'All Partah calculations are based on this raw bag weight.',
@@ -152,12 +152,12 @@ class _BaseWeightOption extends StatelessWidget {
             color: isSelected ? context.primary : context.textDisabled,
           ),
           widthBox(12),
-          Text(option.label, style: context.bodyMedium.copyWith(fontWeight: FontWeight.w600)).expanded(),
+          Text(option.label, style: context.bodyMedium.copyWith(fontWeight: .w600)).expanded(),
           Text(
             '${option.displayKgLabel} kg',
             style: context.bodyMedium.copyWith(
               color: isSelected ? context.primary : context.textSecondary,
-              fontWeight: FontWeight.w700,
+              fontWeight: .w700,
             ),
           ),
         ],
@@ -176,7 +176,7 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title.toUpperCase(),
-      style: context.labelSmall.copyWith(color: context.textSecondary, fontWeight: FontWeight.w700, letterSpacing: 1.2),
+      style: context.labelSmall.copyWith(color: context.textSecondary, fontWeight: .w700, letterSpacing: 1.2),
     ).withPadding(const EdgeInsets.fromLTRB(20, 16, 20, 6));
   }
 }
@@ -212,9 +212,9 @@ class _SettingsTile extends StatelessWidget {
           ),
           widthBox(14),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
-              Text(title, style: context.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+              Text(title, style: context.bodyMedium.copyWith(fontWeight: .w600)),
               heightBox(2),
               Text(subtitle, style: context.bodySmall.copyWith(color: context.textSecondary)),
             ],

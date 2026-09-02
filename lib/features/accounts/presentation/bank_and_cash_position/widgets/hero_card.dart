@@ -106,7 +106,7 @@ class BankAndCashHeroCard extends StatelessWidget {
           // ── Scrollable chart ──────────────────────────────────
           Expanded(
             child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+              scrollDirection: .horizontal,
               child: Padding(
                 padding: const EdgeInsets.only(left: 12, right: 12),
                 child: SizedBox(

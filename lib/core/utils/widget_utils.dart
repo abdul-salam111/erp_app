@@ -81,7 +81,7 @@ extension WidgetExtensions on Widget {
   }
 
   // Wrap a widget in a Flexible widget
-  Widget flexible({int flex = 1, FlexFit fit = FlexFit.loose}) {
+  Widget flexible({int flex = 1, FlexFit fit = .loose}) {
     return Flexible(flex: flex, fit: fit, child: this);
   }
 
@@ -226,7 +226,7 @@ extension WidgetExtensions on Widget {
 
   // Add fitted box
   Widget fitted({
-    BoxFit fit = BoxFit.contain,
+    BoxFit fit = .contain,
     Alignment alignment = Alignment.center,
   }) {
     return FittedBox(fit: fit, alignment: alignment, child: this);
@@ -275,7 +275,7 @@ extension WidgetExtensions on Widget {
 
   // Add scrollable wrapper
   Widget scrollable({
-    Axis scrollDirection = Axis.vertical,
+    Axis scrollDirection = .vertical,
     ScrollPhysics? physics,
     EdgeInsets? padding,
   }) {
@@ -624,14 +624,14 @@ class EmptyStateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: .center,
         children: [
           if (icon != null) Icon(icon, size: iconSize, color: AppColors.grey400),
           const SizedBox(height: 16),
           Text(
             title,
             style: Theme.of(context).textTheme.titleLarge,
-            textAlign: TextAlign.center,
+            textAlign: .center,
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 8),
@@ -640,7 +640,7 @@ class EmptyStateWidget extends StatelessWidget {
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: AppColors.grey400),
-              textAlign: TextAlign.center,
+              textAlign: .center,
             ),
           ],
           if (action != null) ...[const SizedBox(height: 24), action!],
@@ -668,14 +668,14 @@ class ErrorStateWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: .center,
         children: [
           Icon(icon, size: 80, color: AppColors.error),
           const SizedBox(height: 16),
           Text(
             message ?? 'Something went wrong',
             style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
+            textAlign: .center,
           ),
           if (onRetry != null) ...[
             const SizedBox(height: 24),
@@ -738,7 +738,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
       animation: _controller,
       builder: (context, child) {
         return ShaderMask(
-          blendMode: BlendMode.srcATop,
+          blendMode: .srcATop,
           shaderCallback: (bounds) {
             return LinearGradient(
               colors: [
@@ -1111,7 +1111,7 @@ class StatusBarColor extends StatelessWidget {
     super.key,
     required this.child,
     required this.color,
-    this.brightness = Brightness.dark,
+    this.brightness = .dark,
   });
 
   @override

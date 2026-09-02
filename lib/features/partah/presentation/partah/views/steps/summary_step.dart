@@ -22,7 +22,7 @@ class SummaryStep extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: .stretch,
         children: [
           // ── Profit/100Kg Hero ──
           _NetProfitHero(net: profitPer100.abs(), isProfit: isProfit, bag: bag),
@@ -127,7 +127,7 @@ class _NetProfitHero extends StatelessWidget {
               border: Border.all(color: accentColor.withAlpha(60)),
             ),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 Icon(
                   isProfit ? Icons.trending_up_rounded : Icons.trending_down_rounded,
@@ -139,7 +139,7 @@ class _NetProfitHero extends StatelessWidget {
                   isProfit ? 'PROFIT' : 'LOSS',
                   style: context.labelSmall.copyWith(
                     color: accentColor,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: .w700,
                     fontSize: 11,
                     letterSpacing: 0.8,
                   ),
@@ -148,14 +148,14 @@ class _NetProfitHero extends StatelessWidget {
             ),
           ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: .end,
             children: [
               Text(
                 '${isProfit ? 'PROFIT' : 'LOSS'} / $bag KG',
-                textAlign: TextAlign.right,
+                textAlign: .right,
                 style: context.labelSmall.copyWith(
                   color: accentColor.withAlpha(180),
-                  fontWeight: FontWeight.w600,
+                  fontWeight: .w600,
                   letterSpacing: 1.2,
                   fontSize: 11,
                 ),
@@ -163,8 +163,8 @@ class _NetProfitHero extends StatelessWidget {
               heightBox(4),
               Text(
                 'Rs ${net.asAmount}',
-                textAlign: TextAlign.right,
-                style: context.headlineMedium.copyWith(color: accentColor, fontWeight: FontWeight.w800),
+                textAlign: .right,
+                style: context.headlineMedium.copyWith(color: accentColor, fontWeight: .w800),
               ),
             ],
           ).expanded(),
@@ -197,22 +197,22 @@ class _MetricCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: .end,
         children: [
           Text(
             label,
-            textAlign: TextAlign.right,
+            textAlign: .right,
             style: context.bodySmall.copyWith(
               color: context.textPrimary.withAlpha(160),
               fontSize: 12,
-              fontWeight: FontWeight.w500,
+              fontWeight: .w500,
             ),
           ),
           heightBox(5),
           Text(
             value,
-            textAlign: TextAlign.right,
-            style: context.titleMedium.copyWith(color: valueColor, fontWeight: FontWeight.w800, fontSize: 22),
+            textAlign: .right,
+            style: context.titleMedium.copyWith(color: valueColor, fontWeight: .w800, fontSize: 22),
           ),
         ],
       ),
@@ -253,41 +253,41 @@ class _GainCard extends StatelessWidget {
       child: Row(
         children: [
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: .start,
             children: [
               Text(
                 isGain ? 'Gain %' : 'Loss %',
                 style: context.bodySmall.copyWith(
                   color: context.textPrimary.withAlpha(160),
                   fontSize: 12,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                 ),
               ),
               heightBox(3),
               Text(
                 pctStr,
-                style: context.titleMedium.copyWith(color: color, fontWeight: FontWeight.w800, fontSize: 18),
+                style: context.titleMedium.copyWith(color: color, fontWeight: .w800, fontSize: 18),
               ),
             ],
           ).expanded(),
           Container(width: 1, height: 40, color: context.border),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: .end,
             children: [
               Text(
                 'Amount',
-                textAlign: TextAlign.right,
+                textAlign: .right,
                 style: context.bodySmall.copyWith(
                   color: context.textPrimary.withAlpha(160),
                   fontSize: 12,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                 ),
               ),
               heightBox(3),
               Text(
                 amtStr,
-                textAlign: TextAlign.right,
-                style: context.titleMedium.copyWith(color: color, fontWeight: FontWeight.w800, fontSize: 20),
+                textAlign: .right,
+                style: context.titleMedium.copyWith(color: color, fontWeight: .w800, fontSize: 20),
               ),
             ],
           ).expanded(),

@@ -59,7 +59,7 @@ class _YoutubePopupState extends State<YoutubePopup> {
                         height: 32,
                         decoration: const BoxDecoration(
                           color: Colors.black54,
-                          shape: BoxShape.circle,
+                          shape: .circle,
                         ),
                         child: const Icon(Icons.close_rounded, color: Colors.white, size: 18),
                       ),

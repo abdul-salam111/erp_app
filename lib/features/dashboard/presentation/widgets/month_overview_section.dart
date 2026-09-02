@@ -355,7 +355,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                         label,
                         style: TextStyle(
                           fontSize:   8.5,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: .w700,
                           color:      context.textSecondary,
                         ),
                       ),
@@ -375,7 +375,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                 getTooltipColor: (_) => context.primary.withValues(alpha: 0.85),
                 getTooltipItems: (spots) => spots.map((s) => LineTooltipItem(
                   '${currentUser.org.currencySymbol} ${s.y.toStringAsFixed(0)}',
-                  const TextStyle(color: AppColors.white, fontSize: 11, fontWeight: FontWeight.w600),
+                  const TextStyle(color: AppColors.white, fontSize: 11, fontWeight: .w600),
                 )).toList(),
               ),
             ),
@@ -501,7 +501,7 @@ class _MonthStatCard extends StatelessWidget {
                           Text(
                             pctLabel,
                             style: TextStyle(
-                              fontSize: 9, fontWeight: FontWeight.w600, color: changeColor,
+                              fontSize: 9, fontWeight: .w600, color: changeColor,
                             ),
                           ),
                         ],

@@ -14,7 +14,7 @@ void showLoadingPopup(BuildContext context, {String message = "Please wait..."})
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 const CircularProgressIndicator(),
                 const SizedBox(height: 20),

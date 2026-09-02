@@ -104,7 +104,7 @@ class _NetProfitHero extends StatelessWidget {
               border: Border.all(color: accentColor.withAlpha(60)),
             ),
             child: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 Icon(
                   isProfit ? Icons.trending_up_rounded : Icons.trending_down_rounded,
@@ -116,7 +116,7 @@ class _NetProfitHero extends StatelessWidget {
                   isProfit ? 'PROFIT' : 'LOSS',
                   style: context.labelSmall.copyWith(
                     color: accentColor,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: .w700,
                     fontSize: 11,
                     letterSpacing: 0.8,
                   ),
@@ -125,14 +125,14 @@ class _NetProfitHero extends StatelessWidget {
             ),
           ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: .end,
             children: [
               Text(
                 'NET ${isProfit ? 'PROFIT' : 'LOSS'}',
-                textAlign: TextAlign.right,
+                textAlign: .right,
                 style: context.labelSmall.copyWith(
                   color: accentColor.withAlpha(180),
-                  fontWeight: FontWeight.w600,
+                  fontWeight: .w600,
                   letterSpacing: 1.2,
                   fontSize: 11,
                 ),
@@ -140,8 +140,8 @@ class _NetProfitHero extends StatelessWidget {
               heightBox(4),
               Text(
                 'Rs ${net.asAmount}',
-                textAlign: TextAlign.right,
-                style: context.headlineMedium.copyWith(color: accentColor, fontWeight: FontWeight.w800),
+                textAlign: .right,
+                style: context.headlineMedium.copyWith(color: accentColor, fontWeight: .w800),
               ),
             ],
           ).expanded(),
@@ -169,24 +169,24 @@ class _MetricCard extends StatelessWidget {
         border: Border.all(color: context.border),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: .end,
         children: [
           Text(
             label,
-            textAlign: TextAlign.right,
+            textAlign: .right,
             style: context.bodySmall.copyWith(
               color: context.textPrimary.withAlpha(160),
               fontSize: 12,
-              fontWeight: FontWeight.w500,
+              fontWeight: .w500,
             ),
           ),
           heightBox(5),
           Text(
             value,
-            textAlign: TextAlign.right,
+            textAlign: .right,
             style: context.titleMedium.copyWith(
               color: context.textPrimary,
-              fontWeight: FontWeight.w800,
+              fontWeight: .w800,
               fontSize: 19,
             ),
           ),
@@ -214,7 +214,7 @@ class _SectionLabel extends StatelessWidget {
         widthBox(8),
         Text(
           title,
-          style: context.titleSmall.copyWith(fontWeight: FontWeight.w700, color: context.textPrimary),
+          style: context.titleSmall.copyWith(fontWeight: .w700, color: context.textPrimary),
         ),
       ],
     );
@@ -260,9 +260,9 @@ class _ProductRow extends StatelessWidget {
     return Row(
       children: [
         Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: .start,
           children: [
-            Text(entry.productName, style: context.labelMedium.copyWith(fontWeight: FontWeight.w700)),
+            Text(entry.productName, style: context.labelMedium.copyWith(fontWeight: .w700)),
             Text(
               '${entry.bagSize.toStringAsFixed(0)} Kg · Rs ${entry.rate.toStringAsFixed(0)} · ${entry.percentage.toStringAsFixed(entry.percentage % 1 == 0 ? 0 : 1)}%',
               style: context.bodySmall.copyWith(color: context.textSecondary, fontSize: 12),
@@ -271,7 +271,7 @@ class _ProductRow extends StatelessWidget {
         ).expanded(),
         Text(
           entry.amountFor(baseWeightKg).asAmount,
-          style: context.labelMedium.copyWith(color: context.success, fontWeight: FontWeight.w800),
+          style: context.labelMedium.copyWith(color: context.success, fontWeight: .w800),
         ),
       ],
     ).withPadding(const EdgeInsets.symmetric(horizontal: 14, vertical: 12));
@@ -303,7 +303,7 @@ class _CostsTable extends StatelessWidget {
                 ).expanded(),
                 Text(
                   items[i].amount.asAmount,
-                  style: context.labelMedium.copyWith(color: context.textPrimary, fontWeight: FontWeight.w700),
+                  style: context.labelMedium.copyWith(color: context.textPrimary, fontWeight: .w700),
                 ),
               ],
             ).withPadding(const EdgeInsets.symmetric(horizontal: 14, vertical: 12)),

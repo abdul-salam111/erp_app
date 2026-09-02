@@ -242,7 +242,7 @@ class _SummaryCard extends StatelessWidget {
                     style: const TextStyle(
                       color:      AppColors.white,
                       fontSize:   10,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: .w700,
                       height:     1,
                     ),
                   ),
@@ -357,7 +357,7 @@ class _AlertTile extends StatelessWidget {
               style: TextStyle(
                 color:      item.color,
                 fontSize:   13,
-                fontWeight: FontWeight.w700,
+                fontWeight: .w700,
                 height:     1,
               ),
             ),

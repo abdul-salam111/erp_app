@@ -18,7 +18,7 @@ class SaleStep extends StatelessWidget {
     final yieldReady = (totalYield - 100).abs() < 0.01;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Row(
           children: [
@@ -28,7 +28,7 @@ class SaleStep extends StatelessWidget {
               'Revenue',
               style: context.headlineSmall.copyWith(
                 color: context.textPrimary,
-                fontWeight: FontWeight.w800,
+                fontWeight: .w800,
                 fontSize: 14,
               ),
             ),
@@ -42,7 +42,7 @@ class SaleStep extends StatelessWidget {
                   border: Border.all(color: context.primary.withAlpha(50)),
                 ),
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: .min,
                   children: [
                     Icon(Icons.edit_outlined, size: 12, color: context.primary),
                     widthBox(5),
@@ -50,7 +50,7 @@ class SaleStep extends StatelessWidget {
                       'Edit Products',
                       style: context.labelSmall.copyWith(
                         color: context.primary,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: .w700,
                         fontSize: 11,
                       ),
                     ),
@@ -185,7 +185,7 @@ class _SaleTable extends StatelessWidget {
                     style: context.bodySmall.copyWith(
                       color: context.error,
                       fontSize: 10,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: .w600,
                     ),
                   ),
                 ],
@@ -217,7 +217,7 @@ class _TableHeader extends StatelessWidget {
             'PRODUCT',
             style: context.labelSmall.copyWith(
               color: context.primary,
-              fontWeight: FontWeight.w800,
+              fontWeight: .w800,
               letterSpacing: 0.6,
               fontSize: 10,
             ),
@@ -227,10 +227,10 @@ class _TableHeader extends StatelessWidget {
             width: 80,
             child: Text(
               'RATE',
-              textAlign: TextAlign.center,
+              textAlign: .center,
               style: context.labelSmall.copyWith(
                 color: context.primary.withAlpha(180),
-                fontWeight: FontWeight.w700,
+                fontWeight: .w700,
                 letterSpacing: 0.5,
                 fontSize: 10,
               ),
@@ -245,20 +245,20 @@ class _TableHeader extends StatelessWidget {
                   ? Text(
                       totalYield > 0 ? '${_fmtYield(totalYield)}%' : '–',
                       key: const ValueKey('yield_val'),
-                      textAlign: TextAlign.center,
+                      textAlign: .center,
                       style: context.labelSmall.copyWith(
                         color: (totalYield - 100).abs() < 0.5 ? context.success : context.error,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: .w800,
                         fontSize: 11,
                       ),
                     )
                   : Text(
                       'YIELD%',
                       key: const ValueKey('yield_hdr'),
-                      textAlign: TextAlign.center,
+                      textAlign: .center,
                       style: context.labelSmall.copyWith(
                         color: context.primary.withAlpha(180),
-                        fontWeight: FontWeight.w700,
+                        fontWeight: .w700,
                         letterSpacing: 0.5,
                         fontSize: 10,
                       ),
@@ -270,10 +270,10 @@ class _TableHeader extends StatelessWidget {
             width: 68,
             child: Text(
               'AMOUNT',
-              textAlign: TextAlign.right,
+              textAlign: .right,
               style: context.labelSmall.copyWith(
                 color: context.primary.withAlpha(180),
-                fontWeight: FontWeight.w700,
+                fontWeight: .w700,
                 letterSpacing: 0.5,
                 fontSize: 10,
               ),
@@ -302,13 +302,13 @@ class _SaleRowWidget extends StatelessWidget {
         Row(
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 Text(
                   row.template.name,
                   style: context.labelMedium.copyWith(
                     color: context.textPrimary,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: .w700,
                     fontSize: 13,
                   ),
                 ),
@@ -332,10 +332,10 @@ class _SaleRowWidget extends StatelessWidget {
           width: 68,
           child: Text(
             hasValue ? amt.asAmount : '–',
-            textAlign: TextAlign.right,
+            textAlign: .right,
             style: context.labelMedium.copyWith(
               color: hasValue ? context.success : context.textDisabled,
-              fontWeight: FontWeight.w800,
+              fontWeight: .w800,
               fontSize: 13,
             ),
           ),
@@ -364,7 +364,7 @@ class _SummaryRow extends StatelessWidget {
                 text: 'Total Sale ',
                 style: context.labelMedium.copyWith(
                   color: context.primary,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: .w800,
                   fontSize: 15,
                 ),
               ),
@@ -380,10 +380,10 @@ class _SummaryRow extends StatelessWidget {
           width: 80,
           child: Text(
             totalYield > 0 ? '${_fmtYield(totalYield)}%' : '–',
-            textAlign: TextAlign.center,
+            textAlign: .center,
             style: context.labelMedium.copyWith(
               color: _yieldColor(context, totalYield),
-              fontWeight: FontWeight.w700,
+              fontWeight: .w700,
               fontSize: 14,
             ),
           ),
@@ -393,10 +393,10 @@ class _SummaryRow extends StatelessWidget {
           width: 68,
           child: Text(
             hasAmount ? totalAmount.asAmount : '–',
-            textAlign: TextAlign.right,
+            textAlign: .right,
             style: context.titleSmall.copyWith(
               color: hasAmount ? context.success : context.textDisabled,
-              fontWeight: FontWeight.w800,
+              fontWeight: .w800,
               fontSize: 16,
             ),
           ),
@@ -434,10 +434,10 @@ class _PartahField extends StatelessWidget {
       onTap: () {
         controller.selection = TextSelection(baseOffset: 0, extentOffset: controller.text.length);
       },
-      textAlign: TextAlign.center,
+      textAlign: .center,
       style: context.labelMedium.copyWith(
         color: context.textPrimary,
-        fontWeight: FontWeight.w700,
+        fontWeight: .w700,
         fontSize: 16,
       ),
       decoration: InputDecoration(
@@ -445,7 +445,7 @@ class _PartahField extends StatelessWidget {
         hintStyle: context.bodySmall.copyWith(color: context.textDisabled, fontSize: 14),
         suffixStyle: context.labelSmall.copyWith(
           color: context.textSecondary,
-          fontWeight: FontWeight.w600,
+          fontWeight: .w600,
           fontSize: 12,
         ),
         isDense: true,

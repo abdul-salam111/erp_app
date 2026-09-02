@@ -94,5 +94,5 @@ extension AppColorExtension on BuildContext {
   Color get shadow => AppColors.shadow;
 
   // Theme check
-  bool get isDark => Theme.of(this).brightness == Brightness.dark;
+  bool get isDark => Theme.of(this).brightness == .dark;
 }

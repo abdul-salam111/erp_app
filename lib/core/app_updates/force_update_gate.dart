@@ -241,7 +241,7 @@ class _ForceUpdateScreen extends StatelessWidget {
                 title,
                 textAlign: .center,
                 style: const TextStyle(
-                    fontSize: 26, fontWeight: FontWeight.bold),
+                    fontSize: 26, fontWeight: .bold),
               ),
               const SizedBox(height: 14),
               Text(

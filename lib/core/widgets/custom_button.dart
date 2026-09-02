@@ -43,7 +43,7 @@ class CustomButton extends StatelessWidget {
     final child = isLoading
         ? LoadingIndicator(size: 30)
         : Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             children: [
               if (icon != null) Icon(icon, size: iconSize, color: isOutlined ? backgroundColor : iconColor),
               if (icon != null) SizedBox(width: 8),
@@ -52,7 +52,7 @@ class CustomButton extends StatelessWidget {
                 style: GoogleFonts.roboto(
                   color: isOutlined ? backgroundColor : textColor,
                   fontSize: fontsize.toDouble(),
-                  fontWeight: FontWeight.bold,
+                  fontWeight: .bold,
                 ),
               ),
             ],

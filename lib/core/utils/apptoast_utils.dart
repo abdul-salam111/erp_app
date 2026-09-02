@@ -502,14 +502,14 @@ class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: .stretch,
           children: [
             // ============================================================
             // BASIC TOASTS
             // ============================================================
             const Text(
               'Basic Toasts:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: .bold),
             ),
             const SizedBox(height: 8),
 
@@ -544,7 +544,7 @@ class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
             // ============================================================
             const Text(
               'Top Position:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: .bold),
             ),
             const SizedBox(height: 8),
 
@@ -567,7 +567,7 @@ class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
             // ============================================================
             const Text(
               'Bottom Position:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: .bold),
             ),
             const SizedBox(height: 8),
 
@@ -592,7 +592,7 @@ class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
             // ============================================================
             const Text(
               'Corner Positions:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: .bold),
             ),
             const SizedBox(height: 8),
 
@@ -629,7 +629,7 @@ class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
             // ============================================================
             const Text(
               'Center Position:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: .bold),
             ),
             const SizedBox(height: 8),
 
@@ -649,7 +649,7 @@ class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
             // ============================================================
             const Text(
               'Special Toasts:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: .bold),
             ),
             const SizedBox(height: 8),
 
@@ -710,7 +710,7 @@ class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
             // ============================================================
             const Text(
               'Custom Toast:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: .bold),
             ),
             const SizedBox(height: 8),
 

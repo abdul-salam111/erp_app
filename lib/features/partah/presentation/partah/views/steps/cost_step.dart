@@ -13,13 +13,13 @@ class CostsStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final bag = calculator.totalInput.asBagWeight;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
               children: [
                 _StepHeader(
                   icon: Icons.tune_rounded,
@@ -114,7 +114,7 @@ class _CostSection extends StatelessWidget {
         border: Border.all(color: color.withAlpha(60)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: .stretch,
         children: [
           // ── Section header ──
           Container(
@@ -135,7 +135,7 @@ class _CostSection extends StatelessWidget {
                   sectionLabel.toUpperCase(),
                   style: context.labelSmall.copyWith(
                     color: color,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: .w700,
                     letterSpacing: 0.6,
                     fontSize: 10,
                   ),
@@ -149,7 +149,7 @@ class _CostSection extends StatelessWidget {
                     border: Border.all(color: color.withAlpha(50)),
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisSize: .min,
                     children: [
                       Icon(Icons.add_rounded, size: 12, color: color),
                       widthBox(4),
@@ -157,7 +157,7 @@ class _CostSection extends StatelessWidget {
                         'Add',
                         style: context.labelSmall.copyWith(
                           color: color,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: .w700,
                           fontSize: 11,
                         ),
                       ),
@@ -198,11 +198,11 @@ class _CostSection extends StatelessWidget {
                   widthBox(8),
                   Text(
                     'Total $sectionLabel',
-                    style: context.labelSmall.copyWith(color: context.textPrimary, fontWeight: FontWeight.w700),
+                    style: context.labelSmall.copyWith(color: context.textPrimary, fontWeight: .w700),
                   ).expanded(),
                   Text(
                     total.asAmount,
-                    style: context.titleSmall.copyWith(color: context.textPrimary, fontWeight: FontWeight.w800),
+                    style: context.titleSmall.copyWith(color: context.textPrimary, fontWeight: .w800),
                   ),
                 ],
               ),
@@ -232,7 +232,7 @@ class _CostItemRow extends StatelessWidget {
           style: context.labelMedium.copyWith(color: context.textPrimary),
           decoration: InputDecoration(
             hintText: 'Description',
-            hintStyle: context.labelMedium.copyWith(color: context.textDisabled, fontWeight: FontWeight.w400),
+            hintStyle: context.labelMedium.copyWith(color: context.textDisabled, fontWeight: .w400),
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
             fillColor: context.background,
@@ -258,11 +258,11 @@ class _CostItemRow extends StatelessWidget {
             controller: item.costController,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
-            textAlign: TextAlign.center,
+            textAlign: .center,
             style: context.labelMedium.copyWith(color: context.textPrimary),
             decoration: InputDecoration(
               hintText: '0',
-              hintStyle: context.labelMedium.copyWith(color: context.textDisabled, fontWeight: FontWeight.w400),
+              hintStyle: context.labelMedium.copyWith(color: context.textDisabled, fontWeight: .w400),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
               fillColor: context.background,
@@ -312,7 +312,7 @@ class _StepHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
       children: [
         Row(
           children: [
@@ -322,7 +322,7 @@ class _StepHeader extends StatelessWidget {
               title,
               style: context.headlineSmall.copyWith(
                 color: context.textPrimary,
-                fontWeight: FontWeight.w800,
+                fontWeight: .w800,
                 fontSize: 14,
               ),
             ),

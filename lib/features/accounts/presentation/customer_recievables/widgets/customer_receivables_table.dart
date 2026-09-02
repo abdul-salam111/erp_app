@@ -74,7 +74,7 @@ class _TableHeader extends StatelessWidget {
 class _HeaderText extends StatelessWidget {
   final String text;
   final TextAlign align;
-  const _HeaderText(this.text, {this.align = TextAlign.start});
+  const _HeaderText(this.text, {this.align = .start});
 
   @override
   Widget build(BuildContext context) {
@@ -208,20 +208,20 @@ class _CustomerRowState extends State<_CustomerRow> {
                               label: AppConstants.debit,
                               amount: item.debit,
                               isDr: true,
-                              align: CrossAxisAlignment.start,
+                              align: .start,
                             ),
                             _ExpandedCell(
                               label: AppConstants.credit,
                               amount: item.credit,
                               isDr: false,
-                              align: CrossAxisAlignment.center,
+                              align: .center,
                             ),
                             _ExpandedCell(
                               label: AppConstants.balanceLabel,
                               amount: item.balance,
                               isDr: item.balanceIsDr,
                               highlight: true,
-                              align: CrossAxisAlignment.end,
+                              align: .end,
                             ),
                           ],
                         ),
@@ -250,16 +250,16 @@ class _ExpandedCell extends StatelessWidget {
     required this.amount,
     required this.isDr,
     this.highlight = false,
-    this.align = CrossAxisAlignment.start,
+    this.align = .start,
   });
 
   @override
   Widget build(BuildContext context) {
-    final textAlign = align == CrossAxisAlignment.end
-        ? TextAlign.end
-        : align == CrossAxisAlignment.center
-            ? TextAlign.center
-            : TextAlign.start;
+    final TextAlign textAlign = align == .end
+        ? .end
+        : align == .center
+            ? .center
+            : .start;
     final amtColor = isDr ? AppColors.debitRed : AppColors.creditGreen;
 
     return Expanded(

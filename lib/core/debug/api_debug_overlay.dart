@@ -94,7 +94,7 @@ class _FabContent extends StatelessWidget {
     final hasPending = state.pendingCount > 0;
     final accent = hasPending ? Colors.amberAccent : Colors.greenAccent;
     return Stack(
-      clipBehavior: Clip.none,
+      clipBehavior: .none,
       children: [
         Container(
           width: 60,
@@ -126,13 +126,13 @@ class _FabContent extends StatelessWidget {
           right: -6,
           child: Container(
             padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(color: accent, shape: BoxShape.circle),
+            decoration: BoxDecoration(color: accent, shape: .circle),
             child: Text(
               '${state.entries.length}',
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 9,
-                fontWeight: FontWeight.w800,
+                fontWeight: .w800,
               ),
             ),
           ),
@@ -217,7 +217,7 @@ class _SheetHeader extends StatelessWidget {
                 'API Debugger',
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: .w700,
                   fontSize: 15,
                 ),
               ),
@@ -282,15 +282,15 @@ class _ColumnHeaders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const style = TextStyle(color: Colors.white38, fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 0.5);
+    const style = TextStyle(color: Colors.white38, fontSize: 10, fontWeight: .w600, letterSpacing: 0.5);
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 7),
       child: Row(
         children: [
           SizedBox(width: 52, child: Text('METHOD', style: style)),
           Expanded(child: Text('ENDPOINT', style: style)),
-          SizedBox(width: 40, child: Text('CODE', style: style, textAlign: TextAlign.center)),
-          SizedBox(width: 48, child: Text('TIME', style: style, textAlign: TextAlign.right)),
+          SizedBox(width: 40, child: Text('CODE', style: style, textAlign: .center)),
+          SizedBox(width: 48, child: Text('TIME', style: style, textAlign: .right)),
         ],
       ),
     );
@@ -343,7 +343,7 @@ class _EntryRow extends StatelessWidget {
               child: Text(
                 entry.shortPath,
                 style: const TextStyle(color: Colors.white70, fontSize: 12),
-                overflow: TextOverflow.ellipsis,
+                overflow: .ellipsis,
               ),
             ),
             SizedBox(
@@ -355,7 +355,7 @@ class _EntryRow extends StatelessWidget {
               child: Text(
                 entry.elapsedLabel,
                 style: const TextStyle(color: Colors.white38, fontSize: 11),
-                textAlign: TextAlign.right,
+                textAlign: .right,
               ),
             ),
           ],
@@ -401,7 +401,7 @@ class _MethodBadge extends StatelessWidget {
       ),
       child: Text(
         method.toUpperCase(),
-        style: TextStyle(color: color, fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 0.3),
+        style: TextStyle(color: color, fontSize: 9, fontWeight: .w700, letterSpacing: 0.3),
       ),
     );
   }
@@ -422,7 +422,7 @@ class _StatusBadge extends StatelessWidget {
         : Colors.greenAccent;
     return Text(
       code?.toString() ?? '—',
-      style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
+      style: TextStyle(color: color, fontSize: 11, fontWeight: .w600),
     );
   }
 }
@@ -491,10 +491,10 @@ class _DebugDetailSheet extends StatelessWidget {
                             current.shortPath,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: .w600,
                               fontSize: 13,
                             ),
-                            overflow: TextOverflow.ellipsis,
+                            overflow: .ellipsis,
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -503,7 +503,7 @@ class _DebugDetailSheet extends StatelessWidget {
                           style: TextStyle(
                             color: current.isCompleted ? Colors.greenAccent : Colors.amberAccent,
                             fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: .w600,
                           ),
                         ),
                       ],
@@ -630,7 +630,7 @@ class _DetailSection extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white54,
                   fontSize: 10,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: .w700,
                   letterSpacing: 0.5,
                 ),
               ),

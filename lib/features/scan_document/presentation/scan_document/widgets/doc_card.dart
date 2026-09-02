@@ -51,7 +51,7 @@ class DocCard extends StatelessWidget {
             Expanded(
               flex: 7,
               child: Stack(
-                fit: StackFit.expand,
+                fit: .expand,
                 children: [
                   Image.file(
                     File(document.imagePaths.first),

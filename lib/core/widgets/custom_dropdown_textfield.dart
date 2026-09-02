@@ -318,7 +318,7 @@ class _DropdownList extends StatelessWidget {
                     style: context.bodyMedium.copyWith(
                       color: isSelected ? context.primary : context.textPrimary,
                       fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                          isSelected ? .w600 : .normal,
                     ),
                   ),
                   subtitle: subtitle != null

@@ -225,7 +225,7 @@ class _LoginCardState extends State<_LoginCard> {
                 'Mantic ERP',
                 style: TextStyle(
                   fontSize: 22,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: .w800,
                   color: AppColors.navyDark,
                   letterSpacing: -0.5,
                 ),
