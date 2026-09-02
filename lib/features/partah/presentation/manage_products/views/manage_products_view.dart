@@ -74,6 +74,10 @@ class _ManageProductsScopeState extends State<_ManageProductsScope> {
   }
 
   void _save(BuildContext context) {
+    if (form.selectedMillType == null) {
+      AppToastsUtils.showErrorTop(context, 'Select your mill type first');
+      return;
+    }
     final (error, templates) = form.buildTemplates();
     if (error != null) {
       AppToastsUtils.showErrorTop(context, error);

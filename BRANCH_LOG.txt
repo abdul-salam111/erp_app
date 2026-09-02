@@ -30,6 +30,12 @@ sections. Moved here from 1.0.0 on 2026-08-20.
 - Leaves: balances and leave-details lookup set up but not active
   yet. Apply Leave is fully working, though it still needs the
   leave-type selection and attachments to be connected properly.
+- Partah: flour/rice mill rate & profit calculator ported from the
+  standalone mantic_parhta app into its own feature, added 2026-09-02.
+  Calculator wizard, product setup, settings, and reports are all
+  frontend-complete with local-storage-backed mock persistence; real
+  API integration is still pending. Home screen also gained How to
+  Use, Mantic ERP link, and More Software entries.
 
 ============================================================
 1.0.0

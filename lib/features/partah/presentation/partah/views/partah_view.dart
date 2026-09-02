@@ -7,6 +7,7 @@ import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../routes/route_names.dart';
 import '../../../domain/entities/cost_item_entity.dart';
 import '../../../../../core/shared/shared_exports.dart';
@@ -53,12 +54,13 @@ class _PartahBody extends StatelessWidget {
                 onRetry: () => context.read<PartahBloc>().add(PartahStarted()),
               );
             }
-            if (state.productTemplates.isEmpty) {
-              return const EmptyStateWidget(
-                icon: Icons.inventory_2_outlined,
-                title: 'No Products Set Up',
-                subtitle: 'No product templates are available for Partah yet.',
-              ).center();
+            if (!state.isSetupComplete) {
+              return _SetupRequiredState(
+                onSetup: () async {
+                  await context.pushNamed(RouteNames.manage_products);
+                  if (context.mounted) context.read<PartahBloc>().add(PartahStarted());
+                },
+              );
             }
             return _PartahCalculatorScope(
               templates: state.productTemplates,
@@ -67,6 +69,33 @@ class _PartahBody extends StatelessWidget {
               lastEntries: state.lastProductionEntries,
             );
           },
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Setup Required State ──────────────────────────────────────────────────
+//
+// Shown when the mill type hasn't been chosen and/or no product templates
+// have been saved yet — the calculator can't compute anything without both.
+
+class _SetupRequiredState extends StatelessWidget {
+  final VoidCallback onSetup;
+  const _SetupRequiredState({required this.onSetup});
+
+  @override
+  Widget build(BuildContext context) {
+    return EmptyStateWidget(
+      icon: Icons.inventory_2_outlined,
+      title: 'Set Up Your Mill First',
+      subtitle: 'Select your mill type and add your product list before using Partah.',
+      action: SizedBox(
+        width: 220,
+        child: CustomButton(
+          text: 'Set Up Products',
+          icon: Icons.arrow_forward_rounded,
+          onPressed: onSetup,
         ),
       ),
     );

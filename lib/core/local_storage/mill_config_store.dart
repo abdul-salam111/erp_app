@@ -1,15 +1,20 @@
 import '../constants/shared_pref_key.dart';
 import 'storage.dart';
 
-enum MillType { flour, rice }
+enum MillType { flour, rice, maund }
 
 extension MillTypeDisplay on MillType {
   String get label => switch (this) {
         MillType.flour => 'Flour Mill',
         MillType.rice => 'Rice Mill',
+        MillType.maund => 'Maund',
       };
 
   double get displayKg => MillConfigStore.baseWeightFor(this);
+
+  /// Weight formatted without a trailing ".0" for whole numbers, e.g. "100"
+  /// for flour but "37.324" for maund.
+  String get displayKgLabel => displayKg % 1 == 0 ? displayKg.toInt().toString() : displayKg.toString();
 }
 
 /// Which mill type the org is set up for, and the base bag weight that
@@ -21,6 +26,7 @@ class MillConfigStore {
   static double baseWeightFor(MillType type) => switch (type) {
         MillType.flour => 100,
         MillType.rice => 40,
+        MillType.maund => 37.324,
       };
 
   static Future<MillType?> getMillType() async {
@@ -28,6 +34,7 @@ class MillConfigStore {
     return switch (raw) {
       'flour' => MillType.flour,
       'rice' => MillType.rice,
+      'maund' => MillType.maund,
       _ => null,
     };
   }

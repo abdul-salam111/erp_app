@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
+import '../../../../../core/local_storage/mill_config_store.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/entities/cost_item_entity.dart';
 import '../../../domain/entities/production_entry_entity.dart';
@@ -30,15 +31,17 @@ class PartahBloc extends Bloc<PartahEvent, PartahState> with UsecaseExecuterMixi
   Future<void> _onStarted(PartahStarted event, Emitter<PartahState> emit) async {
     emit(state.copyWith(loadStatus: ApiStatus.LOADING));
 
-    // Kick off all three calls concurrently, await individually so each
-    // result keeps its own concrete type (Future.wait would widen them to Object).
+    // Kick off all calls concurrently, await individually so each result
+    // keeps its own concrete type (Future.wait would widen them to Object).
     final templatesFuture = getProductTemplates(NoParams());
     final costsFuture = getLastCosts(NoParams());
     final entriesFuture = getLastProductionEntries(NoParams());
+    final millTypeFuture = MillConfigStore.getMillType();
 
     final templatesResult = await templatesFuture;
     final costsResult = await costsFuture;
     final entriesResult = await entriesFuture;
+    final millType = await millTypeFuture;
 
     // Product templates are required for the calculator to render.
     if (templatesResult case ResultError(:final failure)) {
@@ -56,6 +59,7 @@ class PartahBloc extends Bloc<PartahEvent, PartahState> with UsecaseExecuterMixi
 
     emit(state.copyWith(
       loadStatus: ApiStatus.SUCCESS,
+      millType: millType,
       productTemplates: templates,
       lastVariableCosts: variableCosts,
       lastFixedCosts: fixedCosts,

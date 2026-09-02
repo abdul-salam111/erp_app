@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../../core/local_storage/mill_config_store.dart';
 import '../../../../../core/theme/theme_exports.dart';
@@ -19,15 +18,11 @@ class PartahSettingsView extends StatefulWidget {
 }
 
 class _PartahSettingsViewState extends State<PartahSettingsView> {
-  String _version = '';
   MillType? _millType;
 
   @override
   void initState() {
     super.initState();
-    PackageInfo.fromPlatform().then((info) {
-      if (mounted) setState(() => _version = '${info.version}+${info.buildNumber}');
-    });
     MillConfigStore.getMillType().then((type) {
       if (mounted) setState(() => _millType = type);
     });
@@ -43,7 +38,7 @@ class _PartahSettingsViewState extends State<PartahSettingsView> {
     await MillConfigStore.setMillType(selected);
     if (!mounted) return;
     setState(() => _millType = selected);
-    AppToastsUtils.showSuccessTop(context, 'Base weight set to ${selected.displayKg.toStringAsFixed(0)} kg');
+    AppToastsUtils.showSuccessTop(context, 'Base weight set to ${selected.displayKgLabel} kg');
   }
 
   @override
@@ -69,18 +64,12 @@ class _PartahSettingsViewState extends State<PartahSettingsView> {
             iconColor: const Color(0xFFD4A017),
             title: 'Bag Weight',
             subtitle: _millType != null
-                ? '${_millType!.label} — ${_millType!.displayKg.toStringAsFixed(0)} kg'
+                ? '${_millType!.label} — ${_millType!.displayKgLabel} kg'
                 : 'Not set — defaults to 100 kg',
             onTap: _showBaseWeightSheet,
           ),
           _Divider(),
           _SectionHeader(title: 'About'),
-          _SettingsTile(
-            icon: Icons.info_outline_rounded,
-            iconColor: const Color(0xFF4BAE8A),
-            title: 'App Version',
-            subtitle: _version.isEmpty ? '—' : _version,
-          ),
           _SettingsTile(
             icon: Icons.factory_outlined,
             iconColor: const Color(0xFFE8875A),
@@ -165,7 +154,7 @@ class _BaseWeightOption extends StatelessWidget {
           widthBox(12),
           Text(option.label, style: context.bodyMedium.copyWith(fontWeight: FontWeight.w600)).expanded(),
           Text(
-            '${option.displayKg.toStringAsFixed(0)} kg',
+            '${option.displayKgLabel} kg',
             style: context.bodyMedium.copyWith(
               color: isSelected ? context.primary : context.textSecondary,
               fontWeight: FontWeight.w700,
