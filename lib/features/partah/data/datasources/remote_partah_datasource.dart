@@ -5,12 +5,6 @@ import '../../domain/entities/cost_item_entity.dart';
 import '../../domain/entities/production_entry_entity.dart';
 import '../../domain/entities/partah_record_entity.dart';
 
-const _defaultProductTemplates = [
-  ProductTemplateEntity(name: 'Maida', bagSize: 20),
-  ProductTemplateEntity(name: 'Chokar', bagSize: 20),
-  ProductTemplateEntity(name: 'Suji', bagSize: 20),
-];
-
 abstract interface class IRemotePartahDataSource {
   Future<List<ProductTemplateEntity>> getProductTemplates();
   Future<void> saveProductTemplates(List<ProductTemplateEntity> templates);
@@ -37,7 +31,7 @@ class RemotePartahDataSourceImpl extends BaseRemoteDatasource
     // );
     await Future.delayed(const Duration(milliseconds: 300));
     final saved = await ProductTemplateLocalStore.read();
-    return saved ?? _defaultProductTemplates;
+    return saved ?? const [];
   }
 
   @override
