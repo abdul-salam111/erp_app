@@ -120,3 +120,12 @@ SizedBox heightBox(double height) {
 SizedBox widthBox(double width) {
   return SizedBox(width: width);
 }
+
+extension NumberExtensions on num {
+  /// Format bag weight for display:
+  /// ≤ 0 → '100' (default bag size), whole → integer, decimal → 1 decimal place
+  String get asBagWeight {
+    if (this <= 0) return '100';
+    return this % 1 == 0 ? toInt().toString() : toStringAsFixed(1);
+  }
+}

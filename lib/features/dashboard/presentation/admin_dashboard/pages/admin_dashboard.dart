@@ -49,6 +49,12 @@ class AdminDashboard extends StatelessWidget {
             color: AppColors.blueGrey,
             routeName: RouteNames.scan_document,
           ),
+          DrawerItem.tile(
+            label: AppConstants.partahLabel,
+            icon: Iconsax.document,
+            color: AppColors.deepPurple,
+            routeName: RouteNames.partah_home,
+          ),
           DrawerItem.divider(),
           DrawerItem.category(AppConstants.modules),
           DrawerItem.expandable(
@@ -220,12 +226,6 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.setting_2,
             color: AppColors.brown,
             routeName: RouteNames.system,
-          ),
-          DrawerItem.tile(
-            label: AppConstants.partahLabel,
-            icon: Iconsax.document,
-            color: AppColors.deepPurple,
-            routeName: RouteNames.partah,
           ),
           DrawerItem.expandable(
             label: AppConstants.assetsLabel,

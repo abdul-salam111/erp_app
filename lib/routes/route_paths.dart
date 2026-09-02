@@ -42,4 +42,10 @@ class RoutePaths {
   static const String choose_dashboard = '/choose_dashboard';
   static const String employee_account_ledger = '/employee_account_ledger';
   static const String partah = '/partah';
+  static const String partah_home = '/partah_home';
+  static const String manage_products = '/manage_products';
+  static const String partah_settings = '/partah_settings';
+  static const String reports = '/reports';
+  static const String report_detail = '/report_detail';
+  static const String more_software = '/more_software';
 }

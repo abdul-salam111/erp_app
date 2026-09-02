@@ -2,13 +2,13 @@ import '../../../../core/utils/result.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../repositories/partah_repository.dart';
 
-class PartahUsecase implements Usecase<dynamic, NoParams> {
+class DeleteReportUsecase implements Usecase<void, String> {
   final PartahRepository repository;
 
-  PartahUsecase({required this.repository});
+  DeleteReportUsecase({required this.repository});
 
   @override
-  Future<Result<dynamic>> call(NoParams params) {
-    return repository.performAction();
+  Future<Result<void>> call(String params) {
+    return repository.deleteRecord(params);
   }
 }

@@ -10,6 +10,10 @@ class StorageKeys {
   static const String userRoles = 'userRoles';
   static const String userEmail = 'userEmail';
   static const String userPassword = 'userPassword';
+  static const String partahSession = 'partahSession';
+  static const String millType = 'millType';
+  static const String productTemplates = 'productTemplates';
+  static const String partahRecords = 'partahRecords';
 }
 
 extension LocalStorageGetters on LocalStorage {

@@ -15,6 +15,27 @@ extension CurrencyFormatting on num {
     return NumberFormat("#,##0.00", "en_US").format(this);
   }
 
+  /// Rounded amount with commas — negative-safe, millions truncated to nearest thousand:
+  /// 1234 → 1,234 | 12345 → 12,345 | 1234567 → 1,234,000 | -1234 → -1,234
+  String get asAmount {
+    final rounded = round();
+    final isNeg = rounded < 0;
+    final abs = rounded.abs();
+    final String formatted;
+    if (abs >= 1000000) {
+      final m = abs ~/ 1000000;
+      final r = (abs % 1000000) ~/ 1000;
+      formatted = '$m,${r.toString().padLeft(3, '0')},000';
+    } else if (abs >= 1000) {
+      final t = abs ~/ 1000;
+      final r = abs % 1000;
+      formatted = '$t,${r.toString().padLeft(3, '0')}';
+    } else {
+      formatted = abs.toString();
+    }
+    return isNeg ? '-$formatted' : formatted;
+  }
+
   /// Format as USD currency: 1000 -> $1,000.00
   String get asCurrency {
     return NumberFormat.currency(locale: "en_US", symbol: "\$").format(this);

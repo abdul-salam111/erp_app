@@ -365,6 +365,36 @@ class AppRoutes {
         name: RouteNames.partah,
         builder: (context, state) => const PartahView(),
       ),
+      GoRoute(
+        path: RoutePaths.partah_home,
+        name: RouteNames.partah_home,
+        builder: (context, state) => const PartahHomeView(),
+      ),
+      GoRoute(
+        path: RoutePaths.manage_products,
+        name: RouteNames.manage_products,
+        builder: (context, state) => const ManageProductsView(),
+      ),
+      GoRoute(
+        path: RoutePaths.partah_settings,
+        name: RouteNames.partah_settings,
+        builder: (context, state) => const PartahSettingsView(),
+      ),
+      GoRoute(
+        path: RoutePaths.reports,
+        name: RouteNames.reports,
+        builder: (context, state) => const ReportsView(),
+      ),
+      GoRoute(
+        path: RoutePaths.report_detail,
+        name: RouteNames.report_detail,
+        builder: (context, state) => ReportDetailView(record: state.extra as PartahRecordEntity),
+      ),
+      GoRoute(
+        path: RoutePaths.more_software,
+        name: RouteNames.more_software,
+        builder: (context, state) => const MoreSoftwareView(),
+      ),
     ],
   );
 }
