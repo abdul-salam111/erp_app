@@ -19,6 +19,7 @@ import 'register_leaves.dart';
 import 'register_salary_mgmt.dart';
 import 'register_loan_and_advance.dart';
 import 'register_overtime.dart';
+import 'register_partah.dart';
 
 
 /// Global service locator instance.
@@ -47,4 +48,5 @@ Future<void> setupLocator() async {
   await registerSalaryMgmt();
   await registerLoanAndAdvance();
   await registerOvertime();
+  await registerPartah();
 }

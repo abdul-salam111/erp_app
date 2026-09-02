@@ -54,6 +54,7 @@ class AppConstants {
   static const String securityLabel = 'Security';
   static const String systemLabel = 'System';
   static const String assetsLabel = 'Assets';
+  static const String partahLabel = 'Partah';
   static const String logout = 'Logout';
   // ─── Employee Dashboard ────────────────────────────────
   static const String employeeDashboardTitle = 'Employee Dashboard';

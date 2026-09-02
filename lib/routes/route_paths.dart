@@ -41,4 +41,5 @@ class RoutePaths {
   static const String apply_overtime = '/apply_overtime';
   static const String choose_dashboard = '/choose_dashboard';
   static const String employee_account_ledger = '/employee_account_ledger';
+  static const String partah = '/partah';
 }

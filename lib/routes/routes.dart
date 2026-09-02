@@ -22,6 +22,7 @@ import '../features/salary_mgmt/presentation/salary_detail/views/salary_detail_v
 import '../features/loan_and_advance/loan_and_advance_exports.dart';
 import '../features/overtime/overtime_exports.dart';
 import '../features/choose_dashboard/choose_dashboard_view.dart';
+import '../features/partah/partah_exports.dart';
 
 
 class AppRoutes {
@@ -358,6 +359,11 @@ class AppRoutes {
             );
           },
         ),
+      ),
+      GoRoute(
+        path: RoutePaths.partah,
+        name: RouteNames.partah,
+        builder: (context, state) => const PartahView(),
       ),
     ],
   );

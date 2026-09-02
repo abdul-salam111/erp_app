@@ -15,6 +15,7 @@ class ApiEndPoints {
   static const loanAndAdvance = _LoanAndAdvance();
   static const overtime = _Overtime();
   static const profile = _Profile();
+  static const partah = _Partah();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -172,4 +173,14 @@ final class _Profile {
   static String get _base => '${ApiEndPoints._base}/ExecutiveApp/hr/profile';
 
   String get getMyProfile => '$_base/GetMyProfile';
+}
+
+// ─── Partah ───────────────────────────────────────────────────────────────────
+
+final class _Partah {
+  const _Partah();
+
+  static String get _base => '${ApiEndPoints._base}/partah';
+
+  String get performAction => '$_base/PerformAction';
 }

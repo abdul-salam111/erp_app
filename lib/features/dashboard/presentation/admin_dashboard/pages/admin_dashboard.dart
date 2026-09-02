@@ -221,6 +221,12 @@ class AdminDashboard extends StatelessWidget {
             color: AppColors.brown,
             routeName: RouteNames.system,
           ),
+          DrawerItem.tile(
+            label: AppConstants.partahLabel,
+            icon: Iconsax.document,
+            color: AppColors.deepPurple,
+            routeName: RouteNames.partah,
+          ),
           DrawerItem.expandable(
             label: AppConstants.assetsLabel,
             icon: Iconsax.convert_3d_cube,
