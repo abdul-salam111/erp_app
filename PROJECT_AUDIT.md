@@ -41,10 +41,6 @@ The parts of this codebase that are built out (`accounts`, `inventory`, `dashboa
 
 `retry_interceptor.dart` only retries on connection errors/timeouts; `token_refresh_interceptor.dart` only refreshes _proactively_ based on a 2-minute expiry buffer. There's no `onError` hook that catches a live 401 and retries with a fresh token — if the proactive check races or the server invalidates early, the user just sees a generic auth error instead of a transparent silent recovery.
 
-### H3. Non-idempotent POSTs retried on connection error
-
-`retry_interceptor.dart:21` retries any `connectionError`/`connectionTimeout` up to 3 times, including `POST` requests (create purchase order, apply leave, apply loan, apply overtime) with no idempotency key check. If the request actually succeeded server-side but the ack was lost, the retry can create a duplicate record — real financial/data-integrity risk in an ERP.
-
 ### H4. Core networking layer imports and re-implements auth
 
 `token_refresh_interceptor.dart:3-4,76,111` imports feature-layer auth models directly and builds its own raw login/select-branch HTTP calls instead of calling `AuthRepository`/usecases through DI. This is an inverted dependency (core → feature) **and** it means there are now two independent code paths that can perform login, which can silently drift out of sync.

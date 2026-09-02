@@ -28,7 +28,30 @@ class RetryInterceptor extends Interceptor {
     }
   }
 
-  bool _shouldRetry(DioException err) =>
-      err.type == DioExceptionType.connectionError ||
-      err.type == DioExceptionType.connectionTimeout;
+  bool _shouldRetry(DioException err) {
+    final isRetryableError = err.type == DioExceptionType.connectionError ||
+        err.type == DioExceptionType.connectionTimeout;
+    if (!isRetryableError) return false;
+
+    // Only auto-retry requests that are safe to repeat. Non-idempotent
+    // methods (POST, PATCH, DELETE, ...) may have already been processed
+    // by the server even though the client never saw the response — blindly
+    // retrying those risks duplicate records (e.g. duplicate orders).
+    // Callers can opt in explicitly via extra['idempotent'] = true.
+    if (_isIdempotentMethod(err.requestOptions.method)) return true;
+    return err.requestOptions.extra['idempotent'] == true;
+  }
+
+  bool _isIdempotentMethod(String method) {
+    switch (method.toUpperCase()) {
+      case 'GET':
+      case 'HEAD':
+      case 'OPTIONS':
+      case 'PUT':
+      case 'DELETE':
+        return true;
+      default:
+        return false;
+    }
+  }
 }
