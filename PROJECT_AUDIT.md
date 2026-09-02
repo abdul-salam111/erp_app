@@ -12,53 +12,58 @@
 
 The parts of this codebase that are built out (`accounts`, `inventory`, `dashboard` admin, routing, DI) show real Clean Architecture + BLoC discipline. But the code that exists — not what's missing — has a set of concrete defects that matter:
 
-- The project's own coding conventions (CLAUDE.md) are violated **~500 times** in written UI code — hardcoded colors and hardcoded padding — with nothing in CI catching it. (The non-shorthand-syntax portion of this, ~496 instances, has since been fixed.)
+- The project's own coding conventions (CLAUDE.md) are violated in written UI code — hardcoded colors and hardcoded padding — with nothing in CI catching it. (The non-shorthand-syntax portion, ~496 instances, and the exact-match `Colors.white`/`black`/`transparent` hardcodes, ~85 instances, plus the genuine page-body-padding and content-grid `crossAxisCount` violations, have since been fixed. ~90 remaining color instances are custom brand/gradient values with no exact theme equivalent and need a design decision, not a mechanical fix.)
 
 ---
 
 ## Scorecard
 
-| Dimension | Grade | /10 | One-line reason |
-|---|---|---|---|
-| Architecture shape (folders, DI, layering conventions) | B+ | 7.5 | Genuinely good conventions, followed inconsistently |
-| State management (BLoC hygiene) | C+ | 6.5 | Solid patterns; the shared unguarded-emit bug has been fixed at the source |
-| Error handling | C+ | 6.5 | Real `Result`/`Failure` pipeline exists and is used; typed contracts abandoned in ~40 files (`Result<dynamic>`) |
-| Security | D | 3.0 | Live token leak via debug panel, plaintext password retention, no cert pinning |
-| UI / responsiveness rule compliance | C- | 5.0 | ~500 remaining violations (hardcoded colors/padding) of the team's own CLAUDE.md conventions; shorthand-syntax violations fixed |
-| Performance | B- | 7.0 | No major list-virtualization or image-caching issues; `BlocBuilder` over-rebuild is the main concern |
-| Testing | F | 1.0 | 0% coverage, no test infra installed |
-| Dependency hygiene | C | 5.5 | A few dead packages (`get`, `lottie`, `mason`, `cupertino_icons`), nothing dangerously outdated |
-| Routing | A- | 8.5 | Centralized, consistently used, properly guarded — best-audited area in the app |
-| Tooling / lint strictness | D | 3.0 | Default `flutter_lints`, all custom rules commented out, no CI gate found |
-| **Overall (unweighted average)** | **C-** | **5.4** | Solid instincts undermined by zero test coverage and unenforced conventions |
+| Dimension                                              | Grade  | /10     | One-line reason                                                                                                                 |
+| ------------------------------------------------------ | ------ | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Architecture shape (folders, DI, layering conventions) | B+     | 7.5     | Genuinely good conventions, followed inconsistently                                                                             |
+| State management (BLoC hygiene)                        | C+     | 6.5     | Solid patterns; the shared unguarded-emit bug has been fixed at the source                                                      |
+| Error handling                                         | C+     | 6.5     | Real `Result`/`Failure` pipeline exists and is used; typed contracts abandoned in ~40 files (`Result<dynamic>`)                 |
+| Security                                               | D      | 3.0     | Live token leak via debug panel, plaintext password retention, no cert pinning                                                  |
+| UI / responsiveness rule compliance                    | C+     | 5.8     | ~90 remaining custom-color instances need a design decision; shorthand-syntax, exact-match color, and page-body-padding/grid-count violations fixed |
+| Performance                                            | B-     | 7.0     | No major list-virtualization or image-caching issues; `BlocBuilder` over-rebuild is the main concern                            |
+| Testing                                                | F      | 1.0     | 0% coverage, no test infra installed                                                                                            |
+| Dependency hygiene                                     | C      | 5.5     | A few dead packages (`get`, `lottie`, `mason`, `cupertino_icons`), nothing dangerously outdated                                 |
+| Routing                                                | A-     | 8.5     | Centralized, consistently used, properly guarded — best-audited area in the app                                                 |
+| Tooling / lint strictness                              | D      | 3.0     | Default `flutter_lints`, all custom rules commented out, no CI gate found                                                       |
+| **Overall (unweighted average)**                       | **C-** | **5.4** | Solid instincts undermined by zero test coverage and unenforced conventions                                                     |
 
 ---
 
-
 ## High-Severity Findings
 
-### H1. Zero test coverage
-602 lib files, 1 test file (untouched `flutter create` boilerplate). No `bloc_test`, no `mocktail`/`mockito` in `pubspec.yaml` — the tooling to write a bloc test isn't even installed. This is exactly the kind of gap that lets shared-infrastructure bugs (e.g. an unguarded `emit` after an `await` in a bloc mixin used by ~23 blocs — since fixed) ship silently and get rediscovered independently in multiple features instead of caught once in review.
 
 ### H2. No reactive 401 handling
-`retry_interceptor.dart` only retries on connection errors/timeouts; `token_refresh_interceptor.dart` only refreshes *proactively* based on a 2-minute expiry buffer. There's no `onError` hook that catches a live 401 and retries with a fresh token — if the proactive check races or the server invalidates early, the user just sees a generic auth error instead of a transparent silent recovery.
+
+`retry_interceptor.dart` only retries on connection errors/timeouts; `token_refresh_interceptor.dart` only refreshes _proactively_ based on a 2-minute expiry buffer. There's no `onError` hook that catches a live 401 and retries with a fresh token — if the proactive check races or the server invalidates early, the user just sees a generic auth error instead of a transparent silent recovery.
 
 ### H3. Non-idempotent POSTs retried on connection error
+
 `retry_interceptor.dart:21` retries any `connectionError`/`connectionTimeout` up to 3 times, including `POST` requests (create purchase order, apply leave, apply loan, apply overtime) with no idempotency key check. If the request actually succeeded server-side but the ack was lost, the retry can create a duplicate record — real financial/data-integrity risk in an ERP.
 
 ### H4. Core networking layer imports and re-implements auth
+
 `token_refresh_interceptor.dart:3-4,76,111` imports feature-layer auth models directly and builds its own raw login/select-branch HTTP calls instead of calling `AuthRepository`/usecases through DI. This is an inverted dependency (core → feature) **and** it means there are now two independent code paths that can perform login, which can silently drift out of sync.
 
-### H5. Domain layer leaks data-layer models
-`sale_order_repository.dart`, `purchase_order_repository.dart`, and `auth_repository.dart` (domain interfaces) import and return/accept concrete data-layer model classes (`SaleOrderDetail`, `SelectBranchRequestModel`) instead of domain entities. This defeats the entire point of a domain boundary for these three features — any JSON shape change ripples straight into blocs with no buffer.
-
 ### H6. `Result<dynamic>` used in 40+ files
+
 Repository/usecase contracts across `leaves`, `attendance`, `overtime`, `loan_and_advance`, `alert_panel`, `analytics`, `production`, `profile`, and both order-creation flows return untyped `dynamic`, pushing casting risk into the bloc/view layer and making the "clean architecture" label largely cosmetic in those features.
 
-### H7. `~500` remaining violations of the project's own UI conventions
-The CLAUDE.md file mandates theme-only color access via `context.*` and `Responsive.*`/`context.pagePadding`/`context.gridColumnCount` for all sizing. Grep counts: ~250 hardcoded-color instances, 242 hardcoded `EdgeInsets` calls vs. 71 `context.pagePadding` calls, and half of all `GridView` usages hardcode `crossAxisCount` — including two inside `lib/core/widgets`, which is supposed to be the example-setting shared layer. `flutter analyze` will never catch any of this; it needs a custom lint rule or a CI grep-gate, because right now it relies purely on individual developers remembering the rules, and evidently they don't, consistently, even within the same file. (The Dart 3 static-member-shorthand portion of this rule — `.center` not `MainAxisAlignment.center` — has been fixed: ~496 instances converted across 49 files, verified with `dart analyze`.)
+### H7. ~90 remaining custom-color violations of the project's own UI conventions
+
+The CLAUDE.md file mandates theme-only color access via `context.*` and `Responsive.*`/`context.pagePadding`/`context.gridColumnCount` for all sizing. `flutter analyze` will never catch any of this on its own; it still needs a custom lint rule or a CI grep-gate, because right now it relies purely on individual developers remembering the rules.
+
+Fixed: the Dart 3 static-member-shorthand portion (~496 instances across 49 files), all exact-match `Colors.white`/`Colors.black`/`Colors.transparent` hardcodes (85 instances across 30 files — these are non-theme-aware pass-throughs to `AppColors`, so the fix is behavior-neutral, purely convention compliance), the two genuine content-grid `crossAxisCount` hardcodes in `lib/core/widgets` and feature dashboards (a `PageView` pagination calculation in `quick_actions_section.dart` had to be updated in lockstep so item-per-page math stays consistent with the responsive column count), and the three real Scaffold-body-level hardcoded `EdgeInsets` (`partah_settings_view.dart`, `alert_panel_view.dart`, `report_detail_view.dart` — now use `context.pagePadding`). Two other `crossAxisCount: 3` sites (`month_navigator.dart`, `month_overview_section.dart`'s month-of-year picker) were deliberately left alone — they're small fixed-width popup pickers, not reflowing page content, so forcing a responsive column count would look wrong.
+
+Still open: ~90 `Color(0xFF...)`/`Colors.*` instances that are custom brand/gradient/icon-palette values with no exact match in the theme system (e.g. `partah_home_view.dart`'s gradient pairs, `more_software_view.dart`'s icon palette). Fixing these requires a design decision — which theme token each custom value should map to, or whether a new token should be added — not a mechanical find-and-replace.
+
 
 ### H8. Naming/typo inconsistency across repository layer
+
 `IAuthRepostiory` has a typo'd interface name; naming/folder conventions (`i_repositories/` vs `repositories/`, `I`-prefixed vs not) are inconsistent across features with no enforced template.
 
 ---
@@ -66,7 +71,8 @@ The CLAUDE.md file mandates theme-only color access via `context.*` and `Respons
 ## Medium-Severity Findings
 
 - **"Sticky message" state bug in 20+ state classes** (`message: message ?? this.message` in `copyWith`) — an error message can never be cleared back to null, so stale error banners can reappear or fail to re-display. Three files (`credit_management_state.dart`, `ac_statement_state.dart`, `branch_selection_state.dart`) already fixed this locally with an explicit `clearMessage` flag — the fix is known, just not applied everywhere.
-- **`signin_bloc.dart` does too much** — full login → save credentials → save user → auto-select org → select branch → fetch roles → fetch features orchestration lives directly in the bloc, with one branch (`failure: (_) {}` at line 108) silently swallowing feature-fetch errors while the sibling branch surfaces role-fetch errors. This orchestration belongs in a usecase.
+- **`signin_bloc.dart` does too much** — full login → save credentials → save user → auto-select org → select branch → fetch roles → fetch features orchestration lives directly in the bloc, with one branch (`failure: (_) {}` at line 108) silently swallowing feature-fetch errors while the sibling branch surfaces role-fetch errors. This orchestration belongs in a usecase
+.
 - **`SessionController` is a bare mutable singleton** with public mutable fields and no synchronization outside the Dio interceptor's `QueuedInterceptor` — a secondary race-condition surface if session state is ever touched from outside the network layer.
 - **Dashboard state modeling regresses to 4 independent status/error fields** (`admin_dashboard_state.dart`) instead of one sealed union — 16 theoretically reachable state combinations for what's rendered as one screen.
 - **`DocumentRepositoryImpl` (scan_document) is the one repository that doesn't extend `BaseRepository`** — no `Result`/`Failure` wrapping, breaking the one error-handling contract every other repository follows.

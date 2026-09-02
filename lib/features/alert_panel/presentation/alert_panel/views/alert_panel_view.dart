@@ -126,7 +126,7 @@ class _AlertPanelBodyState extends State<_AlertPanelBody>
           backgroundColor: context.white,
           appBar: const CustomAppBar(title: AppConstants.alertsTitle),
           body: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+            padding: context.pagePadding,
             children: [
               // ── Summary header card ──
               FadeTransition(

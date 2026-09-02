@@ -247,7 +247,7 @@ class _HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
           Text(
             currentUser.org.name.isNotEmpty ? currentUser.org.name : 'Mantic ERP',
             style: context.headlineMedium.copyWith(
-              color: Colors.white,
+              color: context.white,
               fontWeight: .w700,
               letterSpacing: -0.5,
             ),
@@ -256,7 +256,7 @@ class _HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
           Text(
             'Calculate rates · Track profits · Stay ahead',
             style: context.bodySmall.copyWith(
-              color: Colors.white.withAlpha(200),
+              color: context.white.withAlpha(200),
               letterSpacing: 0.1,
             ),
           ),
@@ -281,7 +281,7 @@ class _HomeHeaderDelegate extends SliverPersistentHeaderDelegate {
               child: Text(
                 'Home',
                 style: context.titleMedium.copyWith(
-                  color: Colors.white,
+                  color: context.white,
                   fontWeight: .w700,
                 ),
               ),
@@ -311,11 +311,11 @@ class _HeaderBackButton extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: Colors.white.withAlpha(30),
+          color: context.white.withAlpha(30),
           borderRadius: BorderRadius.circular(size * 0.28),
         ),
         alignment: Alignment.center,
-        child: Icon(Icons.arrow_back_rounded, color: Colors.white, size: size * 0.55),
+        child: Icon(Icons.arrow_back_rounded, color: context.white, size: size * 0.55),
       ),
     );
   }
@@ -341,14 +341,14 @@ class _ProfileAvatar extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           shape: .circle,
-          color: Colors.white.withAlpha(50),
-          border: Border.all(color: Colors.white.withAlpha(80), width: 2),
+          color: context.white.withAlpha(50),
+          border: Border.all(color: context.white.withAlpha(80), width: 2),
         ),
         child: Center(
           child: Text(
             initials,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: context.white,
               fontWeight: .w700,
               fontSize: 14,
             ),
@@ -413,7 +413,7 @@ class _MenuCard extends StatelessWidget {
               height: 90,
               decoration: BoxDecoration(
                 shape: .circle,
-                color: Colors.white.withAlpha(18),
+                color: context.white.withAlpha(18),
               ),
             ),
           ),
@@ -425,7 +425,7 @@ class _MenuCard extends StatelessWidget {
               height: 60,
               decoration: BoxDecoration(
                 shape: .circle,
-                color: Colors.white.withAlpha(12),
+                color: context.white.withAlpha(12),
               ),
             ),
           ),
@@ -440,18 +440,18 @@ class _MenuCard extends StatelessWidget {
                   width: iconSize,
                   height: iconSize,
                   decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(35),
+                    color: context.white.withAlpha(35),
                     borderRadius: BorderRadius.circular(compact ? 10 : 14),
                   ),
                   child:
-                      Icon(card.icon, color: Colors.white, size: iconInnerSize).center(),
+                      Icon(card.icon, color: context.white, size: iconInnerSize).center(),
                 ),
                 if (!centered) const Spacer(),
                 if (centered) heightBox(12),
                 Text(
                   card.title,
                   style: context.titleMedium.copyWith(
-                    color: Colors.white,
+                    color: context.white,
                     fontWeight: .w700,
                     fontSize: 18,
                   ),
@@ -460,7 +460,7 @@ class _MenuCard extends StatelessWidget {
                 Text(
                   card.subtitle,
                   style: context.labelSmall.copyWith(
-                    color: Colors.white.withAlpha(190),
+                    color: context.white.withAlpha(190),
                     height: 1.3,
                     fontSize: compact ? 10 : null,
                   ),

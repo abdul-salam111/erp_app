@@ -219,7 +219,7 @@ class _ChartBody extends StatelessWidget {
                   radius: 3,
                   color: lineColor,
                   strokeWidth: 1.5,
-                  strokeColor: Colors.white,
+                  strokeColor: context.white,
                 ),
               ),
               belowBarData: BarAreaData(

@@ -84,8 +84,6 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
     ),
   ];
 
-  static const _itemsPerPage = 6;
-
   final _pageController = PageController();
   int _currentPage = 0;
 
@@ -105,11 +103,13 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
     );
     final spacing = context.gridSpacing;
     final pageHeight = 2 * cardHeight + spacing;
+    final columnCount = context.gridColumnCount;
+    final itemsPerPage = columnCount * 2;
 
     final visibleItems = _items
         .where((i) => i.permissionKey == null || featureAccess.has(i.permissionKey!))
         .toList();
-    final pageCount = (visibleItems.length / _itemsPerPage).ceil();
+    final pageCount = (visibleItems.length / itemsPerPage).ceil();
 
     return Column(
       crossAxisAlignment: .start,
@@ -123,15 +123,15 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
             itemCount: pageCount,
             onPageChanged: (page) => setState(() => _currentPage = page),
             itemBuilder: (context, pageIndex) {
-              final start = pageIndex * _itemsPerPage;
-              final end = (start + _itemsPerPage).clamp(0, visibleItems.length);
+              final start = pageIndex * itemsPerPage;
+              final end = (start + itemsPerPage).clamp(0, visibleItems.length);
               final pageItems = visibleItems.sublist(start, end);
               return GridView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 2),
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: pageItems.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: columnCount,
                   mainAxisExtent: cardHeight,
                   mainAxisSpacing: spacing,
                   crossAxisSpacing: spacing,

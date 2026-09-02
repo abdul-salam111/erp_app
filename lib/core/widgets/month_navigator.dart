@@ -184,7 +184,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
                           ? context.primary
                           : selectable
                           ? context.grey50
-                          : Colors.transparent,
+                          : context.transparent,
                       borderRadius: .circular(8),
                       border: Border.all(
                         color: selected

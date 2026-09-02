@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
-import '../../../data/models/response_models/purchase_order_detail/purchase_order_detail.dart';
+import '../../../domain/entities/purchase_order_detail_entity.dart';
 import '../../../domain/usecases/create_purchase_order_usecase.dart';
 import '../../../domain/usecases/get_parties_usecase.dart';
 import '../../../domain/usecases/get_purchase_order_by_id_usecase.dart';
@@ -131,8 +131,11 @@ class CreatePurchaseOrderBloc
     emit(state.copyWith(rows: updated));
   }
 
-  CreatePurchaseOrderState _applyDetail(PurchaseOrderDetail d, int orderId) {
-    final rows = (d.rows ?? []).map((r) {
+  CreatePurchaseOrderState _applyDetail(
+    PurchaseOrderDetailEntity d,
+    int orderId,
+  ) {
+    final rows = d.rows.map((r) {
       final qty = r.qtyPack ?? 0;
       final price = r.pricePack ?? 0;
       final disc = r.ttlDisc ?? 0;
@@ -140,8 +143,8 @@ class CreatePurchaseOrderBloc
       final productValue = qty * price;
       final subTotal = r.subTotal ?? (productValue - disc);
       return PurchaseOrderRowItem(
-        item: r.item?.name ?? '—',
-        mode: r.contractMode?.name ?? '—',
+        item: r.itemName ?? '—',
+        mode: r.contractModeName ?? '—',
         contractQty: qty,
         price: price,
         rateUnit: (r.weightPriceUnit ?? 1).toStringAsFixed(2),
@@ -167,11 +170,11 @@ class CreatePurchaseOrderBloc
       calculationsId: d.brokerageOptionId,
       selectedOrderSource: d.orderSourceId,
       paymentMode: d.paymentModeId,
-      supplierName: d.party?.fullName,
-      brokerName: d.broker?.fullName,
-      paymentModeName: d.modeOfPayment?.name,
-      orderSourceName: d.orderSource?.name,
-      calculationsName: d.brokerComissionOption?.name,
+      supplierName: d.partyName,
+      brokerName: d.brokerName,
+      paymentModeName: d.paymentModeName,
+      orderSourceName: d.orderSourceName,
+      calculationsName: d.brokerCommissionOptionName,
       rows: rows,
     );
   }

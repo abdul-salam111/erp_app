@@ -271,7 +271,7 @@ class _StatsCardState extends State<_StatsCard> {
                   decoration: BoxDecoration(
                     color: isSelected
                         ? context.primary.withValues(alpha: 0.05)
-                        : Colors.transparent,
+                        : context.transparent,
                     border: Border(
                       right: isLast
                           ? BorderSide.none

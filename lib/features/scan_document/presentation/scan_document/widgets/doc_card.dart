@@ -175,9 +175,9 @@ class _CheckCircle extends StatelessWidget {
       height: 24,
       decoration: BoxDecoration(
         shape: .circle,
-        color: checked ? color : Colors.white.withValues(alpha: 0.85),
+        color: checked ? color : context.white.withValues(alpha: 0.85),
         border: Border.all(
-          color: checked ? color : Colors.white,
+          color: checked ? color : context.white,
           width: 2,
         ),
         boxShadow: const [
@@ -185,7 +185,7 @@ class _CheckCircle extends StatelessWidget {
         ],
       ),
       child: checked
-          ? const Icon(Icons.check, color: Colors.white, size: 14)
+          ? Icon(Icons.check, color: context.white, size: 14)
           : null,
     );
   }

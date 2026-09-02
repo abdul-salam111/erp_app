@@ -70,9 +70,9 @@ class _SplashViewState extends State<SplashView> {
                   height: 130,
                   decoration: BoxDecoration(
                     shape: .circle,
-                    color: Colors.white.withValues(alpha: 0.08),
+                    color: context.white.withValues(alpha: 0.08),
                     border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.18),
+                      color: context.white.withValues(alpha: 0.18),
                       width: 1.5,
                     ),
                   ),
@@ -81,7 +81,7 @@ class _SplashViewState extends State<SplashView> {
                     child: Container(
                       decoration: BoxDecoration(
                         shape: .circle,
-                        color: Colors.white,
+                        color: context.white,
                         boxShadow: [
                           BoxShadow(
                             color: const Color(0xff1B84FF).withValues(alpha: 0.5),
@@ -180,7 +180,7 @@ class _GlowCircle extends StatelessWidget {
       height: diameter,
       decoration: BoxDecoration(
         shape: .circle,
-        color: Colors.white.withValues(alpha: opacity),
+        color: context.white.withValues(alpha: opacity),
       ),
     );
   }
@@ -227,7 +227,7 @@ class _PulsingDotsState extends State<_PulsingDots>
               height: 7 * scale,
               decoration: BoxDecoration(
                 shape: .circle,
-                color: Colors.white.withValues(alpha: 0.5 + 0.5 * scale),
+                color: context.white.withValues(alpha: 0.5 + 0.5 * scale),
               ),
             );
           },

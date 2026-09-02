@@ -40,7 +40,7 @@ class _YoutubePopupState extends State<YoutubePopup> {
       ),
       builder: (ctx, player) {
         return Dialog(
-          backgroundColor: Colors.transparent,
+          backgroundColor: context.transparent,
           insetPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 24),
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.5,
@@ -61,7 +61,7 @@ class _YoutubePopupState extends State<YoutubePopup> {
                           color: Colors.black54,
                           shape: .circle,
                         ),
-                        child: const Icon(Icons.close_rounded, color: Colors.white, size: 18),
+                        child: Icon(Icons.close_rounded, color: context.white, size: 18),
                       ),
                     ),
                   ),

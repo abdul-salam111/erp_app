@@ -75,7 +75,7 @@ class _SaleOrderBodyState extends State<_SaleOrderBody> {
         },
         backgroundColor: context.primary,
         shape: const CircleBorder(),
-        child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
+        child: Icon(Icons.add_rounded, color: context.white, size: 28),
       ),
       body: Column(
         children: [
@@ -144,7 +144,7 @@ class _SearchBar extends StatelessWidget {
           border: Border.all(color: context.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: context.black.withValues(alpha: 0.04),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),

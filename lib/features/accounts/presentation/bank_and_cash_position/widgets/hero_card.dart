@@ -95,7 +95,7 @@ class BankAndCashHeroCard extends StatelessWidget {
                   LineChartBarData(
                     spots: spots,
                     isCurved: true,
-                    color: Colors.transparent,
+                    color: context.transparent,
                     barWidth: 0,
                     dotData: const FlDotData(show: false),
                   ),

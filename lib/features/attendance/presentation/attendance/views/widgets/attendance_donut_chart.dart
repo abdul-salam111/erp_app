@@ -103,7 +103,7 @@ class _AttendanceDonutChartState extends State<AttendanceDonutChart>
                                   ),
                                   PieChartSectionData(
                                     value: present + absent,
-                                    color: Colors.transparent,
+                                    color: context.transparent,
                                     radius: _sectionR,
                                     showTitle: false,
                                   ),

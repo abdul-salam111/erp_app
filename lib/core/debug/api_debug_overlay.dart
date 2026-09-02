@@ -74,7 +74,7 @@ class _ApiDebugLayerBodyState extends State<_ApiDebugLayerBody> {
     showModalBottomSheet<void>(
       context: navContext,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: context.transparent,
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: const _DebugListSheet(),
@@ -104,7 +104,7 @@ class _FabContent extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.35),
+                color: context.black.withValues(alpha: 0.35),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -129,8 +129,8 @@ class _FabContent extends StatelessWidget {
             decoration: BoxDecoration(color: accent, shape: .circle),
             child: Text(
               '${state.entries.length}',
-              style: const TextStyle(
-                color: Colors.black,
+              style: TextStyle(
+                color: context.black,
                 fontSize: 9,
                 fontWeight: .w800,
               ),
@@ -213,10 +213,10 @@ class _SheetHeader extends StatelessWidget {
                 size: 18,
               ),
               const SizedBox(width: 8),
-              const Text(
+              Text(
                 'API Debugger',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: context.white,
                   fontWeight: .w700,
                   fontSize: 15,
                 ),
@@ -369,7 +369,7 @@ class _EntryRow extends StatelessWidget {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: context.transparent,
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: _DebugDetailSheet(entry: entry),
@@ -489,8 +489,8 @@ class _DebugDetailSheet extends StatelessWidget {
                         Expanded(
                           child: Text(
                             current.shortPath,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: context.white,
                               fontWeight: .w600,
                               fontSize: 13,
                             ),
@@ -616,7 +616,7 @@ class _DetailSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.05),
+        color: context.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.white12),
       ),

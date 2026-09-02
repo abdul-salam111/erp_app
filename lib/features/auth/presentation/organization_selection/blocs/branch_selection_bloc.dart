@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/services/session_manager.dart';
 import '../../../auth_exports.dart';
-import '../../../data/models/request_models/select_branch_request_model/select_branch_request_model.dart';
 
 class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionState> {
   final SelectBranchUsecase selectBranchUsecase;
@@ -38,7 +37,7 @@ class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionStat
     ));
 
     final result = await selectBranchUsecase(
-      SelectBranchRequestModel(
+      SelectBranchParams(
         accessToken: branch.accessToken!,
         misBranchId: branch.id.toString(),
         refreshToken: branch.refreshToken!,

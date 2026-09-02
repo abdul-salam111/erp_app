@@ -3,7 +3,6 @@ import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/services/session_manager.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../auth_exports.dart';
-import '../../../data/models/request_models/select_branch_request_model/select_branch_request_model.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState>
     with UsecaseExecuterMixin {
@@ -33,7 +32,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
   ) async {
     emit(state.copyWith(apiStatus: ApiStatus.LOADING));
     final result = await signinUsecase.call(
-      LoginRequestModel(email: state.email, password: state.password),
+      LoginParams(email: state.email, password: state.password),
     );
     await result.when(
       failure: (failure) async => emit(
@@ -63,7 +62,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
           }
 
           final branchResult = await selectBranchUsecase(
-            SelectBranchRequestModel(
+            SelectBranchParams(
               accessToken: branch.accessToken!,
               misBranchId: branch.id.toString(),
               refreshToken: branch.refreshToken!,

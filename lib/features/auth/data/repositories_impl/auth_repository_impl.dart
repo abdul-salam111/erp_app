@@ -9,13 +9,14 @@ class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
   AuthRepositoryImpl({required this.dataSource});
 
   @override
-  Future<Result<UserEntity>> loginUser({
-    required LoginRequestModel loginRequestModel,
-  }) {
+  Future<Result<UserEntity>> loginUser({required LoginParams params}) {
     return execute(
       call: () async {
         final model = await dataSource.loginUser(
-          loginRequestModel: loginRequestModel,
+          loginRequestModel: LoginRequestModel(
+            email: params.email,
+            password: params.password,
+          ),
         );
         return model.toEntity();
       },
@@ -24,10 +25,16 @@ class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
 
   @override
   Future<Result<AuthToken>> selectBranch({
-    required SelectBranchRequestModel request,
+    required SelectBranchParams params,
   }) {
     return execute(
-      call: () => dataSource.selectBranch(request: request),
+      call: () => dataSource.selectBranch(
+        request: SelectBranchRequestModel(
+          accessToken: params.accessToken,
+          misBranchId: params.misBranchId,
+          refreshToken: params.refreshToken,
+        ),
+      ),
     );
   }
 

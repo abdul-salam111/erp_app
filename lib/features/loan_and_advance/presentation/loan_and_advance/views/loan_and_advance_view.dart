@@ -309,7 +309,7 @@ class _TableRow extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: context.transparent,
       builder: (_) => _LoanDetailSheet(record: record),
     );
   }

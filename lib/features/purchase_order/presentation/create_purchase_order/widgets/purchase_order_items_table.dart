@@ -83,18 +83,17 @@ class PurchaseOrderItemsTable extends StatelessWidget {
 class _TableHeader extends StatelessWidget {
   const _TableHeader();
 
-  static const _cellStyle = TextStyle(
-    color: Colors.white,
-    fontWeight: .w600,
-    fontSize: 11,
-  );
-
   @override
   Widget build(BuildContext context) {
+    final cellStyle = TextStyle(
+      color: context.white,
+      fontWeight: .w600,
+      fontSize: 11,
+    );
     return Container(
       decoration: BoxDecoration(
         color: context.primary,
-        borderRadius: const BorderRadius.only( 
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(8),
           topRight: Radius.circular(8),
         ),
@@ -102,10 +101,10 @@ class _TableHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Row(
         children: [
-          SizedBox(width: 22, child: Text('#', style: _cellStyle)),
-          Expanded(flex: 5, child: Text('Item', style: _cellStyle)),
-          Expanded(flex: 3, child: Text('Mode', style: _cellStyle, textAlign: .center)),
-          Expanded(flex: 2, child: Text('Qty', style: _cellStyle, textAlign: .end)),
+          SizedBox(width: 22, child: Text('#', style: cellStyle)),
+          Expanded(flex: 5, child: Text('Item', style: cellStyle)),
+          Expanded(flex: 3, child: Text('Mode', style: cellStyle, textAlign: .center)),
+          Expanded(flex: 2, child: Text('Qty', style: cellStyle, textAlign: .end)),
           const SizedBox(width: 20),
         ],
       ),
@@ -126,7 +125,7 @@ class _ItemRow extends StatelessWidget {
     final action = await showModalBottomSheet<_RowDetailAction>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: context.transparent,
       builder: (_) => _RowDetailsSheet(index: index, item: item, canEdit: onEdit != null, canDelete: onDelete != null),
     );
     if (!context.mounted) return;
@@ -530,7 +529,7 @@ Future<PurchaseOrderRowItem?> showAddRowBottomSheet(
   return showModalBottomSheet<PurchaseOrderRowItem>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
+    backgroundColor: context.transparent,
     builder: (_) => _AddRowSheet(initialItem: initialItem),
   );
 }

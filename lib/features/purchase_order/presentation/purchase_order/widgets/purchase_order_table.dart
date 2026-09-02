@@ -65,7 +65,7 @@ class _TableHeader extends StatelessWidget {
             child: Text(
               AppConstants.partyLabel,
               style: context.labelSmall.copyWith(
-                color: Colors.white,
+                color: context.white,
                 fontWeight: .w600,
                 fontSize: 11,
               ),
@@ -76,7 +76,7 @@ class _TableHeader extends StatelessWidget {
             child: Text(
               AppConstants.dateLabel,
               style: context.labelSmall.copyWith(
-                color: Colors.white,
+                color: context.white,
                 fontWeight: .w600,
                 fontSize: 11,
               ),
@@ -88,7 +88,7 @@ class _TableHeader extends StatelessWidget {
             child: Text(
               AppConstants.netAmountLabel,
               style: context.labelSmall.copyWith(
-                color: Colors.white,
+                color: context.white,
                 fontWeight: .w600,
                 fontSize: 11,
               ),
@@ -121,7 +121,7 @@ class _OrderRowState extends State<_OrderRow> {
     return ColoredBox(
       color: _expanded
           ? context.primary.withValues(alpha: 0.06)
-          : Colors.transparent,
+          : context.transparent,
       child: Column(
         crossAxisAlignment: .start,
         children: [

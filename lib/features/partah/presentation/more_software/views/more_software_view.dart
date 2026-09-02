@@ -97,8 +97,8 @@ class MoreSoftwareView extends StatelessWidget {
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
             sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: context.gridColumnCount,
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
                 childAspectRatio: 0.85,
@@ -134,7 +134,7 @@ class _Header extends StatelessWidget {
       automaticallyImplyLeading: false,
       backgroundColor: AppColors.secondary,
       elevation: 0,
-      surfaceTintColor: Colors.transparent,
+      surfaceTintColor: context.transparent,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(28),
@@ -142,13 +142,13 @@ class _Header extends StatelessWidget {
         ),
       ),
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+        icon: Icon(Icons.arrow_back_rounded, color: context.white),
         onPressed: () => context.pop(),
       ),
       title: Text(
         'More Software',
         style: context.titleMedium.copyWith(
-          color: Colors.white,
+          color: context.white,
           fontWeight: .w700,
         ),
       ),
@@ -173,7 +173,7 @@ class _Header extends StatelessWidget {
                   Text(
                     'Powered by Softronix',
                     style: context.headlineSmall.copyWith(
-                      color: Colors.white,
+                      color: context.white,
                       fontWeight: .w800,
                       letterSpacing: -0.3,
                     ),
@@ -182,7 +182,7 @@ class _Header extends StatelessWidget {
                   Text(
                     'Explore our complete suite of business tools',
                     style: context.bodySmall.copyWith(
-                      color: Colors.white.withAlpha(200),
+                      color: context.white.withAlpha(200),
                     ),
                   ),
                 ],
@@ -377,10 +377,10 @@ class _VisitBannerState extends State<_VisitBanner> {
               width: 46,
               height: 46,
               decoration: BoxDecoration(
-                color: Colors.white.withAlpha(30),
+                color: context.white.withAlpha(30),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(Icons.open_in_browser_rounded, color: Colors.white, size: 24),
+              child: Icon(Icons.open_in_browser_rounded, color: context.white, size: 24),
             ),
             widthBox(14),
             Expanded(
@@ -390,7 +390,7 @@ class _VisitBannerState extends State<_VisitBanner> {
                   Text(
                     'Visit Softronix',
                     style: context.titleSmall.copyWith(
-                      color: Colors.white,
+                      color: context.white,
                       fontWeight: .w700,
                     ),
                   ),
@@ -398,13 +398,13 @@ class _VisitBannerState extends State<_VisitBanner> {
                   Text(
                     'See all products at softronix.pk',
                     style: context.labelSmall.copyWith(
-                      color: Colors.white.withAlpha(200),
+                      color: context.white.withAlpha(200),
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 16),
+            Icon(Icons.arrow_forward_ios_rounded, color: context.white, size: 16),
           ],
         ),
       ),

@@ -726,7 +726,7 @@ class _ActionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: context.transparent,
       borderRadius: .circular(16),
       child: InkWell(
         onTap: onTap,

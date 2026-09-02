@@ -4,6 +4,8 @@
 
 
 export './domain/entities/user_entity.dart';
+export './domain/entities/login_params.dart';
+export './domain/entities/select_branch_params.dart';
 export './data/models/response_models/logged_in_user_model/logged_in_user_model_mapper.dart';
 export './domain/i_repositories/auth_repository.dart';
 export './domain/usecases/signin_usecase.dart';

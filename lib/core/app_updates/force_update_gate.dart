@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../theme/theme_exports.dart';
 import 'force_update_controller.dart';
 
 class ForceUpdateGate extends StatefulWidget {
@@ -80,7 +81,7 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => Dialog(
-        backgroundColor: Colors.transparent,
+        backgroundColor: context.transparent,
         insetPadding: const EdgeInsets.symmetric(horizontal: 28),
         child: Container(
           decoration: BoxDecoration(
@@ -88,7 +89,7 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.15),
+                color: context.black.withValues(alpha: 0.15),
                 blurRadius: 30,
                 offset: const Offset(0, 10),
               ),
@@ -110,19 +111,19 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: context.white.withValues(alpha: 0.2),
                         shape: .circle,
                       ),
-                      child: const Icon(Icons.system_update_rounded,
-                          size: 36, color: Colors.white),
+                      child: Icon(Icons.system_update_rounded,
+                          size: 36, color: context.white),
                     ),
                     const SizedBox(height: 12),
                     Text(
                       _controller.config?.updateTitle ?? 'Update Available',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: .bold,
-                        color: Colors.white,
+                        color: context.white,
                       ),
                     ),
                   ],
@@ -233,8 +234,8 @@ class _ForceUpdateScreen extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                   shape: .circle,
                 ),
-                child: const Icon(Icons.system_update_rounded,
-                    size: 32, color: Colors.white),
+                child: Icon(Icons.system_update_rounded,
+                    size: 32, color: context.white),
               ),
               const SizedBox(height: 36),
               Text(

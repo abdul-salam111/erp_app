@@ -113,7 +113,7 @@ class _CustomerRowState extends State<_CustomerRow> {
     return ColoredBox(
       color: _expanded
           ? context.primary.withValues(alpha: 0.05)
-          : Colors.transparent,
+          : context.transparent,
       child: Column(
         crossAxisAlignment: .start,
         children: [

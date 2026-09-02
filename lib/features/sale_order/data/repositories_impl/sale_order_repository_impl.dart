@@ -1,10 +1,10 @@
 import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/entities/party_option.dart';
+import '../../domain/entities/sale_order_detail_entity.dart';
 import '../../domain/entities/sale_order_entity.dart';
 import '../../domain/repositories/sale_order_repository.dart';
 import '../datasources/remote_sale_order_datasource.dart';
-import '../models/response_models/sale_order_detail/sale_order_detail.dart';
 
 class SaleOrderRepositoryImpl extends BaseRepository
     implements SaleOrderRepository {
@@ -20,7 +20,7 @@ class SaleOrderRepositoryImpl extends BaseRepository
   }
 
   @override
-  Future<Result<SaleOrderDetail>> fetchOrderById(int id) {
+  Future<Result<SaleOrderDetailEntity>> fetchOrderById(int id) {
     return execute(
       call: () => dataSource.fetchOrderById(id),
     );

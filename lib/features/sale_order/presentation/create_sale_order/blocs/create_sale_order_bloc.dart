@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
-import '../../../data/models/response_models/sale_order_detail/sale_order_detail.dart';
+import '../../../domain/entities/sale_order_detail_entity.dart';
 import '../../../domain/usecases/create_sale_order_usecase.dart';
 import '../../../domain/usecases/get_sale_order_by_id_usecase.dart';
 import '../../../domain/usecases/get_sale_parties_usecase.dart';
@@ -131,8 +131,8 @@ class CreateSaleOrderBloc
     emit(state.copyWith(rows: updated));
   }
 
-  CreateSaleOrderState _applyDetail(SaleOrderDetail d, int orderId) {
-    final rows = (d.rows ?? []).map((r) {
+  CreateSaleOrderState _applyDetail(SaleOrderDetailEntity d, int orderId) {
+    final rows = d.rows.map((r) {
       final qty = r.qtyPack ?? 0;
       final price = r.pricePack ?? 0;
       final disc = r.ttlDisc ?? 0;
@@ -140,8 +140,8 @@ class CreateSaleOrderBloc
       final productValue = qty * price;
       final subTotal = r.subTotal ?? (productValue - disc);
       return SaleOrderRowItem(
-        item: r.item?.name ?? '—',
-        mode: r.contractMode?.name ?? '—',
+        item: r.itemName ?? '—',
+        mode: r.contractModeName ?? '—',
         contractQty: qty,
         price: price,
         rateUnit: (r.weightPriceUnit ?? 1).toStringAsFixed(2),
@@ -167,11 +167,11 @@ class CreateSaleOrderBloc
       calculationsId: d.brokerageOptionId,
       selectedOrderSource: d.orderSourceId,
       paymentMode: d.paymentModeId,
-      customerName: d.party?.fullName,
-      brokerName: d.broker?.fullName,
-      paymentModeName: d.modeOfPayment?.name,
-      orderSourceName: d.orderSource?.name,
-      calculationsName: d.brokerComissionOption?.name,
+      customerName: d.partyName,
+      brokerName: d.brokerName,
+      paymentModeName: d.paymentModeName,
+      orderSourceName: d.orderSourceName,
+      calculationsName: d.brokerCommissionOptionName,
       rows: rows,
     );
   }

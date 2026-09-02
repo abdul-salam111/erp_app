@@ -76,7 +76,7 @@ class CostsStep extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(Icons.arrow_forward_ios_rounded, size: 15, color: Colors.white),
+              child: Icon(Icons.arrow_forward_ios_rounded, size: 15, color: context.white),
             ).onTap(calculator.stepForward),
           ],
         ).withPadding(const EdgeInsets.fromLTRB(16, 0, 16, 12)),

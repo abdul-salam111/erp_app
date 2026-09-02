@@ -3,13 +3,14 @@ import '../../../../core/services/session_manager.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../domain/entities/party_option.dart';
+import '../../domain/entities/sale_order_detail_entity.dart';
 import '../../domain/entities/sale_order_entity.dart';
 import '../models/response_models/sale_order_detail/sale_order_detail.dart';
 import '../models/response_models/sale_orders_list/sale_orders_list.dart';
 
 abstract interface class IRemoteSaleOrderDataSource {
   Future<List<SaleOrderEntity>> fetchOrders();
-  Future<SaleOrderDetail> fetchOrderById(int id);
+  Future<SaleOrderDetailEntity> fetchOrderById(int id);
   Future<List<PartyOption>> fetchParties();
   Future<dynamic> createSaleOrder();
 }
@@ -32,12 +33,13 @@ class RemoteSaleOrderDataSourceImpl extends BaseRemoteDatasource
   }
 
   @override
-  Future<SaleOrderDetail> fetchOrderById(int id) {
-    return get<SaleOrderDetail>(
+  Future<SaleOrderDetailEntity> fetchOrderById(int id) async {
+    final detail = await get<SaleOrderDetail>(
       url: ApiEndPoints.sale.getSaleOrderById(id),
       parser: (json) => SaleOrderDetail.fromJson(json as Map<String, dynamic>),
       authToken: _token,
     );
+    return _toDetailEntity(detail);
   }
 
   @override
@@ -63,6 +65,42 @@ class RemoteSaleOrderDataSourceImpl extends BaseRemoteDatasource
       refNo: d.refDocNbr,
       rowsCount: d.ttlRows ?? 0,
       remarks: d.firstRow?.itemName,
+    );
+  }
+
+  SaleOrderDetailEntity _toDetailEntity(SaleOrderDetail d) {
+    return SaleOrderDetailEntity(
+      docNbr: d.docNbr,
+      docDate: d.docDate,
+      refDocNbr: d.refDocNbr,
+      partyId: d.partyId,
+      brokerId: d.brokerId,
+      currencyId: d.currencyId,
+      currencyRate: d.currencyRate,
+      brokerageOptionId: d.brokerageOptionId,
+      brokerageOptionValue: d.brokerageOptionValue,
+      orderSourceId: d.orderSourceId,
+      paymentModeId: d.paymentModeId,
+      partyName: d.party?.fullName,
+      brokerName: d.broker?.fullName,
+      paymentModeName: d.modeOfPayment?.name,
+      orderSourceName: d.orderSource?.name,
+      brokerCommissionOptionName: d.brokerComissionOption?.name,
+      rows: (d.rows ?? []).map(_toDetailRowEntity).toList(),
+    );
+  }
+
+  SaleOrderDetailRowEntity _toDetailRowEntity(SaleDetailRow r) {
+    return SaleOrderDetailRowEntity(
+      itemName: r.item?.name,
+      contractModeName: r.contractMode?.name,
+      qtyPack: r.qtyPack,
+      pricePack: r.pricePack,
+      weightPriceUnit: r.weightPriceUnit,
+      ttlDisc: r.ttlDisc,
+      taxAmount: r.taxAmount,
+      subTotal: r.subTotal,
+      rowTotal: r.rowTotal,
     );
   }
 

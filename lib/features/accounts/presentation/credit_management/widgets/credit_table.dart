@@ -70,7 +70,7 @@ class _TableHeader extends StatelessWidget {
             child: Text(
               'Customer',
               style: context.labelSmall.copyWith(
-                color: Colors.white,
+                color: context.white,
                 fontWeight: .w600,
                 fontSize: 11,
               ),
@@ -84,7 +84,7 @@ class _TableHeader extends StatelessWidget {
             child: Text(
               'Balance',
               style: context.labelSmall.copyWith(
-                color: Colors.white,
+                color: context.white,
                 fontWeight: .w600,
                 fontSize: 11,
               ),
@@ -132,7 +132,7 @@ class _CreditTableRowState extends State<_CreditTableRow> {
     return ColoredBox(
       color: _expanded
           ? context.primary.withValues(alpha: 0.06)
-          : Colors.transparent,
+          : context.transparent,
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -227,7 +227,7 @@ class _CreditTableRowState extends State<_CreditTableRow> {
             alignment: .topCenter,
             child: _expanded
                 ? Container(
-                    color: Colors.transparent,
+                    color: context.transparent,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 5,
                       vertical: 5,
@@ -345,7 +345,7 @@ class _CrBadge extends StatelessWidget {
       child: Text(
         rating,
         style: context.labelSmall.copyWith(
-          color: Colors.black,
+          color: context.black,
           fontSize: 11,
           fontWeight: .w700,
         ),

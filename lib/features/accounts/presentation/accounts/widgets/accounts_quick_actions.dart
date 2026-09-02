@@ -103,7 +103,7 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
           physics: const NeverScrollableScrollPhysics(),
           itemCount: visibleItems.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: context.gridColumnCount,
             mainAxisExtent: cardHeight,
             mainAxisSpacing: context.gridSpacing,
             crossAxisSpacing: context.gridSpacing,

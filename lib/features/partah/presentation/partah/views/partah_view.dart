@@ -270,7 +270,7 @@ class _StepDot extends StatelessWidget {
         : isActive
             ? context.primary
             : context.border;
-    final iconColor = isDone || isActive ? Colors.white : context.textSecondary;
+    final iconColor = isDone || isActive ? context.white : context.textSecondary;
 
     return Column(
       mainAxisSize: .min,
@@ -289,7 +289,7 @@ class _StepDot extends StatelessWidget {
                 : null,
           ),
           child: isDone
-              ? const Icon(Icons.check_rounded, size: 16, color: Colors.white)
+              ? Icon(Icons.check_rounded, size: 16, color: context.white)
               : Icon(icon, size: 16, color: iconColor),
         ),
         heightBox(5),
@@ -571,7 +571,7 @@ class _NavBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = primary ? context.primary : context.surface;
-    final labelColor = primary ? Colors.white : context.textSecondary;
+    final labelColor = primary ? context.white : context.textSecondary;
     final borderColor = primary ? context.primary : context.border;
 
     final iconWidget = Icon(icon, size: 14, color: labelColor);
@@ -655,7 +655,7 @@ class _SaveSuccessDialog extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'Done',
-                    style: context.labelLarge.copyWith(color: Colors.white, fontWeight: .w700),
+                    style: context.labelLarge.copyWith(color: context.white, fontWeight: .w700),
                   ),
                 ),
               ),

@@ -27,7 +27,7 @@ class CreditDetailsAppBar extends StatelessWidget
       toolbarHeight: kToolbarHeight + 12,
       leadingWidth: 40,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 18),
+        icon: Icon(Icons.arrow_back, color: context.white, size: 18),
         onPressed: () => Navigator.pop(context),
       ),
       centerTitle: false,
@@ -97,8 +97,8 @@ class CreditDetailsAppBar extends StatelessWidget
             indicatorColor: context.primary,
             indicatorWeight: 3,
             indicatorSize: .tab,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white.withValues(alpha: 0.55),
+            labelColor: context.white,
+            unselectedLabelColor: context.white.withValues(alpha: 0.55),
             labelStyle: context.bodySmall.copyWith(
               fontSize: 12,
               fontWeight: .w600,
@@ -107,7 +107,7 @@ class CreditDetailsAppBar extends StatelessWidget
               fontSize: 12,
               fontWeight: .w400,
             ),
-            dividerColor: Colors.transparent,
+            dividerColor: context.transparent,
             tabs: const [
               Tab(text: 'Home'),
               Tab(text: 'A/C Statement'),

@@ -21,7 +21,9 @@ class ReportDetailView extends StatelessWidget {
       backgroundColor: context.background,
       appBar: CustomAppBar(title: record.createdAt.displayDate),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        padding: context.pagePadding.copyWith(
+          bottom: context.pagePadding.bottom + 8,
+        ),
         children: [
           _NetProfitHero(net: record.netProfit.abs(), isProfit: isProfit, accentColor: accentColor),
           heightBox(16),

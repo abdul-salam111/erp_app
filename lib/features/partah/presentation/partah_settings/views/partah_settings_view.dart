@@ -31,7 +31,7 @@ class _PartahSettingsViewState extends State<PartahSettingsView> {
   Future<void> _showBaseWeightSheet() async {
     final selected = await showModalBottomSheet<MillType>(
       context: context,
-      backgroundColor: Colors.transparent,
+      backgroundColor: context.transparent,
       builder: (_) => _BaseWeightSheet(current: _millType),
     );
     if (selected == null) return;
@@ -47,7 +47,7 @@ class _PartahSettingsViewState extends State<PartahSettingsView> {
       backgroundColor: context.background,
       appBar: const CustomAppBar(title: 'Partah Settings'),
       body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: context.pagePadding.top),
         children: [
           _SectionHeader(title: 'Products'),
           _SettingsTile(
