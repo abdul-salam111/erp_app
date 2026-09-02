@@ -3,7 +3,7 @@ import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/utils/result.dart';
 import '../models/request_models/select_branch_request_model/select_branch_request_model.dart';
 
-class AuthRepositoryImpl extends BaseRepository implements IAuthRepostiory {
+class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   final IAuthRemoteDatasource dataSource;
 
   AuthRepositoryImpl({required this.dataSource});

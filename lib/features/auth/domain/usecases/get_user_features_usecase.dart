@@ -3,7 +3,7 @@ import '../../../../core/utils/result.dart';
 import '../../auth_exports.dart';
 
 class GetUserFeaturesUsecase implements Usecase<List<String>, String> {
-  final IAuthRepostiory repository;
+  final AuthRepository repository;
 
   GetUserFeaturesUsecase({required this.repository});
 

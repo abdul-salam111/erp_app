@@ -8,7 +8,7 @@ Future<void> registerAuth() async {
   );
 
   // Repository
-  sl.registerLazySingleton<IAuthRepostiory>(
+  sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(dataSource: sl()),
   );
 

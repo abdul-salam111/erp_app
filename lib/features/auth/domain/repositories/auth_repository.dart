@@ -1,7 +1,7 @@
 import '../../../../core/utils/result.dart';
 import '../../auth_exports.dart';
 
-abstract interface class IAuthRepostiory {
+abstract interface class AuthRepository {
   Future<Result<UserEntity>> loginUser({required LoginParams params});
 
   Future<Result<AuthToken>> selectBranch({required SelectBranchParams params});

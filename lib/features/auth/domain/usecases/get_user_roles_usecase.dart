@@ -1,9 +1,9 @@
 import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/utils/result.dart';
-import '../../domain/i_repositories/auth_repository.dart';
+import '../../domain/repositories/auth_repository.dart';
 
 class GetUserRolesUsecase implements Usecase<List<String>, String> {
-  final IAuthRepostiory repository;
+  final AuthRepository repository;
   GetUserRolesUsecase({required this.repository});
 
   @override

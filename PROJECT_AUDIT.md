@@ -1,10 +1,4 @@
-# mantic_erp_app — Engineering Audit (Code Quality)
 
-**Auditor stance:** senior Flutter engineer, brutally honest, no sugar-coating.
-**Scope:** full `lib/` tree (602 Dart files, 20 features), `pubspec.yaml`, `android/`, `lib/routes/`, `test/`.
-**Method:** static analysis (`flutter analyze`), targeted deep-reads across architecture, state management, security, UI/responsiveness, performance, testing/dependencies.
-**Note:** this report intentionally excludes missing/incomplete feature work (unimplemented endpoints, placeholder screens, dummy-data-only features) and does not include a remediation/action plan — it covers only defects and quality issues in code that is actually written.
-**Date:** 2026-09-02.
 
 ---
 
@@ -49,18 +43,9 @@ The parts of this codebase that are built out (`accounts`, `inventory`, `dashboa
 
 Repository/usecase contracts across `leaves`, `attendance`, `overtime`, `loan_and_advance`, `alert_panel`, `analytics`, `production`, `profile`, and both order-creation flows return untyped `dynamic`, pushing casting risk into the bloc/view layer and making the "clean architecture" label largely cosmetic in those features.
 
-### H7. ~90 remaining custom-color violations of the project's own UI conventions
-
-The CLAUDE.md file mandates theme-only color access via `context.*` and `Responsive.*`/`context.pagePadding`/`context.gridColumnCount` for all sizing. `flutter analyze` will never catch any of this on its own; it still needs a custom lint rule or a CI grep-gate, because right now it relies purely on individual developers remembering the rules.
-
-Fixed: the Dart 3 static-member-shorthand portion (~496 instances across 49 files), all exact-match `Colors.white`/`Colors.black`/`Colors.transparent` hardcodes (85 instances across 30 files — these are non-theme-aware pass-throughs to `AppColors`, so the fix is behavior-neutral, purely convention compliance), the two genuine content-grid `crossAxisCount` hardcodes in `lib/core/widgets` and feature dashboards (a `PageView` pagination calculation in `quick_actions_section.dart` had to be updated in lockstep so item-per-page math stays consistent with the responsive column count), and the three real Scaffold-body-level hardcoded `EdgeInsets` (`partah_settings_view.dart`, `alert_panel_view.dart`, `report_detail_view.dart` — now use `context.pagePadding`). Two other `crossAxisCount: 3` sites (`month_navigator.dart`, `month_overview_section.dart`'s month-of-year picker) were deliberately left alone — they're small fixed-width popup pickers, not reflowing page content, so forcing a responsive column count would look wrong.
 
 Still open: ~90 `Color(0xFF...)`/`Colors.*` instances that are custom brand/gradient/icon-palette values with no exact match in the theme system (e.g. `partah_home_view.dart`'s gradient pairs, `more_software_view.dart`'s icon palette). Fixing these requires a design decision — which theme token each custom value should map to, or whether a new token should be added — not a mechanical find-and-replace.
 
-
-### H8. Naming/typo inconsistency across repository layer
-
-`IAuthRepostiory` has a typo'd interface name; naming/folder conventions (`i_repositories/` vs `repositories/`, `I`-prefixed vs not) are inconsistent across features with no enforced template.
 
 ---
 

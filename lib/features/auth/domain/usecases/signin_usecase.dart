@@ -3,7 +3,7 @@ import '../../../../core/utils/result.dart';
 import '../../auth_exports.dart';
 
 class SignInUsecase implements Usecase<UserEntity, LoginParams> {
-  final IAuthRepostiory repository;
+  final AuthRepository repository;
 
   SignInUsecase({required this.repository});
 
