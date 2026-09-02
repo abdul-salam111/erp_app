@@ -103,7 +103,7 @@ class PartahHomeView extends StatelessWidget {
           subtitle: 'Calculate item rates & profit',
           icon: Icons.calculate_rounded,
           gradient: const LinearGradient(
-            colors: [Color(0xFF5B9BD5), Color(0xFF3A78C9)],
+            colors: [AppColors.skyBlue, AppColors.skyBlueDark],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -114,7 +114,7 @@ class PartahHomeView extends StatelessWidget {
           subtitle: 'View history & summaries',
           icon: Icons.bar_chart_rounded,
           gradient: const LinearGradient(
-            colors: [Color(0xFF4BAE8A), Color(0xFF2D8C6A)],
+            colors: [AppColors.emerald, AppColors.emeraldDark],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -125,7 +125,7 @@ class PartahHomeView extends StatelessWidget {
           subtitle: 'Products & base weight',
           icon: Icons.tune_rounded,
           gradient: const LinearGradient(
-            colors: [Color(0xFF8B6BBE), Color(0xFF6B4DA0)],
+            colors: [AppColors.lavender, AppColors.lavenderDark],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -138,7 +138,7 @@ class PartahHomeView extends StatelessWidget {
           title: 'How to Use',
           subtitle: 'Step-by-step tutorial',
           icon: Icons.play_circle_outline_rounded,
-          color: const Color(0xFFFF8C42),
+          color: AppColors.coralOrange,
           onTap: () => showDialog(
             context: context,
             barrierColor: Colors.black87,
@@ -149,14 +149,14 @@ class PartahHomeView extends StatelessWidget {
           title: 'Mantic ERP',
           subtitle: 'Full business management',
           icon: Icons.business_center_rounded,
-          color: const Color(0xFF5C6BC0),
+          color: AppColors.indigo,
           onTap: () => _launchUrl(context, 'https://softronix.pk/products/mantic-erp/'),
         ),
         _InfoCardData(
           title: 'More Software',
           subtitle: 'Explore our other apps',
           icon: Icons.apps_rounded,
-          color: const Color(0xFF26C6DA),
+          color: AppColors.turquoise,
           onTap: () => context.pushNamed(RouteNames.more_software),
         ),
       ];

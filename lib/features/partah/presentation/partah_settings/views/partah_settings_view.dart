@@ -52,7 +52,7 @@ class _PartahSettingsViewState extends State<PartahSettingsView> {
           _SectionHeader(title: 'Products'),
           _SettingsTile(
             icon: Icons.inventory_2_outlined,
-            iconColor: const Color(0xFF5B9BD5),
+            iconColor: AppColors.skyBlue,
             title: 'Manage Products',
             subtitle: 'Add, edit or remove mill products',
             onTap: () => context.pushNamed(RouteNames.manage_products),
@@ -61,7 +61,7 @@ class _PartahSettingsViewState extends State<PartahSettingsView> {
           _SectionHeader(title: 'Base Weight'),
           _SettingsTile(
             icon: Icons.scale_rounded,
-            iconColor: const Color(0xFFD4A017),
+            iconColor: AppColors.goldenrod,
             title: 'Bag Weight',
             subtitle: _millType != null
                 ? '${_millType!.label} — ${_millType!.displayKgLabel} kg'
@@ -72,7 +72,7 @@ class _PartahSettingsViewState extends State<PartahSettingsView> {
           _SectionHeader(title: 'About'),
           _SettingsTile(
             icon: Icons.factory_outlined,
-            iconColor: const Color(0xFFE8875A),
+            iconColor: AppColors.terracotta,
             title: 'Partah',
             subtitle: 'Rate & profit calculator for mills',
           ),

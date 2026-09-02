@@ -166,6 +166,22 @@ class AppColors {
   static const Color brown = Color(0xFF6D4C41);
   static const Color errorBright = Color(0xFFE53935);
   static const Color redAccent = Color(0xFFFF5252);
+  static const Color skyBlue = Color(0xFF5B9BD5);
+  static const Color skyBlueDark = Color(0xFF3A78C9);
+  static const Color emerald = Color(0xFF4BAE8A);
+  static const Color emeraldDark = Color(0xFF2D8C6A);
+  static const Color lavender = Color(0xFF8B6BBE);
+  static const Color lavenderDark = Color(0xFF6B4DA0);
+  static const Color coralOrange = Color(0xFFFF8C42);
+  static const Color turquoise = Color(0xFF26C6DA);
+  static const Color goldenrod = Color(0xFFD4A017);
+  static const Color terracotta = Color(0xFFE8875A);
+  static const Color azure = Color(0xFF1E88E5);
+  static const Color marigold = Color(0xFFF4A623);
+  static const Color flame = Color(0xFFFF7043);
+  static const Color taupe = Color(0xFF8D6E63);
+  static const Color iceBlue = Color(0xFFD0E4FF);
+  static const Color midnightBlue = Color(0xFF0A1628);
 
   // ============================================
   // FINANCIAL COLORS

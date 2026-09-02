@@ -26,7 +26,7 @@ class _AttendanceDonutChartState extends State<AttendanceDonutChart>
   static const _chartSize = 220.0;
   static const _innerR = 60.0;
   static const _sectionR = 28.0;
-  static const _absentColor = Color(0xFFD0E4FF);
+  static const _absentColor = AppColors.iceBlue;
 
   late final AnimationController _controller;
   late final Animation<double> _progress;

@@ -34,7 +34,7 @@ class _SplashViewState extends State<SplashView> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF0A1628), Color(0xFF074DBF), Color(0xff1B84FF)],
+                colors: [AppColors.midnightBlue, AppColors.primaryDark, AppColors.primary],
                 stops: [0.0, 0.55, 1.0],
               ),
             ),
@@ -84,7 +84,7 @@ class _SplashViewState extends State<SplashView> {
                         color: context.white,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xff1B84FF).withValues(alpha: 0.5),
+                            color: AppColors.primary.withValues(alpha: 0.5),
                             blurRadius: 32,
                             spreadRadius: 4,
                           ),

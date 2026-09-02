@@ -311,7 +311,7 @@ class _ShareSheet extends StatelessWidget {
           const SizedBox(height: 16),
           _ShareOption(
             icon: Icons.picture_as_pdf_rounded,
-            iconColor: const Color(0xFFE53935),
+            iconColor: AppColors.errorBright,
             title: 'PDF',
             subtitle: pageCount == 1
                 ? '1 page • single file'
@@ -321,7 +321,7 @@ class _ShareSheet extends StatelessWidget {
           const SizedBox(height: 10),
           _ShareOption(
             icon: Icons.image_outlined,
-            iconColor: const Color(0xFF1E88E5),
+            iconColor: AppColors.azure,
             title: 'Images',
             subtitle: pageCount == 1
                 ? '1 image file'
