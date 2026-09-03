@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/local_storage/mill_config_store.dart';
-import '../../../../../core/shared/shared_exports.dart';
+import '../../../domain/entities/product_template_entity.dart';
 
 class ProductEditRow {
   final TextEditingController nameController;

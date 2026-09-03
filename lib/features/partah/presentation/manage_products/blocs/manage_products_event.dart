@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../../../core/shared/shared_exports.dart';
+import '../../../domain/entities/product_template_entity.dart';
 
 abstract class ManageProductsEvent extends Equatable {
   const ManageProductsEvent();

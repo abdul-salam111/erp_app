@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import '../constants/shared_pref_key.dart';
-import '../shared/domain/entities/product_template_entity.dart';
-import 'storage.dart';
+import '../../../../core/constants/shared_pref_key.dart';
+import '../../../../core/local_storage/storage.dart';
+import '../../domain/entities/product_template_entity.dart';
 
 /// Local stand-in for the product-templates backend. Both the Partah
 /// calculator (reader) and Product Setup (writer) go through this until a

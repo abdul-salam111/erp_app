@@ -1,7 +1,7 @@
 import '../../../../core/utils/result.dart';
-import '../../../../core/shared/shared_exports.dart';
 import '../entities/cost_item_entity.dart';
 import '../entities/partah_record_entity.dart';
+import '../entities/product_template_entity.dart';
 import '../entities/production_entry_entity.dart';
 
 abstract interface class PartahRepository {

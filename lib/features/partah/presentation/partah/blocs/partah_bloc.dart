@@ -4,6 +4,7 @@ import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/local_storage/mill_config_store.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/entities/cost_item_entity.dart';
+import '../../../domain/entities/product_template_entity.dart';
 import '../../../domain/entities/production_entry_entity.dart';
 import '../../../domain/usecases/get_last_costs_usecase.dart';
 import '../../../domain/usecases/get_last_production_entries_usecase.dart';

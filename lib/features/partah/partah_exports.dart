@@ -8,6 +8,7 @@ export 'domain/entities/partah_entity.dart';
 export 'domain/entities/cost_item_entity.dart';
 export 'domain/entities/production_entry_entity.dart';
 export 'domain/entities/partah_record_entity.dart';
+export 'domain/entities/product_template_entity.dart';
 
 // Presentation — partah screen
 export 'presentation/partah/blocs/partah_bloc.dart';

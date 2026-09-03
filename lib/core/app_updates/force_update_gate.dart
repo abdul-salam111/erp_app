@@ -18,8 +18,7 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
   bool _isDialogShowing = false;
   bool _prevShouldShowForce = false;
 
-  // TODO: replace with ManticERP's actual App Store URL once published
-  static const _appStoreUrl = 'https://apps.apple.com/us/app/YOUR_ERP_APP_ID';
+  static const _appStoreUrl = 'https://apps.apple.com/us/app/6785879782';
   static const _playStoreUrl =
       'https://play.google.com/store/apps/details?id=com.manticerp.softronix';
 
@@ -103,8 +102,9 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
                 padding: const EdgeInsets.symmetric(vertical: 28),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -114,8 +114,11 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
                         color: context.white.withValues(alpha: 0.2),
                         shape: .circle,
                       ),
-                      child: Icon(Icons.system_update_rounded,
-                          size: 36, color: context.white),
+                      child: Icon(
+                        Icons.system_update_rounded,
+                        size: 36,
+                        color: context.white,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     Text(
@@ -155,11 +158,14 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14)),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
-                        child: Text(Platform.isIOS
-                            ? 'Update on App Store'
-                            : 'Update on Play Store'),
+                        child: Text(
+                          Platform.isIOS
+                              ? 'Update on App Store'
+                              : 'Update on Play Store',
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -174,7 +180,8 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14)),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
                         child: const Text('Maybe Later'),
                       ),
@@ -196,7 +203,8 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
         canPop: false,
         child: _ForceUpdateScreen(
           title: _controller.config?.updateTitle ?? 'Update Required',
-          message: _controller.config?.updateMessage ??
+          message:
+              _controller.config?.updateMessage ??
               'Please update the app to continue using all features.',
           onUpdate: _launchStore,
         ),
@@ -234,15 +242,17 @@ class _ForceUpdateScreen extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                   shape: .circle,
                 ),
-                child: Icon(Icons.system_update_rounded,
-                    size: 32, color: context.white),
+                child: Icon(
+                  Icons.system_update_rounded,
+                  size: 32,
+                  color: context.white,
+                ),
               ),
               const SizedBox(height: 36),
               Text(
                 title,
                 textAlign: .center,
-                style: const TextStyle(
-                    fontSize: 26, fontWeight: .bold),
+                style: const TextStyle(fontSize: 26, fontWeight: .bold),
               ),
               const SizedBox(height: 14),
               Text(
@@ -258,11 +268,14 @@ class _ForceUpdateScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                  child: Text(Platform.isIOS
-                      ? 'Update on App Store'
-                      : 'Update on Play Store'),
+                  child: Text(
+                    Platform.isIOS
+                        ? 'Update on App Store'
+                        : 'Update on Play Store',
+                  ),
                 ),
               ),
               const SizedBox(height: 16),

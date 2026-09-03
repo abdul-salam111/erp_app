@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import '../../../../../core/constants/shared_pref_key.dart';
 import '../../../../../core/local_storage/mill_config_store.dart';
 import '../../../../../core/local_storage/storage.dart';
-import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/entities/cost_item_entity.dart';
 import '../../../domain/entities/partah_record_entity.dart';
+import '../../../domain/entities/product_template_entity.dart';
 import '../../../domain/entities/production_entry_entity.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────

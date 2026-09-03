@@ -2,6 +2,7 @@ import '../../../../core/utils/result.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../domain/entities/cost_item_entity.dart';
 import '../../domain/entities/partah_record_entity.dart';
+import '../../domain/entities/product_template_entity.dart';
 import '../../domain/entities/production_entry_entity.dart';
 import '../../domain/repositories/partah_repository.dart';
 import '../datasources/remote_partah_datasource.dart';

@@ -8,15 +8,12 @@
 `retry_interceptor.dart` only retries on connection errors/timeouts; `token_refresh_interceptor.dart` only refreshes _proactively_ based on a 2-minute expiry buffer. There's no `onError` hook that catches a live 401 and retries with a fresh token — if the proactive check races or the server invalidates early, the user just sees a generic auth error instead of a transparent silent recovery.
 
 ---
-
 ## Medium-Severity Findings
 
 - **`signin_bloc.dart` does too much** — full login → save credentials → save user → auto-select org → select branch → fetch roles → fetch features orchestration lives directly in the bloc, with one branch (`failure: (_) {}` at line 108) silently swallowing feature-fetch errors while the sibling branch surfaces role-fetch errors. This orchestration belongs in a usecase
 .
 - **`SessionController` is a bare mutable singleton** with public mutable fields and no synchronization outside the Dio interceptor's `QueuedInterceptor` — a secondary race-condition surface if session state is ever touched from outside the network layer.
 - **Dashboard state modeling regresses to 4 independent status/error fields** (`admin_dashboard_state.dart`) instead of one sealed union — 16 theoretically reachable state combinations for what's rendered as one screen.
-- **`DocumentRepositoryImpl` (scan_document) is the one repository that doesn't extend `BaseRepository`** — no `Result`/`Failure` wrapping, breaking the one error-handling contract every other repository follows.
-- **`ProductTemplateEntity` lives in `core/shared/domain`** but is only ever used by one feature — misplaced, couples core to a single feature's vocabulary.
 - **No cert pinning**, and Firebase Remote Config controls the API base URL with silently-swallowed fetch errors (`catch (_) {}`) and no integrity check — a compromised Remote Config or a MITM (enabled by the lack of pinning) can redirect all traffic, including the plaintext-password relogin call from C2.
 - **Debug-signing fallback**: `android/app/build.gradle.kts` falls back to the **debug keystore** if `key.properties` is missing instead of failing the build — a misconfigured release build could silently ship debug-signed.
 - **Validators exist but are barely used** — `lib/core/utils/validators.dart` is a comprehensive validation library, wired only into the sign-in screen; every other form (purchase/sale orders, HR modules) relies entirely on server-side rejection of malformed input.

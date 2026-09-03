@@ -1,7 +1,8 @@
+import '../../../../core/utils/result.dart';
 import '../entities/scanned_document.dart';
 
 abstract class DocumentRepository {
-  List<ScannedDocument> getDocuments();
-  void addDocument(ScannedDocument document);
-  void deleteDocument(String id);
+  Future<Result<List<ScannedDocument>>> getDocuments();
+  Future<Result<void>> addDocument(ScannedDocument document);
+  Future<Result<void>> deleteDocument(String id);
 }

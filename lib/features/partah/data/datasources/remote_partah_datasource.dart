@@ -1,9 +1,10 @@
 import '../../../../core/local_storage/partah_record_local_store.dart';
-import '../../../../core/local_storage/product_template_local_store.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../../domain/entities/cost_item_entity.dart';
 import '../../domain/entities/production_entry_entity.dart';
 import '../../domain/entities/partah_record_entity.dart';
+import '../../domain/entities/product_template_entity.dart';
+import 'product_template_local_store.dart';
 
 abstract interface class IRemotePartahDataSource {
   Future<List<ProductTemplateEntity>> getProductTemplates();

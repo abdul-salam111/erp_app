@@ -1,3 +1,4 @@
+import '../../../../core/utils/result.dart';
 import '../repositories/scan_document_repository.dart';
 
 class DeleteDocument {
@@ -5,5 +6,5 @@ class DeleteDocument {
 
   DeleteDocument(this.repository);
 
-  void call(String id) => repository.deleteDocument(id);
+  Future<Result<void>> call(String id) => repository.deleteDocument(id);
 }

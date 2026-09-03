@@ -34,11 +34,19 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
     on<DocumentsDeleted>(_onDocumentsDeleted);
   }
 
-  void _onDocumentsLoaded(
+  Future<void> _onDocumentsLoaded(
     DocumentsLoaded event,
     Emitter<ScannerState> emit,
-  ) {
-    emit(ScannerLoaded(_getDocuments()));
+  ) async {
+    emit(await _loadedState());
+  }
+
+  Future<ScannerState> _loadedState() async {
+    final result = await _getDocuments();
+    return result.when(
+      success: ScannerLoaded.new,
+      failure: (f) => ScannerError(f.message),
+    );
   }
 
   Future<void> _onScanStarted(
@@ -48,7 +56,7 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
     final status = await Permission.camera.request();
     if (!status.isGranted) {
       emit(const ScannerError('Camera permission required'));
-      emit(ScannerLoaded(_getDocuments()));
+      emit(await _loadedState());
       return;
     }
 
@@ -61,21 +69,21 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
       );
 
       if (result == null || result.images.isEmpty) {
-        emit(ScannerLoaded(_getDocuments()));
+        emit(await _loadedState());
         return;
       }
 
       final paths = await _resolveImagePaths(result.images);
 
       if (paths.isEmpty) {
-        emit(ScannerLoaded(_getDocuments()));
+        emit(await _loadedState());
         return;
       }
 
       emit(ScannerNamingDocument(paths));
     } catch (e) {
       emit(ScannerError(e.toString()));
-      emit(ScannerLoaded(_getDocuments()));
+      emit(await _loadedState());
     }
   }
 
@@ -98,35 +106,35 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
     return resolved?.cast<String>() ?? [];
   }
 
-  void _onDocumentNamed(
+  Future<void> _onDocumentNamed(
     DocumentNamed event,
     Emitter<ScannerState> emit,
-  ) {
+  ) async {
     final doc = ScannedDocument(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: event.name,
       imagePaths: event.imagePaths,
       createdAt: DateTime.now(),
     );
-    _addDocument(doc);
-    emit(ScannerLoaded(_getDocuments()));
+    await _addDocument(doc);
+    emit(await _loadedState());
   }
 
-  void _onDocumentDeleted(
+  Future<void> _onDocumentDeleted(
     DocumentDeleted event,
     Emitter<ScannerState> emit,
-  ) {
-    _deleteDocument(event.id);
-    emit(ScannerLoaded(_getDocuments()));
+  ) async {
+    await _deleteDocument(event.id);
+    emit(await _loadedState());
   }
 
-  void _onDocumentsDeleted(
+  Future<void> _onDocumentsDeleted(
     DocumentsDeleted event,
     Emitter<ScannerState> emit,
-  ) {
+  ) async {
     for (final id in event.ids) {
-      _deleteDocument(id);
+      await _deleteDocument(id);
     }
-    emit(ScannerLoaded(_getDocuments()));
+    emit(await _loadedState());
   }
 }

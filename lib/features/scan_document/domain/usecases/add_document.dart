@@ -1,3 +1,4 @@
+import '../../../../core/utils/result.dart';
 import '../entities/scanned_document.dart';
 import '../repositories/scan_document_repository.dart';
 
@@ -6,5 +7,6 @@ class AddDocument {
 
   AddDocument(this.repository);
 
-  void call(ScannedDocument document) => repository.addDocument(document);
+  Future<Result<void>> call(ScannedDocument document) =>
+      repository.addDocument(document);
 }

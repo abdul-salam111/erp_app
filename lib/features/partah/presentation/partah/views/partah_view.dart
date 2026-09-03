@@ -10,7 +10,7 @@ import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../../routes/route_names.dart';
 import '../../../domain/entities/cost_item_entity.dart';
-import '../../../../../core/shared/shared_exports.dart';
+import '../../../domain/entities/product_template_entity.dart';
 import '../../../domain/entities/production_entry_entity.dart';
 import '../controllers/partah_calculator.dart';
 import 'steps/cost_step.dart';

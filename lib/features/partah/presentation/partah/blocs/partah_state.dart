@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/local_storage/mill_config_store.dart';
-import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/entities/cost_item_entity.dart';
+import '../../../domain/entities/product_template_entity.dart';
 import '../../../domain/entities/production_entry_entity.dart';
 
 class PartahState extends Equatable {

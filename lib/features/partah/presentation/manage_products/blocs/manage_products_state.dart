@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/shared/shared_exports.dart';
+import '../../../domain/entities/product_template_entity.dart';
 
 class ManageProductsState extends Equatable {
   final ApiStatus loadStatus;
