@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/services/session_manager.dart';
@@ -17,7 +18,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
     required this.getUserFeaturesUsecase,
     required this.getUserRolesUsecase,
   }) : super(const SignInState()) {
-    on<SignInSubmitted>(_onSignInSubmitted);
+    on<SignInSubmitted>(_onSignInSubmitted, transformer: droppable());
     on<EmailChangedEvent>(
       (event, emit) => emit(state.copyWith(email: event.email)),
     );

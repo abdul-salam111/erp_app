@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/apply_leave_usecase.dart';
@@ -10,7 +11,7 @@ class ApplyLeaveBloc extends Bloc<ApplyLeaveEvent, ApplyLeaveState>
 
   ApplyLeaveBloc({required this.applyLeaveUsecase})
       : super(const ApplyLeaveState()) {
-    on<ApplyLeaveSubmitted>(_onSubmitted);
+    on<ApplyLeaveSubmitted>(_onSubmitted, transformer: droppable());
   }
 
   Future<void> _onSubmitted(

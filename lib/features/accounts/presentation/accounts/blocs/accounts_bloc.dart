@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
@@ -13,9 +14,9 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
   AccountsBloc({required this.getDueReceiptCountUsecase})
     : super(const AccountsState(todayOverviewExpanded: false)) {
     on<TodayOverviewExpansionToggled>(_onTodayOverviewExpansionToggled);
-    on<RecoveryFilterChanged>(_onRecoveryFilterChanged);
-    on<RecoveryDueFetched>(_onRecoveryDueFetched);
-    on<RecoveryPageChanged>(_onRecoveryPageChanged);
+    on<RecoveryFilterChanged>(_onRecoveryFilterChanged, transformer: sequential());
+    on<RecoveryDueFetched>(_onRecoveryDueFetched, transformer: restartable());
+    on<RecoveryPageChanged>(_onRecoveryPageChanged, transformer: sequential());
     on<RecoverySearchChanged>(_onRecoverySearchChanged);
     add(const RecoveryDueFetched());
   }

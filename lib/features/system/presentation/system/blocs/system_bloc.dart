@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/system_usecase.dart';
@@ -10,7 +11,7 @@ class SystemBloc extends Bloc<SystemEvent, SystemState>
 
   SystemBloc({required this.systemUsecase})
       : super(const SystemState()) {
-    on<SystemSubmitted>(_onSystemSubmitted);
+    on<SystemSubmitted>(_onSystemSubmitted, transformer: droppable());
   }
 
   Future<void> _onSystemSubmitted(

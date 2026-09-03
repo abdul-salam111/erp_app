@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/loan_and_advance_usecase.dart';
@@ -10,7 +11,7 @@ class LoanAndAdvanceBloc extends Bloc<LoanAndAdvanceEvent, LoanAndAdvanceState>
 
   LoanAndAdvanceBloc({required this.loanAndAdvanceUsecase})
       : super(LoanAndAdvanceState()) {
-    on<LoanAndAdvanceFetched>(_onFetched);
+    on<LoanAndAdvanceFetched>(_onFetched, transformer: droppable());
   }
 
   Future<void> _onFetched(

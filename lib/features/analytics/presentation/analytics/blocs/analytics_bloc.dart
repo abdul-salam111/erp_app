@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/analytics_usecase.dart';
@@ -10,7 +11,7 @@ class AnalyticsBloc extends Bloc<AnalyticsEvent, AnalyticsState>
 
   AnalyticsBloc({required this.analyticsUsecase})
     : super(const AnalyticsState()) {
-    on<AnalyticsSubmitted>(_onAnalyticsSubmitted);
+    on<AnalyticsSubmitted>(_onAnalyticsSubmitted, transformer: droppable());
   }
 
   Future<void> _onAnalyticsSubmitted(

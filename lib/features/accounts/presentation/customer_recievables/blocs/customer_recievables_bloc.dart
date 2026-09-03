@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
@@ -14,8 +15,8 @@ class CustomerRecievablesBloc
     required this.customerRecievablesUsecase,
     required this.getPartyListUsecase,
   }) : super(const CustomerRecievablesState()) {
-    on<CustomerRecievablesSubmitted>(_onSubmitted);
-    on<CustomerRecievablesPartiesFetched>(_onPartiesFetched);
+    on<CustomerRecievablesSubmitted>(_onSubmitted, transformer: restartable());
+    on<CustomerRecievablesPartiesFetched>(_onPartiesFetched, transformer: droppable());
 
     add(const CustomerRecievablesPartiesFetched());
   }

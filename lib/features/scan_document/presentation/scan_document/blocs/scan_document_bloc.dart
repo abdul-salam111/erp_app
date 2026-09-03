@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_doc_scanner/flutter_doc_scanner.dart';
@@ -27,11 +28,11 @@ class ScannerBloc extends Bloc<ScannerEvent, ScannerState> {
         _addDocument = addDocument,
         _deleteDocument = deleteDocument,
         super(const ScannerInitial()) {
-    on<DocumentsLoaded>(_onDocumentsLoaded);
-    on<ScanStarted>(_onScanStarted);
-    on<DocumentNamed>(_onDocumentNamed);
-    on<DocumentDeleted>(_onDocumentDeleted);
-    on<DocumentsDeleted>(_onDocumentsDeleted);
+    on<DocumentsLoaded>(_onDocumentsLoaded, transformer: droppable());
+    on<ScanStarted>(_onScanStarted, transformer: droppable());
+    on<DocumentNamed>(_onDocumentNamed, transformer: droppable());
+    on<DocumentDeleted>(_onDocumentDeleted, transformer: droppable());
+    on<DocumentsDeleted>(_onDocumentsDeleted, transformer: sequential());
   }
 
   Future<void> _onDocumentsLoaded(

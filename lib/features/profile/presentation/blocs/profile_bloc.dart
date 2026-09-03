@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/services/session_manager.dart';
@@ -12,7 +13,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState>
 
   ProfileBloc({required this.deleteTokenUsecase})
       : super(const ProfileState()) {
-    on<LogoutRequested>(_onLogoutRequested);
+    on<LogoutRequested>(_onLogoutRequested, transformer: droppable());
   }
 
   Future<void> _onLogoutRequested(

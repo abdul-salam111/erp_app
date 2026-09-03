@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/system_usecase.dart';
@@ -10,7 +11,7 @@ class SecurityBloc extends Bloc<SecurityEvent, SecurityState>
 
   SecurityBloc({required this.systemUsecase})
       : super(const SecurityState()) {
-    on<SecuritySubmitted>(_onSecuritySubmitted);
+    on<SecuritySubmitted>(_onSecuritySubmitted, transformer: droppable());
   }
 
   Future<void> _onSecuritySubmitted(

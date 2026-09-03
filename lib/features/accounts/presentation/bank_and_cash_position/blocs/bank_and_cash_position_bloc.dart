@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../accounts_exports.dart';
 
@@ -9,7 +10,7 @@ class BankAndCashPositionBloc
 
   BankAndCashPositionBloc({required this.bankAndCashPositionUsecase})
       : super(const BankAndCashPositionState()) {
-    on<BankAndCashPositionSubmitted>(_onBankAndCashPositionSubmitted);
+    on<BankAndCashPositionSubmitted>(_onBankAndCashPositionSubmitted, transformer: droppable());
     add(const BankAndCashPositionSubmitted());
   }
 

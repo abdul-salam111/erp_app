@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
@@ -11,8 +12,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> with UsecaseExecuterM
   final DeleteReportUsecase deleteReport;
 
   ReportsBloc({required this.getAllReports, required this.deleteReport}) : super(const ReportsState()) {
-    on<ReportsStarted>(_onStarted);
-    on<ReportDeleteRequested>(_onDeleteRequested);
+    on<ReportsStarted>(_onStarted, transformer: droppable());
+    on<ReportDeleteRequested>(_onDeleteRequested, transformer: droppable());
   }
 
   Future<void> _onStarted(ReportsStarted event, Emitter<ReportsState> emit) async {

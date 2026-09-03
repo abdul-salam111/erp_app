@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/foundation.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
@@ -14,9 +15,9 @@ class AccountLedgerBloc extends Bloc<AccountLedgerEvent, AccountLedgerState> {
     required this.getInvoicePdfUsecase,
     required this.getAccountsListUsecase,
   }) : super(_initialState()) {
-    on<AccountLedgerSubmitted>(_onSubmitted);
-    on<AccountLedgerPrintRequested>(_onPrintRequested);
-    on<AccountLedgerAccountsFetched>(_onAccountsFetched);
+    on<AccountLedgerSubmitted>(_onSubmitted, transformer: restartable());
+    on<AccountLedgerPrintRequested>(_onPrintRequested, transformer: droppable());
+    on<AccountLedgerAccountsFetched>(_onAccountsFetched, transformer: droppable());
     on<AccountLedgerFromDateChanged>(
         (e, emit) => emit(state.copyWith(fromDate: e.date)));
     on<AccountLedgerToDateChanged>(

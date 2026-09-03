@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/get_active_product_templates_usecase.dart';
@@ -14,8 +15,8 @@ class ManageProductsBloc extends Bloc<ManageProductsEvent, ManageProductsState>
     required this.getActiveProductTemplates,
     required this.saveProductTemplates,
   }) : super(const ManageProductsState()) {
-    on<ManageProductsStarted>(_onStarted);
-    on<ManageProductsSaveRequested>(_onSaveRequested);
+    on<ManageProductsStarted>(_onStarted, transformer: droppable());
+    on<ManageProductsSaveRequested>(_onSaveRequested, transformer: droppable());
   }
 
   Future<void> _onStarted(ManageProductsStarted event, Emitter<ManageProductsState> emit) async {

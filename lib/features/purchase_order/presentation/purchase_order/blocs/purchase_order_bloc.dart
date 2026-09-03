@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/purchase_order_usecase.dart';
@@ -10,9 +11,9 @@ class PurchaseOrderBloc extends Bloc<PurchaseOrderEvent, PurchaseOrderState>
 
   PurchaseOrderBloc({required this.purchaseorderUsecase})
       : super(const PurchaseOrderState()) {
-    on<PurchaseOrderFetched>(_onFetched);
-    on<PurchaseOrderSearchChanged>(_onSearchChanged);
-    on<PurchaseOrderLoadMore>(_onLoadMore);
+    on<PurchaseOrderFetched>(_onFetched, transformer: droppable());
+    on<PurchaseOrderSearchChanged>(_onSearchChanged, transformer: restartable());
+    on<PurchaseOrderLoadMore>(_onLoadMore, transformer: sequential());
   }
 
   Future<void> _onFetched(

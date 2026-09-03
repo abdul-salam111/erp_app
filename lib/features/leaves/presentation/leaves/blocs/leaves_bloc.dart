@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/leaves_usecase.dart';
@@ -16,7 +17,7 @@ class LeavesBloc extends Bloc<LeavesEvent, LeavesState>
           ),
         )) {
     on<LeavesMonthChanged>(_onMonthChanged);
-    on<LeavesSubmitted>(_onLeavesSubmitted);
+    on<LeavesSubmitted>(_onLeavesSubmitted, transformer: droppable());
   }
 
   void _onMonthChanged(LeavesMonthChanged event, Emitter<LeavesState> emit) {

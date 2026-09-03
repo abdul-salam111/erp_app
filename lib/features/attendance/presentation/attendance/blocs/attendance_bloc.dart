@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/attendance_usecase.dart';
@@ -16,7 +17,7 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState>
           ),
         )) {
     on<AttendanceMonthChanged>(_onMonthChanged);
-    on<AttendanceSubmitted>(_onAttendanceSubmitted);
+    on<AttendanceSubmitted>(_onAttendanceSubmitted, transformer: droppable());
   }
 
   void _onMonthChanged(

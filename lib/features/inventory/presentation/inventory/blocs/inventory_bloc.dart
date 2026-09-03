@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/usecases/get_current_stock_usecase.dart';
 import '../../../domain/usecases/get_stock_received_usecase.dart';
@@ -16,8 +17,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   })  : _getStockReceived = getStockReceived,
         _getCurrentStock = getCurrentStock,
         super(const InventoryState()) {
-    on<FetchInventoryData>(_onFetchInventoryData);
-    on<StockReceivedDateTypeChanged>(_onStockReceivedDateTypeChanged);
+    on<FetchInventoryData>(_onFetchInventoryData, transformer: droppable());
+    on<StockReceivedDateTypeChanged>(_onStockReceivedDateTypeChanged, transformer: restartable());
   }
 
   Future<void> _onFetchInventoryData(

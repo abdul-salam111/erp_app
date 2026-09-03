@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/services/session_manager.dart';
@@ -13,7 +14,7 @@ class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionStat
     required this.getUserFeaturesUsecase,
     required this.getUserRolesUsecase,
   }) : super(const BranchSelectionState()) {
-    on<BranchSelectedEvent>(_onBranchSelected);
+    on<BranchSelectedEvent>(_onBranchSelected, transformer: droppable());
   }
 
   Future<void> _onBranchSelected(

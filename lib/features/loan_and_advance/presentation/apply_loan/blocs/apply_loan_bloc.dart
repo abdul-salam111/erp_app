@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/apply_loan_usecase.dart';
@@ -10,7 +11,7 @@ class ApplyLoanBloc extends Bloc<ApplyLoanEvent, ApplyLoanState>
 
   ApplyLoanBloc({required this.applyLoanUsecase})
       : super(const ApplyLoanState()) {
-    on<ApplyLoanSubmitted>(_onSubmitted);
+    on<ApplyLoanSubmitted>(_onSubmitted, transformer: droppable());
   }
 
   Future<void> _onSubmitted(

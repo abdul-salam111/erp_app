@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../accounts_exports.dart';
@@ -13,9 +14,9 @@ class PartyLedgerBloc extends Bloc<PartyLedgerEvent, PartyLedgerState> {
     required this.getInvoicePdfUsecase,
     required this.getPartyListUsecase,
   }) : super(const PartyLedgerState()) {
-    on<PartyLedgerSubmitted>(_onSubmitted);
-    on<PartyLedgerPrintRequested>(_onPrintRequested);
-    on<PartyLedgerPartiesFetched>(_onPartiesFetched);
+    on<PartyLedgerSubmitted>(_onSubmitted, transformer: restartable());
+    on<PartyLedgerPrintRequested>(_onPrintRequested, transformer: droppable());
+    on<PartyLedgerPartiesFetched>(_onPartiesFetched, transformer: droppable());
 
     add(const PartyLedgerPartiesFetched());
   }

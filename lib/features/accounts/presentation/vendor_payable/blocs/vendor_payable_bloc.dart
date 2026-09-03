@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../accounts_exports.dart';
@@ -9,7 +10,7 @@ class VendorPayableBloc extends Bloc<VendorPayableEvent, VendorPayableState>
 
   VendorPayableBloc({required this.vendorPayableUsecase})
       : super(const VendorPayableState()) {
-    on<VendorPayableSubmitted>(_onVendorPayableSubmitted);
+    on<VendorPayableSubmitted>(_onVendorPayableSubmitted, transformer: restartable());
   }
 
   Future<void> _onVendorPayableSubmitted(

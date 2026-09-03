@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
@@ -25,8 +26,8 @@ class PartahBloc extends Bloc<PartahEvent, PartahState> with UsecaseExecuterMixi
     required this.getLastProductionEntries,
     required this.saveRecord,
   }) : super(const PartahState()) {
-    on<PartahStarted>(_onStarted);
-    on<PartahRecordSaveRequested>(_onSaveRequested);
+    on<PartahStarted>(_onStarted, transformer: droppable());
+    on<PartahRecordSaveRequested>(_onSaveRequested, transformer: droppable());
   }
 
   Future<void> _onStarted(PartahStarted event, Emitter<PartahState> emit) async {

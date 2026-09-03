@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
@@ -15,7 +16,7 @@ class CreditManagementBloc
     required this.getPartyListUsecase,
     required this.getCustomerReceivableAgingUsecase,
   }) : super(_initialState()) {
-    on<CreditManagementSubmitted>(_onSubmitted);
+    on<CreditManagementSubmitted>(_onSubmitted, transformer: restartable());
     on<CreditManagementDateChanged>(
       (e, emit) => emit(state.copyWith(date: e.date)),
     );

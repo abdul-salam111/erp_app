@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
@@ -22,15 +23,15 @@ class CreateSaleOrderBloc
     required this.getSaleOrderByIdUsecase,
     required this.getSalePartiesUsecase,
   }) : super(_initialState()) {
-    on<CreateSaleOrderSubmitted>(_onCreateSaleOrderSubmitted);
-    on<SaleOrderDetailRequested>(_onDetailRequested);
-    on<SaleOrderPartiesRequested>(_onPartiesRequested);
+    on<CreateSaleOrderSubmitted>(_onCreateSaleOrderSubmitted, transformer: droppable());
+    on<SaleOrderDetailRequested>(_onDetailRequested, transformer: droppable());
+    on<SaleOrderPartiesRequested>(_onPartiesRequested, transformer: droppable());
     on<SaleOrderCustomerSelected>(_onCustomerSelected);
     on<SaleOrderBrokerSelected>(_onBrokerSelected);
     on<SaleOrderDateChanged>(_onDateChanged);
-    on<SaleOrderRowAdded>(_onRowAdded);
-    on<SaleOrderRowRemoved>(_onRowRemoved);
-    on<SaleOrderRowUpdated>(_onRowUpdated);
+    on<SaleOrderRowAdded>(_onRowAdded, transformer: sequential());
+    on<SaleOrderRowRemoved>(_onRowRemoved, transformer: sequential());
+    on<SaleOrderRowUpdated>(_onRowUpdated, transformer: sequential());
   }
 
   Future<void> _onCreateSaleOrderSubmitted(

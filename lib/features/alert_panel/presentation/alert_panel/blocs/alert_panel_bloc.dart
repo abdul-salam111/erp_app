@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/alert_panel_usecase.dart';
@@ -10,7 +11,7 @@ class AlertPanelBloc extends Bloc<AlertPanelEvent, AlertPanelState>
 
   AlertPanelBloc({required this.alertpanelUsecase})
       : super(const AlertPanelState()) {
-    on<AlertPanelSubmitted>(_onAlertPanelSubmitted);
+    on<AlertPanelSubmitted>(_onAlertPanelSubmitted, transformer: droppable());
   }
 
   Future<void> _onAlertPanelSubmitted(

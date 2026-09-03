@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
@@ -22,15 +23,15 @@ class CreatePurchaseOrderBloc
     required this.getPurchaseOrderByIdUsecase,
     required this.getPartiesUsecase,
   }) : super(_initialState()) {
-    on<CreatePurchaseOrderSubmitted>(_onCreatePurchaseOrderSubmitted);
-    on<PurchaseOrderDetailRequested>(_onDetailRequested);
-    on<PurchaseOrderPartiesRequested>(_onPartiesRequested);
+    on<CreatePurchaseOrderSubmitted>(_onCreatePurchaseOrderSubmitted, transformer: droppable());
+    on<PurchaseOrderDetailRequested>(_onDetailRequested, transformer: droppable());
+    on<PurchaseOrderPartiesRequested>(_onPartiesRequested, transformer: droppable());
     on<PurchaseOrderSupplierSelected>(_onSupplierSelected);
     on<PurchaseOrderBrokerSelected>(_onBrokerSelected);
     on<PurchaseOrderDateChanged>(_onDateChanged);
-    on<PurchaseOrderRowAdded>(_onRowAdded);
-    on<PurchaseOrderRowRemoved>(_onRowRemoved);
-    on<PurchaseOrderRowUpdated>(_onRowUpdated);
+    on<PurchaseOrderRowAdded>(_onRowAdded, transformer: sequential());
+    on<PurchaseOrderRowRemoved>(_onRowRemoved, transformer: sequential());
+    on<PurchaseOrderRowUpdated>(_onRowUpdated, transformer: sequential());
   }
 
   Future<void> _onCreatePurchaseOrderSubmitted(

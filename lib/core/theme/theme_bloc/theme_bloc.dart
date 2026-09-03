@@ -1,6 +1,7 @@
 
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/services.dart';
 
 import '../../local_storage/storage.dart';
@@ -11,9 +12,9 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   final String _key = 'isDarkMode';
 
   ThemeBloc() : super(ThemeState(isDarkMode: false)) {
-    on<LoadTheme>(_onLoadTheme);
-    on<ToggleTheme>(_onToggleTheme);
-    on<SetTheme>(_onSetTheme);
+    on<LoadTheme>(_onLoadTheme, transformer: droppable());
+    on<ToggleTheme>(_onToggleTheme, transformer: droppable());
+    on<SetTheme>(_onSetTheme, transformer: droppable());
   }
 
   // Load theme from storage

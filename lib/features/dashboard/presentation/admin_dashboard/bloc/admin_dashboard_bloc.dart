@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mantic_erp_app/core/constants/app_enums.dart';
 import '../../../domain/entities/daily_stats_entity.dart';
@@ -40,12 +41,12 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
           monthlyStatsDetailStatus: ApiStatus.INITIAL,
           saleOrderSummaryStatus:   ApiStatus.INITIAL,
         )) {
-    on<DashboardDataRequested>(_onDashboardDataRequested);
-    on<SaleOrderDateRangeChanged>(_onSaleOrderDateRangeChanged);
-    on<DashboardMonthChanged>(_onDashboardMonthChanged);
+    on<DashboardDataRequested>(_onDashboardDataRequested, transformer: droppable());
+    on<SaleOrderDateRangeChanged>(_onSaleOrderDateRangeChanged, transformer: restartable());
+    on<DashboardMonthChanged>(_onDashboardMonthChanged, transformer: restartable());
     on<TodayOverviewExpansionToggled>(_onTodayOverviewExpansionToggled);
-    on<DailyStatsDateChanged>(_onDailyStatsDateChanged);
-    on<MonthlyStatsDetailKeyChanged>(_onMonthlyStatsDetailKeyChanged);
+    on<DailyStatsDateChanged>(_onDailyStatsDateChanged, transformer: restartable());
+    on<MonthlyStatsDetailKeyChanged>(_onMonthlyStatsDetailKeyChanged, transformer: restartable());
   }
 
   static String _toDateStr(DateTime d) =>

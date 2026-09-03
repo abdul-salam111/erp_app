@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
@@ -18,9 +19,9 @@ class CashbookBloc extends Bloc<CashbookEvent, CashbookState> {
     required this.getInvoicePdfUsecase,
     required this.getCashbookAccountsUsecase,
   }) : super(_initialState()) {
-    on<CashbookSubmitted>(_onSubmitted);
-    on<CashbookPrintRequested>(_onPrintRequested);
-    on<CashbookAccountsFetched>(_onAccountsFetched);
+    on<CashbookSubmitted>(_onSubmitted, transformer: restartable());
+    on<CashbookPrintRequested>(_onPrintRequested, transformer: droppable());
+    on<CashbookAccountsFetched>(_onAccountsFetched, transformer: droppable());
     on<CashbookFromDateChanged>(
         (e, emit) => emit(state.copyWith(fromDate: e.date)));
     on<CashbookToDateChanged>(

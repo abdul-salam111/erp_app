@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/overtime_usecase.dart';
@@ -10,7 +11,7 @@ class OvertimeBloc extends Bloc<OvertimeEvent, OvertimeState>
 
   OvertimeBloc({required this.overtimeUsecase})
       : super(OvertimeState()) {
-    on<OvertimeSubmitted>(_onOvertimeSubmitted);
+    on<OvertimeSubmitted>(_onOvertimeSubmitted, transformer: droppable());
   }
 
   Future<void> _onOvertimeSubmitted(

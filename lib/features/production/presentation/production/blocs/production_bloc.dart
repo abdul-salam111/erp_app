@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/production_usecase.dart';
@@ -10,7 +11,7 @@ class ProductionBloc extends Bloc<ProductionEvent, ProductionState>
 
   ProductionBloc({required this.productionUsecase})
       : super(const ProductionState()) {
-    on<ProductionSubmitted>(_onProductionSubmitted);
+    on<ProductionSubmitted>(_onProductionSubmitted, transformer: droppable());
   }
 
   Future<void> _onProductionSubmitted(

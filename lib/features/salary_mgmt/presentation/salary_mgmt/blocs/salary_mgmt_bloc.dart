@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../domain/usecases/salary_mgmt_usecase.dart';
@@ -10,7 +11,7 @@ class SalaryMgmtBloc extends Bloc<SalaryMgmtEvent, SalaryMgmtState>
 
   SalaryMgmtBloc({required this.salarymgmtUsecase})
       : super(SalaryMgmtState()) {
-    on<SalaryMgmtSubmitted>(_onSalaryMgmtSubmitted);
+    on<SalaryMgmtSubmitted>(_onSalaryMgmtSubmitted, transformer: droppable());
   }
 
   Future<void> _onSalaryMgmtSubmitted(
