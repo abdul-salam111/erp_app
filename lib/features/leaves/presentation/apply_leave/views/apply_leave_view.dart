@@ -348,6 +348,8 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody>
               // ── Submit ──
               _Animated(fade: _fades[5], slide: _slides[5], child:
                 BlocBuilder<ApplyLeaveBloc, ApplyLeaveState>(
+                  buildWhen: (previous, current) =>
+                      previous.apiStatus != current.apiStatus,
                   builder: (context, state) {
                     final loading = state.apiStatus == ApiStatus.LOADING;
                     return Padding(

@@ -165,6 +165,10 @@ class _CashbookBodyState extends State<_CashbookBody> {
               child: ColoredBox(
                 color: context.white,
                 child: BlocBuilder<CashbookBloc, CashbookState>(
+                  buildWhen: (previous, current) =>
+                      previous.apiStatus != current.apiStatus ||
+                      previous.message != current.message ||
+                      previous.statements != current.statements,
                   builder: (context, state) {
                     if (state.apiStatus == ApiStatus.INITIAL) {
                       return const AccountsIdleState(

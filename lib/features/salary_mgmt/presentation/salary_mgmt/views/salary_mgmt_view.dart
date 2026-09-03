@@ -53,6 +53,7 @@ class _SalaryTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SalaryMgmtBloc, SalaryMgmtState>(
+      buildWhen: (previous, current) => previous.records != current.records,
       builder: (context, state) => _SalaryContent(records: state.records),
     );
   }

@@ -138,6 +138,10 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
               child: ColoredBox(
                 color: context.white,
                 child: BlocBuilder<VendorPayableBloc, VendorPayableState>(
+                  buildWhen: (previous, current) =>
+                      previous.apiStatus != current.apiStatus ||
+                      previous.message != current.message ||
+                      previous.items != current.items,
                   builder: (context, state) {
                     if (state.apiStatus == ApiStatus.LOADING) {
                       return const AccountsShimmerBody();

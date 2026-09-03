@@ -37,6 +37,10 @@ class _ManageProductsBody extends StatelessWidget {
       backgroundColor: context.background,
       appBar: const CustomAppBar(title: 'Manage Products'),
       body: BlocBuilder<ManageProductsBloc, ManageProductsState>(
+        buildWhen: (previous, current) =>
+            previous.loadStatus != current.loadStatus ||
+            previous.errorMessage != current.errorMessage ||
+            previous.templates != current.templates,
         builder: (context, state) {
           if (state.loadStatus == ApiStatus.LOADING || state.loadStatus == ApiStatus.INITIAL) {
             return const LoadingIndicator().center();

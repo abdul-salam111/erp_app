@@ -70,6 +70,7 @@ class _LoanTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoanAndAdvanceBloc, LoanAndAdvanceState>(
+      buildWhen: (previous, current) => previous.records != current.records,
       builder: (context, state) => _LoanContent(records: state.records),
     );
   }

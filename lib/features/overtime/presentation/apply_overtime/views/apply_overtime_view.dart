@@ -211,6 +211,8 @@ class _ApplyOvertimeBodyState extends State<_ApplyOvertimeBody>
 
               _Animated(fade: _fades[4], slide: _slides[4], child:
                 BlocBuilder<ApplyOvertimeBloc, ApplyOvertimeState>(
+                  buildWhen: (previous, current) =>
+                      previous.apiStatus != current.apiStatus,
                   builder: (context, state) => CustomButton(
                     text: 'Submit Request',
                     onPressed: _submit,

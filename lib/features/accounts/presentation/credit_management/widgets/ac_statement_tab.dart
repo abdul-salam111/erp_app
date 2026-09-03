@@ -107,6 +107,10 @@ class _AcStatementTabState extends State<AcStatementTab> {
           ),
           Expanded(
             child: BlocBuilder<AcStatementCubit, AcStatementState>(
+              buildWhen: (previous, current) =>
+                  previous.status != current.status ||
+                  previous.message != current.message ||
+                  previous.statements != current.statements,
               builder: (context, state) {
                 if (state.status == ApiStatus.LOADING) {
                   return const AccountsShimmerBody();

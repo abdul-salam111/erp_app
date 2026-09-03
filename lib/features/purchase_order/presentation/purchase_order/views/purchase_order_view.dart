@@ -87,6 +87,10 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
           ),
           Expanded(
             child: BlocBuilder<PurchaseOrderBloc, PurchaseOrderState>(
+              buildWhen: (previous, current) =>
+                  previous.apiStatus != current.apiStatus ||
+                  previous.message != current.message ||
+                  previous.pagedOrders != current.pagedOrders,
               builder: (context, state) {
                 if (state.apiStatus == ApiStatus.INITIAL ||
                     state.apiStatus == ApiStatus.LOADING) {

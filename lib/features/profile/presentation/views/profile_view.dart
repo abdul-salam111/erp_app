@@ -132,6 +132,8 @@ class _ProfileBody extends StatelessWidget {
                   const SizedBox(height: 14),
 
                   BlocBuilder<ApiDebugCubit, ApiDebugState>(
+                    buildWhen: (previous, current) =>
+                        previous.isEnabled != current.isEnabled,
                     builder: (context, dbgState) {
                       if (!dbgState.isEnabled) return const SizedBox.shrink();
                       return Column(

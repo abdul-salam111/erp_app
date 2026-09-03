@@ -75,6 +75,7 @@ class _SummaryStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OvertimeBloc, OvertimeState>(
+      buildWhen: (previous, current) => previous.records != current.records,
       builder: (context, state) => _SummaryContent(records: state.records),
     );
   }
@@ -268,6 +269,7 @@ class _OvertimeTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OvertimeBloc, OvertimeState>(
+      buildWhen: (previous, current) => previous.records != current.records,
       builder: (context, state) => _OvertimeContent(records: state.records),
     );
   }

@@ -153,6 +153,10 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
                 color: context.white,
                 child: BlocBuilder<CustomerRecievablesBloc,
                     CustomerRecievablesState>(
+                  buildWhen: (previous, current) =>
+                      previous.apiStatus != current.apiStatus ||
+                      previous.message != current.message ||
+                      previous.items != current.items,
                   builder: (context, state) {
                     if (state.apiStatus == ApiStatus.LOADING) {
                       return const AccountsShimmerBody();

@@ -41,6 +41,10 @@ class _ApiDebugLayerBodyState extends State<_ApiDebugLayerBody> {
       children: [
         widget.child,
         BlocBuilder<ApiDebugCubit, ApiDebugState>(
+          buildWhen: (previous, current) =>
+              previous.isEnabled != current.isEnabled ||
+              previous.pendingCount != current.pendingCount ||
+              previous.entries.length != current.entries.length,
           builder: (context, state) {
             if (!state.isEnabled) return const SizedBox.shrink();
             final size = MediaQuery.sizeOf(context);
@@ -202,6 +206,9 @@ class _SheetHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ApiDebugCubit, ApiDebugState>(
+      buildWhen: (previous, current) =>
+          previous.pendingCount != current.pendingCount ||
+          previous.entries.length != current.entries.length,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 8, 8, 4),
@@ -252,6 +259,8 @@ class _SimulateTokenRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ApiDebugCubit, ApiDebugState>(
+      buildWhen: (previous, current) =>
+          previous.simulateExpiredToken != current.simulateExpiredToken,
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
@@ -304,6 +313,7 @@ class _EntryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ApiDebugCubit, ApiDebugState>(
+      buildWhen: (previous, current) => previous.entries != current.entries,
       builder: (context, state) {
         if (state.entries.isEmpty) {
           return const Center(

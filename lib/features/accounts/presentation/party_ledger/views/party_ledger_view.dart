@@ -164,6 +164,10 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
               child: ColoredBox(
                 color: context.white,
                 child: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
+                  buildWhen: (previous, current) =>
+                      previous.apiStatus != current.apiStatus ||
+                      previous.message != current.message ||
+                      previous.statements != current.statements,
                   builder: (context, state) {
                     if (state.apiStatus == ApiStatus.INITIAL) {
                       return const AccountsIdleState(

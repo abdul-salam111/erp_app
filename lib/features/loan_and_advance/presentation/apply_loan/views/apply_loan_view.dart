@@ -198,6 +198,8 @@ class _ApplyLoanBodyState extends State<_ApplyLoanBody>
 
               _Animated(fade: _fades[4], slide: _slides[4], child:
                 BlocBuilder<ApplyLoanBloc, ApplyLoanState>(
+                  buildWhen: (previous, current) =>
+                      previous.apiStatus != current.apiStatus,
                   builder: (context, state) => CustomButton(
                     text: 'Submit Request',
                     onPressed: _submit,
