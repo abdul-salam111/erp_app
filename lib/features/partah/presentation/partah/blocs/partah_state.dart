@@ -1,71 +1,38 @@
 import 'package:equatable/equatable.dart';
 import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/local_storage/mill_config_store.dart';
-import '../../../domain/entities/cost_item_entity.dart';
-import '../../../domain/entities/product_template_entity.dart';
-import '../../../domain/entities/production_entry_entity.dart';
+import '../../../domain/entities/partah_report_entity.dart';
 
 class PartahState extends Equatable {
+  final DateTime fromDate;
+  final DateTime toDate;
   final ApiStatus loadStatus;
-  final ApiStatus saveStatus;
-  final MillType? millType;
-  final List<ProductTemplateEntity> productTemplates;
-  final List<CostItemEntity> lastVariableCosts;
-  final List<CostItemEntity> lastFixedCosts;
-  final List<ProductionEntryEntity> lastProductionEntries;
+  final PartahReportEntity? report;
   final String? errorMessage;
-  final String? savedRecordId;
 
   const PartahState({
+    required this.fromDate,
+    required this.toDate,
     this.loadStatus = ApiStatus.INITIAL,
-    this.saveStatus = ApiStatus.INITIAL,
-    this.millType,
-    this.productTemplates = const [],
-    this.lastVariableCosts = const [],
-    this.lastFixedCosts = const [],
-    this.lastProductionEntries = const [],
+    this.report,
     this.errorMessage,
-    this.savedRecordId,
   });
 
-  /// True once the mill type has been chosen and at least one product
-  /// template has been saved — the minimum needed for the calculator to work.
-  bool get isSetupComplete => millType != null && productTemplates.isNotEmpty;
-
   PartahState copyWith({
+    DateTime? fromDate,
+    DateTime? toDate,
     ApiStatus? loadStatus,
-    ApiStatus? saveStatus,
-    MillType? millType,
-    List<ProductTemplateEntity>? productTemplates,
-    List<CostItemEntity>? lastVariableCosts,
-    List<CostItemEntity>? lastFixedCosts,
-    List<ProductionEntryEntity>? lastProductionEntries,
+    PartahReportEntity? report,
     String? errorMessage,
-    String? savedRecordId,
   }) {
     return PartahState(
+      fromDate: fromDate ?? this.fromDate,
+      toDate: toDate ?? this.toDate,
       loadStatus: loadStatus ?? this.loadStatus,
-      saveStatus: saveStatus ?? this.saveStatus,
-      millType: millType ?? this.millType,
-      productTemplates: productTemplates ?? this.productTemplates,
-      lastVariableCosts: lastVariableCosts ?? this.lastVariableCosts,
-      lastFixedCosts: lastFixedCosts ?? this.lastFixedCosts,
-      lastProductionEntries: lastProductionEntries ?? this.lastProductionEntries,
+      report: report ?? this.report,
       errorMessage: errorMessage,
-      savedRecordId: savedRecordId,
     );
   }
 
   @override
-  List<Object?> get props => [
-        loadStatus,
-        saveStatus,
-        millType,
-        productTemplates,
-        lastVariableCosts,
-        lastFixedCosts,
-        lastProductionEntries,
-        errorMessage,
-        savedRecordId,
-      ];
+  List<Object?> get props => [fromDate, toDate, loadStatus, report, errorMessage];
 }

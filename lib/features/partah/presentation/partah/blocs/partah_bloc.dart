@@ -1,99 +1,52 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/shared/shared_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/local_storage/mill_config_store.dart';
-import '../../../../../core/utils/result.dart';
-import '../../../domain/entities/cost_item_entity.dart';
-import '../../../domain/entities/product_template_entity.dart';
-import '../../../domain/entities/production_entry_entity.dart';
-import '../../../domain/usecases/get_last_costs_usecase.dart';
-import '../../../domain/usecases/get_last_production_entries_usecase.dart';
-import '../../../domain/usecases/get_product_templates_usecase.dart';
-import '../../../domain/usecases/save_partah_record_usecase.dart';
+import '../../../../../core/utils/utils_exports.dart';
+import '../../../domain/usecases/load_partah_report_usecase.dart';
 import 'partah_event.dart';
 import 'partah_state.dart';
 
-class PartahBloc extends Bloc<PartahEvent, PartahState>
-    with UsecaseExecuterMixin {
-  final GetProductTemplatesUsecase getProductTemplates;
-  final GetLastCostsUsecase getLastCosts;
-  final GetLastProductionEntriesUsecase getLastProductionEntries;
-  final SavePartahRecordUsecase saveRecord;
+class PartahBloc extends Bloc<PartahEvent, PartahState> {
+  final LoadPartahReportUsecase loadReport;
 
-  PartahBloc({
-    required this.getProductTemplates,
-    required this.getLastCosts,
-    required this.getLastProductionEntries,
-    required this.saveRecord,
-  }) : super(const PartahState()) {
-    on<PartahStarted>(_onStarted, transformer: droppable());
-    on<PartahRecordSaveRequested>(_onSaveRequested, transformer: droppable());
+  PartahBloc({required this.loadReport})
+      : super(PartahState(
+          fromDate: DateTime.now(),
+          toDate: DateTime.now(),
+        )) {
+    on<PartahFromDateChanged>(_onFromDateChanged);
+    on<PartahToDateChanged>(_onToDateChanged);
+    on<PartahReportRequested>(_onReportRequested, transformer: droppable());
   }
 
-  Future<void> _onStarted(
-    PartahStarted event,
+  void _onFromDateChanged(PartahFromDateChanged event, Emitter<PartahState> emit) {
+    emit(state.copyWith(fromDate: event.date));
+  }
+
+  void _onToDateChanged(PartahToDateChanged event, Emitter<PartahState> emit) {
+    emit(state.copyWith(toDate: event.date));
+  }
+
+  Future<void> _onReportRequested(
+    PartahReportRequested event,
     Emitter<PartahState> emit,
   ) async {
     emit(state.copyWith(loadStatus: ApiStatus.LOADING));
-    final templatesFuture = getProductTemplates(NoParams());
-    final costsFuture = getLastCosts(NoParams());
-    final entriesFuture = getLastProductionEntries(NoParams());
-    final millTypeFuture = MillConfigStore.getMillType();
 
-    final templatesResult = await templatesFuture;
-    final costsResult = await costsFuture;
-    final entriesResult = await entriesFuture;
-    final millType = await millTypeFuture;
+    final result = await loadReport(LoadPartahReportParams(
+      fromDate: state.fromDate.format('yyyy-MM-dd'),
+      toDate: state.toDate.format('yyyy-MM-dd'),
+    ));
 
-    // Product templates are required for the calculator to render.
-    if (templatesResult case ResultError(:final failure)) {
-      emit(
-        state.copyWith(
-          loadStatus: ApiStatus.FAILURE,
-          errorMessage: failure.message,
-        ),
-      );
-      return;
-    }
-
-    final templates =
-        (templatesResult as Success<List<ProductTemplateEntity>>).data;
-    final (
-      variableCosts,
-      fixedCosts,
-    ) = costsResult is Success<(List<CostItemEntity>, List<CostItemEntity>)>
-        ? costsResult.data
-        : (const <CostItemEntity>[], const <CostItemEntity>[]);
-    final entries = entriesResult is Success<List<ProductionEntryEntity>>
-        ? entriesResult.data
-        : const <ProductionEntryEntity>[];
-
-    emit(
-      state.copyWith(
+    result.when(
+      failure: (failure) => emit(state.copyWith(
+        loadStatus: ApiStatus.FAILURE,
+        errorMessage: failure.message,
+      )),
+      success: (report) => emit(state.copyWith(
         loadStatus: ApiStatus.SUCCESS,
-        millType: millType,
-        productTemplates: templates,
-        lastVariableCosts: variableCosts,
-        lastFixedCosts: fixedCosts,
-        lastProductionEntries: entries,
-      ),
-    );
-  }
-
-  Future<void> _onSaveRequested(
-    PartahRecordSaveRequested event,
-    Emitter<PartahState> emit,
-  ) async {
-    await executeUsecase(
-      emit: emit,
-      currentState: state,
-      usecase: () => saveRecord(event.record),
-      stateBuilder: (status, {data, error}) => state.copyWith(
-        saveStatus: status,
-        savedRecordId: data,
-        errorMessage: error,
-      ),
+        report: report,
+      )),
     );
   }
 }

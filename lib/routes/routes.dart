@@ -371,24 +371,20 @@ class AppRoutes {
         builder: (context, state) => const PartahHomeView(),
       ),
       GoRoute(
-        path: RoutePaths.manage_products,
-        name: RouteNames.manage_products,
-        builder: (context, state) => const ManageProductsView(),
+        path: RoutePaths.partah_categories,
+        name: RouteNames.partah_categories,
+        builder: (context, state) => const PartahCategoriesView(),
+      ),
+      GoRoute(
+        path: RoutePaths.category_edit,
+        name: RouteNames.category_edit,
+        builder: (context, state) =>
+            CategoryEditView(initial: state.extra as PartahCategoryEntity?),
       ),
       GoRoute(
         path: RoutePaths.partah_settings,
         name: RouteNames.partah_settings,
         builder: (context, state) => const PartahSettingsView(),
-      ),
-      GoRoute(
-        path: RoutePaths.reports,
-        name: RouteNames.reports,
-        builder: (context, state) => const ReportsView(),
-      ),
-      GoRoute(
-        path: RoutePaths.report_detail,
-        name: RouteNames.report_detail,
-        builder: (context, state) => ReportDetailView(record: state.extra as PartahRecordEntity),
       ),
       GoRoute(
         path: RoutePaths.more_software,

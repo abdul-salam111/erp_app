@@ -1,25 +1,26 @@
 import '../../../../core/utils/result.dart';
-import '../entities/cost_item_entity.dart';
-import '../entities/partah_record_entity.dart';
-import '../entities/product_template_entity.dart';
-import '../entities/production_entry_entity.dart';
+import '../entities/partah_category_entity.dart';
+import '../entities/partah_category_product_entity.dart';
+import '../entities/partah_report_entity.dart';
 
 abstract interface class PartahRepository {
-  Future<Result<List<ProductTemplateEntity>>> getProductTemplates();
+  Future<Result<PartahReportEntity>> loadReport({
+    required String fromDate,
+    required String toDate,
+  });
 
-  Future<Result<void>> saveProductTemplates(List<ProductTemplateEntity> templates);
+  Future<Result<({List<PartahCategoryEntity> categories, int unassignedCount})>>
+      getCategories();
 
-  Future<Result<String>> saveRecord(PartahRecordEntity record);
+  Future<Result<List<PartahCategoryProductEntity>>> searchCategoryProducts({
+    int? categoryId,
+    String? query,
+  });
 
-  /// Returns (variableCosts, fixedCosts) from the most recent saved record —
-  /// used to prefill the Costs step for a new entry.
-  Future<Result<(List<CostItemEntity>, List<CostItemEntity>)>> getLastCosts();
+  Future<Result<PartahCategoryEntity>> saveCategory(PartahCategoryEntity category);
 
-  /// Returns production entries from the most recent saved record — used to
-  /// prefill rate/yield on the Sale step for a new entry.
-  Future<Result<List<ProductionEntryEntity>>> getLastProductionEntries();
-
-  Future<Result<List<PartahRecordEntity>>> getAllRecords();
-
-  Future<Result<void>> deleteRecord(String id);
+  Future<Result<void>> saveCategoryItems({
+    required int categoryId,
+    required List<int> itemIds,
+  });
 }

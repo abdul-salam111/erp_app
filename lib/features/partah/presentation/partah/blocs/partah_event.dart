@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/entities/partah_record_entity.dart';
 
 abstract class PartahEvent extends Equatable {
   const PartahEvent();
@@ -8,13 +7,22 @@ abstract class PartahEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Loads product templates + prefill data (last costs, last production entries).
-class PartahStarted extends PartahEvent {}
-
-class PartahRecordSaveRequested extends PartahEvent {
-  final PartahRecordEntity record;
-  const PartahRecordSaveRequested(this.record);
+class PartahFromDateChanged extends PartahEvent {
+  final DateTime date;
+  const PartahFromDateChanged(this.date);
 
   @override
-  List<Object?> get props => [record];
+  List<Object?> get props => [date];
+}
+
+class PartahToDateChanged extends PartahEvent {
+  final DateTime date;
+  const PartahToDateChanged(this.date);
+
+  @override
+  List<Object?> get props => [date];
+}
+
+class PartahReportRequested extends PartahEvent {
+  const PartahReportRequested();
 }

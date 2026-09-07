@@ -53,9 +53,9 @@ class _PartahSettingsViewState extends State<PartahSettingsView> {
           _SettingsTile(
             icon: Icons.inventory_2_outlined,
             iconColor: AppColors.skyBlue,
-            title: 'Manage Products',
-            subtitle: 'Add, edit or remove mill products',
-            onTap: () => context.pushNamed(RouteNames.manage_products),
+            title: 'Parta Categories',
+            subtitle: 'Group inventory items into purchase/output categories',
+            onTap: () => context.pushNamed(RouteNames.partah_categories),
           ),
           _Divider(),
           _SectionHeader(title: 'Base Weight'),

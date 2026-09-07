@@ -36,15 +36,18 @@ class PartahHomeView extends StatelessWidget {
                   ),
                   heightBox(14),
                   // ── Reports + Settings ──
-                  SizedBox(
-                    height: 130,
-                    child: Row(
-                      children: [
-                        _MenuCard(card: _mainMenu(context)[1], compact: true).expanded(),
-                        widthBox(14),
-                        _MenuCard(card: _mainMenu(context)[2], compact: true).expanded(),
-                      ],
-                    ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 130,
+                        child: _MenuCard(card: _mainMenu(context)[1], compact: true),
+                      ).expanded(),
+                      widthBox(14),
+                      SizedBox(
+                        height: 130,
+                        child: _MenuCard(card: _mainMenu(context)[2], compact: true),
+                      ).expanded(),
+                    ],
                   ),
                   heightBox(28),
 
@@ -100,7 +103,7 @@ class PartahHomeView extends StatelessWidget {
   List<_MenuCardData> _mainMenu(BuildContext context) => [
         _MenuCardData(
           title: 'Partah',
-          subtitle: 'Calculate item rates & profit',
+          subtitle: 'View category-based profit report',
           icon: Icons.calculate_rounded,
           gradient: const LinearGradient(
             colors: [AppColors.skyBlue, AppColors.skyBlueDark],
@@ -111,14 +114,14 @@ class PartahHomeView extends StatelessWidget {
         ),
         _MenuCardData(
           title: 'Reports',
-          subtitle: 'View history & summaries',
+          subtitle: 'Coming soon',
           icon: Icons.bar_chart_rounded,
           gradient: const LinearGradient(
-            colors: [AppColors.emerald, AppColors.emeraldDark],
+            colors: [AppColors.creditGreen, AppColors.creditGreenDark],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          onTap: () => context.pushNamed(RouteNames.reports),
+          onTap: () {},
         ),
         _MenuCardData(
           title: 'Settings',

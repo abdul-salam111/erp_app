@@ -1,88 +1,106 @@
-import '../../../../core/local_storage/partah_record_local_store.dart';
+import '../../../../core/constants/const_exports.dart';
+import '../../../../core/services/session_manager.dart';
 import '../../../../core/shared/shared_exports.dart';
-import '../../domain/entities/cost_item_entity.dart';
-import '../../domain/entities/production_entry_entity.dart';
-import '../../domain/entities/partah_record_entity.dart';
-import '../../domain/entities/product_template_entity.dart';
-import 'product_template_local_store.dart';
+import '../models/request_models/create_partah_category/create_partah_category.dart';
+import '../models/response_models/created_partah_category/created_partah_category.dart';
+import '../models/response_models/load_partah/load_partah.dart';
+import '../models/response_models/partah_categories_list/partah_categories_list.dart';
+import '../models/response_models/partah_category_products/partah_category_products.dart';
 
 abstract interface class IRemotePartahDataSource {
-  Future<List<ProductTemplateEntity>> getProductTemplates();
-  Future<void> saveProductTemplates(List<ProductTemplateEntity> templates);
-  Future<String> saveRecord(PartahRecordEntity record);
-  Future<(List<CostItemEntity>, List<CostItemEntity>)> getLastCosts();
-  Future<List<ProductionEntryEntity>> getLastProductionEntries();
-  Future<List<PartahRecordEntity>> getAllRecords();
-  Future<void> deleteRecord(String id);
+  Future<LoadPartah> getReport({required String fromDate, required String toDate});
+
+  Future<PartahCategoriesList> getCategories();
+  Future<List<PartahCategoryProducts>> getCategoryItems(int categoryId);
+  Future<List<PartahCategoryProducts>> searchCategoryItems({
+    int? categoryId,
+    String? query,
+  });
+  Future<CreatedPartahCategory> saveCategory(CreatePartahCategory category);
+  Future<void> saveCategoryItems({
+    required int categoryId,
+    required List<int> itemIds,
+  });
 }
 
-// TODO(backend): No API exists for Partah yet. Every method below returns
-// mocked data instead of calling `dioHelper` so the frontend is fully usable
-// ahead of the backend. Once `ApiEndPoints.partah` has real endpoints, replace
-// each method body with the commented-out `dioHelper` call and delete the mock.
 class RemotePartahDataSourceImpl extends BaseRemoteDatasource
     implements IRemotePartahDataSource {
   RemotePartahDataSourceImpl({required super.dioHelper});
 
+  String? get _token => SessionController.instance.activeAccessToken;
+
   @override
-  Future<List<ProductTemplateEntity>> getProductTemplates() async {
-    // return getList(
-    //   url: ApiEndPoints.partah.productTemplates,
-    //   parser: (json) => ProductTemplateEntity(name: json['name'], bagSize: (json['bag_size'] as num).toDouble()),
-    // );
-    await Future.delayed(const Duration(milliseconds: 300));
-    final saved = await ProductTemplateLocalStore.read();
-    return saved ?? const [];
+  Future<LoadPartah> getReport({required String fromDate, required String toDate}) {
+    return post<LoadPartah>(
+      url: ApiEndPoints.partah.loadParta,
+      body: {'FromDate': fromDate, 'ToDate': toDate},
+      parser: (json) => LoadPartah.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
   }
 
   @override
-  Future<void> saveProductTemplates(List<ProductTemplateEntity> templates) async {
-    // return post(
-    //   url: ApiEndPoints.partah.productTemplates,
-    //   parser: (_) {},
-    //   body: {'templates': templates.map((t) => {'name': t.name, 'bag_size': t.bagSize}).toList()},
-    // );
-    await Future.delayed(const Duration(milliseconds: 200));
-    await ProductTemplateLocalStore.write(templates);
+  Future<PartahCategoriesList> getCategories() {
+    return post<PartahCategoriesList>(
+      url: ApiEndPoints.partah.getCategoriesList,
+      body: {'FlgExcludeArchived': true, 'IsActive': true},
+      parser: (json) => PartahCategoriesList.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
   }
 
   @override
-  Future<String> saveRecord(PartahRecordEntity record) async {
-    // return post(
-    //   url: ApiEndPoints.partah.performAction,
-    //   parser: (json) => json['id'] as String,
-    //   body: {...},
-    // );
-    await Future.delayed(const Duration(milliseconds: 300));
-    return PartahRecordLocalStore.append(record);
+  Future<List<PartahCategoryProducts>> getCategoryItems(int categoryId) {
+    return getList<PartahCategoryProducts>(
+      url: ApiEndPoints.partah.getCategoryItems(categoryId),
+      parser: (json) => PartahCategoryProducts.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
+  }
+
+  // SearchItems is the full catalog browse/search pool — it does NOT filter by
+  // ProductCategoryId (confirmed against the live backend), so it's only used
+  // to list all assignable products. GetCategoryItems is the source of truth
+  // for which items are actually assigned to a category.
+  @override
+  Future<List<PartahCategoryProducts>> searchCategoryItems({
+    int? categoryId,
+    String? query,
+  }) {
+    return postList<PartahCategoryProducts>(
+      url: ApiEndPoints.partah.searchCategoryItems,
+      body: {
+        'ProductCategoryId': categoryId,
+        'Take': 500,
+      },
+      parser: (json) => PartahCategoryProducts.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
   }
 
   @override
-  Future<(List<CostItemEntity>, List<CostItemEntity>)> getLastCosts() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    final records = await PartahRecordLocalStore.readAll();
-    if (records.isEmpty) return (<CostItemEntity>[], <CostItemEntity>[]);
-    return (records.first.variableCosts, records.first.fixedCosts);
+  Future<CreatedPartahCategory> saveCategory(CreatePartahCategory category) {
+    return post<CreatedPartahCategory>(
+      url: ApiEndPoints.partah.insertOrUpdateCategory,
+      body: category.toJson(),
+      parser: (json) => CreatedPartahCategory.fromJson(json as Map<String, dynamic>),
+      authToken: _token,
+    );
   }
 
   @override
-  Future<List<ProductionEntryEntity>> getLastProductionEntries() async {
-    await Future.delayed(const Duration(milliseconds: 200));
-    final records = await PartahRecordLocalStore.readAll();
-    return records.isEmpty ? const <ProductionEntryEntity>[] : records.first.productionEntries;
-  }
-
-  @override
-  Future<List<PartahRecordEntity>> getAllRecords() async {
-    // return getList(url: ApiEndPoints.partah.reports, parser: (json) => ...);
-    await Future.delayed(const Duration(milliseconds: 300));
-    return PartahRecordLocalStore.readAll();
-  }
-
-  @override
-  Future<void> deleteRecord(String id) async {
-    // return delete(url: '${ApiEndPoints.partah.reports}/$id', parser: (_) {});
-    await Future.delayed(const Duration(milliseconds: 200));
-    await PartahRecordLocalStore.remove(id);
+  Future<void> saveCategoryItems({
+    required int categoryId,
+    required List<int> itemIds,
+  }) {
+    return post<void>(
+      url: ApiEndPoints.partah.saveCategoryItems,
+      body: {
+        'ItemIds': itemIds,
+        'ProductCategoryId': categoryId,
+      },
+      parser: (_) {},
+      authToken: _token,
+    );
   }
 }

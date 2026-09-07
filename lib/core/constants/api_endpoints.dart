@@ -189,8 +189,10 @@ final class _Partah {
 
   String get getCategoriesList => '$_categoryBase/GetList';
   String getCategoryById(int id) => '$_categoryBase/GetById/$id';
+  String getCategoryItems(int id) => '$_categoryBase/GetCategoryItems/$id';
   String get searchCategoryItems => '$_categoryBase/SearchItems';
   String get insertOrUpdateCategory => '$_categoryBase/InsertOrUpdate';
+  String get saveCategoryItems => '$_categoryBase/SaveCategoryItems';
 
   String get loadParta => '$_partaBase/LoadParta';
 }

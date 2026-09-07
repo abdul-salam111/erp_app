@@ -1,17 +1,14 @@
 import '../../features/partah/data/datasources/remote_partah_datasource.dart';
 import '../../features/partah/data/repositories_impl/partah_repository_impl.dart';
 import '../../features/partah/domain/repositories/partah_repository.dart';
-import '../../features/partah/domain/usecases/delete_report_usecase.dart';
-import '../../features/partah/domain/usecases/get_active_product_templates_usecase.dart';
-import '../../features/partah/domain/usecases/get_all_reports_usecase.dart';
-import '../../features/partah/domain/usecases/get_last_costs_usecase.dart';
-import '../../features/partah/domain/usecases/get_last_production_entries_usecase.dart';
-import '../../features/partah/domain/usecases/get_product_templates_usecase.dart';
-import '../../features/partah/domain/usecases/save_partah_record_usecase.dart';
-import '../../features/partah/domain/usecases/save_product_templates_usecase.dart';
-import '../../features/partah/presentation/manage_products/blocs/manage_products_bloc.dart';
+import '../../features/partah/domain/usecases/get_partah_categories_usecase.dart';
+import '../../features/partah/domain/usecases/load_partah_report_usecase.dart';
+import '../../features/partah/domain/usecases/save_category_items_usecase.dart';
+import '../../features/partah/domain/usecases/save_partah_category_usecase.dart';
+import '../../features/partah/domain/usecases/search_category_products_usecase.dart';
+import '../../features/partah/presentation/category_edit/blocs/category_edit_bloc.dart';
 import '../../features/partah/presentation/partah/blocs/partah_bloc.dart';
-import '../../features/partah/presentation/reports/blocs/reports_bloc.dart';
+import '../../features/partah/presentation/partah_categories/blocs/partah_categories_bloc.dart';
 import 'app_dependencies.dart';
 
 Future<void> registerPartah() async {
@@ -26,31 +23,24 @@ Future<void> registerPartah() async {
   );
 
   // UseCases
-  sl.registerLazySingleton(() => GetProductTemplatesUsecase(repository: sl()));
-  sl.registerLazySingleton(() => GetLastCostsUsecase(repository: sl()));
-  sl.registerLazySingleton(() => GetLastProductionEntriesUsecase(repository: sl()));
-  sl.registerLazySingleton(() => SavePartahRecordUsecase(repository: sl()));
-  sl.registerLazySingleton(() => GetActiveProductTemplatesUsecase(repository: sl()));
-  sl.registerLazySingleton(() => SaveProductTemplatesUsecase(repository: sl()));
-  sl.registerLazySingleton(() => GetAllReportsUsecase(repository: sl()));
-  sl.registerLazySingleton(() => DeleteReportUsecase(repository: sl()));
+  sl.registerLazySingleton(() => LoadPartahReportUsecase(repository: sl()));
+  sl.registerLazySingleton(() => GetPartahCategoriesUsecase(repository: sl()));
+  sl.registerLazySingleton(() => SearchCategoryProductsUsecase(repository: sl()));
+  sl.registerLazySingleton(() => SavePartahCategoryUsecase(repository: sl()));
+  sl.registerLazySingleton(() => SaveCategoryItemsUsecase(repository: sl()));
 
   // BLoCs
   sl.registerFactory<PartahBloc>(
-    () => PartahBloc(
-      getProductTemplates: sl(),
-      getLastCosts: sl(),
-      getLastProductionEntries: sl(),
-      saveRecord: sl(),
-    ),
+    () => PartahBloc(loadReport: sl()),
   );
-  sl.registerFactory<ManageProductsBloc>(
-    () => ManageProductsBloc(
-      getActiveProductTemplates: sl(),
-      saveProductTemplates: sl(),
-    ),
+  sl.registerFactory<PartahCategoriesBloc>(
+    () => PartahCategoriesBloc(getCategories: sl()),
   );
-  sl.registerFactory<ReportsBloc>(
-    () => ReportsBloc(getAllReports: sl(), deleteReport: sl()),
+  sl.registerFactory<CategoryEditBloc>(
+    () => CategoryEditBloc(
+      searchCategoryProducts: sl(),
+      saveCategory: sl(),
+      saveCategoryItems: sl(),
+    ),
   );
 }
