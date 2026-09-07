@@ -181,6 +181,16 @@ final class _Partah {
   const _Partah();
 
   static String get _base => '${ApiEndPoints._base}/partah';
+  static String get _categoryBase =>
+      '${ApiEndPoints._base}/inventory/InvProductCategory';
+  static String get _partaBase => '${ApiEndPoints._base}/accounts/Parta';
 
   String get performAction => '$_base/PerformAction';
+
+  String get getCategoriesList => '$_categoryBase/GetList';
+  String getCategoryById(int id) => '$_categoryBase/GetById/$id';
+  String get searchCategoryItems => '$_categoryBase/SearchItems';
+  String get insertOrUpdateCategory => '$_categoryBase/InsertOrUpdate';
+
+  String get loadParta => '$_partaBase/LoadParta';
 }

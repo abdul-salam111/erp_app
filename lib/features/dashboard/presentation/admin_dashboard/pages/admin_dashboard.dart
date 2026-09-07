@@ -9,7 +9,6 @@ import '../../../../../core/services/current_user.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../widgets/dashboard_widgets.dart';
-import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});

@@ -14,7 +14,8 @@ import '../../../domain/usecases/save_partah_record_usecase.dart';
 import 'partah_event.dart';
 import 'partah_state.dart';
 
-class PartahBloc extends Bloc<PartahEvent, PartahState> with UsecaseExecuterMixin {
+class PartahBloc extends Bloc<PartahEvent, PartahState>
+    with UsecaseExecuterMixin {
   final GetProductTemplatesUsecase getProductTemplates;
   final GetLastCostsUsecase getLastCosts;
   final GetLastProductionEntriesUsecase getLastProductionEntries;
@@ -30,11 +31,11 @@ class PartahBloc extends Bloc<PartahEvent, PartahState> with UsecaseExecuterMixi
     on<PartahRecordSaveRequested>(_onSaveRequested, transformer: droppable());
   }
 
-  Future<void> _onStarted(PartahStarted event, Emitter<PartahState> emit) async {
+  Future<void> _onStarted(
+    PartahStarted event,
+    Emitter<PartahState> emit,
+  ) async {
     emit(state.copyWith(loadStatus: ApiStatus.LOADING));
-
-    // Kick off all calls concurrently, await individually so each result
-    // keeps its own concrete type (Future.wait would widen them to Object).
     final templatesFuture = getProductTemplates(NoParams());
     final costsFuture = getLastCosts(NoParams());
     final entriesFuture = getLastProductionEntries(NoParams());
@@ -47,26 +48,37 @@ class PartahBloc extends Bloc<PartahEvent, PartahState> with UsecaseExecuterMixi
 
     // Product templates are required for the calculator to render.
     if (templatesResult case ResultError(:final failure)) {
-      emit(state.copyWith(loadStatus: ApiStatus.FAILURE, errorMessage: failure.message));
+      emit(
+        state.copyWith(
+          loadStatus: ApiStatus.FAILURE,
+          errorMessage: failure.message,
+        ),
+      );
       return;
     }
 
-    final templates = (templatesResult as Success<List<ProductTemplateEntity>>).data;
-    final (variableCosts, fixedCosts) = costsResult is Success<(List<CostItemEntity>, List<CostItemEntity>)>
+    final templates =
+        (templatesResult as Success<List<ProductTemplateEntity>>).data;
+    final (
+      variableCosts,
+      fixedCosts,
+    ) = costsResult is Success<(List<CostItemEntity>, List<CostItemEntity>)>
         ? costsResult.data
         : (const <CostItemEntity>[], const <CostItemEntity>[]);
     final entries = entriesResult is Success<List<ProductionEntryEntity>>
         ? entriesResult.data
         : const <ProductionEntryEntity>[];
 
-    emit(state.copyWith(
-      loadStatus: ApiStatus.SUCCESS,
-      millType: millType,
-      productTemplates: templates,
-      lastVariableCosts: variableCosts,
-      lastFixedCosts: fixedCosts,
-      lastProductionEntries: entries,
-    ));
+    emit(
+      state.copyWith(
+        loadStatus: ApiStatus.SUCCESS,
+        millType: millType,
+        productTemplates: templates,
+        lastVariableCosts: variableCosts,
+        lastFixedCosts: fixedCosts,
+        lastProductionEntries: entries,
+      ),
+    );
   }
 
   Future<void> _onSaveRequested(
