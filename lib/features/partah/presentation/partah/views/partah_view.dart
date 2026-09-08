@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
-import '../../../../../core/widgets/accounts_widgets/accounts_ledger_states.dart';
-import '../../../../../core/widgets/accounts_widgets/accounts_shimmer_body.dart';
-import '../../../../../core/widgets/compact_date_picker.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
-import '../../../domain/entities/partah_report_entity.dart';
+import '../../../../../core/widgets/custom_button.dart';
+import '../../../../../routes/route_names.dart';
+import '../../../domain/entities/partah_category_entity.dart';
+import '../controllers/partah_calculator.dart';
+import 'steps/cost_step.dart';
+import 'steps/purchase_step.dart';
+import 'steps/sale_step.dart';
+import 'steps/summary_step.dart';
 import '../blocs/partah_bloc.dart';
 import '../blocs/partah_event.dart';
 import '../blocs/partah_state.dart';
@@ -20,420 +25,533 @@ class PartahView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<PartahBloc>(),
+      create: (_) => sl<PartahBloc>()..add(PartahStarted()),
       child: const _PartahBody(),
     );
   }
 }
 
-class _PartahBody extends StatefulWidget {
+class _PartahBody extends StatelessWidget {
   const _PartahBody();
 
   @override
-  State<_PartahBody> createState() => _PartahBodyState();
+  Widget build(BuildContext context) {
+    return UnfocusWrapper(
+      child: Scaffold(
+        backgroundColor: context.background,
+        resizeToAvoidBottomInset: false,
+        appBar: const CustomAppBar(title: 'Partah'),
+        body: BlocBuilder<PartahBloc, PartahState>(
+          builder: (context, state) {
+            if (state.loadStatus == ApiStatus.LOADING || state.loadStatus == ApiStatus.INITIAL) {
+              return const _PartahShimmer();
+            }
+            if (state.loadStatus == ApiStatus.FAILURE) {
+              return ErrorStateWidget(
+                message: state.errorMessage,
+                onRetry: () => context.read<PartahBloc>().add(PartahStarted()),
+              );
+            }
+            if (!state.isSetupComplete) {
+              return _SetupRequiredState(
+                onSetup: () async {
+                  await context.pushNamed(RouteNames.partah_categories);
+                  if (context.mounted) context.read<PartahBloc>().add(PartahStarted());
+                },
+              );
+            }
+            return _PartahCalculatorScope(categories: state.outputCategories);
+          },
+        ),
+      ),
+    );
+  }
 }
 
-class _PartahBodyState extends State<_PartahBody> {
-  Future<void> _pickDate(bool isFrom) async {
-    final bloc = context.read<PartahBloc>();
-    final picked = await showCompactDatePicker(
-      context: context,
-      initialDate: isFrom ? bloc.state.fromDate : bloc.state.toDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+// ─── Setup Required State ──────────────────────────────────────────────────
+//
+// Shown when the mill type hasn't been chosen and/or no output categories
+// have been created yet — the calculator can't compute anything without both.
+
+class _SetupRequiredState extends StatelessWidget {
+  final VoidCallback onSetup;
+  const _SetupRequiredState({required this.onSetup});
+
+  @override
+  Widget build(BuildContext context) {
+    return EmptyStateWidget(
+      icon: Icons.inventory_2_outlined,
+      title: 'Set Up Your Mill First',
+      subtitle: 'Select your mill type and add your Parta categories before using Partah.',
+      action: SizedBox(
+        width: 220,
+        child: CustomButton(
+          text: 'Set Up Categories',
+          icon: Icons.arrow_forward_rounded,
+          onPressed: onSetup,
+        ),
+      ),
     );
-    if (picked != null) {
-      bloc.add(isFrom ? PartahFromDateChanged(picked) : PartahToDateChanged(picked));
+  }
+}
+
+// ─── Calculator Scope — owns the PartahCalculator across bloc rebuilds ───────
+
+class _PartahCalculatorScope extends StatefulWidget {
+  final List<PartahCategoryEntity> categories;
+
+  const _PartahCalculatorScope({required this.categories});
+
+  @override
+  State<_PartahCalculatorScope> createState() => _PartahCalculatorScopeState();
+}
+
+class _PartahCalculatorScopeState extends State<_PartahCalculatorScope> {
+  late final PartahCalculator calculator = PartahCalculator(categories: widget.categories);
+
+  @override
+  void didUpdateWidget(covariant _PartahCalculatorScope oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.categories, widget.categories)) {
+      calculator.reloadRows(widget.categories);
     }
   }
 
   @override
+  void dispose() {
+    calculator.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.background,
-      appBar: const CustomAppBar(title: 'Partah'),
-      body: Column(
-        children: [
-          BlocBuilder<PartahBloc, PartahState>(
-            buildWhen: (p, c) => p.fromDate != c.fromDate || p.toDate != c.toDate,
-            builder: (context, state) {
-              return _DateFilterForm(
-                fromDate: state.fromDate,
-                toDate: state.toDate,
-                onPickFrom: () => _pickDate(true),
-                onPickTo: () => _pickDate(false),
-                onView: () =>
-                    context.read<PartahBloc>().add(const PartahReportRequested()),
-              );
-            },
-          ),
-          BlocBuilder<PartahBloc, PartahState>(
-            buildWhen: (p, c) =>
-                p.loadStatus != c.loadStatus ||
-                p.errorMessage != c.errorMessage ||
-                p.report != c.report,
-            builder: (context, state) {
-              if (state.loadStatus == ApiStatus.LOADING) {
-                return const AccountsShimmerBody().expanded();
-              }
-              if (state.loadStatus == ApiStatus.FAILURE) {
-                return AccountsErrorBody(
-                  message: state.errorMessage ?? AppConstants.somethingWentWrong,
-                  onRetry: () =>
-                      context.read<PartahBloc>().add(const PartahReportRequested()),
-                ).expanded();
-              }
-              if (state.loadStatus == ApiStatus.SUCCESS && state.report != null) {
-                return _ReportBody(report: state.report!).expanded();
-              }
-              return const AccountsIdleState(
-                subtitle: 'Select a date range and tap View',
-              ).expanded();
-            },
-          ),
-        ],
+    return ListenableBuilder(
+      listenable: calculator,
+      builder: (context, _) {
+        final step = calculator.currentStep;
+        return Column(
+          children: [
+            _StepIndicator(
+              currentStep: step,
+              onStepTapped: (idx) {
+                final yieldReady = (calculator.totalSaleYield100kg - 100).abs() < 0.01;
+                if (idx > 0 && !yieldReady) return;
+                calculator.goToStep(idx);
+              },
+            ),
+            IndexedStack(
+              index: step,
+              children: [
+                SaleStep(
+                  calculator: calculator,
+                  onEditCategories: () async {
+                    await context.pushNamed(RouteNames.partah_categories);
+                    if (context.mounted) context.read<PartahBloc>().add(PartahStarted());
+                  },
+                ),
+                PurchaseStep(calculator: calculator),
+                CostsStep(calculator: calculator),
+                SummaryStep(calculator: calculator),
+              ],
+            ).expanded(),
+            if (step != 3) _FinancialFooter(calculator: calculator),
+            if (step == 3) _StepNavigation(calculator: calculator),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ─── Step Indicator ───────────────────────────────────────────────────────────
+
+class _StepIndicator extends StatelessWidget {
+  final int currentStep;
+  final void Function(int) onStepTapped;
+  const _StepIndicator({required this.currentStep, required this.onStepTapped});
+
+  static const _steps = [
+    (icon: Icons.sell_outlined, label: 'Sale'),
+    (icon: Icons.shopping_bag_outlined, label: 'Purchase'),
+    (icon: Icons.tune_rounded, label: 'Costs'),
+    (icon: Icons.bar_chart_rounded, label: 'Summary'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: context.surface,
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+      child: Row(
+        children: List.generate(_steps.length * 2 - 1, (i) {
+          if (i.isOdd) {
+            final done = i ~/ 2 < currentStep;
+            return Container(
+              height: 2,
+              margin: const EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                color: done ? context.primary : context.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ).expanded();
+          }
+          final idx = i ~/ 2;
+          final s = _steps[idx];
+          final isActive = idx == currentStep;
+          final isDone = idx < currentStep;
+          return _StepDot(
+            icon: s.icon,
+            label: s.label,
+            isActive: isActive,
+            isDone: isDone,
+            onTap: () => onStepTapped(idx),
+          );
+        }),
       ),
     );
   }
 }
 
-// ─── Date filter form ─────────────────────────────────────────────────────────
+class _StepDot extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isActive;
+  final bool isDone;
+  final VoidCallback onTap;
 
-class _DateFilterForm extends StatelessWidget {
-  final DateTime fromDate;
-  final DateTime toDate;
-  final VoidCallback onPickFrom;
-  final VoidCallback onPickTo;
-  final VoidCallback onView;
-
-  const _DateFilterForm({
-    required this.fromDate,
-    required this.toDate,
-    required this.onPickFrom,
-    required this.onPickTo,
-    required this.onView,
+  const _StepDot({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+    required this.isDone,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: context.pagePadding.copyWith(bottom: 12),
+    final bg = isDone
+        ? context.success
+        : isActive
+            ? context.primary
+            : context.border;
+    final iconColor = isDone || isActive ? context.white : context.textSecondary;
+
+    return Column(
+      mainAxisSize: .min,
+      children: [
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: bg,
+            shape: .circle,
+            boxShadow: isActive
+                ? [
+                    BoxShadow(color: context.primary.withAlpha(60), blurRadius: 8, offset: const Offset(0, 3)),
+                  ]
+                : null,
+          ),
+          child: isDone
+              ? Icon(Icons.check_rounded, size: 16, color: context.white)
+              : Icon(icon, size: 16, color: iconColor),
+        ),
+        heightBox(5),
+        Text(
+          label,
+          style: context.labelSmall.copyWith(
+            fontSize: 9,
+            color: isActive ? context.primary : context.textSecondary,
+            fontWeight: isActive ? .w700 : .w500,
+          ),
+        ),
+      ],
+    ).onTap(onTap);
+  }
+}
+
+// ─── Financial Footer ─────────────────────────────────────────────────────────
+
+class _FinancialFooter extends StatelessWidget {
+  final PartahCalculator calculator;
+  const _FinancialFooter({required this.calculator});
+
+  @override
+  Widget build(BuildContext context) {
+    final profitPer100 = calculator.profitPer100;
+    final netProfit = calculator.totalNetProfit;
+    final bag = calculator.totalInput.asBagWeight;
+    final yieldReady = (calculator.totalSaleYield100kg - 100).abs() < 0.01;
+
+    String fmt(double v) => (!yieldReady || v == 0) ? '–' : v.abs().asAmount;
+
+    final profitColor = !yieldReady
+        ? context.textDisabled
+        : profitPer100 >= 0
+            ? context.success
+            : context.error;
+
+    final profitLabel = profitPer100 < 0 ? 'Loss / $bag Kg' : 'Profit / $bag Kg';
+    final netLabel = netProfit < 0 ? 'Net Loss' : 'Net Profit';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Color.alphaBlend(context.primary.withAlpha(12), context.surface),
+        border: Border(top: BorderSide(color: context.primary.withAlpha(40), width: 1.5)),
+        boxShadow: [
+          BoxShadow(color: context.primary.withAlpha(14), blurRadius: 16, offset: const Offset(0, -3)),
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 15),
       child: Row(
         children: [
-          _DateField(label: 'From', date: fromDate, onTap: onPickFrom).expanded(),
-          widthBox(10),
-          _DateField(label: 'To', date: toDate, onTap: onPickTo).expanded(),
-          widthBox(10),
-          ElevatedButton(
-            onPressed: onView,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: context.primary,
-              foregroundColor: AppColors.white,
-              shape: RoundedRectangleBorder(borderRadius: .circular(10)),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-              elevation: 0,
-            ),
-            child: const Text('View'),
-          ),
+          _FooterMetric(
+            label: yieldReady ? profitLabel : 'Profit / $bag Kg',
+            value: fmt(profitPer100),
+            color: profitColor,
+          ).expanded(),
+          Container(width: 1, height: 42, color: context.border),
+          _FooterMetric(
+            label: yieldReady ? netLabel : 'Net Profit',
+            value: fmt(netProfit),
+            color: profitColor,
+            highlight: true,
+          ).expanded(),
         ],
       ),
     );
   }
 }
 
-class _DateField extends StatelessWidget {
-  final String label;
-  final DateTime date;
-  final VoidCallback onTap;
-
-  const _DateField({required this.label, required this.date, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        decoration: BoxDecoration(
-          color: context.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: context.border),
-        ),
-        child: Column(
-          crossAxisAlignment: .start,
-          children: [
-            Text(label, style: context.labelSmall.copyWith(color: context.textSecondary)),
-            heightBox(2),
-            Text(
-              date.displayDate,
-              style: context.bodySmall.copyWith(fontWeight: .w700),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Report body ──────────────────────────────────────────────────────────────
-
-class _ReportBody extends StatelessWidget {
-  final PartahReportEntity report;
-  const _ReportBody({required this.report});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: context.pagePadding.copyWith(top: 0),
-      children: [
-        _SummaryRow(summary: report.summary),
-        heightBox(16),
-        _SectionCard(
-          title: 'Sales Summary',
-          rows: [
-            ('Total Sale Amount', report.salesSummary.totalSaleAmount.asAmount),
-            ('Total Weight (Kg)', report.salesSummary.totalWeightKg.withCommas),
-            ('Sale Rate Index / 100Kg', report.salesSummary.saleRateIndexPer100Kg.asAmount),
-          ],
-        ),
-        heightBox(12),
-        _SectionCard(
-          title: 'Wheat Cost',
-          rows: [
-            ('Quantity', report.wheatCost.quantity.withCommas),
-            ('Rate', report.wheatCost.rate.asAmount),
-            ('Amount', report.wheatCost.amount.asAmount),
-          ],
-        ),
-        heightBox(12),
-        _SectionCard(
-          title: 'Production',
-          rows: [
-            ('Total Grinding', report.production.totalGrinding.withCommas),
-            ('Gain %', '${report.production.gainPercent.withCommas}%'),
-          ],
-        ),
-        heightBox(12),
-        _ExpensesCard(expenses: report.expensesSummary),
-        if (report.categoryIndex.isNotEmpty) ...[
-          heightBox(16),
-          Text('Category Breakdown', style: context.titleSmall.copyWith(fontWeight: .w700)),
-          heightBox(8),
-          _CategoryIndexTable(items: report.categoryIndex),
-        ],
-        heightBox(24),
-      ],
-    );
-  }
-}
-
-class _SummaryRow extends StatelessWidget {
-  final PartahSummaryEntity summary;
-  const _SummaryRow({required this.summary});
-
-  @override
-  Widget build(BuildContext context) {
-    final isProfit = summary.totalProfit >= 0;
-    final profitColor = isProfit ? context.success : context.error;
-    return Row(
-      children: [
-        _StatTile(
-          label: 'Revenue / 100Kg',
-          value: summary.totalRevenuePer100Kg.asAmount,
-        ).expanded(),
-        widthBox(10),
-        _StatTile(
-          label: 'Cost / 100Kg',
-          value: summary.totalCostPer100Kg.asAmount,
-        ).expanded(),
-        widthBox(10),
-        _StatTile(
-          label: isProfit ? 'Total Profit' : 'Total Loss',
-          value: summary.totalProfit.abs().asAmount,
-          color: profitColor,
-        ).expanded(),
-      ],
-    );
-  }
-}
-
-class _StatTile extends StatelessWidget {
+class _FooterMetric extends StatelessWidget {
   final String label;
   final String value;
-  final Color? color;
+  final Color color;
+  final bool highlight;
 
-  const _StatTile({required this.label, required this.value, this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.border),
-      ),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Text(label, style: context.labelSmall.copyWith(color: context.textSecondary)),
-          heightBox(4),
-          Text(
-            value,
-            style: context.titleSmall.copyWith(fontWeight: .w800, color: color),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionCard extends StatelessWidget {
-  final String title;
-  final List<(String, String)> rows;
-
-  const _SectionCard({required this.title, required this.rows});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.border),
-      ),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Text(title, style: context.labelMedium.copyWith(fontWeight: .w700)),
-          heightBox(8),
-          for (final row in rows)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3),
-              child: Row(
-                mainAxisAlignment: .spaceBetween,
-                children: [
-                  Text(row.$1, style: context.bodySmall.copyWith(color: context.textSecondary)),
-                  Text(row.$2, style: context.bodySmall.copyWith(fontWeight: .w600)),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ExpensesCard extends StatelessWidget {
-  final PartahExpensesSummaryEntity expenses;
-  const _ExpensesCard({required this.expenses});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.border),
-      ),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Text('Expenses', style: context.labelMedium.copyWith(fontWeight: .w700)),
-          heightBox(8),
-          Row(
-            mainAxisAlignment: .spaceBetween,
-            children: [
-              Text('Variable Total', style: context.bodySmall.copyWith(color: context.textSecondary)),
-              Text(expenses.variableTotal.asAmount, style: context.bodySmall.copyWith(fontWeight: .w600)),
-            ],
-          ),
-          heightBox(4),
-          Row(
-            mainAxisAlignment: .spaceBetween,
-            children: [
-              Text('Fixed Total', style: context.bodySmall.copyWith(color: context.textSecondary)),
-              Text(expenses.fixedTotal.asAmount, style: context.bodySmall.copyWith(fontWeight: .w600)),
-            ],
-          ),
-          if (expenses.costs.isNotEmpty) ...[
-            heightBox(10),
-            Divider(color: context.border, height: 1),
-            heightBox(8),
-            for (final cost in expenses.costs)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 3),
-                child: Row(
-                  mainAxisAlignment: .spaceBetween,
-                  children: [
-                    Text(
-                      cost.description,
-                      style: context.bodySmall.copyWith(color: context.textSecondary),
-                    ).expanded(),
-                    Text(cost.amount.asAmount, style: context.bodySmall.copyWith(fontWeight: .w600)),
-                  ],
-                ),
-              ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _CategoryIndexTable extends StatelessWidget {
-  final List<PartahCategoryIndexEntity> items;
-  const _CategoryIndexTable({required this.items});
+  const _FooterMetric({required this.label, required this.value, required this.color, this.highlight = false});
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: .min,
       children: [
-        Container(
-          color: AppColors.grey200,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Row(
-            children: [
-              Text(
-                'Category',
-                style: context.labelSmall.copyWith(fontWeight: .w700, color: context.textSecondary),
-              ).expanded(flex: 3),
-              Text(
-                'Qty',
-                style: context.labelSmall.copyWith(fontWeight: .w700, color: context.textSecondary),
-                textAlign: .end,
-              ).expanded(flex: 2),
-              Text(
-                'Amount',
-                style: context.labelSmall.copyWith(fontWeight: .w700, color: context.textSecondary),
-                textAlign: .end,
-              ).expanded(flex: 2),
-            ],
-          ),
+        Text(
+          label,
+          style: context.labelSmall.copyWith(fontSize: 10, color: context.textSecondary, fontWeight: .w600),
         ),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: items.length,
-          separatorBuilder: (_, __) => Divider(height: 1, color: context.border),
-          itemBuilder: (_, i) {
-            final item = items[i];
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Row(
-                children: [
-                  Text(item.displayName, style: context.bodySmall).expanded(flex: 3),
-                  Text(item.qty.withCommas, style: context.bodySmall, textAlign: .end).expanded(flex: 2),
-                  Text(item.amount.asAmount, style: context.bodySmall, textAlign: .end).expanded(flex: 2),
-                ],
-              ),
-            );
-          },
+        heightBox(3),
+        Text(
+          value,
+          style: context.titleSmall.copyWith(color: color, fontWeight: .w800, fontSize: highlight ? 22 : 19),
         ),
       ],
+    );
+  }
+}
+
+// ─── Step Navigation ──────────────────────────────────────────────────────────
+
+class _StepNavigation extends StatelessWidget {
+  final PartahCalculator calculator;
+  const _StepNavigation({required this.calculator});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Color.alphaBlend(context.primary.withAlpha(12), context.surface),
+      padding: EdgeInsets.fromLTRB(16, 10, 16, 14 + MediaQuery.of(context).viewPadding.bottom),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: _NavBtn(
+              label: 'Back',
+              icon: Icons.arrow_back_rounded,
+              onTap: calculator.stepBack,
+              primary: false,
+              stretch: true,
+            ),
+          ),
+          widthBox(10),
+          Expanded(
+            flex: 2,
+            child: _NavBtn(
+              label: 'Home',
+              icon: Icons.home_rounded,
+              onTap: () {
+                calculator.clearAll();
+                context.goNamed(RouteNames.partah_home);
+              },
+              primary: false,
+              stretch: true,
+            ),
+          ),
+          widthBox(10),
+          Expanded(
+            flex: 3,
+            child: _NavBtn(
+              label: 'Save',
+              icon: Icons.check_rounded,
+              onTap: () => AppToastsUtils.showErrorTop(
+                context,
+                'Saving Partah reports isn\'t available yet',
+              ),
+              primary: true,
+              iconOnRight: true,
+              stretch: true,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Shimmer Skeleton ─────────────────────────────────────────────────────────
+
+Widget _sBox({double? w, double? h, double r = 8}) => Container(
+      width: w ?? double.infinity,
+      height: h,
+      decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(r)),
+    );
+
+class _PartahShimmer extends StatelessWidget {
+  const _PartahShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return ShimmerLoading(
+      isLoading: true,
+      child: Column(
+        children: [
+          Container(
+            color: context.surface,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            child: Row(
+              children: List.generate(7, (i) {
+                if (i.isOdd) {
+                  return _sBox(h: 2, r: 2).withMargin(const EdgeInsets.only(bottom: 20)).expanded();
+                }
+                return Column(
+                  mainAxisSize: .min,
+                  children: [_sBox(w: 34, h: 34, r: 17), heightBox(5), _sBox(w: 28, h: 8)],
+                );
+              }),
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+              children: [
+                _sBox(w: 120, h: 14),
+                heightBox(8),
+                _sBox(h: 52, r: 12),
+                heightBox(24),
+                Row(
+                  children: [
+                    _sBox(w: 100, h: 12).expanded(),
+                    _sBox(w: 60, h: 12),
+                    widthBox(12),
+                    _sBox(w: 60, h: 12),
+                    widthBox(12),
+                    _sBox(w: 60, h: 12),
+                  ],
+                ),
+                heightBox(14),
+                ...List.generate(5, (_) => _shimmerRow()),
+              ],
+            ),
+          ),
+          Container(
+            color: context.surface,
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+            child: Column(
+              mainAxisSize: .min,
+              children: [
+                Row(children: [_footerMetric().expanded(), widthBox(12), _footerMetric().expanded()]),
+                heightBox(8),
+                Row(children: [_footerMetric().expanded(), widthBox(12), _footerMetric().expanded()]),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _shimmerRow() => Padding(
+        padding: const EdgeInsets.only(bottom: 14),
+        child: Row(
+          children: [
+            _sBox(h: 44, r: 10).expanded(),
+            widthBox(8),
+            _sBox(w: 72, h: 44, r: 10),
+            widthBox(8),
+            _sBox(w: 72, h: 44, r: 10),
+            widthBox(8),
+            _sBox(w: 64, h: 14),
+          ],
+        ),
+      );
+
+  Widget _footerMetric() => Column(
+        mainAxisSize: .min,
+        children: [_sBox(w: 70, h: 10), heightBox(5), _sBox(w: 90, h: 16)],
+      );
+}
+
+// ─── Nav Button ───────────────────────────────────────────────────────────────
+
+class _NavBtn extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final VoidCallback? onTap;
+  final bool primary;
+  final bool iconOnRight;
+  final bool stretch;
+
+  const _NavBtn({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+    required this.primary,
+    this.iconOnRight = false,
+    this.stretch = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = primary ? context.primary : context.surface;
+    final labelColor = primary ? context.white : context.textSecondary;
+    final borderColor = primary ? context.primary : context.border;
+
+    final iconWidget = Icon(icon, size: 14, color: labelColor);
+    final labelWidget = Text(
+      label,
+      style: context.labelMedium.copyWith(color: labelColor, fontWeight: .w700),
+    );
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        width: stretch ? double.infinity : null,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: borderColor),
+          boxShadow: primary
+              ? [BoxShadow(color: context.primary.withAlpha(50), blurRadius: 8, offset: const Offset(0, 3))]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: stretch ? .max : .min,
+          mainAxisAlignment: stretch ? .center : .start,
+          children: iconOnRight ? [labelWidget, widthBox(6), iconWidget] : [iconWidget, widthBox(6), labelWidget],
+        ),
+      ),
     );
   }
 }

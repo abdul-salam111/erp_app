@@ -38,6 +38,7 @@ class _PartahCategoriesBody extends StatelessWidget {
     );
     if (saved == true && context.mounted) {
       context.read<PartahCategoriesBloc>().add(const PartahCategoriesStarted());
+      AppToastsUtils.showSuccessTop(context, 'Category saved');
     }
   }
 

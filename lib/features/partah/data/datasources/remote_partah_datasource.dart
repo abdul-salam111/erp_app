@@ -3,13 +3,10 @@ import '../../../../core/services/session_manager.dart';
 import '../../../../core/shared/shared_exports.dart';
 import '../models/request_models/create_partah_category/create_partah_category.dart';
 import '../models/response_models/created_partah_category/created_partah_category.dart';
-import '../models/response_models/load_partah/load_partah.dart';
 import '../models/response_models/partah_categories_list/partah_categories_list.dart';
 import '../models/response_models/partah_category_products/partah_category_products.dart';
 
 abstract interface class IRemotePartahDataSource {
-  Future<LoadPartah> getReport({required String fromDate, required String toDate});
-
   Future<PartahCategoriesList> getCategories();
   Future<List<PartahCategoryProducts>> getCategoryItems(int categoryId);
   Future<List<PartahCategoryProducts>> searchCategoryItems({
@@ -28,16 +25,6 @@ class RemotePartahDataSourceImpl extends BaseRemoteDatasource
   RemotePartahDataSourceImpl({required super.dioHelper});
 
   String? get _token => SessionController.instance.activeAccessToken;
-
-  @override
-  Future<LoadPartah> getReport({required String fromDate, required String toDate}) {
-    return post<LoadPartah>(
-      url: ApiEndPoints.partah.loadParta,
-      body: {'FromDate': fromDate, 'ToDate': toDate},
-      parser: (json) => LoadPartah.fromJson(json as Map<String, dynamic>),
-      authToken: _token,
-    );
-  }
 
   @override
   Future<PartahCategoriesList> getCategories() {

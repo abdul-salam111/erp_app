@@ -103,7 +103,7 @@ class PartahHomeView extends StatelessWidget {
   List<_MenuCardData> _mainMenu(BuildContext context) => [
         _MenuCardData(
           title: 'Partah',
-          subtitle: 'View category-based profit report',
+          subtitle: 'Calculate rate & profit',
           icon: Icons.calculate_rounded,
           gradient: const LinearGradient(
             colors: [AppColors.skyBlue, AppColors.skyBlueDark],

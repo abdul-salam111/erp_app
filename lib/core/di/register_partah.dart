@@ -2,7 +2,6 @@ import '../../features/partah/data/datasources/remote_partah_datasource.dart';
 import '../../features/partah/data/repositories_impl/partah_repository_impl.dart';
 import '../../features/partah/domain/repositories/partah_repository.dart';
 import '../../features/partah/domain/usecases/get_partah_categories_usecase.dart';
-import '../../features/partah/domain/usecases/load_partah_report_usecase.dart';
 import '../../features/partah/domain/usecases/save_category_items_usecase.dart';
 import '../../features/partah/domain/usecases/save_partah_category_usecase.dart';
 import '../../features/partah/domain/usecases/search_category_products_usecase.dart';
@@ -23,7 +22,6 @@ Future<void> registerPartah() async {
   );
 
   // UseCases
-  sl.registerLazySingleton(() => LoadPartahReportUsecase(repository: sl()));
   sl.registerLazySingleton(() => GetPartahCategoriesUsecase(repository: sl()));
   sl.registerLazySingleton(() => SearchCategoryProductsUsecase(repository: sl()));
   sl.registerLazySingleton(() => SavePartahCategoryUsecase(repository: sl()));
@@ -31,7 +29,7 @@ Future<void> registerPartah() async {
 
   // BLoCs
   sl.registerFactory<PartahBloc>(
-    () => PartahBloc(loadReport: sl()),
+    () => PartahBloc(getCategories: sl()),
   );
   sl.registerFactory<PartahCategoriesBloc>(
     () => PartahCategoriesBloc(getCategories: sl()),

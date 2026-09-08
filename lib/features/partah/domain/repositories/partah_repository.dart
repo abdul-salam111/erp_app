@@ -1,14 +1,8 @@
 import '../../../../core/utils/result.dart';
 import '../entities/partah_category_entity.dart';
 import '../entities/partah_category_product_entity.dart';
-import '../entities/partah_report_entity.dart';
 
 abstract interface class PartahRepository {
-  Future<Result<PartahReportEntity>> loadReport({
-    required String fromDate,
-    required String toDate,
-  });
-
   Future<Result<({List<PartahCategoryEntity> categories, int unassignedCount})>>
       getCategories();
 

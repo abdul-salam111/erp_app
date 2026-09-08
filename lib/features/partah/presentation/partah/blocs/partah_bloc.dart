@@ -1,52 +1,43 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/utils/utils_exports.dart';
-import '../../../domain/usecases/load_partah_report_usecase.dart';
+import '../../../../../core/local_storage/mill_config_store.dart';
+import '../../../../../core/shared/shared_exports.dart';
+import '../../../../../core/utils/result.dart';
+import '../../../domain/entities/partah_category_entity.dart';
+import '../../../domain/usecases/get_partah_categories_usecase.dart';
 import 'partah_event.dart';
 import 'partah_state.dart';
 
 class PartahBloc extends Bloc<PartahEvent, PartahState> {
-  final LoadPartahReportUsecase loadReport;
+  final GetPartahCategoriesUsecase getCategories;
 
-  PartahBloc({required this.loadReport})
-      : super(PartahState(
-          fromDate: DateTime.now(),
-          toDate: DateTime.now(),
-        )) {
-    on<PartahFromDateChanged>(_onFromDateChanged);
-    on<PartahToDateChanged>(_onToDateChanged);
-    on<PartahReportRequested>(_onReportRequested, transformer: droppable());
+  PartahBloc({required this.getCategories}) : super(const PartahState()) {
+    on<PartahStarted>(_onStarted, transformer: droppable());
   }
 
-  void _onFromDateChanged(PartahFromDateChanged event, Emitter<PartahState> emit) {
-    emit(state.copyWith(fromDate: event.date));
-  }
-
-  void _onToDateChanged(PartahToDateChanged event, Emitter<PartahState> emit) {
-    emit(state.copyWith(toDate: event.date));
-  }
-
-  Future<void> _onReportRequested(
-    PartahReportRequested event,
-    Emitter<PartahState> emit,
-  ) async {
+  Future<void> _onStarted(PartahStarted event, Emitter<PartahState> emit) async {
     emit(state.copyWith(loadStatus: ApiStatus.LOADING));
 
-    final result = await loadReport(LoadPartahReportParams(
-      fromDate: state.fromDate.format('yyyy-MM-dd'),
-      toDate: state.toDate.format('yyyy-MM-dd'),
-    ));
+    final categoriesFuture = getCategories(NoParams());
+    final millTypeFuture = MillConfigStore.getMillType();
 
-    result.when(
-      failure: (failure) => emit(state.copyWith(
-        loadStatus: ApiStatus.FAILURE,
-        errorMessage: failure.message,
-      )),
-      success: (report) => emit(state.copyWith(
-        loadStatus: ApiStatus.SUCCESS,
-        report: report,
-      )),
-    );
+    final categoriesResult = await categoriesFuture;
+    final millType = await millTypeFuture;
+
+    if (categoriesResult case ResultError(:final failure)) {
+      emit(state.copyWith(loadStatus: ApiStatus.FAILURE, errorMessage: failure.message));
+      return;
+    }
+
+    final data = (categoriesResult
+            as Success<({List<PartahCategoryEntity> categories, int unassignedCount})>)
+        .data;
+
+    emit(state.copyWith(
+      loadStatus: ApiStatus.SUCCESS,
+      millType: millType,
+      categories: data.categories,
+    ));
   }
 }

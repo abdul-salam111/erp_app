@@ -107,7 +107,6 @@ class _CategoryEditBodyState extends State<_CategoryEditBody> {
         listenWhen: (p, c) => p.saveStatus != c.saveStatus,
         listener: (context, state) {
           if (state.saveStatus == ApiStatus.SUCCESS) {
-            AppToastsUtils.showSuccessTop(context, 'Category saved');
             context.pop(true);
           }
           if (state.saveStatus == ApiStatus.FAILURE) {
