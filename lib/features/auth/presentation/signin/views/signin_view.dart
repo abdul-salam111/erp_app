@@ -312,7 +312,7 @@ class _LoginCardState extends State<_LoginCard> {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Powered by Mantic Solutions',
+              'Powered by Mantic Software',
               style: TextStyle(
                 fontSize: 11,
                 color: AppColors.grey300,

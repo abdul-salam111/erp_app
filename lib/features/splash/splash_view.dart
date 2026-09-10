@@ -152,7 +152,7 @@ class _SplashViewState extends State<SplashView> {
                 _PulsingDots(),
                 const SizedBox(height: 16),
                 Text(
-                  'Powered by Mantic Solutions',
+                  'Powered by Mantic Software',
                   textAlign: .center,
                   style: context.labelSmall.copyWith(
                     color: context.white.withValues(alpha: 0.30),

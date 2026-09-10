@@ -106,144 +106,35 @@ class AdminDashboard extends StatelessWidget {
               ),
             ],
           ),
-          DrawerItem.expandable(
+          DrawerItem.tile(
             label: AppConstants.inventoryLabel,
             icon: Iconsax.element_3,
             color: AppColors.teal,
-            children: [
-              DrawerItem.tile(
-                label: AppConstants.menu1Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu2Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu3Label,
-                icon: Iconsax.document,
-              ),
-            ],
+            routeName: RouteNames.inventory,
           ),
-          DrawerItem.expandable(
+          DrawerItem.tile(
             label: AppConstants.purchaseLabel,
             icon: Iconsax.shopping_bag,
             color: AppColors.purple,
-            children: [
-              DrawerItem.tile(
-                label: AppConstants.menu1Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu2Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu3Label,
-                icon: Iconsax.document,
-              ),
-            ],
+            routeName: RouteNames.purchase_order,
           ),
-          DrawerItem.expandable(
+          DrawerItem.tile(
             label: AppConstants.salesLabel,
             icon: Iconsax.truck,
             color: AppColors.green,
-            children: [
-              DrawerItem.tile(
-                label: AppConstants.menu1Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu2Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu3Label,
-                icon: Iconsax.document,
-              ),
-            ],
+            routeName: RouteNames.sale_order,
           ),
-          DrawerItem.expandable(
-            label: AppConstants.productionLabel,
-            icon: Iconsax.buildings_2,
-            color: AppColors.orange,
-            children: [
-              DrawerItem.tile(
-                label: AppConstants.menu1Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu2Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu3Label,
-                icon: Iconsax.document,
-              ),
-            ],
-          ),
-          DrawerItem.expandable(
-            label: AppConstants.analyticsLabel,
-            icon: Iconsax.chart_2,
-            color: AppColors.deepPurple,
-            children: [
-              DrawerItem.tile(
-                label: AppConstants.menu1Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu2Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu3Label,
-                icon: Iconsax.document,
-              ),
-            ],
-          ),
-          DrawerItem.expandable(
+          DrawerItem.tile(
             label: AppConstants.securityLabel,
             icon: Iconsax.security_user,
             color: AppColors.blueGrey,
-            children: [
-              DrawerItem.tile(
-                label: AppConstants.menu1Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu2Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu3Label,
-                icon: Iconsax.document,
-              ),
-            ],
+            routeName: RouteNames.security,
           ),
           DrawerItem.tile(
             label: AppConstants.systemLabel,
             icon: Iconsax.setting_2,
             color: AppColors.brown,
             routeName: RouteNames.system,
-          ),
-          DrawerItem.expandable(
-            label: AppConstants.assetsLabel,
-            icon: Iconsax.convert_3d_cube,
-            color: AppColors.tealDark,
-            children: [
-              DrawerItem.tile(
-                label: AppConstants.menu1Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu2Label,
-                icon: Iconsax.document,
-              ),
-              DrawerItem.tile(
-                label: AppConstants.menu3Label,
-                icon: Iconsax.document,
-              ),
-            ],
           ),
         ],
       ),
