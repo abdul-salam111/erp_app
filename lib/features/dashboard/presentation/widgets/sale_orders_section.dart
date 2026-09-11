@@ -352,7 +352,7 @@ class _DateButton extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  date.format('dd/MM/yyyy'),
+                  date.format('dd-MMM-yyyy'),
                   style: context.labelSmall.copyWith(
                     fontWeight: .w600,
                     fontSize: 11,

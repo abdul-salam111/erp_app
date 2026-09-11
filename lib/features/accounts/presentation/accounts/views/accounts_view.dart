@@ -94,6 +94,19 @@ class _AccountsBodyState extends State<_AccountsBody>
     super.dispose();
   }
 
+  void _showRecoveryListSheet(BuildContext context) {
+    final bloc = context.read<AccountsBloc>();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.transparent,
+      builder: (_) => BlocProvider.value(
+        value: bloc,
+        child: const _RecoveryListSheet(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AccountsBloc, AccountsState>(
@@ -187,48 +200,37 @@ class _AccountsBodyState extends State<_AccountsBody>
                   opacity: _fades[0],
                   child: SlideTransition(
                     position: _slides[0],
-                    child: BlocBuilder<AccountsBloc, AccountsState>(
-                      buildWhen: (prev, curr) =>
-                          prev.todayOverviewExpanded !=
-                          curr.todayOverviewExpanded,
-                      builder: (context, state) => SectionHeader(
-                        title: AppConstants.recoveryDueTodayTitle,
-                        trailing: context.isPhone
-                            ? GestureDetector(
-                                onTap: () => context.read<AccountsBloc>().add(
-                                  const TodayOverviewExpansionToggled(),
-                                ),
-                                child: Row(
-                                  mainAxisSize: .min,
-                                  children: [
-                                    Text(
-                                      state.todayOverviewExpanded
-                                          ? AppConstants.hideDetails
-                                          : AppConstants.showDetails,
-                                      style: context.labelMedium.copyWith(
-                                        color: context.primary,
-                                        fontWeight: .w600,
-                                      ),
+                    child: SectionHeader(
+                      title: AppConstants.recoveryDueTodayTitle,
+                      trailing: context.isPhone
+                          ? TextButton(
+                              onPressed: () =>
+                                  _showRecoveryListSheet(context),
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: Size.zero,
+                                tapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Row(
+                                mainAxisSize: .min,
+                                children: [
+                                  Text(
+                                    AppConstants.showDetails,
+                                    style: context.labelMedium.copyWith(
+                                      color: context.primary,
+                                      fontWeight: .w600,
                                     ),
-                                    AnimatedRotation(
-                                      turns: state.todayOverviewExpanded
-                                          ? 0.5
-                                          : 0,
-                                      duration: const Duration(
-                                        milliseconds: 380,
-                                      ),
-                                      curve: Curves.easeInOutCubic,
-                                      child: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: context.primary,
-                                        size: 18,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : null,
-                      ),
+                                  ),
+                                  Icon(
+                                    Icons.chevron_right_rounded,
+                                    color: context.primary,
+                                    size: 18,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : null,
                     ),
                   ),
                 ),
@@ -314,34 +316,15 @@ class _AccountsBodyState extends State<_AccountsBody>
                   ),
                 ),
                 const SizedBox(height: 14),
-                // [2] ── Expandable recovery list ─────────────────────────────
+                // [2] ── Divider before quick actions ──────────────────────
                 FadeTransition(
                   opacity: _fades[2],
                   child: SlideTransition(
                     position: _slides[2],
-                    child: Column(
-                      crossAxisAlignment: .start,
-                      children: [
-                        const Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: AppColors.grey200,
-                        ),
-                        const SizedBox(height: 14),
-                        BlocBuilder<AccountsBloc, AccountsState>(
-                          buildWhen: (prev, curr) =>
-                              prev.todayOverviewExpanded !=
-                              curr.todayOverviewExpanded,
-                          builder: (context, state) => AnimatedSize(
-                            duration: const Duration(milliseconds: 420),
-                            curve: Curves.easeInOutCubic,
-                            alignment: .topCenter,
-                            child: state.todayOverviewExpanded
-                                ? const RecoveryListSection()
-                                : const SizedBox.shrink(),
-                          ),
-                        ),
-                      ],
+                    child: const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: AppColors.grey200,
                     ),
                   ),
                 ),
@@ -357,6 +340,153 @@ class _AccountsBodyState extends State<_AccountsBody>
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// ─── "Show list" bottom sheet — filters + recovery list ────────────────────────
+
+class _RecoveryListSheet extends StatelessWidget {
+  const _RecoveryListSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.88,
+      ),
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: const .vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          const SizedBox(height: 12),
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: context.border,
+                borderRadius: .circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              crossAxisAlignment: .start,
+              children: [
+                Container(
+                  padding: .all(9),
+                  decoration: BoxDecoration(
+                    color: context.primary.withValues(alpha: 0.10),
+                    borderRadius: .circular(10),
+                  ),
+                  child: Icon(
+                    Icons.receipt_long_outlined,
+                    color: context.primary,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    AppConstants.recoveryDueTodayTitle,
+                    style: context.titleSmall.copyWith(fontWeight: .w700),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: .all(6),
+                    decoration: BoxDecoration(
+                      color: context.grey100,
+                      shape: .circle,
+                    ),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 16,
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Divider(height: 1, thickness: 1, color: AppColors.grey200),
+          // ── Fixed area: filter chips + search bar (never scrolls) ────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            child: Column(
+              crossAxisAlignment: .start,
+              children: [
+                BlocBuilder<AccountsBloc, AccountsState>(
+                  buildWhen: (p, c) => p.selectedFilter != c.selectedFilter,
+                  builder: (context, state) => Row(
+                    children: [
+                      Expanded(
+                        child: _RecoveryFilterBadge(
+                          label: AppConstants.todayLabel,
+                          selected: state.selectedFilter == FilterType.today,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.today),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _RecoveryFilterBadge(
+                          label: AppConstants.weekLabel,
+                          selected: state.selectedFilter == FilterType.week,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.week),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _RecoveryFilterBadge(
+                          label: AppConstants.monthLabel,
+                          selected: state.selectedFilter == FilterType.month,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.month),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: _RecoveryFilterBadge(
+                          label: AppConstants.oldestLabel,
+                          selected: state.selectedFilter == FilterType.oldest,
+                          onTap: () => context.read<AccountsBloc>().add(
+                            const RecoveryFilterChanged(FilterType.oldest),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const RecoverySearchBar(),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+          // ── Scrollable area: only the invoice list scrolls ───────────────
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(
+                20, 0, 20, MediaQuery.viewInsetsOf(context).bottom + 20,
+              ),
+              child: const RecoveryInvoiceList(),
+            ),
+          ),
+        ],
       ),
     );
   }

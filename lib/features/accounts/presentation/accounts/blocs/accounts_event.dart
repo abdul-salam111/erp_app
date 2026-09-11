@@ -10,10 +10,6 @@ abstract class AccountsEvent extends Equatable {
 
 class AccountsSubmitted extends AccountsEvent {}
 
-final class TodayOverviewExpansionToggled extends AccountsEvent {
-  const TodayOverviewExpansionToggled();
-}
-
 final class RecoveryFilterChanged extends AccountsEvent {
   final FilterType filter;
   const RecoveryFilterChanged(this.filter);

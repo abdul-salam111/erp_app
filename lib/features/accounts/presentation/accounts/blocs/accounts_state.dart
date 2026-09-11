@@ -11,7 +11,6 @@ class AccountsState extends Equatable {
   final dynamic data;
   final String? message;
   final ApiStatus apiStatus;
-  final bool todayOverviewExpanded;
   final FilterType selectedFilter;
   final DueReceiptCountEntity? recoveryDue;
   final ApiStatus recoveryDueStatus;
@@ -23,7 +22,6 @@ class AccountsState extends Equatable {
     this.data,
     this.message,
     this.apiStatus = ApiStatus.INITIAL,
-    required this.todayOverviewExpanded,
     this.selectedFilter = FilterType.today,
     this.recoveryDue,
     this.recoveryDueStatus = ApiStatus.INITIAL,
@@ -61,7 +59,6 @@ class AccountsState extends Equatable {
     dynamic data,
     String? message,
     ApiStatus? apiStatus,
-    bool? todayOverviewExpanded,
     FilterType? selectedFilter,
     DueReceiptCountEntity? recoveryDue,
     ApiStatus? recoveryDueStatus,
@@ -73,7 +70,6 @@ class AccountsState extends Equatable {
       data:                  data                  ?? this.data,
       message:               message               ?? this.message,
       apiStatus:             apiStatus             ?? this.apiStatus,
-      todayOverviewExpanded: todayOverviewExpanded ?? this.todayOverviewExpanded,
       selectedFilter:        selectedFilter        ?? this.selectedFilter,
       recoveryDue:           recoveryDue           ?? this.recoveryDue,
       recoveryDueStatus:     recoveryDueStatus     ?? this.recoveryDueStatus,
@@ -88,7 +84,6 @@ class AccountsState extends Equatable {
         data,
         message,
         apiStatus,
-        todayOverviewExpanded,
         selectedFilter,
         recoveryDue,
         recoveryDueStatus,

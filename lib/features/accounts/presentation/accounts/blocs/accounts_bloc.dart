@@ -12,20 +12,12 @@ class AccountsBloc extends Bloc<AccountsEvent, AccountsState>
   final GetDueReceiptCountUsecase getDueReceiptCountUsecase;
 
   AccountsBloc({required this.getDueReceiptCountUsecase})
-    : super(const AccountsState(todayOverviewExpanded: false)) {
-    on<TodayOverviewExpansionToggled>(_onTodayOverviewExpansionToggled);
+    : super(const AccountsState()) {
     on<RecoveryFilterChanged>(_onRecoveryFilterChanged, transformer: sequential());
     on<RecoveryDueFetched>(_onRecoveryDueFetched, transformer: restartable());
     on<RecoveryPageChanged>(_onRecoveryPageChanged, transformer: sequential());
     on<RecoverySearchChanged>(_onRecoverySearchChanged);
     add(const RecoveryDueFetched());
-  }
-
-  void _onTodayOverviewExpansionToggled(
-    TodayOverviewExpansionToggled event,
-    Emitter<AccountsState> emit,
-  ) {
-    emit(state.copyWith(todayOverviewExpanded: !state.todayOverviewExpanded));
   }
 
   void _onRecoveryFilterChanged(

@@ -12,14 +12,16 @@ import '../blocs/accounts_state.dart';
 import 'accounts_models.dart';
 
 
-class RecoveryListSection extends StatefulWidget {
-  const RecoveryListSection({super.key});
+// ─── Search bar (stays fixed while the list below scrolls) ─────────────────────
+
+class RecoverySearchBar extends StatefulWidget {
+  const RecoverySearchBar({super.key});
 
   @override
-  State<RecoveryListSection> createState() => _RecoveryListSectionState();
+  State<RecoverySearchBar> createState() => _RecoverySearchBarState();
 }
 
-class _RecoveryListSectionState extends State<RecoveryListSection> {
+class _RecoverySearchBarState extends State<RecoverySearchBar> {
   final _searchController = TextEditingController();
 
   @override
@@ -30,186 +32,188 @@ class _RecoveryListSectionState extends State<RecoveryListSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: .start,
-      children: [
-        // ── Search bar ────────────────────────────────────────────────────
-        BlocListener<AccountsBloc, AccountsState>(
-          listenWhen: (p, c) => p.selectedFilter != c.selectedFilter,
-          listener: (_, __) {
-            _searchController.clear();
-            context.read<AccountsBloc>().add(const RecoverySearchChanged(''));
-          },
-          child: BlocBuilder<AccountsBloc, AccountsState>(
-            buildWhen: (p, c) => p.recoveryDueStatus != c.recoveryDueStatus,
-            builder: (context, state) {
-              final isLoading =
-                  state.recoveryDueStatus == ApiStatus.INITIAL ||
-                  state.recoveryDueStatus == ApiStatus.LOADING;
-              if (isLoading) return ShimmerBox(height: 46, radius: 10);
+    return BlocListener<AccountsBloc, AccountsState>(
+      listenWhen: (p, c) => p.selectedFilter != c.selectedFilter,
+      listener: (_, __) {
+        _searchController.clear();
+        context.read<AccountsBloc>().add(const RecoverySearchChanged(''));
+      },
+      child: BlocBuilder<AccountsBloc, AccountsState>(
+        buildWhen: (p, c) => p.recoveryDueStatus != c.recoveryDueStatus,
+        builder: (context, state) {
+          final isLoading =
+              state.recoveryDueStatus == ApiStatus.INITIAL ||
+              state.recoveryDueStatus == ApiStatus.LOADING;
+          if (isLoading) return ShimmerBox(height: 46, radius: 10);
 
-              return StatefulBuilder(
-                builder: (context, setLocal) => Container(
-                  width: double.infinity,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    color: context.grey50,
-                    borderRadius: .circular(10),
-                    border: const Border(
-                      bottom: BorderSide(color: AppColors.grey200),
+          return StatefulBuilder(
+            builder: (context, setLocal) => Container(
+              width: double.infinity,
+              height: 46,
+              decoration: BoxDecoration(
+                color: context.grey50,
+                borderRadius: .circular(10),
+                border: const Border(
+                  bottom: BorderSide(color: AppColors.grey200),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  Icon(
+                    Icons.search_rounded,
+                    size: 20,
+                    color: context.textSecondary,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (val) {
+                        setLocal(() {});
+                        context
+                            .read<AccountsBloc>()
+                            .add(RecoverySearchChanged(val));
+                      },
+                      style: context.bodySmall.copyWith(
+                        color: context.textPrimary,
+                      ),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        hintText: 'Search by name or invoice…',
+                        hintStyle: context.bodySmall.copyWith(
+                          color: context.textSecondary,
+                        ),
+                        contentPadding: const EdgeInsets.only(bottom: 2),
+                      ),
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 12),
-                      Icon(
-                        Icons.search_rounded,
-                        size: 20,
-                        color: context.textSecondary,
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: TextField(
-                          controller: _searchController,
-                          onChanged: (val) {
-                            setLocal(() {});
-                            context
-                                .read<AccountsBloc>()
-                                .add(RecoverySearchChanged(val));
-                          },
-                          style: context.bodySmall.copyWith(
-                            color: context.textPrimary,
-                          ),
-                          decoration: InputDecoration(
-                            isDense: true,
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            hintText: 'Search by name or invoice…',
-                            hintStyle: context.bodySmall.copyWith(
-                              color: context.textSecondary,
-                            ),
-                            contentPadding: const EdgeInsets.only(bottom: 2),
-                          ),
+                  if (_searchController.text.isNotEmpty)
+                    GestureDetector(
+                      onTap: () {
+                        _searchController.clear();
+                        setLocal(() {});
+                        context
+                            .read<AccountsBloc>()
+                            .add(const RecoverySearchChanged(''));
+                      },
+                      child: Padding(
+                        padding: .symmetric(horizontal: 8),
+                        child: Icon(
+                          Icons.close_rounded,
+                          size: 16,
+                          color: context.textSecondary,
                         ),
                       ),
-                      if (_searchController.text.isNotEmpty)
-                        GestureDetector(
-                          onTap: () {
-                            _searchController.clear();
-                            setLocal(() {});
-                            context
-                                .read<AccountsBloc>()
-                                .add(const RecoverySearchChanged(''));
-                          },
-                          child: Padding(
-                            padding: .symmetric(horizontal: 8),
-                            child: Icon(
-                              Icons.close_rounded,
-                              size: 16,
-                              color: context.textSecondary,
-                            ),
-                          ),
-                        )
-                      else
-                        const SizedBox(width: 10),
-                    ],
-                  ),
+                    )
+                  else
+                    const SizedBox(width: 10),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ─── Invoice list (paged) — the scrollable part ─────────────────────────────────
+
+class RecoveryInvoiceList extends StatelessWidget {
+  const RecoveryInvoiceList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AccountsBloc, AccountsState>(
+      buildWhen: (p, c) =>
+          p.recoveryDueStatus != c.recoveryDueStatus ||
+          p.recoveryDue != c.recoveryDue ||
+          p.currentPage != c.currentPage ||
+          p.searchQuery != c.searchQuery,
+      builder: (context, state) {
+        final isLoading =
+            state.recoveryDueStatus == ApiStatus.INITIAL ||
+            state.recoveryDueStatus == ApiStatus.LOADING;
+
+        if (isLoading) {
+          return Column(
+            children: List.generate(
+              4,
+              (i) => Padding(
+                padding: EdgeInsets.only(bottom: i < 3 ? 8 : 0),
+                child: const ShimmerBox(height: 82, radius: 10),
+              ),
+            ),
+          );
+        }
+
+        final allInvoices = state.recoveryDue?.invoices ?? const [];
+
+        if (allInvoices.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: .symmetric(vertical: 24),
+              child: Text(
+                AppConstants.noDataAvailable,
+                style: context.bodySmall.copyWith(
+                  color: context.textSecondary,
                 ),
-              );
-            },
-          ),
-        ),
-        const SizedBox(height: 10),
-        // ── Invoice list (paged) ───────────────────────────────────────────
-        BlocBuilder<AccountsBloc, AccountsState>(
-          buildWhen: (p, c) =>
-              p.recoveryDueStatus != c.recoveryDueStatus ||
-              p.recoveryDue != c.recoveryDue ||
-              p.currentPage != c.currentPage ||
-              p.searchQuery != c.searchQuery,
-          builder: (context, state) {
-            final isLoading =
-                state.recoveryDueStatus == ApiStatus.INITIAL ||
-                state.recoveryDueStatus == ApiStatus.LOADING;
+              ),
+            ),
+          );
+        }
 
-            if (isLoading) {
-              return Column(
-                children: List.generate(
-                  4,
-                  (i) => Padding(
-                    padding: EdgeInsets.only(bottom: i < 3 ? 8 : 0),
-                    child: const ShimmerBox(height: 82, radius: 10),
-                  ),
+        final filtered = state.filteredInvoices;
+
+        if (filtered.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: .symmetric(vertical: 24),
+              child: Text(
+                'No results for "${state.searchQuery}"',
+                style: context.bodySmall.copyWith(
+                  color: context.textSecondary,
                 ),
-              );
-            }
+              ),
+            ),
+          );
+        }
 
-            final allInvoices = state.recoveryDue?.invoices ?? const [];
+        final paged = state.pagedInvoices;
+        final total = filtered.length;
+        final start = state.currentPage * AccountsState.pageSize + 1;
+        final end   = (start + paged.length - 1).clamp(1, total);
 
-            if (allInvoices.isEmpty) {
-              return Center(
-                child: Padding(
-                  padding: .symmetric(vertical: 24),
-                  child: Text(
-                    AppConstants.noDataAvailable,
-                    style: context.bodySmall.copyWith(
-                      color: context.textSecondary,
-                    ),
-                  ),
+        return Column(
+          crossAxisAlignment: .start,
+          children: [
+            // "Showing X–Y of Z" label
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                'Showing $start–$end of $total records',
+                style: context.labelSmall.copyWith(
+                  color: context.textSecondary,
                 ),
-              );
-            }
-
-            final filtered = state.filteredInvoices;
-
-            if (filtered.isEmpty) {
-              return Center(
-                child: Padding(
-                  padding: .symmetric(vertical: 24),
-                  child: Text(
-                    'No results for "${state.searchQuery}"',
-                    style: context.bodySmall.copyWith(
-                      color: context.textSecondary,
-                    ),
-                  ),
-                ),
-              );
-            }
-
-            final paged = state.pagedInvoices;
-            final total = filtered.length;
-            final start = state.currentPage * AccountsState.pageSize + 1;
-            final end   = (start + paged.length - 1).clamp(1, total);
-
-            return Column(
-              crossAxisAlignment: .start,
-              children: [
-                // "Showing X–Y of Z" label
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    'Showing $start–$end of $total records',
-                    style: context.labelSmall.copyWith(
-                      color: context.textSecondary,
-                    ),
-                  ),
-                ),
-                ListView.separated(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: paged.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) =>
-                      _CustomerTile(invoice: paged[index]),
-                ),
-                const _PaginationBar(),
-              ],
-            );
-          },
-        ),
-      ],
+              ),
+            ),
+            ListView.separated(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: paged.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemBuilder: (context, index) =>
+                  _CustomerTile(invoice: paged[index]),
+            ),
+            const _PaginationBar(),
+          ],
+        );
+      },
     );
   }
 }
