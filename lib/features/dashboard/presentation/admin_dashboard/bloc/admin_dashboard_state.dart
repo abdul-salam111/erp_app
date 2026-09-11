@@ -14,7 +14,6 @@ final class AdminDashboardState extends Equatable {
   final DateTime saleOrderToDate;
   final DateTime selectedMonth;
   final DateTime selectedDailyDate;
-  final bool     todayOverviewExpanded;
   final String   selectedPanelKey;
 
   // ── Daily stats ───────────────────────────────────────────────────────────
@@ -42,7 +41,6 @@ final class AdminDashboardState extends Equatable {
     required this.saleOrderToDate,
     required this.selectedMonth,
     required this.selectedDailyDate,
-    required this.todayOverviewExpanded,
     required this.selectedPanelKey,
     required this.dailyStatsStatus,
     this.dailyStats,
@@ -63,7 +61,6 @@ final class AdminDashboardState extends Equatable {
     DateTime?                    saleOrderToDate,
     DateTime?                    selectedMonth,
     DateTime?                    selectedDailyDate,
-    bool?                        todayOverviewExpanded,
     String?                      selectedPanelKey,
     ApiStatus?                   dailyStatsStatus,
     Object?                      dailyStats = _unset,
@@ -83,7 +80,6 @@ final class AdminDashboardState extends Equatable {
       saleOrderToDate:          saleOrderToDate          ?? this.saleOrderToDate,
       selectedMonth:            selectedMonth            ?? this.selectedMonth,
       selectedDailyDate:        selectedDailyDate        ?? this.selectedDailyDate,
-      todayOverviewExpanded:    todayOverviewExpanded    ?? this.todayOverviewExpanded,
       selectedPanelKey:         selectedPanelKey         ?? this.selectedPanelKey,
       dailyStatsStatus:         dailyStatsStatus         ?? this.dailyStatsStatus,
       dailyStats:               dailyStats == _unset     ? this.dailyStats     : dailyStats as DailyStatsEntity?,
@@ -103,7 +99,7 @@ final class AdminDashboardState extends Equatable {
   @override
   List<Object?> get props => [
     saleOrderFromDate, saleOrderToDate, selectedMonth, selectedDailyDate,
-    todayOverviewExpanded, selectedPanelKey,
+    selectedPanelKey,
     dailyStatsStatus, dailyStats, dailyStatsError,
     monthlyStatsStatus, monthlyStats, monthlyStatsError,
     monthlyStatsDetailStatus, monthlyStatsDetail, monthlyStatsDetailError,

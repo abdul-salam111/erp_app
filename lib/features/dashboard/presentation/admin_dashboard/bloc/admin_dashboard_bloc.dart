@@ -34,7 +34,6 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
           saleOrderToDate:          DateTime.now(),
           selectedMonth:            DateTime(DateTime.now().year, DateTime.now().month),
           selectedDailyDate:        DateTime.now(),
-          todayOverviewExpanded:    false,
           selectedPanelKey:         'revenue',
           dailyStatsStatus:         ApiStatus.INITIAL,
           monthlyStatsStatus:       ApiStatus.INITIAL,
@@ -44,7 +43,6 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
     on<DashboardDataRequested>(_onDashboardDataRequested, transformer: droppable());
     on<SaleOrderDateRangeChanged>(_onSaleOrderDateRangeChanged, transformer: restartable());
     on<DashboardMonthChanged>(_onDashboardMonthChanged, transformer: restartable());
-    on<TodayOverviewExpansionToggled>(_onTodayOverviewExpansionToggled);
     on<DailyStatsDateChanged>(_onDailyStatsDateChanged, transformer: restartable());
     on<MonthlyStatsDetailKeyChanged>(_onMonthlyStatsDetailKeyChanged, transformer: restartable());
   }
@@ -151,13 +149,6 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
         );
       }),
     ]);
-  }
-
-  void _onTodayOverviewExpansionToggled(
-    TodayOverviewExpansionToggled event,
-    Emitter<AdminDashboardState> emit,
-  ) {
-    emit(state.copyWith(todayOverviewExpanded: !state.todayOverviewExpanded));
   }
 
   Future<void> _onDailyStatsDateChanged(

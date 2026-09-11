@@ -202,7 +202,15 @@ class _AdminSliverAppBar extends StatelessWidget {
     return parts.first.isNotEmpty ? parts.first[0].toUpperCase() : '?';
   }
 
-  String get _formattedDate => DateTime.now().formatted;
+  String get _financialYearLabel {
+    final orgInitials = currentUser.org.name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .map((p) => p[0].toUpperCase())
+        .join();
+    return '$orgInitials-${DateTime.now().year}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -374,64 +382,61 @@ class _AdminSliverAppBar extends StatelessWidget {
                   bottom: 18,
                   child: Opacity(
                     opacity: expandedOpacity,
-                    child: Column(
-                      mainAxisSize: .min,
-                      crossAxisAlignment: .start,
+                    child: Row(
+                      crossAxisAlignment: .center,
                       children: [
-                        Text(
-                          '$_greeting 👋',
-                          style: context.labelSmall.copyWith(
-                            color: AppColors.white.withValues(alpha: 0.80),
-                            fontWeight: .w500,
+                        CircleAvatar(
+                          radius: 26,
+                          backgroundColor:
+                              AppColors.white.withValues(alpha: 0.20),
+                          child: Text(
+                            _initials,
+                            style: context.titleSmall.copyWith(
+                              color: AppColors.white,
+                              fontWeight: .w700,
+                              fontSize: 18,
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          crossAxisAlignment: .center,
-                          children: [
-                            CircleAvatar(
-                              radius: 26,
-                              backgroundColor:
-                                  AppColors.white.withValues(alpha: 0.20),
-                              child: Text(
-                                _initials,
-                                style: context.titleSmall.copyWith(
-                                  color: AppColors.white,
-                                  fontWeight: .w700,
-                                  fontSize: 18,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: .start,
+                            children: [
+                              Text(
+                                '$_greeting 👋',
+                                style: context.labelSmall.copyWith(
+                                  color: AppColors.white.withValues(alpha: 0.80),
+                                  fontWeight: .w500,
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: .start,
+                              const SizedBox(height: 4),
+                              Text(
+                                currentUser.fullName,
+                                style: context.titleLarge.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: .w700,
+                                  height: 1.1,
+                                ),
+                                maxLines: 1,
+                                overflow: .ellipsis,
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
                                 children: [
-                                  Text(
-                                    currentUser.fullName,
-                                    style: context.titleLarge.copyWith(
-                                      color: AppColors.white,
-                                      fontWeight: .w700,
-                                      height: 1.1,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: .ellipsis,
+                                  _AdminHeaderChip(
+                                    icon: Iconsax.buildings,
+                                    label: currentUser.org.name,
                                   ),
-                                  const SizedBox(height: 6),
-                                  Row(
-                                    children: [
-                                      _AdminHeaderChip(
-                                        icon: Iconsax.buildings,
-                                        label: currentUser.org.name,
-                                      ),
-                                      const Spacer(),
-                                      _DatePill(date: _formattedDate),
-                                    ],
+                                  const Spacer(),
+                                  _AdminHeaderChip(
+                                    icon: Iconsax.calendar,
+                                    label: _financialYearLabel,
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -506,37 +511,3 @@ class _AdminHeaderChip extends StatelessWidget {
   }
 }
 
-class _DatePill extends StatelessWidget {
-  final String date;
-
-  const _DatePill({required this.date});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: .symmetric(horizontal: 11, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.15),
-        borderRadius: .circular(20),
-      ),
-      child: Row(
-        mainAxisSize: .min,
-        children: [
-          Icon(
-            Iconsax.calendar,
-            color: AppColors.white.withValues(alpha: 0.85),
-            size: 13,
-          ),
-          const SizedBox(width: 5),
-          Text(
-            date,
-            style: context.labelSmall.copyWith(
-              color: AppColors.white,
-              fontWeight: .w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

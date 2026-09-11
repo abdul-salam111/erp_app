@@ -28,10 +28,6 @@ final class DashboardMonthChanged extends AdminDashboardEvent {
   List<Object> get props => [month];
 }
 
-final class TodayOverviewExpansionToggled extends AdminDashboardEvent {
-  const TodayOverviewExpansionToggled();
-}
-
 final class DailyStatsDateChanged extends AdminDashboardEvent {
   final DateTime date;
   const DailyStatsDateChanged(this.date);

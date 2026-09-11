@@ -31,7 +31,6 @@ class AppConstants {
   static const String salesTodayLabel = 'Sales today';
   static const String newOrdersLabel = 'New orders';
   static const String todaySOverview = 'Today\'s Overview';
-  static const String showLess = 'Show less';
   static const String showMore = 'Show more';
   static const String rs0 = 'Rs 0';
   static const String abbasLabourContractor = 'Abbas Labour Contractor';

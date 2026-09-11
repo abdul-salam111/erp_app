@@ -48,19 +48,28 @@ class NewOrdersSection extends StatelessWidget {
               title: AppConstants.newOrders,
               trailing: GestureDetector(
                 onTap: () => _pickDate(context, state.selectedDailyDate),
-                child: Row(
-                  mainAxisSize: .min,
-                  children: [
-                    Icon(Icons.calendar_today_outlined, color: context.primary, size: 13),
-                    const SizedBox(width: 4),
-                    Text(
-                      _formatDate(state.selectedDailyDate),
-                      style: context.labelMedium.copyWith(
-                        color: context.primary,
-                        fontWeight: .w600,
+                child: Container(
+                  padding: .symmetric(horizontal: 4, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: context.primary.withValues(alpha: 0.07),
+                    borderRadius: .circular(20),
+                    border: .all(color: context.primary.withValues(alpha: 0.25)),
+                  ),
+                  child: Row(
+                    mainAxisSize: .min,
+                    children: [
+                      Icon(Icons.calendar_today_outlined, size: 13, color: context.primary),
+                      const SizedBox(width: 5),
+                      Text(
+                        _formatDate(state.selectedDailyDate),
+                        style: context.labelSmall.copyWith(
+                          color: context.primary, fontWeight: .w600, fontSize: 10,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 4),
+                      Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: context.primary),
+                    ],
+                  ),
                 ),
               ),
             ),
