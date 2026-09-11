@@ -19,6 +19,31 @@ earlier login/session and dashboard work that hasn't been folded
 into 1.0.0 / production yet.
 
 ============================================================
+1.0.2
+============================================================
+
+Admin dashboard and Accounts UI polish. Created from 1.0.1 on
+2026-09-11.
+
+- Admin dashboard header: dropped the date pill, fixed the greeting
+  alignment (moved above the name, not floating over the avatar), and
+  added a financial-year chip ("<org-initials>-<year>") next to the
+  org name, styled to match the existing org chip.
+- Today's Overview: "Show more" now opens an animated bottom sheet
+  with all overview cards (staggered fade/slide-in) instead of
+  expanding the grid in place; the trigger is a proper TextButton.
+- New Orders: date-picker trigger restyled as a capsule to match the
+  Month Overview month-picker.
+- Sale Orders: from/to dates now show as dd-MMM-yyyy (e.g.
+  01-Jan-2026) instead of dd/MM/yyyy.
+- Accounts (Recovery Due): the invoice list now opens in an animated
+  bottom sheet with its own Today/Week/Month/Oldest filter chips and a
+  fixed search bar (only the list scrolls), instead of expanding
+  inline. Sticky filter bar on the main page kept as-is.
+- Removed the now-dead todayOverviewExpanded state/event/handler from
+  both AdminDashboardBloc and AccountsBloc.
+
+============================================================
 1.0.1
 ============================================================
 
