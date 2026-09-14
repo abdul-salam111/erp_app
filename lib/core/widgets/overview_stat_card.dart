@@ -22,9 +22,8 @@ class OverviewStatCard extends StatelessWidget {
       child: Container(
         clipBehavior: .hardEdge,
         decoration: BoxDecoration(
-          color: context.surfaceElevated,
+          color: context.navyCard,
           borderRadius: .circular(10),
-
           boxShadow: [
             BoxShadow(
               color: AppColors.black.withValues(alpha: 0.08),
@@ -44,7 +43,9 @@ class OverviewStatCard extends StatelessWidget {
                 width: 54,
                 height: 54,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.08),
+                  color: context.isDark
+                      ? AppColors.navyIconColorDark.withValues(alpha: 0.08)
+                      : color.withValues(alpha: 0.08),
                   shape: .circle,
                 ),
               ),
@@ -56,7 +57,9 @@ class OverviewStatCard extends StatelessWidget {
                 width: 30,
                 height: 30,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.09),
+                  color: context.isDark
+                      ? AppColors.navyIconColorDark.withValues(alpha: 0.09)
+                      : color.withValues(alpha: 0.09),
                   shape: .circle,
                 ),
               ),
@@ -76,7 +79,9 @@ class OverviewStatCard extends StatelessWidget {
                           height: 30,
                           decoration: BoxDecoration(
                             borderRadius: .circular(8),
-                            color: color.withValues(alpha: 0.10),
+                            color: context.isDark
+                                ? context.navyIconBg
+                                : color.withValues(alpha: 0.10),
                           ),
                           child: Icon(icon, color: color, size: 16),
                         ),
@@ -91,7 +96,7 @@ class OverviewStatCard extends StatelessWidget {
                                 style: context.bodyMedium.copyWith(
                                   fontWeight: .w700,
                                   color: context.textPrimary,
-                                  fontSize: 13,
+                                  fontSize: 15,
                                   height: 1,
                                 ),
                                 maxLines: 1,

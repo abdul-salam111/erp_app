@@ -39,7 +39,10 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     );
-    _chartAnim = CurvedAnimation(parent: _chartCtrl, curve: Curves.easeOutCubic);
+    _chartAnim = CurvedAnimation(
+      parent: _chartCtrl,
+      curve: Curves.easeOutCubic,
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _chartCtrl.forward();
     });
@@ -106,9 +109,9 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
 
         return Container(
           decoration: BoxDecoration(
-            color: context.surfaceElevated,
+            color: context.navyCard,
             borderRadius: .circular(16),
-            border: Border.all(color: context.border),
+            border: Border.all(color: context.navyBorder),
             boxShadow: [
               BoxShadow(
                 color: AppColors.black.withValues(alpha: 0.06),
@@ -128,12 +131,12 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                     Container(
                       padding: .all(7),
                       decoration: BoxDecoration(
-                        color: context.primary.withValues(alpha: 0.10),
+                        color: context.navyIconBg,
                         borderRadius: .circular(8),
                       ),
                       child: Icon(
                         Iconsax.truck,
-                        color: context.primary,
+                        color: context.navyIconColor,
                         size: 16,
                       ),
                     ),
@@ -190,7 +193,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                 ),
               ),
 
-              Divider(height: 1, thickness: 1, color: context.border),
+              Divider(height: 1, thickness: 1, color: context.navyBorder),
 
               if (isLoading)
                 _SaleOrderShimmer()
@@ -232,7 +235,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                                   VerticalDivider(
                                     width: 1,
                                     thickness: 1,
-                                    color: context.border,
+                                    color: context.navyBorder,
                                   ),
                                   Expanded(
                                     child: _StatBox(
@@ -248,7 +251,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                             Divider(
                               height: 1,
                               thickness: 1,
-                              color: context.border,
+                              color: context.navyBorder,
                             ),
                             IntrinsicHeight(
                               child: Row(
@@ -265,7 +268,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                                   VerticalDivider(
                                     width: 1,
                                     thickness: 1,
-                                    color: context.border,
+                                    color: context.navyBorder,
                                   ),
                                   Expanded(
                                     child: _StatBox(
@@ -281,7 +284,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                             Divider(
                               height: 1,
                               thickness: 1,
-                              color: context.border,
+                              color: context.navyBorder,
                             ),
                             // ── Semi-donut chart ─────────────────────
                             Padding(
@@ -330,9 +333,9 @@ class _DateButton extends StatelessWidget {
       child: Container(
         padding: .symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
-          color: context.surface,
+          color: context.isDark ? AppColors.navyIconBgDark : context.surface,
           borderRadius: .circular(8),
-          border: Border.all(color: context.border),
+          border: Border.all(color: context.navyBorder),
         ),
         child: Row(
           children: [
@@ -374,7 +377,12 @@ class _OrdersTable extends StatelessWidget {
   final List<SaleOrderRow> orders;
   const _OrdersTable({super.key, required this.orders});
 
-  static const _cols = [AppConstants.partyBtn, AppConstants.dateLabel, AppConstants.productLabel, AppConstants.status];
+  static const _cols = [
+    AppConstants.partyBtn,
+    AppConstants.dateLabel,
+    AppConstants.productLabel,
+    AppConstants.status,
+  ];
   static const _flex = [2, 2, 2, 2];
 
   void _showOrderDetail(BuildContext context, SaleOrderRow row) {
@@ -510,7 +518,7 @@ class _OrderDetailSheet extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: const .vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.fromLTRB(
@@ -529,7 +537,7 @@ class _OrderDetailSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: context.border,
+                color: context.navyBorder,
                 borderRadius: .circular(2),
               ),
             ),
@@ -543,10 +551,14 @@ class _OrderDetailSheet extends StatelessWidget {
               Container(
                 padding: .all(9),
                 decoration: BoxDecoration(
-                  color: context.primary.withValues(alpha: 0.10),
+                  color: context.navyIconBg,
                   borderRadius: .circular(10),
                 ),
-                child: Icon(Iconsax.truck, color: context.primary, size: 18),
+                child: Icon(
+                  Iconsax.truck,
+                  color: context.navyIconColor,
+                  size: 18,
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -572,7 +584,7 @@ class _OrderDetailSheet extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Divider(height: 1, thickness: 1, color: context.border),
+          Divider(height: 1, thickness: 1, color: context.navyBorder),
           const SizedBox(height: 12),
 
           // ── Detail rows ──────────────────────────────────
@@ -595,7 +607,10 @@ class _OrderDetailSheet extends StatelessWidget {
             value: row.item.isEmpty ? '-' : row.item,
           ),
           _DetailRow(label: AppConstants.totalQtyLabel, value: '${row.ttlQty}'),
-          _DetailRow(label: AppConstants.remainingLabel, value: '${row.ttlRemainingQty}'),
+          _DetailRow(
+            label: AppConstants.remainingLabel,
+            value: '${row.ttlRemainingQty}',
+          ),
           const SizedBox(height: 16),
 
           // ── Progress bar ─────────────────────────────────
@@ -710,15 +725,9 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final lower = status.toLowerCase();
     final (bg, fg) = lower.contains('complet')
-        ? (
-            AppColors.greenDark.withValues(alpha: 0.12),
-            AppColors.greenDark,
-          )
+        ? (AppColors.greenDark.withValues(alpha: 0.12), AppColors.greenDark)
         : lower.contains('partial') || lower.contains('progress')
-        ? (
-            AppColors.orange.withValues(alpha: 0.12),
-            AppColors.orange,
-          )
+        ? (AppColors.orange.withValues(alpha: 0.12), AppColors.orange)
         : (
             AppColors.blueGreyDark.withValues(alpha: 0.10),
             AppColors.blueGreyDark,
@@ -983,7 +992,9 @@ class _StatBox extends StatelessWidget {
                   height: 30,
                   decoration: BoxDecoration(
                     borderRadius: .circular(8),
-                    color: color.withValues(alpha: 0.10),
+                    color: context.isDark
+                        ? AppColors.navyIconBgDark
+                        : color.withValues(alpha: 0.10),
                   ),
                   child: Icon(icon, color: color, size: 16),
                 ),

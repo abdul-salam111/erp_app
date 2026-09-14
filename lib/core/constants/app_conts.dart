@@ -194,6 +194,9 @@ class AppConstants {
       'Change to a different organization';
   static const String logOut = 'Log Out';
   static const String signOutOfYourAccount = 'Sign out of your account';
+  static const String darkModeLabel = 'Dark Mode';
+  static const String darkModeEnabled = 'Enabled';
+  static const String darkModeDisabled = 'Disabled';
   // ─── PurchaseOrder ─────────────────────────────────────
   static const String purchaseOrderTitle = 'Purchase Order';
   static const String purchaseOrderView = 'PurchaseOrder View';

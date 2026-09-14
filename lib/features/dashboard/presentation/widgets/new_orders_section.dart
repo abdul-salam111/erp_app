@@ -10,7 +10,6 @@ import '../../domain/entities/order_entity.dart';
 import '../admin_dashboard/bloc/admin_dashboard_bloc.dart';
 import 'section_header.dart';
 
-
 class NewOrdersSection extends StatelessWidget {
   const NewOrdersSection({super.key});
 
@@ -34,11 +33,12 @@ class NewOrdersSection extends StatelessWidget {
     return BlocBuilder<AdminDashboardBloc, AdminDashboardState>(
       buildWhen: (p, c) =>
           p.dailyStatsStatus != c.dailyStatsStatus ||
-          p.dailyStats       != c.dailyStats       ||
+          p.dailyStats != c.dailyStats ||
           p.selectedDailyDate != c.selectedDailyDate,
       builder: (context, state) {
-        final isLoading = state.dailyStatsStatus == ApiStatus.INITIAL ||
-                          state.dailyStatsStatus == ApiStatus.LOADING;
+        final isLoading =
+            state.dailyStatsStatus == ApiStatus.INITIAL ||
+            state.dailyStatsStatus == ApiStatus.LOADING;
         final orders = state.dailyStats?.orders ?? [];
 
         return Column(
@@ -53,21 +53,33 @@ class NewOrdersSection extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: context.primary.withValues(alpha: 0.07),
                     borderRadius: .circular(20),
-                    border: .all(color: context.primary.withValues(alpha: 0.25)),
+                    border: .all(
+                      color: context.primary.withValues(alpha: 0.25),
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: .min,
                     children: [
-                      Icon(Icons.calendar_today_outlined, size: 13, color: context.primary),
+                      Icon(
+                        Icons.calendar_today_outlined,
+                        size: 13,
+                        color: context.primary,
+                      ),
                       const SizedBox(width: 5),
                       Text(
                         _formatDate(state.selectedDailyDate),
                         style: context.labelSmall.copyWith(
-                          color: context.primary, fontWeight: .w600, fontSize: 10,
+                          color: context.primary,
+                          fontWeight: .w600,
+                          fontSize: 10,
                         ),
                       ),
                       const SizedBox(width: 4),
-                      Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: context.primary),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        size: 14,
+                        color: context.primary,
+                      ),
                     ],
                   ),
                 ),
@@ -94,9 +106,9 @@ class _NewOrdersShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(12),
-        border: Border.all(color: context.border),
+        border: Border.all(color: context.navyBorder),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.06),
@@ -119,7 +131,11 @@ class _NewOrdersShimmer extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: .start,
                         children: [
-                          ShimmerBox(height: 12, width: double.infinity, radius: 6),
+                          ShimmerBox(
+                            height: 12,
+                            width: double.infinity,
+                            radius: 6,
+                          ),
                           const SizedBox(height: 6),
                           ShimmerBox(height: 10, width: 120, radius: 6),
                         ],
@@ -130,7 +146,8 @@ class _NewOrdersShimmer extends StatelessWidget {
                   ],
                 ),
               ),
-              if (i < 2) Divider(height: 1, thickness: 1, color: context.border),
+              if (i < 2)
+                Divider(height: 1, thickness: 1, color: context.navyBorder),
             ],
           );
         }),
@@ -148,18 +165,14 @@ class _EmptyOrders extends StatelessWidget {
       width: double.infinity,
       padding: .symmetric(vertical: 36),
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(12),
-        border: Border.all(color: context.border),
+        border: Border.all(color: context.navyBorder),
       ),
       child: Column(
         mainAxisSize: .min,
         children: [
-          Image.asset(
-            'assets/icons/empty.png',
-            width: 72,
-            height: 72,
-          ),
+          Image.asset('assets/icons/empty.png', width: 72, height: 72),
 
           Text(
             AppConstants.noOrdersToday,
@@ -185,9 +198,9 @@ class _OrdersList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(12),
-        border: Border.all(color: context.border),
+        border: Border.all(color: context.navyBorder),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.06),
@@ -202,7 +215,7 @@ class _OrdersList extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         itemCount: orders.length,
         separatorBuilder: (_, __) =>
-            Divider(height: 1, thickness: 1, color: context.border),
+            Divider(height: 1, thickness: 1, color: context.navyBorder),
         itemBuilder: (context, i) => _OrderTile(order: orders[i]),
       ),
     );
@@ -235,14 +248,14 @@ class _OrderTile extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: context.primary.withValues(alpha: 0.10),
+              color: context.navyIconBg,
               borderRadius: .circular(10),
             ),
             alignment: .center,
             child: Text(
               initials,
               style: context.labelMedium.copyWith(
-                color: context.primary,
+                color: context.navyIconColor,
                 fontWeight: .w700,
                 fontSize: 13,
               ),

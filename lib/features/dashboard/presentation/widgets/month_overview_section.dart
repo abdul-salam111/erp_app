@@ -13,12 +13,12 @@ import '../admin_dashboard/bloc/admin_dashboard_bloc.dart';
 // ─── Panel keys ───────────────────────────────────────────────────────────────
 
 const _panels = <_PanelMeta>[
-  _PanelMeta(key: 'revenue',      label: AppConstants.revenueLabel),
-  _PanelMeta(key: 'expenses',     label: AppConstants.expensesLabel),
-  _PanelMeta(key: 'purchases',    label: AppConstants.purchasesLabel),
-  _PanelMeta(key: 'recoveries',   label: AppConstants.recoveriesLabel),
-  _PanelMeta(key: 'sale_orders',  label: AppConstants.saleOrders),
-  _PanelMeta(key: 'new_parties',  label: AppConstants.newPartiesLabel),
+  _PanelMeta(key: 'revenue', label: AppConstants.revenueLabel),
+  _PanelMeta(key: 'expenses', label: AppConstants.expensesLabel),
+  _PanelMeta(key: 'purchases', label: AppConstants.purchasesLabel),
+  _PanelMeta(key: 'recoveries', label: AppConstants.recoveriesLabel),
+  _PanelMeta(key: 'sale_orders', label: AppConstants.saleOrders),
+  _PanelMeta(key: 'new_parties', label: AppConstants.newPartiesLabel),
 ];
 
 // ─── Section ──────────────────────────────────────────────────────────────────
@@ -36,9 +36,18 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
   late final Animation<double> _chartAnim;
 
   static const _monthNames = [
-    AppConstants.jan, AppConstants.feb, AppConstants.mar, AppConstants.apr,
-    AppConstants.may, AppConstants.jun, AppConstants.jul, AppConstants.aug,
-    AppConstants.sep, AppConstants.oct, AppConstants.nov, AppConstants.dec,
+    AppConstants.jan,
+    AppConstants.feb,
+    AppConstants.mar,
+    AppConstants.apr,
+    AppConstants.may,
+    AppConstants.jun,
+    AppConstants.jul,
+    AppConstants.aug,
+    AppConstants.sep,
+    AppConstants.oct,
+    AppConstants.nov,
+    AppConstants.dec,
   ];
 
   static String _monthLabel(DateTime d) =>
@@ -51,7 +60,10 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     );
-    _chartAnim = CurvedAnimation(parent: _chartCtrl, curve: Curves.easeOutCubic);
+    _chartAnim = CurvedAnimation(
+      parent: _chartCtrl,
+      curve: Curves.easeOutCubic,
+    );
     // Animate on first render if data is already available
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _chartCtrl.forward();
@@ -80,31 +92,33 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
       listenWhen: (p, c) =>
           p.selectedPanelKey != c.selectedPanelKey ||
           (p.monthlyStatsDetailStatus != ApiStatus.SUCCESS &&
-           c.monthlyStatsDetailStatus == ApiStatus.SUCCESS),
+              c.monthlyStatsDetailStatus == ApiStatus.SUCCESS),
       listener: (_, __) => _chartCtrl.forward(from: 0),
       buildWhen: (p, c) =>
-          p.selectedMonth             != c.selectedMonth             ||
-          p.monthlyStatsStatus        != c.monthlyStatsStatus        ||
-          p.monthlyStats              != c.monthlyStats              ||
-          p.monthlyStatsDetailStatus  != c.monthlyStatsDetailStatus  ||
-          p.monthlyStatsDetail        != c.monthlyStatsDetail        ||
-          p.selectedPanelKey          != c.selectedPanelKey,
+          p.selectedMonth != c.selectedMonth ||
+          p.monthlyStatsStatus != c.monthlyStatsStatus ||
+          p.monthlyStats != c.monthlyStats ||
+          p.monthlyStatsDetailStatus != c.monthlyStatsDetailStatus ||
+          p.monthlyStatsDetail != c.monthlyStatsDetail ||
+          p.selectedPanelKey != c.selectedPanelKey,
       builder: (context, state) {
-        final isLoading       = state.monthlyStatsStatus == ApiStatus.INITIAL ||
-                                state.monthlyStatsStatus == ApiStatus.LOADING;
-        final isDetailLoading = state.monthlyStatsDetailStatus == ApiStatus.INITIAL ||
-                                state.monthlyStatsDetailStatus == ApiStatus.LOADING;
+        final isLoading =
+            state.monthlyStatsStatus == ApiStatus.INITIAL ||
+            state.monthlyStatsStatus == ApiStatus.LOADING;
+        final isDetailLoading =
+            state.monthlyStatsDetailStatus == ApiStatus.INITIAL ||
+            state.monthlyStatsDetailStatus == ApiStatus.LOADING;
 
         return Container(
           decoration: BoxDecoration(
-            color:        context.surfaceElevated,
+            color: context.navyCard,
             borderRadius: .circular(16),
-            border:       Border.all(color: context.border),
+            border: context.isDark ? null : Border.all(color: context.border),
             boxShadow: [
               BoxShadow(
-                color:      AppColors.black.withValues(alpha: 0.06),
+                color: AppColors.black.withValues(alpha: 0.06),
                 blurRadius: 14,
-                offset:     const Offset(0, 4),
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -119,10 +133,14 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                     Container(
                       padding: .all(7),
                       decoration: BoxDecoration(
-                        color:        context.primary.withValues(alpha: 0.10),
+                        color: context.navyIconBg,
                         borderRadius: .circular(8),
                       ),
-                      child: Icon(Icons.bar_chart_rounded, color: context.primary, size: 16),
+                      child: Icon(
+                        Icons.bar_chart_rounded,
+                        color: context.navyIconColor,
+                        size: 16,
+                      ),
                     ),
                     const SizedBox(width: 5),
                     Text(
@@ -135,23 +153,35 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                       child: Container(
                         padding: .symmetric(horizontal: 4, vertical: 3),
                         decoration: BoxDecoration(
-                          color:        context.primary.withValues(alpha: 0.07),
+                          color: context.primary.withValues(alpha: 0.07),
                           borderRadius: .circular(20),
-                          border: .all(color: context.primary.withValues(alpha: 0.25)),
+                          border: .all(
+                            color: context.primary.withValues(alpha: 0.25),
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: .min,
                           children: [
-                            Icon(Icons.calendar_month_rounded, size: 13, color: context.primary),
+                            Icon(
+                              Icons.calendar_month_rounded,
+                              size: 13,
+                              color: context.primary,
+                            ),
                             const SizedBox(width: 5),
                             Text(
                               _monthLabel(state.selectedMonth),
                               style: context.labelSmall.copyWith(
-                                color: context.primary, fontWeight: .w600, fontSize: 10,
+                                color: context.primary,
+                                fontWeight: .w600,
+                                fontSize: 10,
                               ),
                             ),
                             const SizedBox(width: 4),
-                            Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: context.primary),
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: 14,
+                              color: context.primary,
+                            ),
                           ],
                         ),
                       ),
@@ -160,26 +190,30 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                 ),
               ),
 
-              Divider(height: 1, thickness: 1, color: context.border),
+              Divider(height: 1, thickness: 1, color: context.navyBorder),
 
               // ── Stats grid ──────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                 child: isLoading
-                    ? _StatsShimmer(columnCount: context.gridColumnCount, spacing: context.gridSpacing, ratio: context.overviewCardRatio)
+                    ? _StatsShimmer(
+                        columnCount: context.gridColumnCount,
+                        spacing: context.gridSpacing,
+                        ratio: context.overviewCardRatio,
+                      )
                     : GridView.count(
-                        shrinkWrap:       true,
-                        padding:          EdgeInsets.zero,
-                        physics:          const NeverScrollableScrollPhysics(),
-                        crossAxisCount:   context.gridColumnCount,
-                        mainAxisSpacing:  context.gridSpacing,
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: context.gridColumnCount,
+                        mainAxisSpacing: context.gridSpacing,
                         crossAxisSpacing: context.gridSpacing,
                         childAspectRatio: context.overviewCardRatio,
                         children: _buildStatCards(state),
                       ),
               ),
 
-              Divider(height: 1, thickness: 1, color: context.border),
+              Divider(height: 1, thickness: 1, color: context.navyBorder),
 
               // ── Panel selector chips ─────────────────────────────
               Padding(
@@ -195,28 +229,34 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                           onTap: selected
                               ? null
                               : () => context.read<AdminDashboardBloc>().add(
-                                    MonthlyStatsDetailKeyChanged(p.key),
-                                  ),
+                                  MonthlyStatsDetailKeyChanged(p.key),
+                                ),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
                             padding: .symmetric(horizontal: 10, vertical: 5),
                             decoration: BoxDecoration(
                               color: selected
                                   ? context.primary
+                                  : context.isDark
+                                  ? AppColors.navyIconBgDark
                                   : context.primary.withValues(alpha: 0.07),
                               borderRadius: .circular(20),
                               border: Border.all(
                                 color: selected
                                     ? context.primary
+                                    : context.isDark
+                                    ? context.navyBorder
                                     : context.primary.withValues(alpha: 0.25),
                               ),
                             ),
                             child: Text(
                               p.label,
                               style: context.labelSmall.copyWith(
-                                color:      selected ? context.white : context.primary,
+                                color: selected
+                                    ? context.white
+                                    : context.primary,
                                 fontWeight: selected ? .w600 : .w500,
-                                fontSize:   10,
+                                fontSize: 10,
                               ),
                             ),
                           ),
@@ -233,7 +273,11 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                 child: SizedBox(
                   height: 160,
                   child: isDetailLoading
-                      ? ShimmerBox(radius: 8, height: 160, width: double.infinity)
+                      ? ShimmerBox(
+                          radius: 8,
+                          height: 160,
+                          width: double.infinity,
+                        )
                       : _buildChart(context, state),
                 ),
               ),
@@ -246,49 +290,57 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
 
   List<Widget> _buildStatCards(AdminDashboardState state) {
     final sym = currentUser.org.currencySymbol;
-    final m   = state.monthlyStats;
+    final m = state.monthlyStats;
 
     return [
       _MonthStatCard(
-        label:      AppConstants.expensesLabel,
-        value:      (m?.currentMonthExpense    ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
-        pct:        m?.expensePercentage        ?? 0,
-        color:      AppColors.errorBright,
+        label: AppConstants.expensesLabel,
+        value: (m?.currentMonthExpense ?? 0)
+            .toCompact(decimals: 1)
+            .let((v) => '$sym $v'),
+        pct: m?.expensePercentage ?? 0,
+        color: AppColors.errorBright,
         trendColor: AppColors.errorBright,
       ),
       _MonthStatCard(
-        label:      AppConstants.newOrders,
-        value:      (m?.currentMonthSaleOrders ?? 0).toStringAsFixed(0),
-        pct:        m?.saleOrdersPercentage    ?? 0,
-        color:      AppColors.primary,
+        label: AppConstants.newOrders,
+        value: (m?.currentMonthSaleOrders ?? 0).toStringAsFixed(0),
+        pct: m?.saleOrdersPercentage ?? 0,
+        color: AppColors.primary,
         trendColor: AppColors.greenDark,
       ),
       _MonthStatCard(
-        label:      AppConstants.newClientsLabel,
-        value:      (m?.currentMonthParties    ?? 0).toStringAsFixed(0),
-        pct:        m?.partiesPercentage        ?? 0,
-        color:      AppColors.greenDark,
+        label: AppConstants.newClientsLabel,
+        value: (m?.currentMonthParties ?? 0).toStringAsFixed(0),
+        pct: m?.partiesPercentage ?? 0,
+        color: AppColors.greenDark,
         trendColor: AppColors.greenDark,
       ),
       _MonthStatCard(
-        label:      AppConstants.totalRevenueLabel,
-        value:      (m?.currentMonthSales      ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
-        pct:        m?.salesPercentage          ?? 0,
-        color:      AppColors.orange,
+        label: AppConstants.totalRevenueLabel,
+        value: (m?.currentMonthSales ?? 0)
+            .toCompact(decimals: 1)
+            .let((v) => '$sym $v'),
+        pct: m?.salesPercentage ?? 0,
+        color: AppColors.orange,
         trendColor: AppColors.greenDark,
       ),
       _MonthStatCard(
-        label:      AppConstants.totalPurchasesLabel,
-        value:      (m?.currentMonthPurchases  ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
-        pct:        m?.purchasesPercentage      ?? 0,
-        color:      AppColors.purple,
+        label: AppConstants.totalPurchasesLabel,
+        value: (m?.currentMonthPurchases ?? 0)
+            .toCompact(decimals: 1)
+            .let((v) => '$sym $v'),
+        pct: m?.purchasesPercentage ?? 0,
+        color: AppColors.purple,
         trendColor: AppColors.errorBright,
       ),
       _MonthStatCard(
-        label:      AppConstants.recoveriesLabel,
-        value:      (m?.currentMonthRecoveries ?? 0).toCompact(decimals: 1).let((v) => '$sym $v'),
-        pct:        m?.recoveriesPercentage     ?? 0,
-        color:      AppColors.cyan,
+        label: AppConstants.recoveriesLabel,
+        value: (m?.currentMonthRecoveries ?? 0)
+            .toCompact(decimals: 1)
+            .let((v) => '$sym $v'),
+        pct: m?.recoveriesPercentage ?? 0,
+        color: AppColors.cyan,
         trendColor: AppColors.greenDark,
       ),
     ];
@@ -314,11 +366,11 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
     final maxAmount = points.fold(0.0, (m, p) => p.amount > m ? p.amount : m);
 
     final minY = minAmount < 0 ? minAmount : 0.0;
-    final maxY = maxAmount > 0
-        ? maxAmount
-        : (minY == 0 ? 100.0 : 0.0);
-    final interval =
-        ((maxY - minY) / 4).ceilToDouble().clamp(1.0, double.infinity);
+    final maxY = maxAmount > 0 ? maxAmount : (minY == 0 ? 100.0 : 0.0);
+    final interval = ((maxY - minY) / 4).ceilToDouble().clamp(
+      1.0,
+      double.infinity,
+    );
 
     return AnimatedBuilder(
       animation: _chartAnim,
@@ -331,7 +383,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
         return LineChart(
           LineChartData(
             gridData: FlGridData(
-              show:             true,
+              show: true,
               drawVerticalLine: false,
               horizontalInterval: interval,
               getDrawingHorizontalLine: (_) =>
@@ -340,32 +392,38 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
             titlesData: FlTitlesData(
               leftTitles: AxisTitles(
                 sideTitles: SideTitles(
-                  showTitles:   true,
+                  showTitles: true,
                   reservedSize: 46,
-                  interval:     interval,
+                  interval: interval,
                   getTitlesWidget: (v, _) {
                     final label = v >= 1000000
                         ? '${(v / 1000000).toStringAsFixed(1)}M'
                         : v >= 1000
-                            ? '${(v / 1000).toStringAsFixed(0)}k'
-                            : v.toStringAsFixed(0);
+                        ? '${(v / 1000).toStringAsFixed(0)}k'
+                        : v.toStringAsFixed(0);
                     return Padding(
                       padding: const EdgeInsets.only(left: 8, right: 2),
                       child: Text(
                         label,
                         style: TextStyle(
-                          fontSize:   8.5,
+                          fontSize: 8.5,
                           fontWeight: .w700,
-                          color:      context.textSecondary,
+                          color: context.textSecondary,
                         ),
                       ),
                     );
                   },
                 ),
               ),
-              bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              rightTitles:  const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              topTitles:    const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              bottomTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
             ),
             borderData: FlBorderData(show: false),
             minY: minY,
@@ -373,24 +431,32 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
             lineTouchData: LineTouchData(
               touchTooltipData: LineTouchTooltipData(
                 getTooltipColor: (_) => context.primary.withValues(alpha: 0.85),
-                getTooltipItems: (spots) => spots.map((s) => LineTooltipItem(
-                  '${currentUser.org.currencySymbol} ${s.y.toStringAsFixed(0)}',
-                  const TextStyle(color: AppColors.white, fontSize: 11, fontWeight: .w600),
-                )).toList(),
+                getTooltipItems: (spots) => spots
+                    .map(
+                      (s) => LineTooltipItem(
+                        '${currentUser.org.currencySymbol} ${s.y.toStringAsFixed(0)}',
+                        const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 11,
+                          fontWeight: .w600,
+                        ),
+                      ),
+                    )
+                    .toList(),
               ),
             ),
             lineBarsData: [
               LineChartBarData(
-                spots:    animSpots,
+                spots: animSpots,
                 isCurved: true,
-                color:    context.primary,
+                color: context.primary,
                 barWidth: 2.2,
-                dotData:  const FlDotData(show: false),
+                dotData: const FlDotData(show: false),
                 belowBarData: BarAreaData(
-                  show:          true,
-                  color:         context.primary.withValues(alpha: 0.10),
-                  applyCutOffY:  true,
-                  cutOffY:       0,
+                  show: true,
+                  color: context.primary.withValues(alpha: 0.10),
+                  applyCutOffY: true,
+                  cutOffY: 0,
                 ),
               ),
             ],
@@ -404,7 +470,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
 // ─── Shimmer for stats grid ───────────────────────────────────────────────────
 
 class _StatsShimmer extends StatelessWidget {
-  final int    columnCount;
+  final int columnCount;
   final double spacing;
   final double ratio;
 
@@ -417,11 +483,11 @@ class _StatsShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.count(
-      shrinkWrap:       true,
-      padding:          EdgeInsets.zero,
-      physics:          const NeverScrollableScrollPhysics(),
-      crossAxisCount:   columnCount,
-      mainAxisSpacing:  spacing,
+      shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: columnCount,
+      mainAxisSpacing: spacing,
       crossAxisSpacing: spacing,
       childAspectRatio: ratio,
       children: List.generate(6, (_) => const ShimmerBox(radius: 10)),
@@ -435,8 +501,8 @@ class _MonthStatCard extends StatelessWidget {
   final String label;
   final String value;
   final double pct;
-  final Color  color;
-  final Color  trendColor;
+  final Color color;
+  final Color trendColor;
 
   const _MonthStatCard({
     required this.label,
@@ -449,19 +515,21 @@ class _MonthStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final changeColor = trendColor;
-    final pctLabel    = '${pct.abs().toStringAsFixed(1)}%';
+    final pctLabel = '${pct.abs().toStringAsFixed(1)}%';
 
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color:        context.surfaceElevated,
+        color: context.isDark
+            ? AppColors.navyIconBgDark
+            : context.surfaceElevated,
         borderRadius: .circular(10),
-        border:       .all(color: context.border),
+        border: context.isDark ? null : .all(color: context.border),
         boxShadow: [
           BoxShadow(
-            color:      AppColors.black.withValues(alpha: 0.07),
+            color: AppColors.black.withValues(alpha: 0.07),
             blurRadius: 8,
-            offset:     const Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -474,7 +542,7 @@ class _MonthStatCard extends StatelessWidget {
               padding: .symmetric(horizontal: 10, vertical: 9),
               child: Column(
                 crossAxisAlignment: .start,
-                mainAxisAlignment:  .center,
+                mainAxisAlignment: .center,
                 children: [
                   Row(
                     crossAxisAlignment: .start,
@@ -483,8 +551,10 @@ class _MonthStatCard extends StatelessWidget {
                         child: Text(
                           value,
                           style: context.bodyMedium.copyWith(
-                            fontWeight: .w700, color: context.textPrimary,
-                            fontSize: 13, height: 1,
+                            fontWeight: .w700,
+                            color: context.textPrimary,
+                            fontSize: 13,
+                            height: 1,
                           ),
                           maxLines: 1,
                           overflow: .ellipsis,
@@ -495,13 +565,16 @@ class _MonthStatCard extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.arrow_upward_rounded,
-                            size: 9, color: changeColor,
+                            size: 9,
+                            color: changeColor,
                           ),
                           const SizedBox(width: 2),
                           Text(
                             pctLabel,
                             style: TextStyle(
-                              fontSize: 9, fontWeight: .w600, color: changeColor,
+                              fontSize: 9,
+                              fontWeight: .w600,
+                              color: changeColor,
                             ),
                           ),
                         ],
@@ -512,7 +585,9 @@ class _MonthStatCard extends StatelessWidget {
                   Text(
                     label,
                     style: context.labelSmall.copyWith(
-                      color: context.textSecondary, fontSize: 10, height: 1.1,
+                      color: context.textSecondary,
+                      fontSize: 10,
+                      height: 1.1,
                     ),
                     maxLines: 1,
                     overflow: .ellipsis,
@@ -541,9 +616,18 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
   late int _year;
 
   static const _months = [
-    AppConstants.jan, AppConstants.feb, AppConstants.mar, AppConstants.apr,
-    AppConstants.may, AppConstants.jun, AppConstants.jul, AppConstants.aug,
-    AppConstants.sep, AppConstants.oct, AppConstants.nov, AppConstants.dec,
+    AppConstants.jan,
+    AppConstants.feb,
+    AppConstants.mar,
+    AppConstants.apr,
+    AppConstants.may,
+    AppConstants.jun,
+    AppConstants.jul,
+    AppConstants.aug,
+    AppConstants.sep,
+    AppConstants.oct,
+    AppConstants.nov,
+    AppConstants.dec,
   ];
 
   @override
@@ -565,45 +649,49 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
               mainAxisAlignment: .center,
               children: [
                 IconButton(
-                  icon:      const Icon(Icons.chevron_left),
+                  icon: const Icon(Icons.chevron_left),
                   onPressed: () => setState(() => _year--),
                 ),
-                Text('$_year', style: context.titleSmall.copyWith(fontWeight: .w700)),
+                Text(
+                  '$_year',
+                  style: context.titleSmall.copyWith(fontWeight: .w700),
+                ),
                 IconButton(
-                  icon:      const Icon(Icons.chevron_right),
+                  icon: const Icon(Icons.chevron_right),
                   onPressed: () => setState(() => _year++),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             GridView.builder(
-              shrinkWrap:  true,
-              physics:     const NeverScrollableScrollPhysics(),
-              itemCount:   12,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 12,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount:   3,
+                crossAxisCount: 3,
                 childAspectRatio: 2.2,
                 crossAxisSpacing: 8,
-                mainAxisSpacing:  8,
+                mainAxisSpacing: 8,
               ),
               itemBuilder: (_, i) {
                 final isSelected =
-                    (i + 1) == widget.initial.month && _year == widget.initial.year;
+                    (i + 1) == widget.initial.month &&
+                    _year == widget.initial.year;
                 return GestureDetector(
                   onTap: () => Navigator.pop(context, DateTime(_year, i + 1)),
                   child: Container(
                     alignment: .center,
                     decoration: BoxDecoration(
-                      color:        isSelected ? context.primary : context.surface,
+                      color: isSelected ? context.primary : context.surface,
                       borderRadius: .circular(8),
-                      border:       Border.all(
+                      border: Border.all(
                         color: isSelected ? context.primary : context.border,
                       ),
                     ),
                     child: Text(
                       _months[i],
                       style: context.labelSmall.copyWith(
-                        color:      isSelected ? context.white : context.textPrimary,
+                        color: isSelected ? context.white : context.textPrimary,
                         fontWeight: isSelected ? .w700 : .w500,
                       ),
                     ),

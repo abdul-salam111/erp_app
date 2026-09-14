@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'theme_exports.dart';
 
-
 /// Extension to provide quick access to theme properties
 extension ThemeExtension on BuildContext {
   // ============ TEXT STYLES ============
@@ -86,6 +85,15 @@ extension AppColorExtension on BuildContext {
       isDark ? AppColors.debitContainerDark : AppColors.debitContainer;
   Color get creditContainer =>
       isDark ? AppColors.creditContainerDark : AppColors.creditContainer;
+
+  // Navy accent surfaces (theme-aware) — reusable dark elevated look for
+  // hero headers, cards and icon chips; falls back to the regular
+  // surface/border/primary tokens in light mode.
+  Color get navyCard => isDark ? AppColors.navyCardDark : surfaceElevated;
+  Color get navyBorder => isDark ? AppColors.navyBorderDark : border;
+  Color get navyIconBg =>
+      isDark ? AppColors.navyIconBgDark : primary.withValues(alpha: 0.10);
+  Color get navyIconColor => isDark ? AppColors.navyIconColorDark : primary;
 
   // Grey Scale
   Color get grey50 => AppColors.grey50;

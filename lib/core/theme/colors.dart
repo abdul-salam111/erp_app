@@ -77,7 +77,7 @@ class AppColors {
   // ============================================
 
   static const Color backgroundLight = white;
-  static const Color backgroundDark = black;
+  static const Color backgroundDark = Color(0xFF071121);
 
   /// Surface colors for cards, sheets
   static const Color surfaceLight = grey50;
@@ -208,8 +208,17 @@ class AppColors {
   // ============================================
 
   static const Color loginBackground = Color(0xFFF0F4FF);
-  static const Color navyDark        = Color(0xFF0D1B3E);
+  static const Color navyDark = Color(0xFF0D1B3E);
   static const Color loginBackgroundDark = navyDark;
+
+  /// Navy accent surfaces — reusable dark-mode elevated look for hero
+  /// headers, cards, icon chips and their borders (opt-in accent, not
+  /// the app-wide surfaceElevated/border default).
+  static const Color navyHeaderDark = Color(0xFF0E1F3E);
+  static const Color navyCardDark = Color(0xFF1E293B);
+  static const Color navyIconBgDark = Color(0xFF0F172A);
+  static const Color navyIconColorDark = Color(0xFF3F7DC8);
+  static const Color navyBorderDark = Color(0xFF2E63B1);
 
   static const Color surfaceHeader = Color(0xFFF5F5F5);
   static const Color surfaceHeaderDark = Color(0xFF3D3D3D);

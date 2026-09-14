@@ -154,21 +154,29 @@ class AdminDashboard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: .start,
                 children: [
-                  if (featureAccess.has(SystemPermissionKeys.todaysOverview)) ...[
+                  if (featureAccess.has(
+                    SystemPermissionKeys.todaysOverview,
+                  )) ...[
                     const TodayOverviewSection(),
                     const SizedBox(height: 20),
                   ],
                   const QuickActionsSection(),
                   const SizedBox(height: 20),
-                  if (featureAccess.has(SystemPermissionKeys.todaysOverview)) ...[
+                  if (featureAccess.has(
+                    SystemPermissionKeys.todaysOverview,
+                  )) ...[
                     const NewOrdersSection(),
                     const SizedBox(height: 20),
                   ],
-                  if (featureAccess.has(SystemPermissionKeys.monthlyOverview)) ...[
+                  if (featureAccess.has(
+                    SystemPermissionKeys.monthlyOverview,
+                  )) ...[
                     const MonthOverviewSection(),
                     const SizedBox(height: 20),
                   ],
-                  if (featureAccess.has(SystemPermissionKeys.dashboardSaleOrderStatus)) ...[
+                  if (featureAccess.has(
+                    SystemPermissionKeys.dashboardSaleOrderStatus,
+                  )) ...[
                     const SaleOrdersSection(),
                     const SizedBox(height: 12),
                   ],
@@ -189,16 +197,10 @@ class _AdminSliverAppBar extends StatelessWidget {
 
   static const double _expandedHeight = 161;
 
-  String get _greeting {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return AppConstants.goodMorning;
-    if (hour < 17) return AppConstants.goodAfternoon;
-    return AppConstants.goodEveningMsg;
-  }
-
   String get _initials {
     final parts = currentUser.fullName.trim().split(' ');
-    if (parts.length >= 2) return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    if (parts.length >= 2)
+      return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
     return parts.first.isNotEmpty ? parts.first[0].toUpperCase() : '?';
   }
 
@@ -283,22 +285,27 @@ class _AdminSliverAppBar extends StatelessWidget {
         builder: (context, constraints) {
           final minH = top + kToolbarHeight;
           final maxH = top + _expandedHeight;
-          final t = ((constraints.maxHeight - minH) / (maxH - minH))
-              .clamp(0.0, 1.0);
+          final t = ((constraints.maxHeight - minH) / (maxH - minH)).clamp(
+            0.0,
+            1.0,
+          );
           final expandedOpacity = ((t - 0.4) / 0.6).clamp(0.0, 1.0);
           final collapsedOpacity = ((0.35 - t) / 0.35).clamp(0.0, 1.0);
 
           return Container(
             clipBehavior: .hardEdge,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  context.primary,
-                  context.primary.withValues(alpha: 0.72),
-                ],
-                begin: .topLeft,
-                end: .bottomRight,
-              ),
+              color: context.isDark ? AppColors.navyHeaderDark : null,
+              gradient: context.isDark
+                  ? null
+                  : LinearGradient(
+                      colors: [
+                        context.primary,
+                        context.primary.withValues(alpha: 0.72),
+                      ],
+                      begin: .topLeft,
+                      end: .bottomRight,
+                    ),
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(28 * t),
               ),
@@ -387,8 +394,9 @@ class _AdminSliverAppBar extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 26,
-                          backgroundColor:
-                              AppColors.white.withValues(alpha: 0.20),
+                          backgroundColor: AppColors.white.withValues(
+                            alpha: 0.20,
+                          ),
                           child: Text(
                             _initials,
                             style: context.titleSmall.copyWith(
@@ -403,14 +411,6 @@ class _AdminSliverAppBar extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: .start,
                             children: [
-                              Text(
-                                '$_greeting 👋',
-                                style: context.labelSmall.copyWith(
-                                  color: AppColors.white.withValues(alpha: 0.80),
-                                  fontWeight: .w500,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
                               Text(
                                 currentUser.fullName,
                                 style: context.titleLarge.copyWith(
@@ -427,6 +427,7 @@ class _AdminSliverAppBar extends StatelessWidget {
                                   _AdminHeaderChip(
                                     icon: Iconsax.buildings,
                                     label: currentUser.org.name,
+                                    fontSize: 13.5,
                                   ),
                                   const Spacer(),
                                   _AdminHeaderChip(
@@ -477,37 +478,34 @@ class _AdminHeaderIconBtn extends StatelessWidget {
 class _AdminHeaderChip extends StatelessWidget {
   final IconData icon;
   final String label;
+  final double fontSize;
 
-  const _AdminHeaderChip({required this.icon, required this.label});
+  const _AdminHeaderChip({
+    required this.icon,
+    required this.label,
+    this.fontSize = 10.5,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: .symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.15),
-        borderRadius: .circular(20),
-      ),
-      child: Row(
-        mainAxisSize: .min,
-        children: [
-          Icon(icon, color: AppColors.white.withValues(alpha: 0.85), size: 11),
-          const SizedBox(width: 4),
-          Flexible(
-            child: Text(
-              label,
-              style: context.labelSmall.copyWith(
-                color: AppColors.white.withValues(alpha: 0.90),
-                fontWeight: .w500,
-                fontSize: 10.5,
-              ),
-              maxLines: 1,
-              overflow: .ellipsis,
+    return Row(
+      mainAxisSize: .min,
+      children: [
+        Icon(icon, color: AppColors.white.withValues(alpha: 0.85), size: 11),
+        const SizedBox(width: 4),
+        Flexible(
+          child: Text(
+            label,
+            style: context.labelSmall.copyWith(
+              color: AppColors.white.withValues(alpha: 0.90),
+              fontWeight: .w500,
+              fontSize: fontSize,
             ),
+            maxLines: 1,
+            overflow: .ellipsis,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
-

@@ -3,7 +3,6 @@ import 'package:iconsax/iconsax.dart';
 import '../theme/theme_utils.dart';
 import '../utils/utils_exports.dart';
 
-
 class CustomTextFormField extends StatefulWidget {
   final String? hintText;
   final String? label;
@@ -25,6 +24,7 @@ class CustomTextFormField extends StatefulWidget {
   final double? fieldHeight;
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? hintStyle;
+  final Iterable<String>? autofillHints;
 
   const CustomTextFormField({
     super.key,
@@ -48,6 +48,7 @@ class CustomTextFormField extends StatefulWidget {
     this.fieldHeight = 56,
     this.contentPadding,
     this.hintStyle,
+    this.autofillHints,
   });
 
   @override
@@ -105,76 +106,82 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         SizedBox(
           height: widget.fieldHeight,
           child: TextFormField(
-          
-          autofocus: false,
-          textCapitalization: TextCapitalization.words,
-          readOnly: widget.readOnly,
-          style: context.bodySmall.copyWith(color: context.textPrimary),
-          controller: widget.controller,
-          obscureText: isObscure,
-          keyboardType: widget.keyboardType,
-          maxLines: widget.obscureText ? 1 : widget.maxLines,
-          decoration: InputDecoration(
-            
-            hintText: widget.hintText,
-            hintStyle: widget.hintStyle ?? context.bodySmall.copyWith(color: context.textSecondary),
-            prefixIcon: widget.prefixIcon != null
-                ? Icon(widget.prefixIcon, color: context.textSecondary, size: 20)
-                : null,
-            fillColor: defaultFillColor,
-            filled: true,
-            contentPadding: widget.contentPadding ?? const EdgeInsets.only(left: 10),
-
-            // Default border
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: defaultBorderColor),
-            ),
-
-            // Enabled border
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: defaultBorderColor),
-            ),
-
-            // Focused border
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: context.primary, width: 2),
-            ),
-
-            // Error border
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: context.error, width: 1),
-            ),
-
-            // Focused error border
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: context.error, width: 2),
-            ),
-
-            // Suffix icon for password visibility toggle
-            suffixIcon: widget.obscureText
-                ? IconButton(
-                    icon: Icon(
-                      isObscure ? Iconsax.eye_slash : Iconsax.eye,
+            autofocus: false,
+            textCapitalization: TextCapitalization.words,
+            readOnly: widget.readOnly,
+            style: context.bodySmall.copyWith(color: context.textPrimary),
+            controller: widget.controller,
+            obscureText: isObscure,
+            keyboardType: widget.keyboardType,
+            autofillHints: widget.autofillHints,
+            maxLines: widget.obscureText ? 1 : widget.maxLines,
+            decoration: InputDecoration(
+              hintText: widget.hintText,
+              hintStyle:
+                  widget.hintStyle ??
+                  context.bodySmall.copyWith(color: context.textSecondary),
+              prefixIcon: widget.prefixIcon != null
+                  ? Icon(
+                      widget.prefixIcon,
                       color: context.textSecondary,
                       size: 20,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        isObscure = !isObscure;
-                      });
-                    },
-                  )
-                : null,
+                    )
+                  : null,
+              fillColor: defaultFillColor,
+              filled: true,
+              contentPadding:
+                  widget.contentPadding ?? const EdgeInsets.only(left: 10),
+
+              // Default border
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: defaultBorderColor),
+              ),
+
+              // Enabled border
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: defaultBorderColor),
+              ),
+
+              // Focused border
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: context.primary, width: 2),
+              ),
+
+              // Error border
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: context.error, width: 1),
+              ),
+
+              // Focused error border
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: context.error, width: 2),
+              ),
+
+              // Suffix icon for password visibility toggle
+              suffixIcon: widget.obscureText
+                  ? IconButton(
+                      icon: Icon(
+                        isObscure ? Iconsax.eye_slash : Iconsax.eye,
+                        color: context.textSecondary,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isObscure = !isObscure;
+                        });
+                      },
+                    )
+                  : null,
+            ),
+            validator: widget.validator,
+            onChanged: widget.onChanged,
+            onTap: widget.onTap,
           ),
-          validator: widget.validator,
-          onChanged: widget.onChanged,
-          onTap: widget.onTap,
-        ),
         ),
       ],
     );

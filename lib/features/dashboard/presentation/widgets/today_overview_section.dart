@@ -12,25 +12,57 @@ import '../admin_dashboard/bloc/admin_dashboard_bloc.dart';
 import 'section_header.dart';
 
 const _meta = <_CardMeta>[
-  _CardMeta(label: AppConstants.recoveryDueTodayLabel, icon: Icons.monetization_on_outlined,  color: AppColors.orange),
-  _CardMeta(label: AppConstants.receivedTodayLabel,    icon: Icons.attach_money_rounded,       color: AppColors.green),
-  _CardMeta(label: AppConstants.expensesTodayLabel,    icon: Icons.credit_card_outlined,       color: AppColors.errorBright),
-  _CardMeta(label: AppConstants.purchasesTodayLabel,   icon: Icons.shopping_bag_outlined,      color: AppColors.purple),
-  _CardMeta(label: AppConstants.paymentsToMakeLabel,   icon: Icons.payment_outlined,           color: AppColors.orange),
-  _CardMeta(label: AppConstants.paymentsMadeLabel,     icon: Icons.task_alt_outlined,          color: AppColors.cyan),
-  _CardMeta(label: AppConstants.salesTodayLabel,       icon: Icons.shopping_cart_outlined,     color: AppColors.primary),
-  _CardMeta(label: AppConstants.newOrdersLabel,        icon: Icons.inventory_2_outlined,       color: AppColors.violet),
+  _CardMeta(
+    label: AppConstants.recoveryDueTodayLabel,
+    icon: Icons.monetization_on_outlined,
+    color: AppColors.orange,
+  ),
+  _CardMeta(
+    label: AppConstants.receivedTodayLabel,
+    icon: Icons.attach_money_rounded,
+    color: AppColors.green,
+  ),
+  _CardMeta(
+    label: AppConstants.expensesTodayLabel,
+    icon: Icons.credit_card_outlined,
+    color: AppColors.errorBright,
+  ),
+  _CardMeta(
+    label: AppConstants.purchasesTodayLabel,
+    icon: Icons.shopping_bag_outlined,
+    color: AppColors.purple,
+  ),
+  _CardMeta(
+    label: AppConstants.paymentsToMakeLabel,
+    icon: Icons.payment_outlined,
+    color: AppColors.orange,
+  ),
+  _CardMeta(
+    label: AppConstants.paymentsMadeLabel,
+    icon: Icons.task_alt_outlined,
+    color: AppColors.cyan,
+  ),
+  _CardMeta(
+    label: AppConstants.salesTodayLabel,
+    icon: Icons.shopping_cart_outlined,
+    color: AppColors.primary,
+  ),
+  _CardMeta(
+    label: AppConstants.newOrdersLabel,
+    icon: Icons.inventory_2_outlined,
+    color: AppColors.violet,
+  ),
 ];
 
 List<double> _valuesFor(DailyStatsEntity? stats) => [
-  stats?.ttlRecovery   ?? 0,
-  stats?.ttlReceived   ?? 0,
-  stats?.ttlExpense    ?? 0,
-  stats?.ttlPurchase   ?? 0,
+  stats?.ttlRecovery ?? 0,
+  stats?.ttlReceived ?? 0,
+  stats?.ttlExpense ?? 0,
+  stats?.ttlPurchase ?? 0,
   stats?.ttlDuePayment ?? 0,
-  stats?.ttlPaid       ?? 0,
-  stats?.ttlSale       ?? 0,
-  stats?.ttlSaleOrder  ?? 0,
+  stats?.ttlPaid ?? 0,
+  stats?.ttlSale ?? 0,
+  stats?.ttlSaleOrder ?? 0,
 ];
 
 class TodayOverviewSection extends StatelessWidget {
@@ -73,15 +105,16 @@ class TodayOverviewSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AdminDashboardBloc, AdminDashboardState>(
       buildWhen: (p, c) =>
-          p.dailyStatsStatus  != c.dailyStatsStatus ||
-          p.dailyStats        != c.dailyStats        ||
+          p.dailyStatsStatus != c.dailyStatsStatus ||
+          p.dailyStats != c.dailyStats ||
           p.selectedDailyDate != c.selectedDailyDate,
       builder: (context, state) {
-        final isLoading = state.dailyStatsStatus == ApiStatus.INITIAL ||
-                          state.dailyStatsStatus == ApiStatus.LOADING;
+        final isLoading =
+            state.dailyStatsStatus == ApiStatus.INITIAL ||
+            state.dailyStatsStatus == ApiStatus.LOADING;
 
-        final sym       = currentUser.org.currencySymbol;
-        final values    = _valuesFor(state.dailyStats);
+        final sym = currentUser.org.currencySymbol;
+        final values = _valuesFor(state.dailyStats);
         final itemCount = context.isPhone ? 4 : _meta.length;
 
         return Column(
@@ -97,12 +130,17 @@ class TodayOverviewSection extends StatelessWidget {
                     child: Row(
                       mainAxisSize: .min,
                       children: [
-                        Icon(Icons.calendar_today_outlined, color: context.primary, size: 13),
+                        Icon(
+                          Icons.calendar_today_outlined,
+                          color: context.primary,
+                          size: 13,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           _formatDate(state.selectedDailyDate),
                           style: context.labelMedium.copyWith(
-                            color: context.primary, fontWeight: .w600,
+                            color: context.primary,
+                            fontWeight: .w600,
                           ),
                         ),
                       ],
@@ -128,12 +166,14 @@ class TodayOverviewSection extends StatelessWidget {
                           Text(
                             AppConstants.showMore,
                             style: context.labelMedium.copyWith(
-                              color: context.primary, fontWeight: .w600,
+                              color: context.primary,
+                              fontWeight: .w600,
                             ),
                           ),
                           Icon(
                             Icons.chevron_right_rounded,
-                            color: context.primary, size: 18,
+                            color: context.primary,
+                            size: 18,
                           ),
                         ],
                       ),
@@ -145,12 +185,12 @@ class TodayOverviewSection extends StatelessWidget {
             const SizedBox(height: 10),
             GridView.builder(
               shrinkWrap: true,
-              padding:    EdgeInsets.zero,
-              physics:    const NeverScrollableScrollPhysics(),
-              itemCount:  itemCount,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: itemCount,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount:   context.gridColumnCount,
-                mainAxisSpacing:  context.gridSpacing,
+                crossAxisCount: context.gridColumnCount,
+                mainAxisSpacing: context.gridSpacing,
                 crossAxisSpacing: context.gridSpacing,
                 childAspectRatio: context.overviewCardRatio,
               ),
@@ -161,7 +201,7 @@ class TodayOverviewSection extends StatelessWidget {
                 return OverviewStatCard(
                   label: _meta[i].label,
                   value: values[i].formatPrice(symbol: sym),
-                  icon:  _meta[i].icon,
+                  icon: _meta[i].icon,
                   color: _meta[i].color,
                 );
               },
@@ -174,10 +214,14 @@ class TodayOverviewSection extends StatelessWidget {
 }
 
 class _CardMeta {
-  final String   label;
+  final String label;
   final IconData icon;
-  final Color    color;
-  const _CardMeta({required this.label, required this.icon, required this.color});
+  final Color color;
+  const _CardMeta({
+    required this.label,
+    required this.icon,
+    required this.color,
+  });
 }
 
 // ─── "Show more" bottom sheet — all overview cards ─────────────────────────────
@@ -197,11 +241,14 @@ class _AllOverviewSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: const .vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.fromLTRB(
-        20, 12, 20, MediaQuery.viewInsetsOf(context).bottom + 24,
+        20,
+        12,
+        20,
+        MediaQuery.viewInsetsOf(context).bottom + 24,
       ),
       child: Column(
         mainAxisSize: .min,
@@ -212,7 +259,7 @@ class _AllOverviewSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: context.border,
+                color: context.navyBorder,
                 borderRadius: .circular(2),
               ),
             ),
@@ -224,10 +271,14 @@ class _AllOverviewSheet extends StatelessWidget {
               Container(
                 padding: .all(9),
                 decoration: BoxDecoration(
-                  color: context.primary.withValues(alpha: 0.10),
+                  color: context.navyIconBg,
                   borderRadius: .circular(10),
                 ),
-                child: Icon(Icons.grid_view_rounded, color: context.primary, size: 18),
+                child: Icon(
+                  Icons.grid_view_rounded,
+                  color: context.navyIconColor,
+                  size: 18,
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -242,7 +293,9 @@ class _AllOverviewSheet extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       dateLabel,
-                      style: context.labelSmall.copyWith(color: context.textSecondary),
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -255,7 +308,11 @@ class _AllOverviewSheet extends StatelessWidget {
                     color: context.surface,
                     shape: .circle,
                   ),
-                  child: Icon(Icons.close_rounded, size: 16, color: context.textSecondary),
+                  child: Icon(
+                    Icons.close_rounded,
+                    size: 16,
+                    color: context.textSecondary,
+                  ),
                 ),
               ),
             ],
@@ -267,18 +324,18 @@ class _AllOverviewSheet extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: _meta.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount:   context.gridColumnCount,
-              mainAxisSpacing:  context.gridSpacing,
+              crossAxisCount: context.gridColumnCount,
+              mainAxisSpacing: context.gridSpacing,
               crossAxisSpacing: context.gridSpacing,
               childAspectRatio: context.overviewCardRatio,
             ),
             itemBuilder: (context, i) {
               return OverviewStatCard(
-                label: _meta[i].label,
-                value: values[i].formatPrice(symbol: currencySymbol),
-                icon:  _meta[i].icon,
-                color: _meta[i].color,
-              )
+                    label: _meta[i].label,
+                    value: values[i].formatPrice(symbol: currencySymbol),
+                    icon: _meta[i].icon,
+                    color: _meta[i].color,
+                  )
                   .animate()
                   .slideY(
                     begin: 0.2,

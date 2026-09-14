@@ -64,22 +64,22 @@ class _ProfileBody extends StatelessWidget {
                 delegate: SliverChildListDelegate([
                   // ── Personal Info ───────────────────────────────────
                   _SectionCard(
-                    title: AppConstants.personalInformationTitle,
-                    iconData: Iconsax.profile_circle,
-                    children: [
-                      _InfoRow(
-                        icon: Iconsax.user,
-                        label: AppConstants.fullNameLabel,
-                        value: currentUser.fullName,
-                      ),
-                      _InfoRow(
-                        icon: Iconsax.shield_tick,
-                        label: AppConstants.roleLabel,
-                        value: _roleDisplay,
-                        isLast: true,
-                      ),
-                    ],
-                  )
+                        title: AppConstants.personalInformationTitle,
+                        iconData: Iconsax.profile_circle,
+                        children: [
+                          _InfoRow(
+                            icon: Iconsax.user,
+                            label: AppConstants.fullNameLabel,
+                            value: currentUser.fullName,
+                          ),
+                          _InfoRow(
+                            icon: Iconsax.shield_tick,
+                            label: AppConstants.roleLabel,
+                            value: _roleDisplay,
+                            isLast: true,
+                          ),
+                        ],
+                      )
                       .animate()
                       .slideY(
                         begin: 0.25,
@@ -95,14 +95,14 @@ class _ProfileBody extends StatelessWidget {
 
                     // ── Organization ───────────────────────────────────
                     _CardContainer(
-                      padding: EdgeInsets.zero,
-                      child: _InfoRow(
-                        icon: Iconsax.buildings,
-                        label: AppConstants.organizationTitle,
-                        value: currentUser.org.name,
-                        isLast: true,
-                      ),
-                    )
+                          padding: EdgeInsets.zero,
+                          child: _InfoRow(
+                            icon: Iconsax.buildings,
+                            label: AppConstants.organizationTitle,
+                            value: currentUser.org.name,
+                            isLast: true,
+                          ),
+                        )
                         .animate()
                         .slideY(
                           begin: 0.25,
@@ -113,6 +113,20 @@ class _ProfileBody extends StatelessWidget {
                         )
                         .fadeIn(delay: 100.ms, duration: 320.ms),
                   ],
+
+                  const SizedBox(height: 14),
+
+                  // ── Appearance ───────────────────────────────────────
+                  const _AppearanceCard()
+                      .animate()
+                      .slideY(
+                        begin: 0.25,
+                        end: 0,
+                        delay: 120.ms,
+                        duration: 420.ms,
+                        curve: Curves.easeOutCubic,
+                      )
+                      .fadeIn(delay: 120.ms, duration: 320.ms),
 
                   const SizedBox(height: 14),
 
@@ -144,8 +158,9 @@ class _ProfileBody extends StatelessWidget {
                               value: dbgState.isEnabled,
                               onChanged: (_) =>
                                   context.read<ApiDebugCubit>().toggleEnabled(),
-                              contentPadding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -186,12 +201,15 @@ class _ProfileHeader extends StatelessWidget {
         clipper: _BottomWaveClipper(),
         child: Container(
           width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.primaryDark, AppColors.primary],
-              begin: .topLeft,
-              end: .bottomRight,
-            ),
+          decoration: BoxDecoration(
+            color: context.isDark ? AppColors.navyHeaderDark : null,
+            gradient: context.isDark
+                ? null
+                : const LinearGradient(
+                    colors: [AppColors.primaryDark, AppColors.primary],
+                    begin: .topLeft,
+                    end: .bottomRight,
+                  ),
           ),
           child: Stack(
             children: [
@@ -223,7 +241,7 @@ class _ProfileHeader extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: .center,
                   children: [
-                    // Top bar: back + theme toggle
+                    // Top bar: back
                     Row(
                       children: [
                         GestureDetector(
@@ -241,27 +259,6 @@ class _ProfileHeader extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const Spacer(),
-                        BlocBuilder<ThemeBloc, ThemeState>(
-                          builder: (context, themeState) => GestureDetector(
-                            onTap: () =>
-                                context.read<ThemeBloc>().add(ToggleTheme()),
-                            child: Container(
-                              padding: .all(8),
-                              decoration: BoxDecoration(
-                                color: AppColors.white.withValues(alpha: 0.15),
-                                borderRadius: .circular(10),
-                              ),
-                              child: Icon(
-                                themeState.isDarkMode
-                                    ? Icons.dark_mode_rounded
-                                    : Icons.light_mode_rounded,
-                                color: AppColors.white,
-                                size: 18,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ).animate().fadeIn(delay: 0.ms, duration: 300.ms),
 
@@ -269,42 +266,44 @@ class _ProfileHeader extends StatelessWidget {
 
                     // Avatar — tap 5× to switch environment
                     EnvSwitchDetector(
-                      child: Container(
-                        width: 68,
-                        height: 68,
-                        decoration: BoxDecoration(
-                          shape: .circle,
-                          gradient: RadialGradient(
-                            colors: [
-                              AppColors.white.withValues(alpha: 0.30),
-                              AppColors.white.withValues(alpha: 0.12),
-                            ],
-                          ),
-                          border: Border.all(
-                            color: AppColors.white.withValues(alpha: 0.50),
-                            width: 2.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.35),
-                              blurRadius: 24,
-                              spreadRadius: 2,
+                          child: Container(
+                            width: 68,
+                            height: 68,
+                            decoration: BoxDecoration(
+                              shape: .circle,
+                              gradient: RadialGradient(
+                                colors: [
+                                  AppColors.white.withValues(alpha: 0.30),
+                                  AppColors.white.withValues(alpha: 0.12),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: AppColors.white.withValues(alpha: 0.50),
+                                width: 2.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.35,
+                                  ),
+                                  blurRadius: 24,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Text(
-                            initials,
-                            style: const TextStyle(
-                              color: AppColors.white,
-                              fontSize: 22,
-                              fontWeight: .w700,
-                              height: 1,
+                            child: Center(
+                              child: Text(
+                                initials,
+                                style: const TextStyle(
+                                  color: AppColors.white,
+                                  fontSize: 22,
+                                  fontWeight: .w700,
+                                  height: 1,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    )
+                        )
                         .animate()
                         .scale(
                           begin: const Offset(0.7, 0.7),
@@ -319,19 +318,19 @@ class _ProfileHeader extends StatelessWidget {
 
                     // Name
                     Text(
-                      currentUser.fullName,
-                      style: context.titleMedium.copyWith(
-                        color: AppColors.white,
-                        fontWeight: .w700,
-                        fontSize: Responsive.value(
-                          context,
-                          phone: 16,
-                          tablet: 18,
-                          ipad: 20,
-                        ),
-                      ),
-                      textAlign: .center,
-                    )
+                          currentUser.fullName,
+                          style: context.titleMedium.copyWith(
+                            color: AppColors.white,
+                            fontWeight: .w700,
+                            fontSize: Responsive.value(
+                              context,
+                              phone: 16,
+                              tablet: 18,
+                              ipad: 20,
+                            ),
+                          ),
+                          textAlign: .center,
+                        )
                         .animate()
                         .slideY(
                           begin: 0.3,
@@ -346,31 +345,31 @@ class _ProfileHeader extends StatelessWidget {
 
                     // Role badge
                     Container(
-                      padding: .symmetric(horizontal: 12, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: AppColors.white.withValues(alpha: 0.18),
-                        borderRadius: .circular(20),
-                      ),
-                      child: Row(
-                        mainAxisSize: .min,
-                        children: [
-                          Icon(
-                            Iconsax.shield_tick,
-                            color: AppColors.white.withValues(alpha: 0.95),
-                            size: 12,
+                          padding: .symmetric(horizontal: 12, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: AppColors.white.withValues(alpha: 0.18),
+                            borderRadius: .circular(20),
                           ),
-                          const SizedBox(width: 5),
-                          Text(
-                            roleDisplay,
-                            style: context.labelSmall.copyWith(
-                              color: AppColors.white,
-                              fontWeight: .w600,
-                              fontSize: 11,
-                            ),
+                          child: Row(
+                            mainAxisSize: .min,
+                            children: [
+                              Icon(
+                                Iconsax.shield_tick,
+                                color: AppColors.white.withValues(alpha: 0.95),
+                                size: 12,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                roleDisplay,
+                                style: context.labelSmall.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: .w600,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )
+                        )
                         .animate()
                         .slideY(
                           begin: 0.3,
@@ -385,13 +384,13 @@ class _ProfileHeader extends StatelessWidget {
 
                     // Email
                     Text(
-                      currentUser.email,
-                      style: context.bodySmall.copyWith(
-                        color: AppColors.white.withValues(alpha: 0.75),
-                        fontSize: 13,
-                      ),
-                      textAlign: .center,
-                    )
+                          currentUser.email,
+                          style: context.bodySmall.copyWith(
+                            color: AppColors.white.withValues(alpha: 0.75),
+                            fontSize: 13,
+                          ),
+                          textAlign: .center,
+                        )
                         .animate()
                         .slideY(
                           begin: 0.3,
@@ -413,7 +412,8 @@ class _ProfileHeader extends StatelessWidget {
 
   static String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.length >= 2) return '${parts.first[0]}${parts[1][0]}'.toUpperCase();
+    if (parts.length >= 2)
+      return '${parts.first[0]}${parts[1][0]}'.toUpperCase();
     if (name.isNotEmpty) return name[0].toUpperCase();
     return '?';
   }
@@ -485,8 +485,10 @@ class _BottomWaveClipper extends CustomClipper<Path> {
     final path = Path()
       ..lineTo(0, size.height - 28)
       ..quadraticBezierTo(
-        size.width * 0.5, size.height + 18,
-        size.width, size.height - 28,
+        size.width * 0.5,
+        size.height + 18,
+        size.width,
+        size.height - 28,
       )
       ..lineTo(size.width, 0)
       ..close();
@@ -514,9 +516,9 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(16),
-        border: Border.all(color: context.border),
+        border: Border.all(color: context.navyBorder),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.05),
@@ -535,10 +537,18 @@ class _SectionCard extends StatelessWidget {
                 Container(
                   padding: .all(7),
                   decoration: BoxDecoration(
-                    color: context.primary.withValues(alpha: 0.10),
+                    color: context.isDark
+                        ? AppColors.navyIconBgDark
+                        : context.primary.withValues(alpha: 0.10),
                     borderRadius: .circular(8),
                   ),
-                  child: Icon(iconData, size: 15, color: context.primary),
+                  child: Icon(
+                    iconData,
+                    size: 15,
+                    color: context.isDark
+                        ? AppColors.navyIconColorDark
+                        : context.primary,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Text(
@@ -551,7 +561,7 @@ class _SectionCard extends StatelessWidget {
               ],
             ),
           ),
-          Divider(height: 1, thickness: 1, color: context.border),
+          Divider(height: 1, thickness: 1, color: context.navyBorder),
           ...children,
         ],
       ),
@@ -575,7 +585,7 @@ class _CardContainer extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: .circular(16),
-        border: Border.all(color: context.border),
+        border: Border.all(color: context.navyBorder),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.05),
@@ -587,13 +597,10 @@ class _CardContainer extends StatelessWidget {
       // Material (not a color on the Container above) so ListTile/InkWell
       // descendants (e.g. SwitchListTile) paint their splashes correctly.
       child: Material(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(16),
         clipBehavior: .antiAlias,
-        child: Padding(
-          padding: padding,
-          child: child,
-        ),
+        child: Padding(padding: padding, child: child),
       ),
     );
   }
@@ -626,10 +633,18 @@ class _InfoRow extends StatelessWidget {
                 width: 34,
                 height: 34,
                 decoration: BoxDecoration(
-                  color: context.surface,
+                  color: context.isDark
+                      ? AppColors.navyIconBgDark
+                      : context.surface,
                   borderRadius: .circular(9),
                 ),
-                child: Icon(icon, size: 15, color: context.textSecondary),
+                child: Icon(
+                  icon,
+                  size: 15,
+                  color: context.isDark
+                      ? AppColors.navyIconColorDark
+                      : context.textSecondary,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -664,9 +679,89 @@ class _InfoRow extends StatelessWidget {
             height: 1,
             thickness: 1,
             indent: 62,
-            color: context.border,
+            color: context.navyBorder,
           ),
       ],
+    );
+  }
+}
+
+// ─── Appearance card ──────────────────────────────────────────────────────────
+
+class _AppearanceCard extends StatelessWidget {
+  const _AppearanceCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return _CardContainer(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, themeState) {
+          final isDark = themeState.isDarkMode;
+          return Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: context.isDark
+                      ? AppColors.navyIconBgDark
+                      : context.primary.withValues(alpha: 0.10),
+                  borderRadius: .circular(12),
+                ),
+                child: Icon(
+                  isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                  size: 18,
+                  color: context.isDark
+                      ? AppColors.navyIconColorDark
+                      : context.primary,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Text(
+                      AppConstants.darkModeLabel,
+                      style: context.bodySmall.copyWith(
+                        fontWeight: .w700,
+                        color: context.textPrimary,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      isDark
+                          ? AppConstants.darkModeEnabled
+                          : AppConstants.darkModeDisabled,
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Switch(
+                value: isDark,
+                activeThumbColor: context.primary,
+                activeTrackColor: context.primary.withValues(alpha: 0.35),
+                inactiveThumbColor: context.isDark
+                    ? AppColors.grey300
+                    : AppColors.white,
+                inactiveTrackColor: context.isDark
+                    ? AppColors.grey700
+                    : AppColors.grey300,
+                trackOutlineColor: WidgetStateProperty.all(
+                  context.isDark ? AppColors.grey600 : AppColors.grey400,
+                ),
+                onChanged: (_) => context.read<ThemeBloc>().add(ToggleTheme()),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -681,9 +776,9 @@ class _ActionsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(16),
-        border: Border.all(color: context.border),
+        border: Border.all(color: context.navyBorder),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.05),
@@ -699,11 +794,20 @@ class _ActionsCard extends StatelessWidget {
               icon: Iconsax.refresh_circle,
               label: AppConstants.switchOrganization,
               subtitle: AppConstants.changeToADifferentOrganization,
-              iconColor: context.primary,
-              iconBg: context.primary.withValues(alpha: 0.10),
+              iconColor: context.isDark
+                  ? AppColors.navyIconColorDark
+                  : context.primary,
+              iconBg: context.isDark
+                  ? AppColors.navyIconBgDark
+                  : context.primary.withValues(alpha: 0.10),
               onTap: () => context.pushNamed(RouteNames.organizationSelection),
             ),
-            Divider(height: 1, thickness: 1, indent: 70, color: context.border),
+            Divider(
+              height: 1,
+              thickness: 1,
+              indent: 70,
+              color: context.navyBorder,
+            ),
           ],
           BlocBuilder<ProfileBloc, ProfileState>(
             buildWhen: (p, c) => p.logoutStatus != c.logoutStatus,
@@ -714,7 +818,9 @@ class _ActionsCard extends StatelessWidget {
                 label: AppConstants.logOut,
                 subtitle: AppConstants.signOutOfYourAccount,
                 iconColor: context.error,
-                iconBg: context.error.withValues(alpha: 0.10),
+                iconBg: context.isDark
+                    ? AppColors.navyIconBgDark
+                    : context.error.withValues(alpha: 0.10),
                 isLoading: isLoggingOut,
                 onTap: isLoggingOut ? null : () => _confirmLogout(context),
               );

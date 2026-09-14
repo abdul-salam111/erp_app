@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
@@ -34,6 +35,7 @@ class _SignInViewState extends State<SignInView> {
                 previous.apiStatus != current.apiStatus,
             listener: (context, state) {
               if (state.apiStatus == ApiStatus.SUCCESS) {
+                TextInput.finishAutofillContext();
                 if (state.message != null) {
                   AppToastsUtils.showErrorTop(
                     context,
@@ -48,8 +50,9 @@ class _SignInViewState extends State<SignInView> {
                 } else {
                   final roles = SessionController.instance.userRoles;
                   final isAdmin = roles.any(
-                    (r) => AppConstants.adminRoles
-                        .contains(r.toLowerCase().trim()),
+                    (r) => AppConstants.adminRoles.contains(
+                      r.toLowerCase().trim(),
+                    ),
                   );
                   if (isAdmin) {
                     context.goNamed(RouteNames.dashboard);
@@ -161,7 +164,8 @@ class _LoginCardState extends State<_LoginCard> {
 
   void _onTitleTap() {
     final now = DateTime.now();
-    if (_firstDebugTap == null || now.difference(_firstDebugTap!) > const Duration(seconds: 3)) {
+    if (_firstDebugTap == null ||
+        now.difference(_firstDebugTap!) > const Duration(seconds: 3)) {
       _firstDebugTap = now;
       _debugTapCount = 1;
     } else {
@@ -171,9 +175,9 @@ class _LoginCardState extends State<_LoginCard> {
       _debugTapCount = 0;
       _firstDebugTap = null;
       context.read<ApiDebugCubit>().toggleEnabled();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('API Debugger toggled')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('API Debugger toggled')));
     }
   }
 
@@ -202,124 +206,126 @@ class _LoginCardState extends State<_LoginCard> {
       ),
       child: Form(
         key: widget.formKey,
-        child: Column(
-          crossAxisAlignment: .center,
-          mainAxisSize: .min,
-          children: [
-            EnvSwitchDetector(
-              child: Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  color: context.loginBackground,
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                padding: const EdgeInsets.all(10),
-                child: Image.asset(AppImages.manticLogo, fit: .contain),
-              ),
-            ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: _onTitleTap,
-              child: Text(
-                'Mantic ERP',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: .w800,
-                  color: context.textPrimary,
-                  letterSpacing: -0.5,
+        child: AutofillGroup(
+          child: Column(
+            crossAxisAlignment: .center,
+            mainAxisSize: .min,
+            children: [
+              EnvSwitchDetector(
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: context.loginBackground,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  child: Image.asset(AppImages.manticLogo, fit: .contain),
                 ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Sign in to your account',
-              style: TextStyle(
-                fontSize: 13,
-                color: context.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 28),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(height: 1, color: context.divider),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Container(
-                    width: 6,
-                    height: 6,
-                    decoration: const BoxDecoration(
-                      shape: .circle,
-                      color: AppColors.primary,
-                    ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: _onTitleTap,
+                child: Text(
+                  'Mantic ERP',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: .w800,
+                    color: context.textPrimary,
+                    letterSpacing: -0.5,
                   ),
                 ),
-                Expanded(
-                  child: Container(height: 1, color: context.divider),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            BlocBuilder<SignInBloc, SignInState>(
-              buildWhen: (p, n) => p.email != n.email,
-              builder: (context, state) {
-                return CustomTextFormField(
-                  prefixIcon: Iconsax.sms,
-                  label: AppConstants.emailLabel,
-                  keyboardType: TextInputType.emailAddress,
-                  hintText: AppConstants.enterYourEmailHint,
-                  validator: Validator.validateEmail,
-                  onChanged: (email) {
-                    context.read<SignInBloc>().add(EmailChangedEvent(email));
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: 14),
-            BlocBuilder<SignInBloc, SignInState>(
-              buildWhen: (p, n) => p.password != n.password,
-              builder: (context, state) {
-                return CustomTextFormField(
-                  onChanged: (password) {
-                    context.read<SignInBloc>().add(PasswordChangedEvent(password));
-                  },
-                  obscureText: true,
-                  prefixIcon: Iconsax.lock,
-                  label: AppConstants.passwordLabel,
-                  hintText: AppConstants.enterYourPasswordHint,
-                  keyboardType: TextInputType.visiblePassword,
-                  validator: Validator.validatePassword,
-                );
-              },
-            ),
-            const SizedBox(height: 28),
-            BlocBuilder<SignInBloc, SignInState>(
-              buildWhen: (p, n) => p.apiStatus != n.apiStatus,
-              builder: (context, state) {
-                return CustomButton(
-                  isLoading: state.apiStatus == ApiStatus.LOADING,
-                  text: AppConstants.signInBtn,
-                  onPressed: () {
-                    if (widget.formKey.currentState!.validate()) {
-                      context.read<SignInBloc>().add(SignInSubmitted());
-                    }
-                  },
-                  radius: 12,
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Powered by Mantic Software',
-              style: TextStyle(
-                fontSize: 11,
-                color: context.textDisabled,
-                letterSpacing: 0.3,
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Text(
+                'Sign in to your account',
+                style: TextStyle(fontSize: 13, color: context.textSecondary),
+              ),
+              const SizedBox(height: 28),
+              Row(
+                children: [
+                  Expanded(child: Container(height: 1, color: context.divider)),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                        shape: .circle,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                  Expanded(child: Container(height: 1, color: context.divider)),
+                ],
+              ),
+              const SizedBox(height: 24),
+              BlocBuilder<SignInBloc, SignInState>(
+                buildWhen: (p, n) => p.email != n.email,
+                builder: (context, state) {
+                  return CustomTextFormField(
+                    prefixIcon: Iconsax.sms,
+                    label: AppConstants.emailLabel,
+                    keyboardType: TextInputType.emailAddress,
+                    hintText: AppConstants.enterYourEmailHint,
+                    validator: Validator.validateEmail,
+                    autofillHints: const [
+                      AutofillHints.username,
+                      AutofillHints.email,
+                    ],
+                    onChanged: (email) {
+                      context.read<SignInBloc>().add(EmailChangedEvent(email));
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 14),
+              BlocBuilder<SignInBloc, SignInState>(
+                buildWhen: (p, n) => p.password != n.password,
+                builder: (context, state) {
+                  return CustomTextFormField(
+                    onChanged: (password) {
+                      context.read<SignInBloc>().add(
+                        PasswordChangedEvent(password),
+                      );
+                    },
+                    obscureText: true,
+                    prefixIcon: Iconsax.lock,
+                    label: AppConstants.passwordLabel,
+                    hintText: AppConstants.enterYourPasswordHint,
+                    keyboardType: TextInputType.visiblePassword,
+                    validator: Validator.validatePassword,
+                    autofillHints: const [AutofillHints.password],
+                  );
+                },
+              ),
+              const SizedBox(height: 28),
+              BlocBuilder<SignInBloc, SignInState>(
+                buildWhen: (p, n) => p.apiStatus != n.apiStatus,
+                builder: (context, state) {
+                  return CustomButton(
+                    isLoading: state.apiStatus == ApiStatus.LOADING,
+                    text: AppConstants.signInBtn,
+                    onPressed: () {
+                      if (widget.formKey.currentState!.validate()) {
+                        context.read<SignInBloc>().add(SignInSubmitted());
+                      }
+                    },
+                    radius: 12,
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Powered by Mantic Software',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: context.textDisabled,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
