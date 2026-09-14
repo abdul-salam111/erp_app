@@ -80,7 +80,7 @@ class AccountsLedgerRow extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(context, date, dr, cr),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         decoration: BoxDecoration(
           border: Border(top: BorderSide(color: context.border)),
         ),

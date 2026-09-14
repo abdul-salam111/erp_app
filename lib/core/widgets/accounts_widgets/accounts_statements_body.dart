@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/theme_exports.dart';
-import '../../utils/utils_exports.dart';
+
 
 class AccountsStatementsBody extends StatelessWidget {
   final List<Widget> yearCards;
@@ -19,9 +19,9 @@ class AccountsStatementsBody extends StatelessWidget {
       child: ListView(
         controller: scrollController,
         padding: EdgeInsets.only(
-          left: context.pagePadding.left,
-          right: context.pagePadding.right,
-          top: 12,
+          left: 8,
+          right: 8,
+          top: 6,
           bottom: 16,
         ),
         children: [
