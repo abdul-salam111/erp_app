@@ -4,7 +4,6 @@ import '../../constants/const_exports.dart';
 import '../../theme/theme_exports.dart';
 import '../../utils/utils_exports.dart';
 import '../../../features/accounts/domain/entities/shared/ledger_entry_base.dart';
-import 'ledger_formate_balance.dart';
 
 class AccountsLedgerRow extends StatelessWidget {
   final LedgerEntryBase ledger;
@@ -27,6 +26,11 @@ class AccountsLedgerRow extends StatelessWidget {
 
     final dr = drAmt == 0 ? '0.0' : drAmt.formatPrice();
     final cr = crAmt == 0 ? '0.0' : crAmt.formatPrice();
+
+    final rowBalance = (ledger.balance ?? 0).toDouble();
+    final rowBalanceText =
+        '${rowBalance.abs().formatPrice()} '
+        '${rowBalance >= 0 ? AppConstants.dr : AppConstants.cr}';
 
     final Color iconBg;
     final Color iconColor;
@@ -146,7 +150,7 @@ class AccountsLedgerRow extends StatelessWidget {
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  formatAccountsBalance((ledger.balance ?? 0).toDouble()),
+                  rowBalanceText,
                   style: context.labelSmall.copyWith(
                     color: context.textSecondary,
                     fontSize: 11,

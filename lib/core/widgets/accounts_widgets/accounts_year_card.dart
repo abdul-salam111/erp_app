@@ -3,7 +3,6 @@ import '../../constants/const_exports.dart';
 import '../../theme/theme_exports.dart';
 import '../../utils/utils_exports.dart';
 import '../../../features/accounts/domain/entities/shared/ledger_entry_base.dart';
-import 'ledger_formate_balance.dart';
 
 typedef AccountsLedgerGroup = ({String type, List<LedgerEntryBase> entries});
 
@@ -116,16 +115,17 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
               color: AppColors.grey50,
               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
               border: Border(bottom: BorderSide(color: context.border)),
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: .start,
               children: [
-                Expanded(
-                  child: Text(
+                if (widget.finYearName.trim().isNotEmpty) ...[
+                  Text(
                     widget.finYearName,
                     style: context.bodySmall.copyWith(
                       fontWeight: .w600,
@@ -133,37 +133,31 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
                       fontSize: 14,
                     ),
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: .end,
+                  const SizedBox(height: 8),
+                ],
+                Row(
                   children: [
-                    Text(
-                      formatAccountsBalance(widget.balance),
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w700,
-                        color: context.textPrimary,
-                        fontSize: 14,
+                    Expanded(
+                      child: _TotalChip(
+                        label: AppConstants.balanceLabel,
+                        amount:
+                            '${widget.balance.abs().formatPrice()} '
+                            '${widget.balance >= 0 ? AppConstants.dr : AppConstants.cr}',
                       ),
                     ),
-                    const SizedBox(height: 3),
-                    Row(
-                      children: [
-                        Text(
-                          'Rs. ${widget.ttlDebit.formatPrice()} Dr',
-                          style: context.labelSmall.copyWith(
-                            color: context.textSecondary,
-                            fontSize: 11,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Rs. ${widget.ttlCredit.formatPrice()} Cr',
-                          style: context.labelSmall.copyWith(
-                            color: context.textSecondary,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(width: 2),
+                    Expanded(
+                      child: _TotalChip(
+                        label: AppConstants.debit,
+                        amount: widget.ttlDebit.formatPrice(),
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    Expanded(
+                      child: _TotalChip(
+                        label: AppConstants.credit,
+                        amount: widget.ttlCredit.formatPrice(),
+                      ),
                     ),
                   ],
                 ),
@@ -194,4 +188,48 @@ class _PagedEntry {
   final String type;
   final LedgerEntryBase entry;
   const _PagedEntry({required this.type, required this.entry});
+}
+
+class _TotalChip extends StatelessWidget {
+  final String label;
+  final String amount;
+
+  const _TotalChip({required this.label, required this.amount});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: context.white,
+        borderRadius: .circular(8),
+        border: Border.all(color: context.border),
+      ),
+      child: Column(
+        crossAxisAlignment: .start,
+        mainAxisSize: .min,
+        children: [
+          Text(
+            label,
+            style: context.labelSmall.copyWith(
+              color: context.textSecondary,
+              fontWeight: .w600,
+              fontSize: 10,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            amount,
+            style: context.labelSmall.copyWith(
+              color: context.textPrimary,
+              fontWeight: .w700,
+              fontSize: 12.5,
+            ),
+            maxLines: 1,
+            overflow: .ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
 }
