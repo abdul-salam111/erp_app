@@ -53,8 +53,12 @@ class _CashbookBodyState extends State<_CashbookBody> {
   }
 
   void _onScroll() {
+    if (!_scrollController.hasClients) return;
     final bloc = context.read<CashbookBloc>();
-    final collapsed = _scrollController.offset > 40;
+    final maxExtent = _scrollController.position.maxScrollExtent;
+    final canCollapse = maxExtent > 0;
+    final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
+    final collapsed = canCollapse && _scrollController.offset > threshold;
     if (collapsed != bloc.state.filterCollapsed) {
       bloc.add(CashbookFilterCollapsed(collapsed));
     }

@@ -54,7 +54,11 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
   }
 
   void _onScroll() {
-    final collapsed = _scrollController.offset > 40;
+    if (!_scrollController.hasClients) return;
+    final maxExtent = _scrollController.position.maxScrollExtent;
+    final canCollapse = maxExtent > 0;
+    final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
+    final collapsed = canCollapse && _scrollController.offset > threshold;
     if (collapsed != _filterCollapsed) setState(() => _filterCollapsed = collapsed);
   }
 

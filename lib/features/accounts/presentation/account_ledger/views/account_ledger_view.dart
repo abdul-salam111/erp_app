@@ -17,7 +17,6 @@ class AccountLedgerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return BlocProvider(
       create: (_) => sl<AccountLedgerBloc>(),
       child: _AccountLedgerBody(isEmployeeMode: isEmployeeMode),
@@ -49,7 +48,9 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
       if (widget.isEmployeeMode) {
         _fetch();
       } else {
-        context.read<AccountLedgerBloc>().add(const AccountLedgerAccountsFetched());
+        context.read<AccountLedgerBloc>().add(
+          const AccountLedgerAccountsFetched(),
+        );
       }
     });
   }
@@ -64,12 +65,10 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
   void _onScroll() {
     if (!_scrollController.hasClients) return;
     final bloc = context.read<AccountLedgerBloc>();
-    // Only collapse when the list actually has enough content to scroll —
-    // otherwise the header shrinking grows the viewport, which shrinks
-    // maxScrollExtent back below the current offset and forces a
-    // correction that looks like the list auto-scrolling.
-    final canCollapse = _scrollController.position.maxScrollExtent > 0;
-    final collapsed = canCollapse && _scrollController.offset > 40;
+    final maxExtent = _scrollController.position.maxScrollExtent;
+    final canCollapse = maxExtent > 0;
+    final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
+    final collapsed = canCollapse && _scrollController.offset > threshold;
     if (collapsed != bloc.state.filterCollapsed) {
       bloc.add(AccountLedgerFilterCollapsed(collapsed));
     }
@@ -84,11 +83,15 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
       );
       return;
     }
-    bloc.add(AccountLedgerSubmitted(
-      fromDate: bloc.state.fromDate.format('yyyy-MM-dd'),
-      toDate: bloc.state.toDate.format('yyyy-MM-dd'),
-      accountId: widget.isEmployeeMode ? currentUser.id : bloc.state.selectedAccountId,
-    ));
+    bloc.add(
+      AccountLedgerSubmitted(
+        fromDate: bloc.state.fromDate.format('yyyy-MM-dd'),
+        toDate: bloc.state.toDate.format('yyyy-MM-dd'),
+        accountId: widget.isEmployeeMode
+            ? currentUser.id
+            : bloc.state.selectedAccountId,
+      ),
+    );
   }
 
   void _onAccountChanged(String name) {
@@ -145,7 +148,6 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
             context,
             AppConstants.invoiceReadySuccessMsg,
           );
-   
         }
       },
       child: Scaffold(
@@ -153,7 +155,6 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
         appBar: CustomAppBar(title: AppConstants.accountLedgerLabel),
         body: Column(
           children: [
-        
             BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
               buildWhen: (p, c) =>
                   p.filterCollapsed != c.filterCollapsed ||
@@ -167,14 +168,18 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                 alignment: Alignment.topCenter,
                 child: state.filterCollapsed
                     ? AccountsCompactFilterBar(
-                        label: widget.isEmployeeMode ? '' : _accountController.text,
-                        placeholder: widget.isEmployeeMode ? '' : AppConstants.selectAccount,
+                        label: widget.isEmployeeMode
+                            ? ''
+                            : _accountController.text,
+                        placeholder: widget.isEmployeeMode
+                            ? ''
+                            : AppConstants.selectAccount,
                         fromDate: state.fromDate,
                         toDate: state.toDate,
                         onExpand: () {
-                          context
-                              .read<AccountLedgerBloc>()
-                              .add(const AccountLedgerFilterCollapsed(false));
+                          context.read<AccountLedgerBloc>().add(
+                            const AccountLedgerFilterCollapsed(false),
+                          );
                           if (_scrollController.hasClients) {
                             _scrollController.animateTo(
                               0,
@@ -188,8 +193,9 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                         label: AppConstants.accountBtn,
                         hintText: AppConstants.selectAccountHint,
                         items: state.accounts.map((item) => item.name).toList(),
-                        subtitles:
-                            state.accounts.map((item) => item.group).toList(),
+                        subtitles: state.accounts
+                            .map((item) => item.group)
+                            .toList(),
                         isLoading:
                             state.accountsStatus == ApiStatus.INITIAL ||
                             state.accountsStatus == ApiStatus.LOADING,
