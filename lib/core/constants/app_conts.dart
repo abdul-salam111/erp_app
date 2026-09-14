@@ -308,6 +308,9 @@ class AppConstants {
   static const String inventoryView = 'Inventory View';
   static const String nA = 'N/A';
   static const String noStockDataAvailable = 'No stock data available';
+  static const String noItemsMatchSearch = 'No items match your search';
+  static const String searchStockItemHint = 'Search by product name…';
+  static const String searchPartyNameHint = 'Search by party name…';
   static const String currentStock = 'Current Stock';
   static const String liveInventoryByProduct = 'Live inventory by product';
   static const String qtyWeight = 'Qty / Weight';

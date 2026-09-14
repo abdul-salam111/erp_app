@@ -8,7 +8,6 @@ import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../inventory_exports.dart';
 import '../widgets/inventory_widgets.dart';
 
-
 class InventoryView extends StatelessWidget {
   const InventoryView({super.key});
 
@@ -32,6 +31,7 @@ class _InventoryBody extends StatefulWidget {
 
 class _InventoryBodyState extends State<_InventoryBody> {
   int _stockFilter = 0;
+  late final TextEditingController _searchController;
 
   static const _dateTypes = ['today', 'week', 'month'];
 
@@ -51,11 +51,19 @@ class _InventoryBodyState extends State<_InventoryBody> {
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
+    _searchController.addListener(() => setState(() {}));
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<InventoryBloc>().add(const FetchInventoryData());
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   // ── Formatters ───────────────────────────────────────────────────────────
@@ -138,6 +146,14 @@ class _InventoryBodyState extends State<_InventoryBody> {
             builder: (context, state) {
               final rows = _toStockRows(state.stockReceived);
               final items = _toStockItems(state.currentStock);
+              final query = _searchController.text.trim().toLowerCase();
+              final filteredItems = query.isEmpty
+                  ? items
+                  : items
+                        .where(
+                          (item) => item.name.toLowerCase().contains(query),
+                        )
+                        .toList();
               final hPad = context.pagePadding.left;
 
               return CustomScrollView(
@@ -145,7 +161,10 @@ class _InventoryBodyState extends State<_InventoryBody> {
                   // ── Stock Received ──────────────────────────────────────
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: context.pagePadding.copyWith(top: 16, bottom: 16),
+                      padding: context.pagePadding.copyWith(
+                        top: 16,
+                        bottom: 16,
+                      ),
                       child: StockReceivedSection(
                         rows: rows,
                         selectedFilter: _stockFilter,
@@ -161,16 +180,16 @@ class _InventoryBodyState extends State<_InventoryBody> {
                     ),
                   ),
 
-                  // ── Pinned: Current Stock header card ───────────────────
+                  // ── Pinned: card + search field + column headers ────────
+                  // Combined into a single SliverPersistentHeader — stacking
+                  // multiple separate pinned headers hits a Flutter sliver
+                  // geometry bug once the keyboard shrinks the viewport.
                   SliverPersistentHeader(
                     pinned: true,
-                    delegate: _CurrentStockCardDelegate(hPad: hPad),
-                  ),
-
-                  // ── Pinned: Column headers ──────────────────────────────
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: _ColumnHeaderDelegate(hPad: hPad),
+                    delegate: _StickyStockHeaderDelegate(
+                      hPad: hPad,
+                      searchController: _searchController,
+                    ),
                   ),
 
                   // ── Scrollable rows ─────────────────────────────────────
@@ -184,7 +203,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                         child: const Center(child: CircularProgressIndicator()),
                       ),
                     )
-                  else if (items.isEmpty)
+                  else if (filteredItems.isEmpty)
                     SliverToBoxAdapter(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: hPad),
@@ -192,7 +211,9 @@ class _InventoryBodyState extends State<_InventoryBody> {
                         padding: const EdgeInsets.symmetric(vertical: 32),
                         child: Center(
                           child: Text(
-                            AppConstants.noStockDataAvailable,
+                            query.isEmpty
+                                ? AppConstants.noStockDataAvailable
+                                : AppConstants.noItemsMatchSearch,
                             style: TextStyle(color: context.textSecondary),
                           ),
                         ),
@@ -200,7 +221,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                     )
                   else
                     SliverList.separated(
-                      itemCount: items.length,
+                      itemCount: filteredItems.length,
                       separatorBuilder: (_, __) => Container(
                         margin: EdgeInsets.symmetric(horizontal: hPad),
                         height: 1,
@@ -215,7 +236,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                             right: BorderSide(color: context.border),
                           ),
                         ),
-                        child: CurrentStockTableRow(item: items[i]),
+                        child: CurrentStockTableRow(item: filteredItems[i]),
                       ),
                     ),
 
@@ -253,16 +274,19 @@ class _InventoryBodyState extends State<_InventoryBody> {
   }
 }
 
-// ─── Sticky Delegates ─────────────────────────────────────────────────────────
+// ─── Sticky header (card + search + column headers) ───────────────────────────
 
-class _CurrentStockCardDelegate extends SliverPersistentHeaderDelegate {
+class _StickyStockHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double hPad;
-  const _CurrentStockCardDelegate({required this.hPad});
+  final TextEditingController searchController;
+  const _StickyStockHeaderDelegate({
+    required this.hPad,
+    required this.searchController,
+  });
 
-  static const _green = AppColors.green;
-  // 14 (top pad) + ~35 (row: text taller than icon) + 14 (bottom pad)
-  // + 2 (border) + 8 (gap below card) + 3 (buffer) = 76
-  static const double _height = 76.0;
+  // Card 76 (14 top pad + ~35 row + 14 bottom pad + 2 border + 8 gap + 3
+  // buffer) + search 48 (40 field + 8 gap) + column header 38 = 162.
+  static const double _height = 162.0;
 
   @override
   double get minExtent => _height;
@@ -270,85 +294,119 @@ class _CurrentStockCardDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => _height;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 8),
-        child: Container(
-          decoration: BoxDecoration(
-            color: context.surfaceElevated,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: context.border),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: _green.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Icon(
-                    Icons.warehouse_outlined,
-                    color: _green,
-                    size: 17,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    mainAxisAlignment: .center,
-                    children: [
-                      Text(
-                        AppConstants.currentStock,
-                        style: context.titleSmall.copyWith(fontWeight: .w700),
-                      ),
-                      const SizedBox(height: 1),
-                      Text(
-                        AppConstants.liveInventoryByProduct,
-                        style: TextStyle(fontSize: 10, color: context.textSecondary),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+      child: Column(
+        children: [
+          _CurrentStockCard(hPad: hPad),
+          _StockSearchBar(hPad: hPad, controller: searchController),
+          _ColumnHeaderRow(hPad: hPad),
+        ],
       ),
     );
   }
 
   @override
-  bool shouldRebuild(covariant _CurrentStockCardDelegate old) =>
-      old.hPad != hPad;
+  bool shouldRebuild(covariant _StickyStockHeaderDelegate old) =>
+      old.hPad != hPad || old.searchController != searchController;
 }
 
-class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
+class _CurrentStockCard extends StatelessWidget {
   final double hPad;
-  const _ColumnHeaderDelegate({required this.hPad});
+  const _CurrentStockCard({required this.hPad});
 
-  // 10 (top pad) + ~16 (labelSmall line height) + 10 (bottom pad) + 1 (divider) + 1 (buffer) = 38
-  static const double _height = 38.0;
-
-  @override
-  double get minExtent => _height;
-  @override
-  double get maxExtent => _height;
+  static const _green = AppColors.green;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.surfaceElevated,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: context.border),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: _green.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.warehouse_outlined,
+                  color: _green,
+                  size: 17,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  mainAxisAlignment: .center,
+                  children: [
+                    Text(
+                      AppConstants.currentStock,
+                      style: context.titleSmall.copyWith(fontWeight: .w700),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      AppConstants.liveInventoryByProduct,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StockSearchBar extends StatelessWidget {
+  final double hPad;
+  final TextEditingController controller;
+  const _StockSearchBar({required this.hPad, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 8),
+      child: InventorySearchField(
+        controller: controller,
+        hintText: AppConstants.searchStockItemHint,
+      ),
+    );
+  }
+}
+
+class _ColumnHeaderRow extends StatelessWidget {
+  final double hPad;
+  const _ColumnHeaderRow({required this.hPad});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: hPad),
       decoration: BoxDecoration(
@@ -416,7 +474,4 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
       ),
     );
   }
-
-  @override
-  bool shouldRebuild(covariant _ColumnHeaderDelegate old) => old.hPad != hPad;
 }

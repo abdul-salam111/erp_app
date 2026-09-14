@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import 'inventory_models.dart';
+import 'inventory_search_field.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
-class StockReceivedSection extends StatelessWidget {
+class StockReceivedSection extends StatefulWidget {
   final List<StockRow> rows;
   final int selectedFilter;
   final ValueChanged<int> onFilterTap;
@@ -18,10 +19,41 @@ class StockReceivedSection extends StatelessWidget {
     this.isLoading = false,
   });
 
-  static const _filters = [AppConstants.todayLabel, AppConstants.thisWeek, AppConstants.thisMonth];
+  @override
+  State<StockReceivedSection> createState() => _StockReceivedSectionState();
+}
+
+class _StockReceivedSectionState extends State<StockReceivedSection> {
+  late final TextEditingController _searchController;
+
+  static const _filters = [
+    AppConstants.todayLabel,
+    AppConstants.thisWeek,
+    AppConstants.thisMonth,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    _searchController.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final query = _searchController.text.trim().toLowerCase();
+    final rows = query.isEmpty
+        ? widget.rows
+        : widget.rows
+              .where((row) => row.name.toLowerCase().contains(query))
+              .toList();
+
     return Column(
       crossAxisAlignment: .start,
       children: [
@@ -67,7 +99,10 @@ class StockReceivedSection extends StatelessWidget {
                       const SizedBox(height: 1),
                       Text(
                         AppConstants.incomingStockByPartyItem,
-                        style: TextStyle(fontSize: 10, color: context.textSecondary),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: context.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -77,6 +112,12 @@ class StockReceivedSection extends StatelessWidget {
           ),
         ),
 
+        const SizedBox(height: 8),
+
+        InventorySearchField(
+          controller: _searchController,
+          hintText: AppConstants.searchPartyNameHint,
+        ),
 
         const SizedBox(height: 8),
 
@@ -108,13 +149,13 @@ class StockReceivedSection extends StatelessWidget {
                   ),
                   child: Row(
                     children: List.generate(_filters.length, (i) {
-                      final sel = i == selectedFilter;
+                      final sel = i == widget.selectedFilter;
                       return Padding(
                         padding: EdgeInsets.only(
                           right: i < _filters.length - 1 ? 6 : 0,
                         ),
                         child: GestureDetector(
-                          onTap: () => onFilterTap(i),
+                          onTap: () => widget.onFilterTap(i),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
                             padding: const EdgeInsets.symmetric(
@@ -138,8 +179,7 @@ class StockReceivedSection extends StatelessWidget {
                                 color: sel
                                     ? context.primary
                                     : context.textSecondary,
-                                fontWeight:
-                                    sel ? .w600 : .w500,
+                                fontWeight: sel ? .w600 : .w500,
                               ),
                             ),
                           ),
@@ -150,26 +190,28 @@ class StockReceivedSection extends StatelessWidget {
                 ),
                 Divider(height: 1, thickness: 1, color: context.border),
                 Expanded(
-                  child: isLoading && rows.isEmpty
+                  child: widget.isLoading && rows.isEmpty
                       ? const Center(child: CircularProgressIndicator())
                       : rows.isEmpty
-                          ? Center(
-                              child: Text(
-                                AppConstants.noStockReceived,
-                                style: TextStyle(color: context.textSecondary),
-                              ),
-                            )
-                          : ListView.separated(
-                              padding: EdgeInsets.zero,
-                              itemCount: rows.length,
-                              separatorBuilder: (_, __) => Divider(
-                                height: 1,
-                                thickness: 1,
-                                color: context.border,
-                              ),
-                              itemBuilder: (context, i) =>
-                                  _StockReceivedTile(row: rows[i]),
-                            ),
+                      ? Center(
+                          child: Text(
+                            query.isEmpty
+                                ? AppConstants.noStockReceived
+                                : AppConstants.noItemsMatchSearch,
+                            style: TextStyle(color: context.textSecondary),
+                          ),
+                        )
+                      : ListView.separated(
+                          padding: EdgeInsets.zero,
+                          itemCount: rows.length,
+                          separatorBuilder: (_, __) => Divider(
+                            height: 1,
+                            thickness: 1,
+                            color: context.border,
+                          ),
+                          itemBuilder: (context, i) =>
+                              _StockReceivedTile(row: rows[i]),
+                        ),
                 ),
               ],
             ),
