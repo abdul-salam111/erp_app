@@ -32,7 +32,6 @@ class AccountsYearCard extends StatefulWidget {
 }
 
 class _AccountsYearCardState extends State<AccountsYearCard> {
-  bool _expanded = true;
   int _visibleCount = _pageSize;
   static const int _pageSize = 20;
 
@@ -116,101 +115,75 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
       ),
       child: Column(
         children: [
-          GestureDetector(
-            onTap: () => setState(() => _expanded = !_expanded),
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-              decoration: BoxDecoration(
-                color: AppColors.grey50,
-                borderRadius: _expanded
-                    ? const BorderRadius.vertical(top: Radius.circular(10))
-                    : .circular(10),
-                border: _expanded
-                    ? Border(bottom: BorderSide(color: context.border))
-                    : null,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.finYearName,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            decoration: BoxDecoration(
+              color: AppColors.grey50,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              border: Border(bottom: BorderSide(color: context.border)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.finYearName,
+                    style: context.bodySmall.copyWith(
+                      fontWeight: .w600,
+                      color: context.textPrimary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: .end,
+                  children: [
+                    Text(
+                      formatAccountsBalance(widget.balance),
                       style: context.bodySmall.copyWith(
-                        fontWeight: .w600,
+                        fontWeight: .w700,
                         color: context.textPrimary,
                         fontSize: 14,
                       ),
                     ),
-                  ),
-                  Column(
-                    crossAxisAlignment: .end,
-                    children: [
-                      Text(
-                        formatAccountsBalance(widget.balance),
-                        style: context.bodySmall.copyWith(
-                          fontWeight: .w700,
-                          color: context.textPrimary,
-                          fontSize: 14,
+                    const SizedBox(height: 3),
+                    Row(
+                      children: [
+                        Text(
+                          'Rs. ${widget.ttlDebit.formatPrice()} Dr',
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 11,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 3),
-                      Row(
-                        children: [
-                          Text(
-                            'Rs. ${widget.ttlDebit.formatPrice()} Dr',
-                            style: context.labelSmall.copyWith(
-                              color: context.textSecondary,
-                              fontSize: 11,
-                            ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Rs. ${widget.ttlCredit.formatPrice()} Cr',
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 11,
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Rs. ${widget.ttlCredit.formatPrice()} Cr',
-                            style: context.labelSmall.copyWith(
-                              color: context.textSecondary,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 6),
-                  AnimatedRotation(
-                    turns: _expanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    child: Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      size: 20,
-                      color: AppColors.grey400,
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           ),
-          AnimatedSize(
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeInOutCubic,
-            alignment: .topCenter,
-            child: _expanded
-                ? hasContent
-                      ? Column(
-                          crossAxisAlignment: .start,
-                          children: _buildPagedRows(visibleEntries, context),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            AppConstants.noLedgerDataAvailable,
-                            style: context.bodySmall.copyWith(
-                              color: context.textSecondary,
-                            ),
-                          ),
-                        )
-                : const SizedBox.shrink(),
-          ),
+          hasContent
+              ? Column(
+                  crossAxisAlignment: .start,
+                  children: _buildPagedRows(visibleEntries, context),
+                )
+              : Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    AppConstants.noLedgerDataAvailable,
+                    style: context.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ),
         ],
       ),
     );
