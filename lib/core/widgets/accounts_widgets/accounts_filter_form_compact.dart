@@ -117,6 +117,7 @@ class AccountsFilterFormCompact extends StatelessWidget {
                     isOutlined: true,
                     size: const Size.fromHeight(40),
                     backgroundColor: context.primary,
+                    borderColor: context.primary.withValues(alpha: 0.12),
                   ),
                 ),
                 const SizedBox(width: 10),
