@@ -175,7 +175,7 @@ class _QACard extends StatelessWidget {
                 style: context.labelSmall.copyWith(
                   color: item.color,
                   fontWeight: .w600,
-                  fontSize: 10,
+                  fontSize: 12,
                 ),
                 textAlign: .center,
                 maxLines: 2,
