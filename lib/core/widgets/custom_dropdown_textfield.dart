@@ -269,74 +269,74 @@ class _DropdownList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = dropdownBackgroundColor ?? context.surfaceElevated;
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 320),
-      decoration: BoxDecoration(
-        color: bg,
-        border: Border.all(color: context.border),
+    return Material(
+      color: bg,
+      shadowColor: context.shadow,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6),
-        boxShadow: [
-          BoxShadow(
-            color: context.shadow,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        side: BorderSide(color: context.border),
       ),
-      child: items.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  'No items found',
-                  style:
-                      context.bodySmall.copyWith(color: context.textSecondary),
-                ),
-              ),
-            )
-          : ListView.separated(
-              shrinkWrap: true,
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              itemCount: items.length,
-              separatorBuilder: (_, __) => Divider(
-                height: 1,
-                thickness: 1,
-                color: context.divider,
-              ),
-              itemBuilder: (_, index) {
-                final (label, subtitle) = items[index];
-                final isSelected = controller.text == label;
-                return ListTile(
-                  dense: subtitle == null,
-                  visualDensity: subtitle != null
-                      ? VisualDensity.standard
-                      : VisualDensity.compact,
-                  selected: isSelected,
-                  selectedTileColor: context.primary.withAlpha(10),
-                  title: Text(
-                    label,
-                    style: context.bodyMedium.copyWith(
-                      color: isSelected ? context.primary : context.textPrimary,
-                      fontWeight:
-                          isSelected ? .w600 : .normal,
-                    ),
+      clipBehavior: .antiAlias,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 320),
+        child: items.isEmpty
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    'No items found',
+                    style: context.bodySmall.copyWith(
+                        color: context.textSecondary),
                   ),
-                  subtitle: subtitle != null
-                      ? Text(
-                          subtitle,
-                          style: context.labelSmall.copyWith(
-                            color: context.textSecondary,
-                            fontSize: 11,
-                          ),
-                        )
-                      : null,
-                  trailing: isSelected
-                      ? Icon(Icons.check, color: context.primary, size: 20)
-                      : null,
-                  onTap: () => onSelect(label),
-                );
-              },
-            ),
+                ),
+              )
+            : ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                itemCount: items.length,
+                separatorBuilder: (_, __) => Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: context.divider,
+                ),
+                itemBuilder: (_, index) {
+                  final (label, subtitle) = items[index];
+                  final isSelected = controller.text == label;
+                  return ListTile(
+                    dense: true,
+                    visualDensity: const VisualDensity(vertical: -4),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12),
+                    minVerticalPadding: 4,
+                    selected: isSelected,
+                    selectedTileColor: context.primary.withAlpha(10),
+                    title: Text(
+                      label,
+                      style: context.bodyMedium.copyWith(
+                        color:
+                            isSelected ? context.primary : context.textPrimary,
+                        fontWeight: isSelected ? .w600 : .normal,
+                        fontSize: 13,
+                      ),
+                    ),
+                    subtitle: subtitle != null
+                        ? Text(
+                            subtitle,
+                            style: context.labelSmall.copyWith(
+                              color: context.textSecondary,
+                              fontSize: 10,
+                            ),
+                          )
+                        : null,
+                    trailing: isSelected
+                        ? Icon(Icons.check, color: context.primary, size: 18)
+                        : null,
+                    onTap: () => onSelect(label),
+                  );
+                },
+              ),
+      ),
     );
   }
 }
