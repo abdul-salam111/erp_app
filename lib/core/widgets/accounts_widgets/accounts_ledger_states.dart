@@ -14,7 +14,7 @@ class AccountsIdleState extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          Icon(Iconsax.document_text, size: 48, color: AppColors.grey300),
+          Icon(Iconsax.document_text, size: 48, color: context.textDisabled),
           const SizedBox(height: 12),
           Text(
             title ?? AppConstants.noStatementsYet,
@@ -26,7 +26,7 @@ class AccountsIdleState extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: context.bodySmall.copyWith(color: AppColors.grey400),
+            style: context.bodySmall.copyWith(color: context.textSecondary),
           ),
         ],
       ),
@@ -44,7 +44,7 @@ class AccountsEmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          Icon(Icons.search_off_rounded, size: 48, color: AppColors.grey300),
+          Icon(Icons.search_off_rounded, size: 48, color: context.textDisabled),
           const SizedBox(height: 12),
           Text(
             title ?? AppConstants.noRecordsFound,
@@ -56,7 +56,7 @@ class AccountsEmptyState extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             AppConstants.trySelectingADifferentDate,
-            style: context.bodySmall.copyWith(color: AppColors.grey400),
+            style: context.bodySmall.copyWith(color: context.textSecondary),
           ),
         ],
       ),
@@ -79,7 +79,7 @@ class AccountsErrorBody extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          Icon(Icons.error_outline_rounded, size: 48, color: AppColors.grey300),
+          Icon(Icons.error_outline_rounded, size: 48, color: context.textDisabled),
           const SizedBox(height: 12),
           Text(
             message,

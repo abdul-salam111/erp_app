@@ -143,12 +143,12 @@ class _SearchBar extends StatelessWidget {
       child: Container(
         height: 42,
         decoration: BoxDecoration(
-          color: context.white,
+          color: context.surfaceElevated,
           borderRadius: .circular(8),
           border: Border.all(color: context.border),
           boxShadow: [
             BoxShadow(
-              color: context.black.withValues(alpha: 0.04),
+              color: context.shadow,
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),

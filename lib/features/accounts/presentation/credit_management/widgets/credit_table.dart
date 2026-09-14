@@ -33,13 +33,13 @@ class CreditTable extends StatelessWidget {
       child: Column(
         children: [
           const _TableHeader(),
-          Divider(height: 1, thickness: 1, color: AppColors.grey200),
+          Divider(height: 1, thickness: 1, color: context.divider),
           Expanded(
             child: ListView.separated(
               controller: scrollController,
               itemCount: items.length,
               separatorBuilder: (_, __) =>
-                  Divider(height: 1, thickness: 1, color: AppColors.grey100),
+                  Divider(height: 1, thickness: 1, color: context.divider),
               itemBuilder: (_, i) => _CreditTableRow(item: items[i]),
             ),
           ),
@@ -157,7 +157,7 @@ class _CreditTableRowState extends State<_CreditTableRow> {
                           style: context.bodySmall.copyWith(
                             fontWeight: .w600,
                             fontSize: 13,
-                            color: AppColors.grey700,
+                            color: context.textPrimary,
                           ),
                           maxLines: 1,
                           overflow: .ellipsis,
@@ -345,7 +345,7 @@ class _CrBadge extends StatelessWidget {
       child: Text(
         rating,
         style: context.labelSmall.copyWith(
-          color: context.black,
+          color: context.textPrimary,
           fontSize: 11,
           fontWeight: .w700,
         ),

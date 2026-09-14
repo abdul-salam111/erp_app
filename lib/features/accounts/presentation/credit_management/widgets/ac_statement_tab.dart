@@ -210,7 +210,7 @@ class _CompactDateBar extends StatelessWidget {
     return GestureDetector(
       onTap: onExpand,
       child: Container(
-        color: context.grey100,
+        color: context.surface,
         padding: EdgeInsets.fromLTRB(
           context.pagePadding.left,
           10,
@@ -264,7 +264,7 @@ class _DateFilterForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.white,
+      color: context.surfaceElevated,
       padding: EdgeInsets.fromLTRB(
         context.pagePadding.left,
         12,
@@ -349,7 +349,7 @@ class _DateTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: context.grey50,
+          color: context.surface,
           borderRadius: .circular(6),
           border: Border.all(color: context.border),
         ),

@@ -94,7 +94,7 @@ class _NewOrdersShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(12),
         border: Border.all(color: context.border),
         boxShadow: [
@@ -148,7 +148,7 @@ class _EmptyOrders extends StatelessWidget {
       width: double.infinity,
       padding: .symmetric(vertical: 36),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(12),
         border: Border.all(color: context.border),
       ),
@@ -185,7 +185,7 @@ class _OrdersList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(12),
         border: Border.all(color: context.border),
         boxShadow: [

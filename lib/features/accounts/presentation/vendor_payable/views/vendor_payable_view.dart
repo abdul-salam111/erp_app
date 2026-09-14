@@ -119,7 +119,7 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
         }
       },
       child: Scaffold(
-        backgroundColor: context.grey50,
+        backgroundColor: context.surface,
         appBar: CustomAppBar(title: AppConstants.vendorPayableLabel),
         body: NotificationListener<ScrollNotification>(
           onNotification: _handleScrollNotification,
@@ -158,7 +158,7 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
               ),
               Expanded(
                 child: ColoredBox(
-                  color: context.white,
+                  color: context.surfaceElevated,
                   child: BlocBuilder<VendorPayableBloc, VendorPayableState>(
                     buildWhen: (previous, current) =>
                         previous.apiStatus != current.apiStatus ||

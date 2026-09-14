@@ -73,6 +73,20 @@ extension AppColorExtension on BuildContext {
   Color get border => isDark ? AppColors.borderDark : AppColors.borderLight;
   Color get divider => isDark ? AppColors.dividerDark : AppColors.dividerLight;
 
+  // Flat surface fills (theme-aware)
+  Color get tableRowAlt =>
+      isDark ? AppColors.tableRowAltDark : AppColors.tableRowAlt;
+  Color get shimmerBase =>
+      isDark ? AppColors.shimmerBaseDark : AppColors.shimmerBase;
+  Color get surfaceHeader =>
+      isDark ? AppColors.surfaceHeaderDark : AppColors.surfaceHeader;
+  Color get loginBackground =>
+      isDark ? AppColors.loginBackgroundDark : AppColors.loginBackground;
+  Color get debitContainer =>
+      isDark ? AppColors.debitContainerDark : AppColors.debitContainer;
+  Color get creditContainer =>
+      isDark ? AppColors.creditContainerDark : AppColors.creditContainer;
+
   // Grey Scale
   Color get grey50 => AppColors.grey50;
   Color get grey100 => AppColors.grey100;
@@ -91,7 +105,7 @@ extension AppColorExtension on BuildContext {
   Color get transparent => AppColors.transparent;
   Color get overlay => isDark ? AppColors.overlayDark : AppColors.overlayLight;
   Color get scrim => AppColors.scrim;
-  Color get shadow => AppColors.shadow;
+  Color get shadow => isDark ? AppColors.shadowDark : AppColors.shadow;
 
   // Theme check
   bool get isDark => Theme.of(this).brightness == .dark;

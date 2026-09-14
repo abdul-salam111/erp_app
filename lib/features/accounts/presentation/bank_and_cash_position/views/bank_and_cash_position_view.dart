@@ -96,7 +96,7 @@ class _BankAndCashPositionBodyState extends State<_BankAndCashPositionBody> {
             .fold(0.0, (sum, bankCashItem) => sum + bankCashItem.amount);
 
         return Scaffold(
-          backgroundColor: context.grey50,
+          backgroundColor: context.surface,
           appBar: CustomAppBar(title: AppConstants.bankCashPositionLabel),
           body: Column(
             crossAxisAlignment: .stretch,
@@ -107,7 +107,7 @@ class _BankAndCashPositionBodyState extends State<_BankAndCashPositionBody> {
                 child: _collapsed
                     ? const SizedBox.shrink()
                     : ColoredBox(
-                        color: context.white,
+                        color: context.surfaceElevated,
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: isLoading

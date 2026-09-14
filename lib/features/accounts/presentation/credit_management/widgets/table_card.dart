@@ -24,9 +24,9 @@ class TableCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
-        border: .all(color: AppColors.grey200),
+        border: .all(color: context.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.04),
@@ -64,7 +64,7 @@ class TableCard extends StatelessWidget {
           for (int i = 0; i < content.length; i++) ...[
             content[i],
             if (i < content.length - 1)
-              Divider(height: 1, thickness: 1, color: AppColors.grey100),
+              Divider(height: 1, thickness: 1, color: context.divider),
           ],
           const SizedBox(height: 4),
         ],

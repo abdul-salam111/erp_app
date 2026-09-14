@@ -23,7 +23,7 @@ class CurrentStockSection extends StatelessWidget {
         // ── Header card ───────────────────────────────────────────────────────
         Container(
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: .circular(14),
             border: .all(color: context.border),
             boxShadow: [
@@ -62,7 +62,7 @@ class CurrentStockSection extends StatelessWidget {
                       const SizedBox(height: 1),
                       Text(
                         AppConstants.liveInventoryByProduct,
-                        style: TextStyle(fontSize: 10, color: context.grey400),
+                        style: TextStyle(fontSize: 10, color: context.textSecondary),
                       ),
                     ],
                   ),
@@ -77,7 +77,7 @@ class CurrentStockSection extends StatelessWidget {
         // ── Table card ───────────────────────────────────────────────────────
         Container(
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: .circular(14),
             border: .all(color: context.border),
             boxShadow: [
@@ -94,7 +94,7 @@ class CurrentStockSection extends StatelessWidget {
               children: [
                 // ── Column headers ──
                 Container(
-                  color: AppColors.surfaceHeader,
+                  color: context.surfaceHeader,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
                     vertical: 10,
@@ -106,7 +106,7 @@ class CurrentStockSection extends StatelessWidget {
                         child: Text(
                           AppConstants.productLabel,
                           style: context.labelSmall.copyWith(
-                            color: AppColors.grey900,
+                            color: context.textPrimary,
                             fontWeight: .w700,
                           ),
                         ),
@@ -117,7 +117,7 @@ class CurrentStockSection extends StatelessWidget {
                           AppConstants.qtyWeight,
                           textAlign: .center,
                           style: context.labelSmall.copyWith(
-                            color: AppColors.grey900,
+                            color: context.textPrimary,
                             fontWeight: .w700,
                           ),
                         ),
@@ -128,7 +128,7 @@ class CurrentStockSection extends StatelessWidget {
                           AppConstants.total,
                           textAlign: .end,
                           style: context.labelSmall.copyWith(
-                            color: AppColors.grey900,
+                            color: context.textPrimary,
                             fontWeight: .w700,
                           ),
                         ),
@@ -144,12 +144,12 @@ class CurrentStockSection extends StatelessWidget {
                     child: Center(child: CircularProgressIndicator()),
                   )
                 else if (items.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 32),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32),
                     child: Center(
                       child: Text(
                         AppConstants.noStockDataAvailable,
-                        style: TextStyle(color: AppColors.grey400),
+                        style: TextStyle(color: context.textSecondary),
                       ),
                     ),
                   )
@@ -207,7 +207,7 @@ class CurrentStockTableRow extends StatelessWidget {
                 Text(
                   item.category,
                   style: context.labelSmall.copyWith(
-                    color:context.grey300,
+                    color:context.textDisabled,
                     fontSize: 10,
                   ),
                   maxLines: 1,
@@ -233,7 +233,7 @@ class CurrentStockTableRow extends StatelessWidget {
                   item.weight,
                   textAlign: .center,
                   style: context.labelSmall.copyWith(
-                    color:context.grey300,
+                    color:context.textDisabled,
                     fontSize: 10,
                   ),
                 ),

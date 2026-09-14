@@ -9,8 +9,7 @@ import '../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../core/debug/cubit/api_debug_state.dart';
 import '../../../../core/di/di_exports.dart';
 import '../../../../core/services/current_user.dart';
-import '../../../../core/theme/colors.dart';
-import '../../../../core/theme/theme_utils.dart';
+import '../../../../core/theme/theme_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../routes/route_names.dart';
@@ -128,6 +127,25 @@ class _ProfileBody extends StatelessWidget {
                         curve: Curves.easeOutCubic,
                       )
                       .fadeIn(delay: 140.ms, duration: 320.ms),
+
+                  const SizedBox(height: 14),
+
+                  BlocBuilder<ThemeBloc, ThemeState>(
+                    builder: (context, themeState) => _CardContainer(
+                      padding: EdgeInsets.zero,
+                      child: SwitchListTile(
+                        title: const Text('Dark Mode'),
+                        value: themeState.isDarkMode,
+                        onChanged: (_) =>
+                            context.read<ThemeBloc>().add(ToggleTheme()),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                    ),
+                  ),
 
                   const SizedBox(height: 14),
 
@@ -494,7 +512,7 @@ class _SectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(16),
         border: Border.all(color: context.border),
         boxShadow: [
@@ -567,7 +585,7 @@ class _CardContainer extends StatelessWidget {
       // Material (not a color on the Container above) so ListTile/InkWell
       // descendants (e.g. SwitchListTile) paint their splashes correctly.
       child: Material(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(16),
         clipBehavior: .antiAlias,
         child: Padding(
@@ -606,7 +624,7 @@ class _InfoRow extends StatelessWidget {
                 width: 34,
                 height: 34,
                 decoration: BoxDecoration(
-                  color: context.grey50,
+                  color: context.surface,
                   borderRadius: .circular(9),
                 ),
                 child: Icon(icon, size: 15, color: context.textSecondary),
@@ -661,7 +679,7 @@ class _ActionsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(16),
         border: Border.all(color: context.border),
         boxShadow: [

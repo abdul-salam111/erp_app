@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/colors.dart';
+import '../../../../../core/theme/theme_exports.dart';
 
 enum OvertimeType { preApproved, emergency, weekend }
 
@@ -28,10 +28,10 @@ extension OvertimeStatusX on OvertimeStatus {
         OvertimeStatus.paid     => AppColors.primary,
       };
 
-  Color get bgColor => switch (this) {
+  Color bgColor(BuildContext context) => switch (this) {
         OvertimeStatus.pending  => AppColors.yellow.withValues(alpha: 0.15),
-        OvertimeStatus.approved => AppColors.creditContainer,
-        OvertimeStatus.rejected => AppColors.debitContainer,
+        OvertimeStatus.approved => context.creditContainer,
+        OvertimeStatus.rejected => context.debitContainer,
         OvertimeStatus.paid     => AppColors.primaryLight.withValues(alpha: 0.15),
       };
 }

@@ -360,7 +360,7 @@ class _Toolbar extends StatelessWidget {
                 prefixIcon: Icon(
                   Iconsax.search_normal_1,
                   size: 16,
-                  color: context.grey400,
+                  color: context.textSecondary,
                 ),
                 contentPadding: .zero,
                 filled: true,
@@ -456,7 +456,7 @@ class _TableHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: context.grey50,
+        color: context.surfaceHeader,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
       ),
       child: Row(
@@ -498,7 +498,7 @@ class _TableRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.surface,
           border: Border(bottom: BorderSide(color: context.divider)),
         ),
         child: Row(

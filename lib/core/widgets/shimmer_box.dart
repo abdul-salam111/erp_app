@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mantic_erp_app/core/theme/colors.dart';
+import 'package:mantic_erp_app/core/theme/theme_exports.dart';
 
 /// A self-contained animated shimmer placeholder. No external package needed.
 class ShimmerBox extends StatefulWidget {
@@ -53,10 +53,10 @@ class _ShimmerBoxState extends State<ShimmerBox>
           gradient: LinearGradient(
             begin: Alignment(_anim.value - 1, 0),
             end:   Alignment(_anim.value + 1, 0),
-            colors: const [
-              AppColors.shimmerBase,
-              AppColors.surfaceHeader,
-              AppColors.shimmerBase,
+            colors: [
+              context.shimmerBase,
+              context.surfaceHeader,
+              context.shimmerBase,
             ],
           ),
         ),

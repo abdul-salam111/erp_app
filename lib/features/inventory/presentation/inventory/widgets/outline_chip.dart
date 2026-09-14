@@ -18,7 +18,7 @@ class InventoryOutlineChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: context.grey50,
+          color: context.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: context.border),
         ),

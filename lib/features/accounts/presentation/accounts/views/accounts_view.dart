@@ -124,7 +124,7 @@ class _AccountsBodyState extends State<_AccountsBody>
       },
       child: UnfocusWrapper(
         child: Scaffold(
-          backgroundColor: context.white,
+          backgroundColor: context.background,
           appBar: CustomAppBar(title: AppConstants.accountsLabel),
         
           body: Column(
@@ -133,7 +133,7 @@ class _AccountsBodyState extends State<_AccountsBody>
               if (featureAccess.has(SystemPermissionKeys.recoveryDue)) ...[
               // ── Sticky filter badges ──────────────────────────────────────
               Container(
-                color: context.white,
+                color: context.background,
                 padding: EdgeInsets.symmetric(
                   horizontal: context.pagePadding.left,
                   vertical: 10,
@@ -185,7 +185,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                   ),
                 ),
               ),
-              const Divider(height: 1, thickness: 1, color: AppColors.grey200),
+              Divider(height: 1, thickness: 1, color: context.divider),
               ],
               // ── Scrollable content ────────────────────────────────────────
               Expanded(
@@ -321,10 +321,10 @@ class _AccountsBodyState extends State<_AccountsBody>
                   opacity: _fades[2],
                   child: SlideTransition(
                     position: _slides[2],
-                    child: const Divider(
+                    child: Divider(
                       height: 1,
                       thickness: 1,
-                      color: AppColors.grey200,
+                      color: context.divider,
                     ),
                   ),
                 ),
@@ -357,7 +357,7 @@ class _RecoveryListSheet extends StatelessWidget {
         maxHeight: MediaQuery.sizeOf(context).height * 0.88,
       ),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: const .vertical(top: Radius.circular(24)),
       ),
       child: Column(
@@ -404,7 +404,7 @@ class _RecoveryListSheet extends StatelessWidget {
                   child: Container(
                     padding: .all(6),
                     decoration: BoxDecoration(
-                      color: context.grey100,
+                      color: context.surface,
                       shape: .circle,
                     ),
                     child: Icon(
@@ -418,7 +418,7 @@ class _RecoveryListSheet extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          const Divider(height: 1, thickness: 1, color: AppColors.grey200),
+          Divider(height: 1, thickness: 1, color: context.divider),
           // ── Fixed area: filter chips + search bar (never scrolls) ────────
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -516,7 +516,7 @@ class _RecoveryFilterBadge extends StatelessWidget {
           color: selected ? context.primary : AppColors.transparent,
           borderRadius: .circular(20),
           border: Border.all(
-            color: selected ? context.primary : AppColors.grey200,
+            color: selected ? context.primary : context.border,
           ),
         ),
         child: Text(

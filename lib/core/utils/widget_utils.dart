@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mantic_erp_app/core/theme/colors.dart';
+import 'package:mantic_erp_app/core/theme/theme_exports.dart';
 import 'dart:async';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -626,7 +626,7 @@ class EmptyStateWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: .center,
         children: [
-          if (icon != null) Icon(icon, size: iconSize, color: AppColors.grey400),
+          if (icon != null) Icon(icon, size: iconSize, color: context.textSecondary),
           const SizedBox(height: 16),
           Text(
             title,
@@ -639,7 +639,7 @@ class EmptyStateWidget extends StatelessWidget {
               subtitle!,
               style: Theme.of(
                 context,
-              ).textTheme.bodyMedium?.copyWith(color: AppColors.grey400),
+              ).textTheme.bodyMedium?.copyWith(color: context.textSecondary),
               textAlign: .center,
             ),
           ],
@@ -696,16 +696,16 @@ class ErrorStateWidget extends StatelessWidget {
 class ShimmerLoading extends StatefulWidget {
   final Widget child;
   final bool isLoading;
-  final Color baseColor;
-  final Color highlightColor;
+  final Color? baseColor;
+  final Color? highlightColor;
   final Duration duration;
 
   const ShimmerLoading({
     super.key,
     required this.child,
     required this.isLoading,
-    this.baseColor = AppColors.shimmerBase,
-    this.highlightColor = AppColors.surfaceHeader,
+    this.baseColor,
+    this.highlightColor,
     this.duration = const Duration(milliseconds: 1500),
   });
 
@@ -734,6 +734,9 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
   Widget build(BuildContext context) {
     if (!widget.isLoading) return widget.child;
 
+    final baseColor = widget.baseColor ?? context.shimmerBase;
+    final highlightColor = widget.highlightColor ?? context.surfaceHeader;
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -742,9 +745,9 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
           shaderCallback: (bounds) {
             return LinearGradient(
               colors: [
-                widget.baseColor,
-                widget.highlightColor,
-                widget.baseColor,
+                baseColor,
+                highlightColor,
+                baseColor,
               ],
               stops: const [0.0, 0.5, 1.0],
               begin: Alignment.topLeft,

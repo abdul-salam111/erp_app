@@ -84,7 +84,7 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.grey100,
+                color: context.surface,
                 border: Border(top: BorderSide(color: context.border)),
               ),
               child: Text(
@@ -113,7 +113,7 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(10),
       ),
       child: Column(
@@ -121,7 +121,7 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
           Container(
             padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: AppColors.grey50,
+              color: context.surface,
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(10),
               ),
@@ -207,7 +207,7 @@ class _TotalChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
         border: .all(color: context.border),
       ),

@@ -179,7 +179,7 @@ class _QuickActionCard extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: context.surfaceElevated,
                 shape: .circle,
                 boxShadow: [
                   BoxShadow(

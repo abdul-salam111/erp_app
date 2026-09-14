@@ -43,7 +43,7 @@ class _AttendanceBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.grey50,
+      backgroundColor: context.surface,
       appBar: CustomAppBar(title: 'Attendance'),
       body: BlocBuilder<AttendanceBloc, AttendanceState>(
         builder: (context, state) {
@@ -115,7 +115,7 @@ class _AttendanceCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(16),
         border: Border.all(color: context.border),
         boxShadow: [

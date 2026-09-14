@@ -29,7 +29,7 @@ class AttendanceCalendar extends StatelessWidget {
         children: [
           // Day-of-week header
           Container(
-            color: context.grey50,
+            color: context.surface,
             child: Row(
               children: _weekdays.map((d) {
                 return Expanded(

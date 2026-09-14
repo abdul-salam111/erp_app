@@ -34,7 +34,7 @@ class FilterForm extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: context.white,
+          color: context.surfaceElevated,
           borderRadius: .circular(8),
           border: .all(color: context.border),
         ),
@@ -128,7 +128,7 @@ class _DateTile extends StatelessWidget {
             Icon(
               Icons.keyboard_arrow_down_rounded,
               size: 18,
-              color: context.grey500,
+              color: context.textSecondary,
             ),
           ],
         ),

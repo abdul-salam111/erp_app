@@ -187,7 +187,7 @@ class _TableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.grey200,
+        color: context.surfaceHeader,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(0),
           topRight: Radius.circular(0),
@@ -235,7 +235,7 @@ class _TableRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isAlt ? AppColors.tableRowAlt : AppColors.white,
+      color: isAlt ? context.tableRowAlt : context.surfaceElevated,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [

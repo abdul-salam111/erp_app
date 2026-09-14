@@ -6,7 +6,7 @@ import '../../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/services/session_manager.dart';
-import '../../../../../core/theme/colors.dart';
+import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../../../routes/route_names.dart';
@@ -28,7 +28,7 @@ class _SignInViewState extends State<SignInView> {
       create: (_) => sl<SignInBloc>(),
       child: UnfocusWrapper(
         child: Scaffold(
-          backgroundColor: AppColors.loginBackground,
+          backgroundColor: context.loginBackground,
           body: BlocListener<SignInBloc, SignInState>(
             listenWhen: (previous, current) =>
                 previous.apiStatus != current.apiStatus,
@@ -185,7 +185,7 @@ class _LoginCardState extends State<_LoginCard> {
         Responsive.value<double>(context, phone: 24, tablet: 32, ipad: 40),
       ),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: context.surfaceElevated,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
@@ -211,7 +211,7 @@ class _LoginCardState extends State<_LoginCard> {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: AppColors.loginBackground,
+                  color: context.loginBackground,
                   borderRadius: BorderRadius.circular(18),
                 ),
                 padding: const EdgeInsets.all(10),
@@ -221,29 +221,29 @@ class _LoginCardState extends State<_LoginCard> {
             const SizedBox(height: 20),
             GestureDetector(
               onTap: _onTitleTap,
-              child: const Text(
+              child: Text(
                 'Mantic ERP',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: .w800,
-                  color: AppColors.navyDark,
+                  color: context.textPrimary,
                   letterSpacing: -0.5,
                 ),
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
+            Text(
               'Sign in to your account',
               style: TextStyle(
                 fontSize: 13,
-                color: AppColors.grey500,
+                color: context.textSecondary,
               ),
             ),
             const SizedBox(height: 28),
             Row(
               children: [
                 Expanded(
-                  child: Container(height: 1, color: AppColors.grey200),
+                  child: Container(height: 1, color: context.divider),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -257,7 +257,7 @@ class _LoginCardState extends State<_LoginCard> {
                   ),
                 ),
                 Expanded(
-                  child: Container(height: 1, color: AppColors.grey200),
+                  child: Container(height: 1, color: context.divider),
                 ),
               ],
             ),
@@ -311,11 +311,11 @@ class _LoginCardState extends State<_LoginCard> {
               },
             ),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Powered by Mantic Software',
               style: TextStyle(
                 fontSize: 11,
-                color: AppColors.grey300,
+                color: context.textDisabled,
                 letterSpacing: 0.3,
               ),
             ),

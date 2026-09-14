@@ -567,7 +567,7 @@ class _MonthlySnapshotSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dividerColor = context.grey50;
+    final dividerColor = context.divider;
     return Column(
       crossAxisAlignment: .start,
       children: [
@@ -575,7 +575,7 @@ class _MonthlySnapshotSection extends StatelessWidget {
         const SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: .circular(12),
             boxShadow: [
               BoxShadow(
@@ -805,7 +805,7 @@ class _WorkspaceCard extends StatelessWidget {
       child: Container(
         clipBehavior: .hardEdge,
         decoration: BoxDecoration(
-          color: context.white,
+          color: context.surfaceElevated,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
@@ -964,7 +964,7 @@ class _NoticeTile extends StatelessWidget {
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(

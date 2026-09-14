@@ -19,7 +19,7 @@ class AccountsSearchBar extends StatelessWidget {
     return Container(
       height: 40,
       decoration: BoxDecoration(
-        color: context.grey50,
+        color: context.surface,
         borderRadius: .circular(6),
         border: Border.all(color: context.border),
       ),

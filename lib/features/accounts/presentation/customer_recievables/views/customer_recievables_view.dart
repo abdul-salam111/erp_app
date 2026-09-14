@@ -120,7 +120,7 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
         }
       },
       child: Scaffold(
-        backgroundColor: context.grey50,
+        backgroundColor: context.surface,
         appBar: CustomAppBar(title: AppConstants.customerReceivableLabel),
         body: NotificationListener<ScrollNotification>(
           onNotification: _handleScrollNotification,
@@ -159,7 +159,7 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
               ),
               Expanded(
                 child: ColoredBox(
-                  color: context.white,
+                  color: context.surfaceElevated,
                   child:
                       BlocBuilder<
                         CustomerRecievablesBloc,

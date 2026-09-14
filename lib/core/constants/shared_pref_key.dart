@@ -11,6 +11,7 @@ class StorageKeys {
   static const String userEmail = 'userEmail';
   static const String userPassword = 'userPassword';
   static const String millType = 'millType';
+  static const String isDarkMode = 'isDarkMode';
 }
 
 extension LocalStorageGetters on LocalStorage {

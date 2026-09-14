@@ -197,7 +197,7 @@ class _AllOverviewSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: const .vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.fromLTRB(
@@ -252,7 +252,7 @@ class _AllOverviewSheet extends StatelessWidget {
                 child: Container(
                   padding: .all(6),
                   decoration: BoxDecoration(
-                    color: context.grey100,
+                    color: context.surface,
                     shape: .circle,
                   ),
                   child: Icon(Icons.close_rounded, size: 16, color: context.textSecondary),

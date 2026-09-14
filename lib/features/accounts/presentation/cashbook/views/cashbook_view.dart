@@ -196,7 +196,7 @@ class _CashbookBodyState extends State<_CashbookBody> {
               ),
               Expanded(
                 child: ColoredBox(
-                  color: context.white,
+                  color: context.surfaceElevated,
                   child: BlocBuilder<CashbookBloc, CashbookState>(
                     buildWhen: (previous, current) =>
                         previous.apiStatus != current.apiStatus ||

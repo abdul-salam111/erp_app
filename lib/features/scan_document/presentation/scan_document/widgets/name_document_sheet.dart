@@ -43,7 +43,7 @@ class _NameDocumentSheetState extends State<NameDocumentSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: context.grey300,
+                color: context.border,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -51,16 +51,16 @@ class _NameDocumentSheetState extends State<NameDocumentSheet> {
           const SizedBox(height: 20),
           Text(
             'Name your document',
-            style: context.titleMedium.copyWith(color: context.black),
+            style: context.titleMedium.copyWith(color: context.textPrimary),
           ),
           const SizedBox(height: 16),
           TextField(
             controller: _controller,
             autofocus: true,
-            style: TextStyle(color: context.black),
+            style: TextStyle(color: context.textPrimary),
             decoration: InputDecoration(
               filled: true,
-              fillColor: context.grey50,
+              fillColor: context.surface,
               border: OutlineInputBorder(
                 borderRadius: .circular(8),
                 borderSide: .none,
@@ -70,7 +70,7 @@ class _NameDocumentSheetState extends State<NameDocumentSheet> {
                 borderSide: BorderSide(color: context.primary),
               ),
               hintText: 'Document name',
-              hintStyle: TextStyle(color: context.grey400),
+              hintStyle: TextStyle(color: context.textSecondary),
             ),
           ),
           const SizedBox(height: 20),
@@ -80,8 +80,8 @@ class _NameDocumentSheetState extends State<NameDocumentSheet> {
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: context.grey300),
-                    foregroundColor: context.grey600,
+                    side: BorderSide(color: context.border),
+                    foregroundColor: context.textSecondary,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),

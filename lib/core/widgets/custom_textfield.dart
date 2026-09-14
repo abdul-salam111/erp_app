@@ -119,7 +119,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             hintText: widget.hintText,
             hintStyle: widget.hintStyle ?? context.bodySmall.copyWith(color: context.textSecondary),
             prefixIcon: widget.prefixIcon != null
-                ? Icon(widget.prefixIcon, color: context.grey500, size: 20)
+                ? Icon(widget.prefixIcon, color: context.textSecondary, size: 20)
                 : null,
             fillColor: defaultFillColor,
             filled: true,
@@ -160,7 +160,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                 ? IconButton(
                     icon: Icon(
                       isObscure ? Iconsax.eye_slash : Iconsax.eye,
-                      color: context.grey500,
+                      color: context.textSecondary,
                       size: 20,
                     ),
                     onPressed: () {

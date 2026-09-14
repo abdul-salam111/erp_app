@@ -189,7 +189,7 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
               ),
               Expanded(
                 child: ColoredBox(
-                  color: context.white,
+                  color: context.surfaceElevated,
                   child: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
                     buildWhen: (previous, current) =>
                         previous.apiStatus != current.apiStatus ||

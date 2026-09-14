@@ -43,9 +43,9 @@ class _RecentPaymentsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
-        border: Border.all(color: AppColors.grey200),
+        border: Border.all(color: context.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.04),
@@ -99,7 +99,7 @@ class _RecentPaymentsCard extends StatelessWidget {
             for (int i = 0; i < items.length; i++) ...[
               _PaymentRow(item: items[i]),
               if (i < items.length - 1)
-                Divider(height: 1, thickness: 1, color: AppColors.grey100),
+                Divider(height: 1, thickness: 1, color: context.divider),
             ],
           const SizedBox(height: 4),
         ],
@@ -236,9 +236,9 @@ class _RecentPaymentsShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
-        border: Border.all(color: AppColors.grey200),
+        border: Border.all(color: context.border),
       ),
       child: Column(
         crossAxisAlignment: .start,
@@ -292,7 +292,7 @@ class _RecentPaymentsShimmer extends StatelessWidget {
                 ],
               ),
             ),
-            if (i < 2) Divider(height: 1, thickness: 1, color: AppColors.grey100),
+            if (i < 2) Divider(height: 1, thickness: 1, color: context.divider),
           ],
           const SizedBox(height: 4),
         ],

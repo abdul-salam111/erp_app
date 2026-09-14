@@ -83,20 +83,20 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: ctx.white,
+        backgroundColor: ctx.surfaceElevated,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         title: Text(
           'Delete $count ${count == 1 ? 'document' : 'documents'}?',
-          style: ctx.titleMedium.copyWith(color: ctx.black, fontWeight: .w600),
+          style: ctx.titleMedium.copyWith(color: ctx.textPrimary, fontWeight: .w600),
         ),
         content: Text(
           'This action cannot be undone.',
-          style: ctx.bodySmall.copyWith(color: ctx.grey500),
+          style: ctx.bodySmall.copyWith(color: ctx.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('Cancel', style: TextStyle(color: ctx.grey500)),
+            child: Text('Cancel', style: TextStyle(color: ctx.textSecondary)),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -135,7 +135,7 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
           final name = await showModalBottomSheet<String>(
             context: context,
             isScrollControlled: true,
-            backgroundColor: context.white,
+            backgroundColor: context.surfaceElevated,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
             ),
@@ -169,13 +169,13 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
             allDocs.isNotEmpty && _selectedIds.length == allDocs.length;
 
         return Scaffold(
-          backgroundColor: context.grey50,
+          backgroundColor: context.surface,
           appBar: _isSelecting
               ? AppBar(
-                  backgroundColor: context.white,
-                  foregroundColor: context.black,
+                  backgroundColor: context.background,
+                  foregroundColor: context.textPrimary,
                   elevation: 0,
-                  surfaceTintColor: context.white,
+                  surfaceTintColor: context.background,
                   leading: TextButton(
                     onPressed: _exitSelectionMode,
                     child: Text(
@@ -187,7 +187,7 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
                   title: Text(
                     '$selectedCount selected',
                     style: context.titleMedium.copyWith(
-                      color: context.black,
+                      color: context.textPrimary,
                       fontWeight: .w600,
                     ),
                   ),
@@ -243,22 +243,22 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
                   child: TextField(
                     controller: _searchController,
                     onChanged: (v) => setState(() => _query = v),
-                    style: context.bodySmall.copyWith(color: context.black),
+                    style: context.bodySmall.copyWith(color: context.textPrimary),
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: context.white,
+                      fillColor: context.surfaceElevated,
                       hintText: 'Search documents…',
-                      hintStyle: TextStyle(color: context.grey400),
+                      hintStyle: TextStyle(color: context.textSecondary),
                       prefixIcon: Icon(
                         Icons.search,
-                        color: context.grey400,
+                        color: context.textSecondary,
                         size: 20,
                       ),
                       suffixIcon: _query.isNotEmpty
                           ? IconButton(
                               icon: Icon(
                                 Icons.close,
-                                color: context.grey400,
+                                color: context.textSecondary,
                                 size: 18,
                               ),
                               onPressed: () {
@@ -273,11 +273,11 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: context.grey200),
+                        borderSide: BorderSide(color: context.border),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: context.grey200),
+                        borderSide: BorderSide(color: context.border),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -350,8 +350,8 @@ class _SelectionActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
-        border: Border(top: BorderSide(color: context.grey200)),
+        color: context.surfaceElevated,
+        border: Border(top: BorderSide(color: context.border)),
       ),
       padding: EdgeInsets.fromLTRB(
         20,
@@ -364,7 +364,7 @@ class _SelectionActionBar extends StatelessWidget {
           Expanded(
             child: Text(
               '$selectedCount ${selectedCount == 1 ? 'document' : 'documents'} selected',
-              style: context.bodySmall.copyWith(color: context.grey500),
+              style: context.bodySmall.copyWith(color: context.textSecondary),
             ),
           ),
           FilledButton.icon(
@@ -399,19 +399,19 @@ class _NoResults extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          Icon(Icons.search_off_rounded, color: context.grey300, size: 64),
+          Icon(Icons.search_off_rounded, color: context.textDisabled, size: 64),
           const SizedBox(height: 16),
           Text(
             'No results for "$query"',
             style: context.titleMedium.copyWith(
-              color: context.black,
+              color: context.textPrimary,
               fontWeight: .w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Try a different name',
-            style: context.bodySmall.copyWith(color: context.grey400),
+            style: context.bodySmall.copyWith(color: context.textSecondary),
           ),
         ],
       ),
@@ -445,14 +445,14 @@ class _EmptyState extends StatelessWidget {
           Text(
             'No documents yet',
             style: context.titleMedium.copyWith(
-              color: context.black,
+              color: context.textPrimary,
               fontWeight: .w600,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Tap Scan to scan your first document',
-            style: context.bodySmall.copyWith(color: context.grey400),
+            style: context.bodySmall.copyWith(color: context.textSecondary),
           ),
         ],
       ),

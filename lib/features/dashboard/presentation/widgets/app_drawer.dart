@@ -113,7 +113,7 @@ class _AppDrawerState extends State<AppDrawer>
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: context.white,
+      backgroundColor: context.surfaceElevated,
       elevation: 0,
       width: 272,
       child: Column(

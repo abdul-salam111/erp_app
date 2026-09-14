@@ -155,7 +155,7 @@ class _QACard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: context.surfaceElevated,
                 shape: .circle,
                 boxShadow: [
                   BoxShadow(

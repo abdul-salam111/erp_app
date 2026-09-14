@@ -295,7 +295,7 @@ class _PlaceholderContent extends StatelessWidget {
       child: Column(
         mainAxisSize: .min,
         children: [
-          Icon(Iconsax.box_1, size: 40, color: context.grey300),
+          Icon(Iconsax.box_1, size: 40, color: context.textDisabled),
           const SizedBox(height: 10),
           Text(
             '$title — coming soon',
@@ -425,7 +425,7 @@ class _UsersContentState extends State<_UsersContent> {
                       prefixIcon: Icon(
                         Iconsax.search_normal_1,
                         size: 16,
-                        color: context.grey400,
+                        color: context.textSecondary,
                       ),
                       contentPadding: .zero,
                       filled: true,
@@ -546,7 +546,7 @@ class _UsersTableHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: context.grey100,
+        color: context.surfaceHeader,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
       ),
       child: Row(
@@ -605,7 +605,7 @@ class _UserTableRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.surface,
           border: Border(bottom: BorderSide(color: context.divider)),
         ),
         child: Row(
@@ -766,7 +766,7 @@ class _UserAvatar extends StatelessWidget {
             decoration: BoxDecoration(
               color: active ? AppColors.green : AppColors.errorBright,
               shape: .circle,
-              border: Border.all(color: AppColors.white, width: 1.5),
+              border: Border.all(color: context.surfaceElevated, width: 1.5),
             ),
           ),
         ),

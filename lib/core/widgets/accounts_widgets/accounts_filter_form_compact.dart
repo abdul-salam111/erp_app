@@ -49,7 +49,7 @@ class AccountsFilterFormCompact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.grey50,
+      color: context.surface,
       padding: EdgeInsets.fromLTRB(
         context.pagePadding.left,
         12,
@@ -64,7 +64,7 @@ class AccountsFilterFormCompact extends StatelessWidget {
           12,
         ),
         decoration: BoxDecoration(
-          color: context.white,
+          color: context.surfaceElevated,
           borderRadius: .circular(12),
           boxShadow: [
             BoxShadow(
@@ -162,7 +162,7 @@ class _DateRangeIconButton extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: context.grey50,
+          color: context.surface,
           borderRadius: .circular(6),
           border: Border.all(color: context.border),
         ),

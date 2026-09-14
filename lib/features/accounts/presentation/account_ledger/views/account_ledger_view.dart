@@ -159,7 +159,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
         }
       },
       child: Scaffold(
-        backgroundColor: context.grey50,
+        backgroundColor: context.surface,
         appBar: CustomAppBar(title: AppConstants.accountLedgerLabel),
         body: NotificationListener<ScrollNotification>(
           onNotification: _handleScrollNotification,
@@ -223,7 +223,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
 
               Expanded(
                 child: ColoredBox(
-                  color: context.white,
+                  color: context.surfaceElevated,
                   child: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
                     buildWhen: (previous, current) =>
                         previous.apiStatus != current.apiStatus ||

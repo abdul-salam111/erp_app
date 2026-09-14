@@ -22,7 +22,7 @@ class OverviewStatCard extends StatelessWidget {
       child: Container(
         clipBehavior: .hardEdge,
         decoration: BoxDecoration(
-          color: context.white,
+          color: context.surfaceElevated,
           borderRadius: .circular(10),
 
           boxShadow: [

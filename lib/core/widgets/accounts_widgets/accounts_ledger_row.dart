@@ -36,15 +36,15 @@ class AccountsLedgerRow extends StatelessWidget {
     final Color iconColor;
     final IconData iconData;
     if (isOpening) {
-      iconBg = AppColors.grey100;
-      iconColor = AppColors.grey500;
+      iconBg = context.surface;
+      iconColor = context.textSecondary;
       iconData = Icons.horizontal_rule_rounded;
     } else if (isDrOnly) {
-      iconBg = AppColors.debitContainer;
+      iconBg = context.debitContainer;
       iconColor = AppColors.debitRed;
       iconData = Icons.arrow_upward_rounded;
     } else if (isCrOnly) {
-      iconBg = AppColors.creditContainer;
+      iconBg = context.creditContainer;
       iconColor = AppColors.creditGreen;
       iconData = Icons.arrow_downward_rounded;
     } else {
@@ -58,7 +58,7 @@ class AccountsLedgerRow extends StatelessWidget {
     if (isOpening) {
       final val = drAmt > 0 ? drAmt : crAmt;
       amountText = val.formatPrice();
-      amountColor = AppColors.grey600;
+      amountColor = context.textSecondary;
     } else if (isDrOnly) {
       amountText = drAmt.formatPrice();
       amountColor = AppColors.debitRed;

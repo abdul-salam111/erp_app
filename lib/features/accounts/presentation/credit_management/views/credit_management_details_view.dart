@@ -62,7 +62,7 @@ class CreditManagementDetailsView extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: context.grey50,
+        backgroundColor: context.surface,
         appBar: CreditDetailsAppBar(
           customer: customer,
           city: city,

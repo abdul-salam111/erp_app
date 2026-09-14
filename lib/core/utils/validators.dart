@@ -3,6 +3,7 @@
 // ============================================================================
 
 import 'package:flutter/material.dart';
+import '../theme/theme_exports.dart';
 
 extension StringValidationExtensions on String {
   // ========================================================================
@@ -751,7 +752,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
       children: [
         LinearProgressIndicator(
           value: strength / 4,
-          backgroundColor: Colors.grey.shade300,
+          backgroundColor: context.divider,
           color: colors[strength],
         ),
         const SizedBox(height: 4),
@@ -759,7 +760,7 @@ class PasswordStrengthIndicator extends StatelessWidget {
           strength > 0 ? labels[strength - 1] : 'Enter password',
           style: TextStyle(
             fontSize: 12,
-            color: strength > 0 ? colors[strength] : Colors.grey,
+            color: strength > 0 ? colors[strength] : context.textSecondary,
           ),
         ),
       ],

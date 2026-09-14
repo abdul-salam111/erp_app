@@ -66,7 +66,7 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
     return UnfocusWrapper(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: context.grey50,
+        backgroundColor: context.surface,
         appBar: CustomAppBar(title: AppConstants.creditManagmentTitle),
         body: Column(
           children: [
@@ -116,14 +116,14 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(vertical: 7),
                           filled: true,
-                          fillColor: context.white,
+                          fillColor: context.surfaceElevated,
                           border: OutlineInputBorder(
                             borderRadius: .circular(8),
-                            borderSide: BorderSide(color: AppColors.grey200),
+                            borderSide: BorderSide(color: context.border),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: .circular(8),
-                            borderSide: BorderSide(color: AppColors.grey200),
+                            borderSide: BorderSide(color: context.border),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: .circular(8),
@@ -139,7 +139,7 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
             ),
             Expanded(
               child: ColoredBox(
-                color: context.white,
+                color: context.surfaceElevated,
                 child: BlocBuilder<CreditManagementBloc, CreditManagementState>(
                   buildWhen: (p, c) =>
                       p.apiStatus != c.apiStatus || p.agingData != c.agingData,

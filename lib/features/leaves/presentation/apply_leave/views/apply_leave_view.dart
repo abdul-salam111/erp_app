@@ -334,7 +334,7 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody>
                           ),
                           deleteIcon: const Icon(Icons.close, size: 14),
                           onDeleted: () => _removeFile(i),
-                          backgroundColor: context.grey50,
+                          backgroundColor: context.surface,
                           side: BorderSide(color: context.border),
                           shape: RoundedRectangleBorder(borderRadius: .circular(8)),
                         );

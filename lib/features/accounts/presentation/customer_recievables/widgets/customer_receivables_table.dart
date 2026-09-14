@@ -20,14 +20,14 @@ class CustomerReceivablesTable extends StatelessWidget {
     return Column(
       children: [
         const _TableHeader(),
-        Divider(height: 1, thickness: 1, color: AppColors.grey200),
+        Divider(height: 1, thickness: 1, color: context.divider),
         Expanded(
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             controller: scrollController,
             itemCount: items.length,
             separatorBuilder: (_, __) =>
-                Divider(height: 1, thickness: 1, color: AppColors.grey200),
+                Divider(height: 1, thickness: 1, color: context.divider),
             itemBuilder: (_, i) => _CustomerRow(item: items[i]),
           ),
         ),
@@ -198,7 +198,7 @@ class _CustomerRowState extends State<_CustomerRow> {
                         Divider(
                           height: 1,
                           thickness: 1,
-                          color: AppColors.grey200,
+                          color: context.divider,
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(6, 8, 10, 10),

@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
             title: 'Mantic ERP',
             theme: AppThemes.lightTheme,
             darkTheme: AppThemes.darkTheme,
-            themeMode: ThemeMode.light,
+            themeMode: state.themeMode,
             debugShowCheckedModeBanner: false,
             routerConfig: AppRoutes.router,
             builder: (context, child) {

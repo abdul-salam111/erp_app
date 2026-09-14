@@ -36,7 +36,7 @@ class FieldTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: context.grey50,
+          color: context.surface,
           borderRadius: .circular(6),
           border: Border.all(color: context.border),
         ),

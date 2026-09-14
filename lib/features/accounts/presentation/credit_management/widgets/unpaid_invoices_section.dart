@@ -260,9 +260,9 @@ class _ErrorCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
-        border: .all(color: AppColors.grey200),
+        border: .all(color: context.border),
       ),
       child: Text(
         message,

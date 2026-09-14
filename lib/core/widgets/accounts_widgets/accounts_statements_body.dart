@@ -15,7 +15,7 @@ class AccountsStatementsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: context.white,
+      color: context.background,
       child: ListView(
         controller: scrollController,
         padding: EdgeInsets.only(

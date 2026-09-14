@@ -191,7 +191,9 @@ class AppColors {
   static const Color creditGreen = Color(0xFF1B8A5A);
   static const Color creditGreenDark = Color(0xFF2E7D32);
   static const Color debitContainer = Color(0xFFFFE8E8);
+  static const Color debitContainerDark = Color(0xFF3A1F1F);
   static const Color creditContainer = Color(0xFFDCF5E7);
+  static const Color creditContainerDark = Color(0xFF1B3324);
 
   // ============================================
   // CHART COLORS
@@ -207,10 +209,14 @@ class AppColors {
 
   static const Color loginBackground = Color(0xFFF0F4FF);
   static const Color navyDark        = Color(0xFF0D1B3E);
+  static const Color loginBackgroundDark = navyDark;
 
   static const Color surfaceHeader = Color(0xFFF5F5F5);
+  static const Color surfaceHeaderDark = Color(0xFF3D3D3D);
   static const Color tableRowAlt = Color(0xFFF9FAFB);
+  static const Color tableRowAltDark = Color(0xFF232323);
   static const Color shimmerBase = Color(0xFFE8E8E8);
+  static const Color shimmerBaseDark = Color(0xFF2E2E2E);
   static const Color black26 = Color(0x42000000);
   static const Color black54 = Color(0x8A000000);
 }

@@ -57,7 +57,7 @@ class AccountsLedgerDetailDialog extends StatelessWidget {
                 : AppConstants.drCrTransaction;
 
     return Dialog(
-      backgroundColor: AppColors.white,
+      backgroundColor: context.surfaceElevated,
       shape: RoundedRectangleBorder(borderRadius: .circular(20)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
       child: Padding(
@@ -111,15 +111,15 @@ class AccountsLedgerDetailDialog extends StatelessWidget {
               AccountsAmountCard(
                 label: AppConstants.openingBalance2,
                 amount: 'Rs. ${hasDebit ? dr : cr}',
-                bg: AppColors.grey100,
-                color: AppColors.grey700,
+                bg: context.surface,
+                color: context.textSecondary,
               ),
             ] else ...[
               if (hasDebit) ...[
                 AccountsAmountCard(
                   label: AppConstants.debit,
                   amount: 'Rs. $dr',
-                  bg: AppColors.debitContainer,
+                  bg: context.debitContainer,
                   color: AppColors.debitRed,
                 ),
                 if (hasCredit) const SizedBox(height: 10),
@@ -128,7 +128,7 @@ class AccountsLedgerDetailDialog extends StatelessWidget {
                 AccountsAmountCard(
                   label: AppConstants.credit,
                   amount: 'Rs. $cr',
-                  bg: AppColors.creditContainer,
+                  bg: context.creditContainer,
                   color: AppColors.creditGreen,
                 ),
             ],

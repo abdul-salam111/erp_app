@@ -113,7 +113,7 @@ class _ApplyLoanBodyState extends State<_ApplyLoanBody>
         }
       },
       child: Scaffold(
-        backgroundColor: context.white,
+        backgroundColor: context.background,
         appBar: const CustomAppBar(title: 'Loan Request'),
         body: SingleChildScrollView(
           padding: context.pagePadding.copyWith(top: 20, bottom: 32),

@@ -123,7 +123,7 @@ class _AlertPanelBodyState extends State<_AlertPanelBody>
       },
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: context.white,
+          backgroundColor: context.background,
           appBar: const CustomAppBar(title: AppConstants.alertsTitle),
           body: ListView(
             padding: context.pagePadding,
@@ -145,7 +145,7 @@ class _AlertPanelBodyState extends State<_AlertPanelBody>
               // ── Alert cards ──
               Container(
                 decoration: BoxDecoration(
-                  color:        context.white,
+                  color:        context.surfaceElevated,
                   borderRadius: BorderRadius.circular(14),
                   border:       Border.all(color: context.border),
                   boxShadow: [
@@ -198,7 +198,7 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color:        context.white,
+        color:        context.surfaceElevated,
         borderRadius: BorderRadius.circular(14),
         border:       Border.all(color: context.border),
         boxShadow: [

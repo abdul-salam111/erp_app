@@ -175,10 +175,10 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: context.bodySmall.copyWith(color: context.textSecondary),
-            prefixIcon: widget.isShowIcon ?  Icon(Iconsax.user, color: context.grey500, size: 20): null,
+            prefixIcon: widget.isShowIcon ?  Icon(Iconsax.user, color: context.textSecondary, size: 20): null,
             suffixIcon: widget.controller.text.isNotEmpty
                 ? IconButton(
-                    icon: Icon(Icons.close, color: context.grey500, size: 18),
+                    icon: Icon(Icons.close, color: context.textSecondary, size: 18),
                     onPressed: () {
                       setState(() => widget.controller.clear());
                       _filteredNotifier.value = _buildPairs();
@@ -188,7 +188,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
                   )
                 : Icon(
                     _isOpen ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                    color: context.grey500,
+                    color: context.textSecondary,
                   ),
             fillColor: defaultFillColor,
             filled: true,

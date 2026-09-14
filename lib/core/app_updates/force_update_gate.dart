@@ -88,7 +88,7 @@ class _ForceUpdateGateState extends State<ForceUpdateGate>
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: context.black.withValues(alpha: 0.15),
+                color: context.shadow,
                 blurRadius: 30,
                 offset: const Offset(0, 10),
               ),

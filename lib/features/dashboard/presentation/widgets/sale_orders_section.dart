@@ -106,7 +106,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
 
         return Container(
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: .circular(16),
             border: Border.all(color: context.border),
             boxShadow: [
@@ -330,7 +330,7 @@ class _DateButton extends StatelessWidget {
       child: Container(
         padding: .symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
-          color: context.grey50,
+          color: context.surface,
           borderRadius: .circular(8),
           border: Border.all(color: context.border),
         ),
@@ -404,7 +404,7 @@ class _OrdersTable extends StatelessWidget {
       children: [
         // ── Header ──────────────────────────────────────
         Container(
-          color: context.grey50,
+          color: context.surface,
           child: Row(
             children: [
               ...List.generate(
@@ -431,7 +431,7 @@ class _OrdersTable extends StatelessWidget {
           final i = e.key;
           final row = e.value;
           return Material(
-            color: i.isOdd ? AppColors.tableRowAlt : AppColors.white,
+            color: i.isOdd ? context.tableRowAlt : context.surfaceElevated,
             child: InkWell(
               onTap: () => _showOrderDetail(context, row),
               child: Row(
@@ -510,7 +510,7 @@ class _OrderDetailSheet extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: const .vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.fromLTRB(

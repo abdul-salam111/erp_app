@@ -127,7 +127,7 @@ class _ApplyOvertimeBodyState extends State<_ApplyOvertimeBody>
         }
       },
       child: Scaffold(
-        backgroundColor: context.white,
+        backgroundColor: context.background,
         appBar: const CustomAppBar(title: 'Overtime Request'),
         body: SingleChildScrollView(
           padding: context.pagePadding.copyWith(top: 20, bottom: 32),

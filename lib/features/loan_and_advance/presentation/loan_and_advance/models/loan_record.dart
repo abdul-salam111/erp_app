@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theme/colors.dart';
+import '../../../../../core/theme/theme_exports.dart';
 
 enum LoanStatus { active, closed, overdue }
 
@@ -16,10 +16,10 @@ extension LoanStatusX on LoanStatus {
         LoanStatus.overdue => AppColors.debitRed,
       };
 
-  Color get bgColor => switch (this) {
-        LoanStatus.active => AppColors.creditContainer,
-        LoanStatus.closed => AppColors.grey50,
-        LoanStatus.overdue => AppColors.debitContainer,
+  Color bgColor(BuildContext context) => switch (this) {
+        LoanStatus.active => context.creditContainer,
+        LoanStatus.closed => context.surface,
+        LoanStatus.overdue => context.debitContainer,
       };
 }
 

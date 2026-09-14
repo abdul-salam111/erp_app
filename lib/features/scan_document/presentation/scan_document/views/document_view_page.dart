@@ -39,7 +39,7 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
   Future<void> _showShareOptions() async {
     await showModalBottomSheet<void>(
       context: context,
-      backgroundColor: context.white,
+      backgroundColor: context.surfaceElevated,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
@@ -106,22 +106,22 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
     await showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: ctx.white,
+        backgroundColor: ctx.surfaceElevated,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         title: Text(
           'Rename Document',
           style: ctx.titleMedium.copyWith(
-            color: ctx.black,
+            color: ctx.textPrimary,
             fontWeight: .w600,
           ),
         ),
         content: TextField(
           controller: controller,
           autofocus: true,
-          style: TextStyle(color: ctx.black),
+          style: TextStyle(color: ctx.textPrimary),
           decoration: InputDecoration(
             filled: true,
-            fillColor: ctx.grey50,
+            fillColor: ctx.surface,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
@@ -131,13 +131,13 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
               borderSide: BorderSide(color: ctx.primary),
             ),
             hintText: 'Document name',
-            hintStyle: TextStyle(color: ctx.grey400),
+            hintStyle: TextStyle(color: ctx.textSecondary),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Cancel', style: TextStyle(color: ctx.grey500)),
+            child: Text('Cancel', style: TextStyle(color: ctx.textSecondary)),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx),
@@ -162,12 +162,12 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: context.grey50,
+        backgroundColor: context.surface,
         appBar: AppBar(
-          backgroundColor: context.white,
-          foregroundColor: context.black,
+          backgroundColor: context.background,
+          foregroundColor: context.textPrimary,
           elevation: 0,
-          surfaceTintColor: context.white,
+          surfaceTintColor: context.background,
           shadowColor: const Color(0x14000000),
           centerTitle: false,
           title: Column(
@@ -177,14 +177,14 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
               Text(
                 widget.document.name,
                 style: context.titleMedium.copyWith(
-                  color: context.black,
+                  color: context.textPrimary,
                   fontWeight: .w600,
                 ),
               ),
               if (_pageCount > 1)
                 Text(
                   'Page ${_currentPage + 1} of $_pageCount',
-                  style: context.bodySmall.copyWith(color: context.grey500),
+                  style: context.bodySmall.copyWith(color: context.textSecondary),
                 ),
             ],
           ),
@@ -202,7 +202,7 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
-                        color: context.white,
+                        color: context.surfaceElevated,
                         child: InteractiveViewer(
                           child: Image.file(
                             File(widget.document.imagePaths[index]),
@@ -213,14 +213,14 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
                                 children: [
                                   Icon(
                                     Icons.broken_image_outlined,
-                                    color: context.grey300,
+                                    color: context.textDisabled,
                                     size: 64,
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
                                     'Could not load image',
                                     style: context.bodySmall.copyWith(
-                                      color: context.grey400,
+                                      color: context.textSecondary,
                                     ),
                                   ),
                                 ],
@@ -247,7 +247,7 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
                       width: active ? 20 : 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: active ? context.primary : context.grey300,
+                        color: active ? context.primary : context.textDisabled,
                         borderRadius: BorderRadius.circular(3),
                       ),
                     );
@@ -295,7 +295,7 @@ class _ShareSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: context.grey300,
+                color: context.textDisabled,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -304,7 +304,7 @@ class _ShareSheet extends StatelessWidget {
           Text(
             'Share as',
             style: context.titleMedium.copyWith(
-              color: context.black,
+              color: context.textPrimary,
               fontWeight: .w600,
             ),
           ),
@@ -352,7 +352,7 @@ class _ShareOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.grey50,
+      color: context.surface,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
@@ -378,7 +378,7 @@ class _ShareOption extends StatelessWidget {
                     Text(
                       title,
                       style: context.bodySmall.copyWith(
-                        color: context.black,
+                        color: context.textPrimary,
                         fontWeight: .w600,
                       ),
                     ),
@@ -386,13 +386,13 @@ class _ShareOption extends StatelessWidget {
                     Text(
                       subtitle,
                       style: context.labelSmall.copyWith(
-                        color: context.grey500,
+                        color: context.textSecondary,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: context.grey400, size: 20),
+              Icon(Icons.chevron_right, color: context.textSecondary, size: 20),
             ],
           ),
         ),
@@ -416,9 +416,9 @@ class _BottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         border: Border(
-          top: BorderSide(color: context.grey200, width: 1),
+          top: BorderSide(color: context.border, width: 1),
         ),
       ),
       padding: EdgeInsets.fromLTRB(

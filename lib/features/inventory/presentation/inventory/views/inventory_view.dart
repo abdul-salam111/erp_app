@@ -179,7 +179,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                     SliverToBoxAdapter(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: hPad),
-                        color: context.white,
+                        color: context.surfaceElevated,
                         padding: const EdgeInsets.symmetric(vertical: 32),
                         child: const Center(child: CircularProgressIndicator()),
                       ),
@@ -188,12 +188,12 @@ class _InventoryBodyState extends State<_InventoryBody> {
                     SliverToBoxAdapter(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: hPad),
-                        color: context.white,
+                        color: context.surfaceElevated,
                         padding: const EdgeInsets.symmetric(vertical: 32),
-                        child: const Center(
+                        child: Center(
                           child: Text(
                             AppConstants.noStockDataAvailable,
-                            style: TextStyle(color: AppColors.grey400),
+                            style: TextStyle(color: context.textSecondary),
                           ),
                         ),
                       ),
@@ -209,7 +209,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                       itemBuilder: (context, i) => Container(
                         margin: EdgeInsets.symmetric(horizontal: hPad),
                         decoration: BoxDecoration(
-                          color: context.white,
+                          color: context.surfaceElevated,
                           border: Border(
                             left: BorderSide(color: context.border),
                             right: BorderSide(color: context.border),
@@ -227,7 +227,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                           height: 14,
                           margin: EdgeInsets.symmetric(horizontal: hPad),
                           decoration: BoxDecoration(
-                            color: context.white,
+                            color: context.surfaceElevated,
                             borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(14),
                               bottomRight: Radius.circular(14),
@@ -277,7 +277,7 @@ class _CurrentStockCardDelegate extends SliverPersistentHeaderDelegate {
         padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 8),
         child: Container(
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: context.border),
             boxShadow: [
@@ -317,7 +317,7 @@ class _CurrentStockCardDelegate extends SliverPersistentHeaderDelegate {
                       const SizedBox(height: 1),
                       Text(
                         AppConstants.liveInventoryByProduct,
-                        style: TextStyle(fontSize: 10, color: context.grey400),
+                        style: TextStyle(fontSize: 10, color: context.textSecondary),
                       ),
                     ],
                   ),
@@ -352,7 +352,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: hPad),
       decoration: BoxDecoration(
-        color: AppColors.surfaceHeader,
+        color: context.surfaceHeader,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(14),
           topRight: Radius.circular(14),
@@ -380,7 +380,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
                     child: Text(
                       AppConstants.productLabel,
                       style: context.labelSmall.copyWith(
-                        color: AppColors.grey900,
+                        color: context.textPrimary,
                         fontWeight: .w700,
                       ),
                     ),
@@ -391,7 +391,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
                       AppConstants.qtyWeight,
                       textAlign: .center,
                       style: context.labelSmall.copyWith(
-                        color: AppColors.grey900,
+                        color: context.textPrimary,
                         fontWeight: .w700,
                       ),
                     ),
@@ -402,7 +402,7 @@ class _ColumnHeaderDelegate extends SliverPersistentHeaderDelegate {
                       AppConstants.total,
                       textAlign: .end,
                       style: context.labelSmall.copyWith(
-                        color: AppColors.grey900,
+                        color: context.textPrimary,
                         fontWeight: .w700,
                       ),
                     ),

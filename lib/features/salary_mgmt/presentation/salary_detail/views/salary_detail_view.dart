@@ -59,7 +59,7 @@ class _SalaryDetailViewState extends State<SalaryDetailView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.grey50,
+      backgroundColor: context.surface,
       appBar: const CustomAppBar(title: 'Payslip'),
       body: SingleChildScrollView(
         padding: context.pagePadding.copyWith(top: 20, bottom: 32),
@@ -106,10 +106,10 @@ class _ReceiptCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
       child: Container(
-        color: AppColors.white,
+        color: context.surfaceElevated,
         child: Column(
           children: [
-            _TornEdge(bgColor: context.grey50),
+            _TornEdge(bgColor: context.surface),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 22),
               child: Column(
@@ -235,7 +235,7 @@ class _ReceiptCard extends StatelessWidget {
                 ],
               ),
             ),
-            _TornEdge(bgColor: context.grey50, flipVertical: true),
+            _TornEdge(bgColor: context.surface, flipVertical: true),
           ],
         ),
       ),
@@ -387,9 +387,9 @@ class _DoubleRule extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(height: 1.5, color: AppColors.grey200),
+        Container(height: 1.5, color: context.divider),
         const SizedBox(height: 3),
-        Container(height: 1.5, color: AppColors.grey200),
+        Container(height: 1.5, color: context.divider),
       ],
     );
   }
@@ -405,7 +405,7 @@ class _DashDivider extends StatelessWidget {
     return SizedBox(
       height: 1,
       width: double.infinity,
-      child: CustomPaint(painter: _DashPainter(color: AppColors.grey200)),
+      child: CustomPaint(painter: _DashPainter(color: context.divider)),
     );
   }
 }

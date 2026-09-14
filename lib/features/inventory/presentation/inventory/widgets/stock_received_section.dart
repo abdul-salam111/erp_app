@@ -28,7 +28,7 @@ class StockReceivedSection extends StatelessWidget {
         // ── Header card ───────────────────────────────────────────────────────
         Container(
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: .circular(14),
             border: .all(color: context.border),
             boxShadow: [
@@ -67,7 +67,7 @@ class StockReceivedSection extends StatelessWidget {
                       const SizedBox(height: 1),
                       Text(
                         AppConstants.incomingStockByPartyItem,
-                        style: TextStyle(fontSize: 10, color: context.grey400),
+                        style: TextStyle(fontSize: 10, color: context.textSecondary),
                       ),
                     ],
                   ),
@@ -84,7 +84,7 @@ class StockReceivedSection extends StatelessWidget {
         Container(
           height: 300,
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: context.border),
             boxShadow: [
@@ -156,7 +156,7 @@ class StockReceivedSection extends StatelessWidget {
                           ? Center(
                               child: Text(
                                 AppConstants.noStockReceived,
-                                style: TextStyle(color: AppColors.grey400),
+                                style: TextStyle(color: context.textSecondary),
                               ),
                             )
                           : ListView.separated(
@@ -221,7 +221,7 @@ class _StockReceivedTile extends StatelessWidget {
                 Text(
                   row.city,
                   style: context.labelSmall.copyWith(
-                    color: context.grey300,
+                    color: context.textDisabled,
                   ),
                 ),
               ],
@@ -258,7 +258,7 @@ class _StockReceivedTile extends StatelessWidget {
                   Text(
                     row.category!,
                     style: context.labelSmall.copyWith(
-                      color: context.grey300,
+                      color: context.textDisabled,
                       fontSize: 10,
                     ),
                   ),

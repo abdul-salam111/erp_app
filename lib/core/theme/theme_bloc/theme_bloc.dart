@@ -4,12 +4,13 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/services.dart';
 
+import '../../constants/shared_pref_key.dart';
 import '../../local_storage/storage.dart';
 import '../theme_exports.dart';
 
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
-  final String _key = 'isDarkMode';
+  final String _key = StorageKeys.isDarkMode;
 
   ThemeBloc() : super(ThemeState(isDarkMode: false)) {
     on<LoadTheme>(_onLoadTheme, transformer: droppable());

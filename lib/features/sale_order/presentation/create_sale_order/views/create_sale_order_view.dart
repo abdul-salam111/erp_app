@@ -314,7 +314,7 @@ class _DetailShimmer extends StatelessWidget {
         Container(
           padding: .all(12),
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: .circular(8),
             border: Border.all(color: context.border),
           ),
@@ -335,7 +335,7 @@ class _DetailShimmer extends StatelessWidget {
         // Items table card
         Container(
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: .circular(8),
             border: Border.all(color: context.border),
           ),
@@ -377,7 +377,7 @@ class _DetailShimmer extends StatelessWidget {
         Container(
           padding: .all(12),
           decoration: BoxDecoration(
-            color: context.white,
+            color: context.surfaceElevated,
             borderRadius: .circular(8),
             border: Border.all(color: context.border),
           ),
@@ -444,7 +444,7 @@ class _EmptyItemsHint extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
         border: Border.all(color: context.border),
       ),
@@ -488,7 +488,7 @@ class _OrderRemarksSection extends StatelessWidget {
     return Container(
       padding: .all(12),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
         border: Border.all(color: context.border),
       ),
@@ -536,7 +536,7 @@ class _OrderSummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
         border: Border.all(color: context.border),
       ),

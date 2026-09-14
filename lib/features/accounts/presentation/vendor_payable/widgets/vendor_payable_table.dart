@@ -22,13 +22,13 @@ class VendorPayableTable extends StatelessWidget {
       child: Column(
         children: [
           const _TableHeader(),
-          Divider(height: 1, thickness: 1, color: AppColors.grey200),
+          Divider(height: 1, thickness: 1, color: context.divider),
           Expanded(
             child: ListView.separated(
               controller: scrollController,
               itemCount: items.length,
               separatorBuilder: (_, __) =>
-                  Divider(height: 1, thickness: 1, color: AppColors.grey200),
+                  Divider(height: 1, thickness: 1, color: context.divider),
               itemBuilder: (_, i) => _VendorRow(item: items[i]),
             ),
           ),
@@ -46,23 +46,14 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.grey200,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(6),
-          topRight: Radius.circular(6),
-        ),
-      ),
+      color: context.primary.withValues(alpha: 0.2),
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: Row(
         children: [
-          Expanded(
-            flex: 8,
-            child: const _HeaderText('Vendor'),
-          ),
+          Expanded(flex: 8, child: const _HeaderText('Vendor')),
           Expanded(
             flex: 4,
-            child: _HeaderText(AppConstants.openingLabel, align: .end),
+            child: _HeaderText(AppConstants.balanceLabel, align: .end),
           ),
           const SizedBox(width: 24),
         ],
@@ -79,12 +70,12 @@ class _HeaderText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      text,
+      text.toUpperCase(),
       textAlign: align,
       maxLines: 1,
       overflow: .ellipsis,
       style: context.labelSmall.copyWith(
-        color: context.textSecondary,
+        color: context.primary,
         fontWeight: .w600,
         fontSize: 12,
       ),
@@ -140,7 +131,8 @@ class _VendorRowState extends State<_VendorRow> {
                           maxLines: 2,
                           overflow: .ellipsis,
                         ),
-                        if (item.location != null && item.location!.isNotEmpty) ...[
+                        if (item.location != null &&
+                            item.location!.isNotEmpty) ...[
                           const SizedBox(height: 2),
                           Text(
                             item.location!,
@@ -158,7 +150,7 @@ class _VendorRowState extends State<_VendorRow> {
                   Expanded(
                     flex: 4,
                     child: Text(
-                      item.opening.withTwoDecimals,
+                      item.balance.withTwoDecimals,
                       textAlign: .end,
                       maxLines: 1,
                       overflow: .ellipsis,
@@ -190,37 +182,48 @@ class _VendorRowState extends State<_VendorRow> {
             curve: Curves.easeInOut,
             alignment: .topCenter,
             child: _expanded
-                ? Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      Divider(height: 1, thickness: 1, color: AppColors.grey200),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-                        child: Row(
-                          children: [
-                            _ExpandedCell(
-                              label: AppConstants.debit,
-                              amount: item.debit,
-                              isDr: true,
-                              align: .start,
-                            ),
-                            _ExpandedCell(
-                              label: AppConstants.credit,
-                              amount: item.credit,
-                              isDr: false,
-                              align: .center,
-                            ),
-                            _ExpandedCell(
-                              label: AppConstants.balanceLabel,
-                              amount: item.balance,
-                              isDr: item.balanceIsDr,
-                              highlight: true,
-                              align: .end,
-                            ),
-                          ],
-                        ),
+                ? Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: context.primary, width: 1.5),
                       ),
-                    ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: context.divider,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(6, 8, 10, 10),
+                          child: Row(
+                            children: [
+                              _ExpandedCell(
+                                label: AppConstants.openingLabel,
+                                amount: item.opening,
+                                isDr: item.openingIsDr,
+                                highlight: true,
+                                align: .start,
+                              ),
+                              _ExpandedCell(
+                                label: AppConstants.debit,
+                                amount: item.debit,
+                                isDr: true,
+                                align: .center,
+                              ),
+                              _ExpandedCell(
+                                label: AppConstants.credit,
+                                amount: item.credit,
+                                isDr: false,
+                                align: .end,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   )
                 : const SizedBox.shrink(),
           ),
@@ -252,8 +255,8 @@ class _ExpandedCell extends StatelessWidget {
     final TextAlign textAlign = align == .end
         ? .end
         : align == .center
-            ? .center
-            : .start;
+        ? .center
+        : .start;
     final amtColor = isDr ? AppColors.debitRed : AppColors.creditGreen;
 
     return Expanded(

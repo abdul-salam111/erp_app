@@ -38,7 +38,7 @@ class LeaveDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.white,
+      backgroundColor: context.background,
       appBar: CustomAppBar(title: 'Leave Details'),
       body: SingleChildScrollView(
         padding: context.pagePadding.copyWith(top: 20, bottom: 32),
@@ -48,7 +48,7 @@ class LeaveDetailView extends StatelessWidget {
             // ── Info card ──
             Container(
               decoration: BoxDecoration(
-                color: context.white,
+                color: context.surfaceElevated,
                 borderRadius: .circular(12),
                 border: Border.all(color: context.border),
                 boxShadow: [
@@ -103,7 +103,7 @@ class LeaveDetailView extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: context.white,
+                  color: context.surfaceElevated,
                   borderRadius: .circular(12),
                   border: Border.all(color: context.border),
                 ),
@@ -235,7 +235,7 @@ class _FileCard extends StatelessWidget {
       width: 80,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(10),
         border: Border.all(color: context.border),
       ),

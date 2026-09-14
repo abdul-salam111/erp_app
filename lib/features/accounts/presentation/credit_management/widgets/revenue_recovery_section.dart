@@ -74,9 +74,9 @@ class _RevenueRecoveryContent extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
-        border: .all(color: AppColors.grey200),
+        border: .all(color: context.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.04),
@@ -146,9 +146,9 @@ class _StatCard extends StatelessWidget {
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(10),
-        border: .all(color: AppColors.grey200),
+        border: .all(color: context.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.07),
@@ -209,9 +209,9 @@ class _RevenueRecoveryShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
-        border: Border.all(color: AppColors.grey200),
+        border: Border.all(color: context.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.04),
@@ -320,7 +320,7 @@ class _RevenueBarChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: yInterval,
           getDrawingHorizontalLine: (_) => FlLine(
-            color: AppColors.grey100,
+            color: context.divider,
             strokeWidth: 1,
           ),
         ),

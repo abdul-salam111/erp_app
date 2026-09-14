@@ -100,9 +100,9 @@ class _CurrentBalanceCard extends StatelessWidget {
       width: double.infinity,
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(10),
-        border: Border.all(color: AppColors.grey200),
+        border: Border.all(color: context.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.07),

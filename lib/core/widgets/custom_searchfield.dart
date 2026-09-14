@@ -26,7 +26,7 @@ class CustomSearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     // Default colors based on theme
     final defaultFillColor = fillColor ?? context.surface;
-    final defaultBorderColor = borderColor ?? context.grey300.withValues(alpha: 0.6);
+    final defaultBorderColor = borderColor ?? context.border.withValues(alpha: 0.6);
 
     return TextField(
       autofocus: false,
@@ -41,7 +41,7 @@ class CustomSearchField extends StatelessWidget {
         hintStyle: context.bodySmall.copyWith(color: context.textSecondary),
         prefixIcon: Icon(
           Iconsax.search_normal,
-          color: context.grey500,
+          color: context.textSecondary,
           size: 20,
         ),
         filled: true,

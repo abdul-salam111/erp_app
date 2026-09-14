@@ -69,7 +69,7 @@ class _LeavesBody extends StatelessWidget {
             crossAxisAlignment: .stretch,
             children: [
               ColoredBox(
-                color: context.grey50,
+                color: context.surface,
                 child: Padding(
                   padding: context.pagePadding.copyWith(top: 16, bottom: 16),
                   child: MonthNavigator(
@@ -245,7 +245,7 @@ class _StatsCardState extends State<_StatsCard> {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(12),
         border: Border.all(color: context.border),
         boxShadow: [
@@ -306,7 +306,7 @@ class _StatsCardState extends State<_StatsCard> {
                         decoration: BoxDecoration(
                           color: isSelected
                               ? context.primary
-                              : context.grey50,
+                              : context.surface,
                           borderRadius: .circular(10),
                           border: isSelected
                               ? null
@@ -392,7 +392,7 @@ class _LeaveTile extends StatelessWidget {
         ),
       ),
       child: Container(
-        color: context.white,
+        color: context.surfaceElevated,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         child: Row(
           children: [
@@ -459,7 +459,7 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(14),
         border: Border.all(color: context.border),
       ),

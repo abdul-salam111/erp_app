@@ -34,7 +34,7 @@ class DocCard extends StatelessWidget {
       onLongPress: onLongPress,
       child: Container(
         decoration: BoxDecoration(
-          color: context.white,
+          color: context.surfaceElevated,
           borderRadius: BorderRadius.circular(8),
           boxShadow: const [
             BoxShadow(
@@ -57,11 +57,11 @@ class DocCard extends StatelessWidget {
                     File(document.imagePaths.first),
                     fit: .cover,
                     errorBuilder: (_, __, ___) => Container(
-                      color: context.grey50,
+                      color: context.surface,
                       child: Center(
                         child: Icon(
                           Icons.description_outlined,
-                          color: context.grey300,
+                          color: context.textDisabled,
                           size: 48,
                         ),
                       ),
@@ -128,7 +128,7 @@ class DocCard extends StatelessWidget {
                     Text(
                       document.name,
                       style: context.bodySmall.copyWith(
-                        color: context.black,
+                        color: context.textPrimary,
                         fontWeight: .w600,
                       ),
                       maxLines: 1,
@@ -140,13 +140,13 @@ class DocCard extends StatelessWidget {
                         Icon(
                           Icons.calendar_today_outlined,
                           size: 11,
-                          color: context.grey400,
+                          color: context.textSecondary,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           _formatDate(document.createdAt),
                           style: context.labelSmall.copyWith(
-                            color: context.grey400,
+                            color: context.textSecondary,
                           ),
                         ),
                       ],

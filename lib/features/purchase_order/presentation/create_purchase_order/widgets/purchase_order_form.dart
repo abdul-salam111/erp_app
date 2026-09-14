@@ -85,7 +85,7 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
     return Container(
       padding: .all(8),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
         border: Border.all(color: context.border),
       ),

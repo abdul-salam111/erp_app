@@ -24,13 +24,13 @@ class SaleOrderTable extends StatelessWidget {
       child: Column(
         children: [
           const _TableHeader(),
-          Divider(height: 1, thickness: 1, color: AppColors.grey200),
+          Divider(height: 1, thickness: 1, color: context.border),
           Expanded(
             child: ListView.separated(
               controller: scrollController,
               itemCount: orders.length,
               separatorBuilder: (_, __) =>
-                  Divider(height: 1, thickness: 1, color: AppColors.grey100),
+                  Divider(height: 1, thickness: 1, color: context.divider),
               itemBuilder: (_, i) => _OrderRow(
                 order: orders[i],
                 onView: onView != null ? () => onView!(orders[i]) : null,
@@ -140,7 +140,7 @@ class _OrderRowState extends State<_OrderRow> {
                           style: context.bodySmall.copyWith(
                             fontWeight: .w600,
                             fontSize: 12,
-                            color: AppColors.grey700,
+                            color: context.textPrimary,
                           ),
                           maxLines: 1,
                           overflow: .ellipsis,

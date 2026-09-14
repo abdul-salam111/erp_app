@@ -97,7 +97,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
 
         return Container(
           decoration: BoxDecoration(
-            color:        context.white,
+            color:        context.surfaceElevated,
             borderRadius: .circular(16),
             border:       Border.all(color: context.border),
             boxShadow: [
@@ -454,9 +454,9 @@ class _MonthStatCard extends StatelessWidget {
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color:        context.white,
+        color:        context.surfaceElevated,
         borderRadius: .circular(10),
-        border:       .all(color: AppColors.grey200),
+        border:       .all(color: context.border),
         boxShadow: [
           BoxShadow(
             color:      AppColors.black.withValues(alpha: 0.07),
@@ -594,7 +594,7 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
                   child: Container(
                     alignment: .center,
                     decoration: BoxDecoration(
-                      color:        isSelected ? context.primary : context.grey50,
+                      color:        isSelected ? context.primary : context.surface,
                       borderRadius: .circular(8),
                       border:       Border.all(
                         color: isSelected ? context.primary : context.border,

@@ -205,7 +205,7 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.grey200,
+      color: context.surfaceHeader,
       padding: const .symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
@@ -256,7 +256,7 @@ class _TableRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isAlt ? AppColors.tableRowAlt : AppColors.white,
+      color: isAlt ? context.tableRowAlt : context.surfaceElevated,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
@@ -326,7 +326,7 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: status.bgColor,
+        color: status.bgColor(context),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -436,7 +436,7 @@ class _LoanDetailSheet extends StatelessWidget {
             child: LinearProgressIndicator(
               value: record.repaidFraction,
               minHeight: 10,
-              backgroundColor: AppColors.grey200,
+              backgroundColor: context.divider,
               valueColor: AlwaysStoppedAnimation(
                 record.status == LoanStatus.overdue
                     ? AppColors.debitRed

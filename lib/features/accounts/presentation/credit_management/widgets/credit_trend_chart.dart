@@ -14,9 +14,9 @@ class CreditTrendChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
-        border: .all(color: AppColors.grey200),
+        border: .all(color: context.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.04),
@@ -200,7 +200,7 @@ class _ChartBody extends StatelessWidget {
             drawVerticalLine: false,
             horizontalInterval: yInterval,
             getDrawingHorizontalLine: (_) => FlLine(
-              color: AppColors.grey100,
+              color: context.divider,
               strokeWidth: 1,
             ),
           ),
@@ -219,7 +219,7 @@ class _ChartBody extends StatelessWidget {
                   radius: 3,
                   color: lineColor,
                   strokeWidth: 1.5,
-                  strokeColor: context.white,
+                  strokeColor: context.surfaceElevated,
                 ),
               ),
               belowBarData: BarAreaData(

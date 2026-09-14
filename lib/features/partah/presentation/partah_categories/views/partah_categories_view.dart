@@ -169,7 +169,7 @@ class _TableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final style = context.labelSmall.copyWith(fontWeight: .w700, color: context.textSecondary);
     return Container(
-      color: AppColors.grey200,
+      color: context.surfaceHeader,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Row(
         children: [

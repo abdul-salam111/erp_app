@@ -222,7 +222,7 @@ class _SearchField extends StatelessWidget {
     return Container(
       height: 42,
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surface,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: context.border),
       ),
@@ -273,7 +273,7 @@ class _ProductsTable extends StatelessWidget {
     return Column(
       children: [
         Container(
-          color: AppColors.grey200,
+          color: context.surfaceHeader,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Row(
             children: [

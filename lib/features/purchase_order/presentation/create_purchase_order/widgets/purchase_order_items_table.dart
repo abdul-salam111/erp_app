@@ -51,7 +51,7 @@ class PurchaseOrderItemsTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(8),
         border: Border.all(color: context.border),
       ),
@@ -59,7 +59,7 @@ class PurchaseOrderItemsTable extends StatelessWidget {
         crossAxisAlignment: .start,
         children: [
           const _TableHeader(),
-          Divider(height: 1, thickness: 1, color: AppColors.grey200),
+          Divider(height: 1, thickness: 1, color: context.border),
           ...rows.asMap().entries.map(
             (e) => Column(
               children: [
@@ -70,7 +70,7 @@ class PurchaseOrderItemsTable extends StatelessWidget {
                   onEdit: onEdit != null ? (updated) => onEdit!(e.key, updated) : null,
                 ),
                 if (e.key < rows.length - 1)
-                  Divider(height: 1, thickness: 1, color: AppColors.grey100),
+                  Divider(height: 1, thickness: 1, color: context.divider),
               ],
             ),
           ),
@@ -166,7 +166,7 @@ class _ItemRow extends StatelessWidget {
                 style: context.bodySmall.copyWith(
                   fontWeight: .w600,
                   fontSize: 12,
-                  color: AppColors.grey700,
+                  color: context.textPrimary,
                 ),
                 maxLines: 1,
                 overflow: .ellipsis,
@@ -236,7 +236,7 @@ class _RowDetailsSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: SafeArea(
@@ -316,7 +316,7 @@ class _RowDetailsSheet extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: context.grey50,
+                  color: context.surface,
                   borderRadius: .circular(10),
                   border: Border.all(color: context.border),
                 ),
@@ -385,7 +385,7 @@ class _RowDetailsSheet extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  color: context.grey50,
+                  color: context.surface,
                   borderRadius: .circular(10),
                   border: Border.all(color: context.border),
                 ),
@@ -637,7 +637,7 @@ class _AddRowSheetState extends State<_AddRowSheet> {
       child: Container(
       margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 80),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -888,7 +888,7 @@ class _ReadOnlyField extends StatelessWidget {
           height: 45,
           padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
-            color: context.grey50,
+            color: context.surface,
             borderRadius: .circular(6),
             border: Border.all(color: context.border),
           ),

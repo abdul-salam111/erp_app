@@ -51,10 +51,10 @@ class _RecoverySearchBarState extends State<RecoverySearchBar> {
               width: double.infinity,
               height: 46,
               decoration: BoxDecoration(
-                color: context.grey50,
+                color: context.surface,
                 borderRadius: .circular(10),
-                border: const Border(
-                  bottom: BorderSide(color: AppColors.grey200),
+                border: Border(
+                  bottom: BorderSide(color: context.border),
                 ),
               ),
               child: Row(
@@ -325,7 +325,7 @@ class _PageChip extends StatelessWidget {
           color: isSelected ? context.primary : AppColors.transparent,
           borderRadius: .circular(8),
           border: Border.all(
-            color: isSelected ? context.primary : AppColors.grey200,
+            color: isSelected ? context.primary : context.border,
             width: isSelected ? 0 : 1,
           ),
         ),
@@ -374,7 +374,7 @@ class _NavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = enabled ? context.primary : AppColors.grey300;
+    final color = enabled ? context.primary : context.textDisabled;
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: Container(
@@ -382,7 +382,7 @@ class _NavButton extends StatelessWidget {
         height: 32,
         decoration: BoxDecoration(
           borderRadius: .circular(8),
-          border: Border.all(color: enabled ? context.primary : AppColors.grey200),
+          border: Border.all(color: enabled ? context.primary : context.border),
           color: enabled
               ? context.primary.withValues(alpha: 0.06)
               : AppColors.transparent,
@@ -413,9 +413,9 @@ class _CustomerTile extends StatelessWidget {
     return Container(
       padding: .all(8),
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.surfaceElevated,
         borderRadius: .circular(10),
-        border: Border.all(color: AppColors.grey200),
+        border: Border.all(color: context.border),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.03),

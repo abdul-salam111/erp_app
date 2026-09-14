@@ -29,7 +29,7 @@ class MonthNavButton extends StatelessWidget {
         width: 30,
         height: 30,
         decoration: BoxDecoration(
-          color: disabled ? context.grey50 : context.white,
+          color: disabled ? context.surface : context.surfaceElevated,
           shape: .circle,
           border: Border.all(
             color: disabled
@@ -138,7 +138,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
   Widget build(BuildContext context) {
     final now = DateTime.now();
     return Dialog(
-      backgroundColor: context.grey50,
+      backgroundColor: context.surface,
       shape: RoundedRectangleBorder(borderRadius: .circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -183,7 +183,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
                       color: selected
                           ? context.primary
                           : selectable
-                          ? context.grey50
+                          ? context.surface
                           : context.transparent,
                       borderRadius: .circular(8),
                       border: Border.all(

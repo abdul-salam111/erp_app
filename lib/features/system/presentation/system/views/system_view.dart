@@ -332,7 +332,7 @@ class _SystemTileState extends State<_SystemTile> {
                 Icon(
                   Iconsax.arrow_right_3,
                   size: 18,
-                  color: context.grey400,
+                  color: context.textSecondary,
                 ),
               ],
             ),
