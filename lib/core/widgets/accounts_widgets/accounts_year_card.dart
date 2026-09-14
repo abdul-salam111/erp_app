@@ -52,7 +52,9 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
     if (scrollController.position.extentAfter < 300) {
       final total = _flatEntries.length;
       if (_visibleCount < total) {
-        setState(() => _visibleCount = (_visibleCount + _pageSize).clamp(0, total));
+        setState(
+          () => _visibleCount = (_visibleCount + _pageSize).clamp(0, total),
+        );
       }
     }
   }
@@ -67,7 +69,10 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
     return result;
   }
 
-  List<Widget> _buildPagedRows(List<_PagedEntry> entries, BuildContext context) {
+  List<Widget> _buildPagedRows(
+    List<_PagedEntry> entries,
+    BuildContext context,
+  ) {
     final rows = <Widget>[];
     String? lastType;
     for (final pagedEntry in entries) {
@@ -110,7 +115,6 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
       decoration: BoxDecoration(
         color: context.white,
         borderRadius: .circular(10),
-        border: Border.all(color: context.border),
       ),
       child: Column(
         children: [
@@ -118,7 +122,9 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
             padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
               color: AppColors.grey50,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(10),
+              ),
               border: Border(bottom: BorderSide(color: context.border)),
             ),
             child: Column(
