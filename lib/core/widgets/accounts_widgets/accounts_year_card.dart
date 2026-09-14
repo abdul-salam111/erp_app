@@ -203,7 +203,7 @@ class _TotalChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.white,
         borderRadius: .circular(8),
-        border: Border.all(color: context.border),
+        border: .all(color: context.border),
       ),
       child: Column(
         crossAxisAlignment: .start,
