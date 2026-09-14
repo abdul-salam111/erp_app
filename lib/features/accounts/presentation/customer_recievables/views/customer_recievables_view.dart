@@ -33,7 +33,7 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
   late DateTime _fromDate;
   late DateTime _toDate;
   bool _filterCollapsed = false;
-  late final TextEditingController _customerController;
+  late final TextEditingController _searchController;
   late final ScrollController _scrollController;
 
   @override
@@ -41,14 +41,15 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
     super.initState();
     _toDate = DateTime.now();
     _fromDate = _toDate.subtractMonths(1);
-    _customerController = TextEditingController();
+    _searchController = TextEditingController();
+    _searchController.addListener(() => setState(() {}));
     _scrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
   }
 
   @override
   void dispose() {
-    _customerController.dispose();
+    _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -74,12 +75,6 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
         toDate: _toDate.format('yyyy-MM-dd'),
       ),
     );
-  }
-
-  void _onPartyChanged(String name) {
-    final parties = context.read<CustomerRecievablesBloc>().state.parties;
-    final match = parties.where((p) => p.name == name).firstOrNull;
-    if (match != null) setState(() {});
   }
 
   Future<DateTime?> _pickDate(bool isFrom) async {
@@ -137,8 +132,8 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
                 alignment: Alignment.topCenter,
                 child: _filterCollapsed
                     ? AccountsCompactFilterBar(
-                        label: _customerController.text,
-                        placeholder: AppConstants.selectCustomer,
+                        label: _searchController.text,
+                        placeholder: AppConstants.customerReceivableLabel,
                         fromDate: _fromDate,
                         toDate: _toDate,
                         onExpand: () {
@@ -152,26 +147,14 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
                           }
                         },
                       )
-                    : BlocBuilder<
-                        CustomerRecievablesBloc,
-                        CustomerRecievablesState
-                      >(
-                        buildWhen: (p, c) =>
-                            p.parties != c.parties ||
-                            p.partiesStatus != c.partiesStatus,
-                        builder: (context, state) => AccountsFilterFormCompact(
-                          label: AppConstants.customerBtn,
-                          hintText: AppConstants.selectCustomerHint,
-                          items: state.parties.map((p) => p.name).toList(),
-                          isLoading:
-                              state.partiesStatus == ApiStatus.INITIAL ||
-                              state.partiesStatus == ApiStatus.LOADING,
-                          controller: _customerController,
-                          onItemChanged: _onPartyChanged,
-                          onPickDateRange: _showDateRangePopup,
-                          onView: _fetch,
-                          onPrint: _print,
+                    : AccountsFilterFormCompact(
+                        selectorOverride: AccountsSearchBar(
+                          controller: _searchController,
+                          hintText: AppConstants.searchCustomerHint,
                         ),
+                        onPickDateRange: _showDateRangePopup,
+                        onView: _fetch,
+                        onPrint: _print,
                       ),
               ),
               Expanded(
@@ -199,16 +182,28 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
                             );
                           }
                           if (state.apiStatus == ApiStatus.SUCCESS) {
-                            if (state.items.isEmpty) {
+                            final query = _searchController.text
+                                .trim()
+                                .toLowerCase();
+                            final filtered = query.isEmpty
+                                ? state.items
+                                : state.items
+                                      .where(
+                                        (i) => i.partyName
+                                            .toLowerCase()
+                                            .contains(query),
+                                      )
+                                      .toList();
+                            if (filtered.isEmpty) {
                               return const AccountsEmptyState();
                             }
                             return CustomerReceivablesTable(
-                              items: state.items,
+                              items: filtered,
                               scrollController: _scrollController,
                             );
                           }
                           return const AccountsIdleState(
-                            subtitle: AppConstants.selectACustomerAndTap,
+                            subtitle: AppConstants.selectDateRangeAndTapView,
                           );
                         },
                       ),

@@ -8,6 +8,7 @@ export 'accounts_info_row.dart';
 export 'accounts_ledger_detail_dialog.dart';
 export 'accounts_ledger_row.dart';
 export 'accounts_ledger_states.dart';
+export 'accounts_search_bar.dart';
 export 'accounts_section_label.dart';
 export 'accounts_shimmer_body.dart';
 export 'accounts_statements_body.dart';

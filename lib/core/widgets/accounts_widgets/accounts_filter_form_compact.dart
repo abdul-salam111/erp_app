@@ -15,31 +15,35 @@ import 'accounts_filter_form.dart';
 // "View"/"Print" are shown as two buttons instead of one "Apply" button.
 
 class AccountsFilterFormCompact extends StatelessWidget {
-  final String label;
-  final String hintText;
+  final String? label;
+  final String? hintText;
   final List<String> items;
   final List<String>? subtitles;
   final bool isLoading;
-  final TextEditingController controller;
-  final ValueChanged<String> onItemChanged;
+  final TextEditingController? controller;
+  final ValueChanged<String>? onItemChanged;
   final VoidCallback onPickDateRange;
   final VoidCallback onView;
   final VoidCallback onPrint;
   final bool showAccountSelector;
+  // Replaces the account/party dropdown with a custom widget (e.g. a search
+  // field) while keeping the same label + date-range-icon row layout.
+  final Widget? selectorOverride;
 
   const AccountsFilterFormCompact({
     super.key,
-    required this.label,
-    required this.hintText,
-    required this.items,
+    this.label,
+    this.hintText,
+    this.items = const [],
     this.subtitles,
     this.isLoading = false,
-    required this.controller,
-    required this.onItemChanged,
+    this.controller,
+    this.onItemChanged,
     required this.onPickDateRange,
     required this.onView,
     required this.onPrint,
     this.showAccountSelector = true,
+    this.selectorOverride,
   });
 
   @override
@@ -74,22 +78,26 @@ class AccountsFilterFormCompact extends StatelessWidget {
           crossAxisAlignment: .start,
           children: [
             if (showAccountSelector) ...[
-              FormLabel(text: label),
-              const SizedBox(height: 6),
+              if (selectorOverride == null) ...[
+                FormLabel(text: label ?? ''),
+                const SizedBox(height: 6),
+              ],
               Row(
                 crossAxisAlignment: .start,
                 children: [
                   Expanded(
-                    child: isLoading
-                        ? const ShimmerBox(height: 40, radius: 10)
-                        : SearchableDropdown(
-                            items: items,
-                            subtitles: subtitles,
-                            controller: controller,
-                            hintText: hintText,
-                            onChanged: onItemChanged,
-                            fieldHeight: 40,
-                          ),
+                    child:
+                        selectorOverride ??
+                        (isLoading
+                            ? const ShimmerBox(height: 40, radius: 10)
+                            : SearchableDropdown(
+                                items: items,
+                                subtitles: subtitles,
+                                controller: controller!,
+                                hintText: hintText ?? '',
+                                onChanged: onItemChanged ?? (_) {},
+                                fieldHeight: 40,
+                              )),
                   ),
                   const SizedBox(width: 8),
                   _DateRangeIconButton(onTap: onPickDateRange),

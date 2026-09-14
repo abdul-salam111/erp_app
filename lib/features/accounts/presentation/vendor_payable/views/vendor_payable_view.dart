@@ -32,7 +32,7 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
   late DateTime _fromDate;
   late DateTime _toDate;
   bool _filterCollapsed = false;
-  late final TextEditingController _vendorController;
+  late final TextEditingController _searchController;
   late final ScrollController _scrollController;
 
   @override
@@ -40,14 +40,15 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
     super.initState();
     _toDate = DateTime.now();
     _fromDate = _toDate.subtractMonths(1);
-    _vendorController = TextEditingController();
+    _searchController = TextEditingController();
+    _searchController.addListener(() => setState(() {}));
     _scrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
   }
 
   @override
   void dispose() {
-    _vendorController.dispose();
+    _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -130,8 +131,8 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
                 alignment: Alignment.topCenter,
                 child: _filterCollapsed
                     ? AccountsCompactFilterBar(
-                        label: _vendorController.text,
-                        placeholder: 'Select vendor…',
+                        label: _searchController.text,
+                        placeholder: AppConstants.vendorPayableLabel,
                         fromDate: _fromDate,
                         toDate: _toDate,
                         onExpand: () {
@@ -146,12 +147,10 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
                         },
                       )
                     : AccountsFilterFormCompact(
-                        label: 'Vendor',
-                        hintText: 'Select Vendor',
-                        items: const [],
-                        isLoading: false,
-                        controller: _vendorController,
-                        onItemChanged: (_) {},
+                        selectorOverride: AccountsSearchBar(
+                          controller: _searchController,
+                          hintText: AppConstants.searchVendorHint,
+                        ),
                         onPickDateRange: _showDateRangePopup,
                         onView: _fetch,
                         onPrint: _print,
@@ -177,16 +176,28 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
                         );
                       }
                       if (state.apiStatus == ApiStatus.SUCCESS) {
-                        if (state.items.isEmpty) {
+                        final query = _searchController.text
+                            .trim()
+                            .toLowerCase();
+                        final filtered = query.isEmpty
+                            ? state.items
+                            : state.items
+                                  .where(
+                                    (i) => i.partyName.toLowerCase().contains(
+                                      query,
+                                    ),
+                                  )
+                                  .toList();
+                        if (filtered.isEmpty) {
                           return const AccountsEmptyState();
                         }
                         return VendorPayableTable(
-                          items: state.items,
+                          items: filtered,
                           scrollController: _scrollController,
                         );
                       }
                       return const AccountsIdleState(
-                        subtitle: 'Select a vendor and tap View',
+                        subtitle: AppConstants.selectDateRangeAndTapView,
                       );
                     },
                   ),

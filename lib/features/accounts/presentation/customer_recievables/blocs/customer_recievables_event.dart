@@ -19,7 +19,3 @@ class CustomerRecievablesSubmitted extends CustomerRecievablesEvent {
   @override
   List<Object?> get props => [fromDate, toDate];
 }
-
-class CustomerRecievablesPartiesFetched extends CustomerRecievablesEvent {
-  const CustomerRecievablesPartiesFetched();
-}

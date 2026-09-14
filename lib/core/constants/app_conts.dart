@@ -91,7 +91,8 @@ class AppConstants {
   static const String checkInLabel = 'Check in';
   static const String totalHoursLabel = 'Total hours';
   static const String presentLabel = 'Present';
-  static const String biometricSyncNote = 'Synced from biometric attendance device';
+  static const String biometricSyncNote =
+      'Synced from biometric attendance device';
 
   static const String goodMorning = 'Good Morning';
   static const String goodAfternoon = 'Good Afternoon';
@@ -214,7 +215,6 @@ class AppConstants {
   static const String currencyLabel = 'Currency';
   static const String currencyRateLabel = 'Currency Rate';
   static const String currencyRate = 'Rate';
-    
 
   // ─── SaleOrder ─────────────────────────────────────────
   static const String saleOrderTitle = 'SaleOrder';
@@ -294,12 +294,10 @@ class AppConstants {
   static const String selectParty = 'Select party…';
   static const String selectPartyHint = 'Select Party';
   static const String selectAPartyAndTap = 'Select a party and tap View';
-  static const String customerBtn = 'Customer';
-  static const String selectCustomer = 'Select customer…';
-  static const String selectCustomerHint = 'Select Customer';
-  static const String selectACustomerAndTap = 'Select a customer and tap View';
-  static const String pleaseSelectACustomerFirstErrorMsg =
-      'Please select a customer first';
+  static const String searchCustomerHint = 'Search by customer name…';
+  static const String searchVendorHint = 'Search by vendor name…';
+  static const String selectDateRangeAndTapView =
+      'Select a date range and tap View';
   static const String openingLabel = 'Opening';
   static const String balanceLabel = 'Balance';
   static const String locationLabel = 'Location';

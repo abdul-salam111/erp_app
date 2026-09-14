@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
-import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/shared/shared_exports.dart';
 import '../../../accounts_exports.dart';
 
@@ -9,16 +8,10 @@ class CustomerRecievablesBloc
     extends Bloc<CustomerRecievablesEvent, CustomerRecievablesState>
     with UsecaseExecuterMixin {
   final CustomerRecievablesUsecase customerRecievablesUsecase;
-  final GetPartyListUsecase getPartyListUsecase;
 
-  CustomerRecievablesBloc({
-    required this.customerRecievablesUsecase,
-    required this.getPartyListUsecase,
-  }) : super(const CustomerRecievablesState()) {
+  CustomerRecievablesBloc({required this.customerRecievablesUsecase})
+    : super(const CustomerRecievablesState()) {
     on<CustomerRecievablesSubmitted>(_onSubmitted, transformer: restartable());
-    on<CustomerRecievablesPartiesFetched>(_onPartiesFetched, transformer: droppable());
-
-    add(const CustomerRecievablesPartiesFetched());
   }
 
   Future<void> _onSubmitted(
@@ -39,24 +32,6 @@ class CustomerRecievablesBloc
         items: data is List<CustomerReceivableItemEntity> ? data : null,
         message: error,
       ),
-    );
-  }
-
-  Future<void> _onPartiesFetched(
-    CustomerRecievablesPartiesFetched event,
-    Emitter<CustomerRecievablesState> emit,
-  ) async {
-    emit(state.copyWith(partiesStatus: ApiStatus.LOADING));
-    final result = await getPartyListUsecase(NoParams());
-    result.when(
-      failure: (failure) => emit(state.copyWith(
-        partiesStatus: ApiStatus.FAILURE,
-        message: failure.message,
-      )),
-      success: (parties) => emit(state.copyWith(
-        partiesStatus: ApiStatus.SUCCESS,
-        parties: parties,
-      )),
     );
   }
 }
