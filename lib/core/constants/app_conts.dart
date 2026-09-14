@@ -259,6 +259,10 @@ class AppConstants {
   static const String fromDateBtn = 'From Date';
   static const String toDateBtn = 'To Date';
   static const String view = 'Apply';
+  static const String viewLabel = 'View';
+  static const String printLabel = 'Print';
+  static const String selectDateRangeLabel = 'Select Date Range';
+  static const String featureComingSoonMsg = 'This feature is coming soon';
   static const String statementsBtn = 'Statements';
   static const String noLedgerDataAvailable = 'No ledger data available';
   static const String openingBalance = 'Opening balance';

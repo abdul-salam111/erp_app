@@ -80,7 +80,7 @@ class _CashbookBodyState extends State<_CashbookBody> {
     if (match != null && match.id != null) bloc.add(CashbookAccountSelected(match.id!));
   }
 
-  Future<void> _pickDate(bool isFrom) async {
+  Future<DateTime?> _pickDate(bool isFrom) async {
     final bloc = context.read<CashbookBloc>();
     final picked = await showCompactDatePicker(
       context: context,
@@ -93,6 +93,22 @@ class _CashbookBodyState extends State<_CashbookBody> {
           ? CashbookFromDateChanged(picked)
           : CashbookToDateChanged(picked));
     }
+    return picked;
+  }
+
+  void _showDateRangePopup() {
+    final bloc = context.read<CashbookBloc>();
+    showAccountsDateRangeDialog(
+      context,
+      fromDate: bloc.state.fromDate,
+      toDate: bloc.state.toDate,
+      onPick: _pickDate,
+    );
+  }
+
+  void _print() {
+    // TODO: wire up once a full-statement print/export endpoint exists.
+    AppToastsUtils.showInfoTop(context, AppConstants.featureComingSoonMsg);
   }
 
   @override
@@ -142,11 +158,9 @@ class _CashbookBodyState extends State<_CashbookBody> {
                           }
                         },
                       )
-                    : AccountsFilterForm(
+                    : AccountsFilterFormCompact(
                         label: AppConstants.accountBtn,
                         hintText: AppConstants.selectAccountHint,
-                        fromDate: state.fromDate,
-                        toDate: state.toDate,
                         items: state.accounts.map((a) => a.name).toList(),
                         subtitles:
                             state.accounts.map((a) => a.group ?? '').toList(),
@@ -155,9 +169,9 @@ class _CashbookBodyState extends State<_CashbookBody> {
                                 state.accountsStatus == ApiStatus.LOADING,
                         controller: _accountController,
                         onItemChanged: _onAccountChanged,
-                        onPickFrom: () => _pickDate(true),
-                        onPickTo: () => _pickDate(false),
+                        onPickDateRange: _showDateRangePopup,
                         onView: _fetch,
+                        onPrint: _print,
                       ),
               ),
             ),

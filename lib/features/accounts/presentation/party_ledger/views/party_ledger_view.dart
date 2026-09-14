@@ -83,7 +83,7 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
     if (match != null) setState(() => _selectedPartyId = match.id);
   }
 
-  Future<void> _pickDate(bool isFrom) async {
+  Future<DateTime?> _pickDate(bool isFrom) async {
     final picked = await showCompactDatePicker(
       context: context,
       initialDate: isFrom ? _fromDate : _toDate,
@@ -99,6 +99,21 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
         }
       });
     }
+    return picked;
+  }
+
+  void _showDateRangePopup() {
+    showAccountsDateRangeDialog(
+      context,
+      fromDate: _fromDate,
+      toDate: _toDate,
+      onPick: _pickDate,
+    );
+  }
+
+  void _print() {
+    // TODO: wire up once a full-statement print/export endpoint exists.
+    AppToastsUtils.showInfoTop(context, AppConstants.featureComingSoonMsg);
   }
 
   @override
@@ -143,20 +158,18 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
                       buildWhen: (p, c) =>
                           p.parties != c.parties ||
                           p.partiesStatus != c.partiesStatus,
-                      builder: (context, state) => AccountsFilterForm(
+                      builder: (context, state) => AccountsFilterFormCompact(
                         label: AppConstants.partyBtn,
                         hintText: AppConstants.selectPartyHint,
-                        fromDate: _fromDate,
-                        toDate: _toDate,
                         items: state.parties.map((p) => p.name).toList(),
                         isLoading:
                             state.partiesStatus == ApiStatus.INITIAL ||
                                 state.partiesStatus == ApiStatus.LOADING,
                         controller: _partyController,
                         onItemChanged: _onPartyChanged,
-                        onPickFrom: () => _pickDate(true),
-                        onPickTo: () => _pickDate(false),
+                        onPickDateRange: _showDateRangePopup,
                         onView: _fetch,
+                        onPrint: _print,
                       ),
                     ),
             ),

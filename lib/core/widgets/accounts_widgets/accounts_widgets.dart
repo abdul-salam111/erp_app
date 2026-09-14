@@ -2,6 +2,7 @@ export '../../../features/accounts/domain/entities/shared/ledger_entry_base.dart
 export 'accounts_amount_card.dart';
 export 'accounts_compact_filter_bar.dart';
 export 'accounts_filter_form.dart';
+export 'accounts_filter_form_compact.dart';
 export 'ledger_formate_balance.dart';
 export 'accounts_info_row.dart';
 export 'accounts_ledger_detail_dialog.dart';

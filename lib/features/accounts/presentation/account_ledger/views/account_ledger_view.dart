@@ -62,8 +62,14 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
   }
 
   void _onScroll() {
+    if (!_scrollController.hasClients) return;
     final bloc = context.read<AccountLedgerBloc>();
-    final collapsed = _scrollController.offset > 40;
+    // Only collapse when the list actually has enough content to scroll —
+    // otherwise the header shrinking grows the viewport, which shrinks
+    // maxScrollExtent back below the current offset and forces a
+    // correction that looks like the list auto-scrolling.
+    final canCollapse = _scrollController.position.maxScrollExtent > 0;
+    final collapsed = canCollapse && _scrollController.offset > 40;
     if (collapsed != bloc.state.filterCollapsed) {
       bloc.add(AccountLedgerFilterCollapsed(collapsed));
     }
@@ -91,7 +97,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
     if (match != null) bloc.add(AccountLedgerAccountSelected(match.id));
   }
 
-  Future<void> _pickDate(bool isFrom) async {
+  Future<DateTime?> _pickDate(bool isFrom) async {
     final bloc = context.read<AccountLedgerBloc>();
     final picked = await showCompactDatePicker(
       context: context,
@@ -106,6 +112,22 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
             : AccountLedgerToDateChanged(picked),
       );
     }
+    return picked;
+  }
+
+  void _showDateRangePopup() {
+    final bloc = context.read<AccountLedgerBloc>();
+    showAccountsDateRangeDialog(
+      context,
+      fromDate: bloc.state.fromDate,
+      toDate: bloc.state.toDate,
+      onPick: _pickDate,
+    );
+  }
+
+  void _print() {
+    // TODO: wire up once a full-statement print/export endpoint exists.
+    AppToastsUtils.showInfoTop(context, AppConstants.featureComingSoonMsg);
   }
 
   @override
@@ -162,11 +184,9 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                           }
                         },
                       )
-                    : AccountsFilterForm(
+                    : AccountsFilterFormCompact(
                         label: AppConstants.accountBtn,
                         hintText: AppConstants.selectAccountHint,
-                        fromDate: state.fromDate,
-                        toDate: state.toDate,
                         items: state.accounts.map((item) => item.name).toList(),
                         subtitles:
                             state.accounts.map((item) => item.group).toList(),
@@ -175,9 +195,9 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                             state.accountsStatus == ApiStatus.LOADING,
                         controller: _accountController,
                         onItemChanged: _onAccountChanged,
-                        onPickFrom: () => _pickDate(true),
-                        onPickTo: () => _pickDate(false),
+                        onPickDateRange: _showDateRangePopup,
                         onView: _fetch,
+                        onPrint: _print,
                         showAccountSelector: !widget.isEmployeeMode,
                       ),
               ),

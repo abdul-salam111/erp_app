@@ -67,7 +67,7 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
     );
   }
 
-  Future<void> _pickDate(bool isFrom) async {
+  Future<DateTime?> _pickDate(bool isFrom) async {
     final picked = await showCompactDatePicker(
       context: context,
       initialDate: isFrom ? _fromDate : _toDate,
@@ -83,6 +83,21 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
         }
       });
     }
+    return picked;
+  }
+
+  void _showDateRangePopup() {
+    showAccountsDateRangeDialog(
+      context,
+      fromDate: _fromDate,
+      toDate: _toDate,
+      onPick: _pickDate,
+    );
+  }
+
+  void _print() {
+    // TODO: wire up once a full-statement print/export endpoint exists.
+    AppToastsUtils.showInfoTop(context, AppConstants.featureComingSoonMsg);
   }
 
   @override
@@ -120,18 +135,16 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
                         }
                       },
                     )
-                  : AccountsFilterForm(
+                  : AccountsFilterFormCompact(
                       label: 'Vendor',
                       hintText: 'Select Vendor',
-                      fromDate: _fromDate,
-                      toDate: _toDate,
                       items: const [],
                       isLoading: false,
                       controller: _vendorController,
                       onItemChanged: (_) {},
-                      onPickFrom: () => _pickDate(true),
-                      onPickTo: () => _pickDate(false),
+                      onPickDateRange: _showDateRangePopup,
                       onView: _fetch,
+                      onPrint: _print,
                     ),
             ),
             Expanded(
