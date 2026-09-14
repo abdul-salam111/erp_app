@@ -107,11 +107,11 @@ class AppColors {
 
   static const Color border = grey200;
   static const Color borderLight = grey200;
-  static const Color borderDark = grey700;
+  static const Color borderDark = Color(0xFF4A4A4A);
 
   static const Color divider = grey200;
   static const Color dividerLight = grey200;
-  static const Color dividerDark = grey700;
+  static const Color dividerDark = Color(0xFF4A4A4A);
 
   // ============================================
   // OVERLAY COLORS

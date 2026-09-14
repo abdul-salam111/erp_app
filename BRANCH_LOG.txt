@@ -42,6 +42,15 @@ Admin dashboard and Accounts UI polish. Created from 1.0.1 on
   inline. Sticky filter bar on the main page kept as-is.
 - Removed the now-dead todayOverviewExpanded state/event/handler from
   both AdminDashboardBloc and AccountsBloc.
+- Dark theme: wired up the ThemeBloc/AppThemes infrastructure that
+  already existed but was never connected (main.dart hardcoded
+  themeMode to light, and nothing ever toggled it). Added a working
+  Dark Mode switch on the Profile screen, filled in missing dark
+  variants for ad-hoc surface colors (table row alternation, shimmer,
+  section headers, login background, debit/credit containers), and
+  swept the app (~110 files) replacing hardcoded AppColors.*/Colors.*
+  with theme-aware context.* getters so screens actually render
+  correctly in both light and dark mode.
 
 ============================================================
 1.0.1

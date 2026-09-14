@@ -130,25 +130,6 @@ class _ProfileBody extends StatelessWidget {
 
                   const SizedBox(height: 14),
 
-                  BlocBuilder<ThemeBloc, ThemeState>(
-                    builder: (context, themeState) => _CardContainer(
-                      padding: EdgeInsets.zero,
-                      child: SwitchListTile(
-                        title: const Text('Dark Mode'),
-                        value: themeState.isDarkMode,
-                        onChanged: (_) =>
-                            context.read<ThemeBloc>().add(ToggleTheme()),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 14),
-
                   BlocBuilder<ApiDebugCubit, ApiDebugState>(
                     buildWhen: (previous, current) =>
                         previous.isEnabled != current.isEnabled,
@@ -242,7 +223,7 @@ class _ProfileHeader extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: .center,
                   children: [
-                    // Top bar: back
+                    // Top bar: back + theme toggle
                     Row(
                       children: [
                         GestureDetector(
@@ -257,6 +238,27 @@ class _ProfileHeader extends StatelessWidget {
                               Icons.arrow_back_ios_new_rounded,
                               color: AppColors.white,
                               size: 16,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        BlocBuilder<ThemeBloc, ThemeState>(
+                          builder: (context, themeState) => GestureDetector(
+                            onTap: () =>
+                                context.read<ThemeBloc>().add(ToggleTheme()),
+                            child: Container(
+                              padding: .all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.white.withValues(alpha: 0.15),
+                                borderRadius: .circular(10),
+                              ),
+                              child: Icon(
+                                themeState.isDarkMode
+                                    ? Icons.dark_mode_rounded
+                                    : Icons.light_mode_rounded,
+                                color: AppColors.white,
+                                size: 18,
+                              ),
                             ),
                           ),
                         ),
