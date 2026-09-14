@@ -169,7 +169,7 @@ class _QuickActionCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: Container(
         decoration: BoxDecoration(
-          color: item.color.withValues(alpha: 0.12),
+          color: item.color.withValues(alpha: context.isDark ? 0.22 : 0.12),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -189,13 +189,13 @@ class _QuickActionCard extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Icon(item.icon, color: item.color, size: 20),
+              child: Icon(item.icon, color: _legibleColor(context, item.color), size: 20),
             ),
             const SizedBox(height: 6),
             Text(
               item.label,
               style: context.labelSmall.copyWith(
-                color: item.color,
+                color: _legibleColor(context, item.color),
                 fontWeight: .w600,
                 fontSize: 11,
               ),
@@ -209,6 +209,13 @@ class _QuickActionCard extends StatelessWidget {
     );
   }
 }
+
+/// Module accent colors (e.g. brown, deepPurple, tealDark) are tuned for
+/// light backgrounds and lose contrast against the dark, low-alpha-tinted
+/// card background used here in dark mode — lighten them so they stay
+/// legible without losing their per-category identity.
+Color _legibleColor(BuildContext context, Color base) =>
+    context.isDark ? Color.lerp(base, Colors.white, 0.35)! : base;
 
 class _PageDot extends StatelessWidget {
   final bool active;

@@ -145,7 +145,7 @@ class _QACard extends StatelessWidget {
       borderRadius: .circular(10),
       child: Container(
         decoration: BoxDecoration(
-          color: item.color.withValues(alpha: 0.10),
+          color: item.color.withValues(alpha: context.isDark ? 0.20 : 0.10),
           borderRadius: .circular(10),
         ),
         child: Column(
@@ -165,7 +165,7 @@ class _QACard extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Icon(item.icon, color: item.color, size: 18),
+              child: Icon(item.icon, color: _legibleColor(context, item.color), size: 18),
             ),
             const SizedBox(height: 6),
             Padding(
@@ -173,7 +173,7 @@ class _QACard extends StatelessWidget {
               child: Text(
                 item.label,
                 style: context.labelSmall.copyWith(
-                  color: item.color,
+                  color: _legibleColor(context, item.color),
                   fontWeight: .w600,
                   fontSize: 12,
                 ),
@@ -188,6 +188,13 @@ class _QACard extends StatelessWidget {
     );
   }
 }
+
+/// Module accent colors (e.g. blueGrey, tealDark) are tuned for light
+/// backgrounds and lose contrast against the dark, low-alpha-tinted card
+/// background used here in dark mode — lighten them so they stay legible
+/// without losing their per-category identity.
+Color _legibleColor(BuildContext context, Color base) =>
+    context.isDark ? Color.lerp(base, Colors.white, 0.35)! : base;
 
 class _QAItem {
   final String label;
