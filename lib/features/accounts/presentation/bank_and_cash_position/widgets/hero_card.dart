@@ -125,6 +125,8 @@ class BankAndCashHeroCard extends StatelessWidget {
                               getTooltipColor: (_) => context.surface,
                               tooltipRoundedRadius: 8,
                               tooltipBorder: BorderSide(color: context.border),
+                              fitInsideVertically: true,
+                              fitInsideHorizontally: true,
                               getTooltipItems: (touchedSpots) => touchedSpots
                                   .map(
                                     (spot) => LineTooltipItem(

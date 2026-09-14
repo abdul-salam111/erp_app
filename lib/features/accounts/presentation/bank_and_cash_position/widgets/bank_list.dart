@@ -20,7 +20,7 @@ class BankAndCashList extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 0, 0, 12),
       decoration: BoxDecoration(
-        color: context.surface,
+        color: context.surfaceElevated,
         border: .all(color: context.border),
         boxShadow: [
           BoxShadow(
@@ -51,7 +51,7 @@ class BankAndCashListShimmer extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(0, 0, 0, 12),
       decoration: BoxDecoration(
-        color: context.surface,
+        color: context.surfaceElevated,
         border: Border.all(color: context.border),
       ),
       clipBehavior: .hardEdge,
