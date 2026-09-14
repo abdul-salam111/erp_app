@@ -43,7 +43,6 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
     super.initState();
     _accountController = TextEditingController();
     _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.isEmployeeMode) {
         _fetch();
@@ -62,16 +61,25 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
     super.dispose();
   }
 
-  void _onScroll() {
-    if (!_scrollController.hasClients) return;
-    final bloc = context.read<AccountLedgerBloc>();
-    final maxExtent = _scrollController.position.maxScrollExtent;
-    final canCollapse = maxExtent > 0;
-    final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
-    final collapsed = canCollapse && _scrollController.offset > threshold;
-    if (collapsed != bloc.state.filterCollapsed) {
-      bloc.add(AccountLedgerFilterCollapsed(collapsed));
+  // Only react to real finger-drag scroll updates. Collapsing the header
+  // shrinks the viewport, which shrinks maxScrollExtent and clamps the
+  // offset back down — that correction also fires a scroll notification,
+  // and reacting to it would toggle collapsed again, causing the list to
+  // appear to auto-scroll. Programmatic corrections have no dragDetails,
+  // so filtering on that alone breaks the feedback loop.
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification &&
+        notification.dragDetails != null) {
+      final bloc = context.read<AccountLedgerBloc>();
+      final maxExtent = notification.metrics.maxScrollExtent;
+      if (maxExtent <= 0) return false;
+      final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
+      final collapsed = notification.metrics.pixels > threshold;
+      if (collapsed != bloc.state.filterCollapsed) {
+        bloc.add(AccountLedgerFilterCollapsed(collapsed));
+      }
     }
+    return false;
   }
 
   void _fetch() {
@@ -153,99 +161,104 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
       child: Scaffold(
         backgroundColor: context.grey50,
         appBar: CustomAppBar(title: AppConstants.accountLedgerLabel),
-        body: Column(
-          children: [
-            BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
-              buildWhen: (p, c) =>
-                  p.filterCollapsed != c.filterCollapsed ||
-                  p.fromDate != c.fromDate ||
-                  p.toDate != c.toDate ||
-                  p.accounts != c.accounts ||
-                  p.accountsStatus != c.accountsStatus,
-              builder: (context, state) => AnimatedSize(
-                duration: const Duration(milliseconds: 260),
-                curve: Curves.easeInOut,
-                alignment: Alignment.topCenter,
-                child: state.filterCollapsed
-                    ? AccountsCompactFilterBar(
-                        label: widget.isEmployeeMode
-                            ? ''
-                            : _accountController.text,
-                        placeholder: widget.isEmployeeMode
-                            ? ''
-                            : AppConstants.selectAccount,
-                        fromDate: state.fromDate,
-                        toDate: state.toDate,
-                        onExpand: () {
-                          context.read<AccountLedgerBloc>().add(
-                            const AccountLedgerFilterCollapsed(false),
-                          );
-                          if (_scrollController.hasClients) {
-                            _scrollController.animateTo(
-                              0,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeOut,
+        body: NotificationListener<ScrollNotification>(
+          onNotification: _handleScrollNotification,
+          child: Column(
+            children: [
+              BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
+                buildWhen: (p, c) =>
+                    p.filterCollapsed != c.filterCollapsed ||
+                    p.fromDate != c.fromDate ||
+                    p.toDate != c.toDate ||
+                    p.accounts != c.accounts ||
+                    p.accountsStatus != c.accountsStatus,
+                builder: (context, state) => AnimatedSize(
+                  duration: const Duration(milliseconds: 260),
+                  curve: Curves.easeInOut,
+                  alignment: Alignment.topCenter,
+                  child: state.filterCollapsed
+                      ? AccountsCompactFilterBar(
+                          label: widget.isEmployeeMode
+                              ? ''
+                              : _accountController.text,
+                          placeholder: widget.isEmployeeMode
+                              ? ''
+                              : AppConstants.selectAccount,
+                          fromDate: state.fromDate,
+                          toDate: state.toDate,
+                          onExpand: () {
+                            context.read<AccountLedgerBloc>().add(
+                              const AccountLedgerFilterCollapsed(false),
                             );
-                          }
-                        },
-                      )
-                    : AccountsFilterFormCompact(
-                        label: AppConstants.accountBtn,
-                        hintText: AppConstants.selectAccountHint,
-                        items: state.accounts.map((item) => item.name).toList(),
-                        subtitles: state.accounts
-                            .map((item) => item.group)
-                            .toList(),
-                        isLoading:
-                            state.accountsStatus == ApiStatus.INITIAL ||
-                            state.accountsStatus == ApiStatus.LOADING,
-                        controller: _accountController,
-                        onItemChanged: _onAccountChanged,
-                        onPickDateRange: _showDateRangePopup,
-                        onView: _fetch,
-                        onPrint: _print,
-                        showAccountSelector: !widget.isEmployeeMode,
-                      ),
-              ),
-            ),
-
-            Expanded(
-              child: ColoredBox(
-                color: context.white,
-                child: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
-                  buildWhen: (previous, current) =>
-                      previous.apiStatus != current.apiStatus ||
-                      previous.message != current.message ||
-                      previous.statements != current.statements,
-                  builder: (context, state) {
-                    if (state.apiStatus == ApiStatus.INITIAL) {
-                      return const AccountsIdleState(
-                        subtitle: AppConstants.selectAnAccountAndTap,
-                      );
-                    }
-                    if (state.apiStatus == ApiStatus.LOADING) {
-                      return const AccountsShimmerBody();
-                    }
-                    if (state.apiStatus == ApiStatus.FAILURE) {
-                      return AccountsErrorBody(
-                        message:
-                            state.message ?? AppConstants.somethingWentWrong,
-                        onRetry: _fetch,
-                      );
-                    }
-                    if (state.apiStatus == ApiStatus.SUCCESS &&
-                        state.statements.isEmpty) {
-                      return const AccountsEmptyState();
-                    }
-                    return LedgerStatementsBody(
-                      statements: state.statements,
-                      scrollController: _scrollController,
-                    );
-                  },
+                            if (_scrollController.hasClients) {
+                              _scrollController.animateTo(
+                                0,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                              );
+                            }
+                          },
+                        )
+                      : AccountsFilterFormCompact(
+                          label: AppConstants.accountBtn,
+                          hintText: AppConstants.selectAccountHint,
+                          items: state.accounts
+                              .map((item) => item.name)
+                              .toList(),
+                          subtitles: state.accounts
+                              .map((item) => item.group)
+                              .toList(),
+                          isLoading:
+                              state.accountsStatus == ApiStatus.INITIAL ||
+                              state.accountsStatus == ApiStatus.LOADING,
+                          controller: _accountController,
+                          onItemChanged: _onAccountChanged,
+                          onPickDateRange: _showDateRangePopup,
+                          onView: _fetch,
+                          onPrint: _print,
+                          showAccountSelector: !widget.isEmployeeMode,
+                        ),
                 ),
               ),
-            ),
-          ],
+
+              Expanded(
+                child: ColoredBox(
+                  color: context.white,
+                  child: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
+                    buildWhen: (previous, current) =>
+                        previous.apiStatus != current.apiStatus ||
+                        previous.message != current.message ||
+                        previous.statements != current.statements,
+                    builder: (context, state) {
+                      if (state.apiStatus == ApiStatus.INITIAL) {
+                        return const AccountsIdleState(
+                          subtitle: AppConstants.selectAnAccountAndTap,
+                        );
+                      }
+                      if (state.apiStatus == ApiStatus.LOADING) {
+                        return const AccountsShimmerBody();
+                      }
+                      if (state.apiStatus == ApiStatus.FAILURE) {
+                        return AccountsErrorBody(
+                          message:
+                              state.message ?? AppConstants.somethingWentWrong,
+                          onRetry: _fetch,
+                        );
+                      }
+                      if (state.apiStatus == ApiStatus.SUCCESS &&
+                          state.statements.isEmpty) {
+                        return const AccountsEmptyState();
+                      }
+                      return LedgerStatementsBody(
+                        statements: state.statements,
+                        scrollController: _scrollController,
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -46,7 +46,6 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
     _fromDate = _toDate.subtractMonths(1);
     _partyController = TextEditingController();
     _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -56,29 +55,36 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
     super.dispose();
   }
 
-  void _onScroll() {
-    if (!_scrollController.hasClients) return;
-    final maxExtent = _scrollController.position.maxScrollExtent;
-    final canCollapse = maxExtent > 0;
-    final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
-    final collapsed = canCollapse && _scrollController.offset > threshold;
-    if (collapsed != _filterCollapsed) setState(() => _filterCollapsed = collapsed);
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification &&
+        notification.dragDetails != null) {
+      final maxExtent = notification.metrics.maxScrollExtent;
+      if (maxExtent <= 0) return false;
+      final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
+      final collapsed = notification.metrics.pixels > threshold;
+      if (collapsed != _filterCollapsed) {
+        setState(() => _filterCollapsed = collapsed);
+      }
+    }
+    return false;
   }
 
   void _fetch() {
     if (_selectedPartyId == null) {
       AppToastsUtils.showErrorTop(
-          context, AppConstants.pleaseSelectAPartyFirstErrorMsg);
+        context,
+        AppConstants.pleaseSelectAPartyFirstErrorMsg,
+      );
       return;
     }
     setState(() => _filterCollapsed = false);
     context.read<PartyLedgerBloc>().add(
-          PartyLedgerSubmitted(
-            fromDate: _fromDate.format('yyyy-MM-dd'),
-            toDate: _toDate.format('yyyy-MM-dd'),
-            partyId: _selectedPartyId,
-          ),
-        );
+      PartyLedgerSubmitted(
+        fromDate: _fromDate.format('yyyy-MM-dd'),
+        toDate: _toDate.format('yyyy-MM-dd'),
+        partyId: _selectedPartyId,
+      ),
+    );
   }
 
   void _onPartyChanged(String name) {
@@ -130,91 +136,96 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
         }
         if (state.pdfStatus == ApiStatus.SUCCESS && state.pdfUrl != null) {
           AppToastsUtils.showSuccessTop(
-              context, AppConstants.invoiceReadySuccessMsg);
+            context,
+            AppConstants.invoiceReadySuccessMsg,
+          );
         }
       },
       child: Scaffold(
         appBar: CustomAppBar(title: AppConstants.partyLedgerLabel),
-        body: Column(
-          children: [
-            AnimatedSize(
-              duration: const Duration(milliseconds: 260),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              child: _filterCollapsed
-                  ? AccountsCompactFilterBar(
-                      label: _partyController.text,
-                      placeholder: AppConstants.selectParty,
-                      fromDate: _fromDate,
-                      toDate: _toDate,
-                      onExpand: () {
-                        setState(() => _filterCollapsed = false);
-                        if (_scrollController.hasClients) {
-                          _scrollController.animateTo(
-                            0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                        }
-                      },
-                    )
-                  : BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
-                      buildWhen: (p, c) =>
-                          p.parties != c.parties ||
-                          p.partiesStatus != c.partiesStatus,
-                      builder: (context, state) => AccountsFilterFormCompact(
-                        label: AppConstants.partyBtn,
-                        hintText: AppConstants.selectPartyHint,
-                        items: state.parties.map((p) => p.name).toList(),
-                        isLoading:
-                            state.partiesStatus == ApiStatus.INITIAL ||
-                                state.partiesStatus == ApiStatus.LOADING,
-                        controller: _partyController,
-                        onItemChanged: _onPartyChanged,
-                        onPickDateRange: _showDateRangePopup,
-                        onView: _fetch,
-                        onPrint: _print,
+        body: NotificationListener<ScrollNotification>(
+          onNotification: _handleScrollNotification,
+          child: Column(
+            children: [
+              AnimatedSize(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeInOut,
+                alignment: Alignment.topCenter,
+                child: _filterCollapsed
+                    ? AccountsCompactFilterBar(
+                        label: _partyController.text,
+                        placeholder: AppConstants.selectParty,
+                        fromDate: _fromDate,
+                        toDate: _toDate,
+                        onExpand: () {
+                          setState(() => _filterCollapsed = false);
+                          if (_scrollController.hasClients) {
+                            _scrollController.animateTo(
+                              0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
+                          }
+                        },
+                      )
+                    : BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
+                        buildWhen: (p, c) =>
+                            p.parties != c.parties ||
+                            p.partiesStatus != c.partiesStatus,
+                        builder: (context, state) => AccountsFilterFormCompact(
+                          label: AppConstants.partyBtn,
+                          hintText: AppConstants.selectPartyHint,
+                          items: state.parties.map((p) => p.name).toList(),
+                          isLoading:
+                              state.partiesStatus == ApiStatus.INITIAL ||
+                              state.partiesStatus == ApiStatus.LOADING,
+                          controller: _partyController,
+                          onItemChanged: _onPartyChanged,
+                          onPickDateRange: _showDateRangePopup,
+                          onView: _fetch,
+                          onPrint: _print,
+                        ),
                       ),
-                    ),
-            ),
-            Expanded(
-              child: ColoredBox(
-                color: context.white,
-                child: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
-                  buildWhen: (previous, current) =>
-                      previous.apiStatus != current.apiStatus ||
-                      previous.message != current.message ||
-                      previous.statements != current.statements,
-                  builder: (context, state) {
-                    if (state.apiStatus == ApiStatus.INITIAL) {
-                      return const AccountsIdleState(
-                        subtitle: AppConstants.selectAPartyAndTap,
+              ),
+              Expanded(
+                child: ColoredBox(
+                  color: context.white,
+                  child: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
+                    buildWhen: (previous, current) =>
+                        previous.apiStatus != current.apiStatus ||
+                        previous.message != current.message ||
+                        previous.statements != current.statements,
+                    builder: (context, state) {
+                      if (state.apiStatus == ApiStatus.INITIAL) {
+                        return const AccountsIdleState(
+                          subtitle: AppConstants.selectAPartyAndTap,
+                        );
+                      }
+                      if (state.apiStatus == ApiStatus.LOADING) {
+                        return const AccountsShimmerBody();
+                      }
+                      if (state.apiStatus == ApiStatus.FAILURE) {
+                        return AccountsErrorBody(
+                          message:
+                              state.message ?? AppConstants.somethingWentWrong,
+                          onRetry: _fetch,
+                        );
+                      }
+                      if (state.apiStatus == ApiStatus.SUCCESS &&
+                          state.statements.isEmpty) {
+                        return const AccountsEmptyState();
+                      }
+                      return PartyStatementsBody(
+                        statements: state.statements,
+                        scrollController: _scrollController,
+                        partyName: _partyController.text,
                       );
-                    }
-                    if (state.apiStatus == ApiStatus.LOADING) {
-                      return const AccountsShimmerBody();
-                    }
-                    if (state.apiStatus == ApiStatus.FAILURE) {
-                      return AccountsErrorBody(
-                        message:
-                            state.message ?? AppConstants.somethingWentWrong,
-                        onRetry: _fetch,
-                      );
-                    }
-                    if (state.apiStatus == ApiStatus.SUCCESS &&
-                        state.statements.isEmpty) {
-                      return const AccountsEmptyState();
-                    }
-                    return PartyStatementsBody(
-                      statements: state.statements,
-                      scrollController: _scrollController,
-                      partyName: _partyController.text,
-                    );
-                  },
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

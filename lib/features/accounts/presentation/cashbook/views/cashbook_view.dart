@@ -42,7 +42,6 @@ class _CashbookBodyState extends State<_CashbookBody> {
     super.initState();
     _accountController = TextEditingController();
     _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -52,36 +51,45 @@ class _CashbookBodyState extends State<_CashbookBody> {
     super.dispose();
   }
 
-  void _onScroll() {
-    if (!_scrollController.hasClients) return;
-    final bloc = context.read<CashbookBloc>();
-    final maxExtent = _scrollController.position.maxScrollExtent;
-    final canCollapse = maxExtent > 0;
-    final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
-    final collapsed = canCollapse && _scrollController.offset > threshold;
-    if (collapsed != bloc.state.filterCollapsed) {
-      bloc.add(CashbookFilterCollapsed(collapsed));
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification &&
+        notification.dragDetails != null) {
+      final bloc = context.read<CashbookBloc>();
+      final maxExtent = notification.metrics.maxScrollExtent;
+      if (maxExtent <= 0) return false;
+      final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
+      final collapsed = notification.metrics.pixels > threshold;
+      if (collapsed != bloc.state.filterCollapsed) {
+        bloc.add(CashbookFilterCollapsed(collapsed));
+      }
     }
+    return false;
   }
 
   void _fetch() {
     final bloc = context.read<CashbookBloc>();
     if (bloc.state.selectedAccountId == null) {
       AppToastsUtils.showErrorTop(
-          context, AppConstants.pleaseSelectAnAccountFirstErrorMsg);
+        context,
+        AppConstants.pleaseSelectAnAccountFirstErrorMsg,
+      );
       return;
     }
-    bloc.add(CashbookSubmitted(
-      fromDate: bloc.state.fromDate.format('yyyy-MM-dd'),
-      toDate: bloc.state.toDate.format('yyyy-MM-dd'),
-      accountId: bloc.state.selectedAccountId,
-    ));
+    bloc.add(
+      CashbookSubmitted(
+        fromDate: bloc.state.fromDate.format('yyyy-MM-dd'),
+        toDate: bloc.state.toDate.format('yyyy-MM-dd'),
+        accountId: bloc.state.selectedAccountId,
+      ),
+    );
   }
 
   void _onAccountChanged(String name) {
     final bloc = context.read<CashbookBloc>();
     final match = bloc.state.accounts.where((a) => a.name == name).firstOrNull;
-    if (match != null && match.id != null) bloc.add(CashbookAccountSelected(match.id!));
+    if (match != null && match.id != null) {
+      bloc.add(CashbookAccountSelected(match.id!));
+    }
   }
 
   Future<DateTime?> _pickDate(bool isFrom) async {
@@ -93,9 +101,11 @@ class _CashbookBodyState extends State<_CashbookBody> {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      bloc.add(isFrom
-          ? CashbookFromDateChanged(picked)
-          : CashbookToDateChanged(picked));
+      bloc.add(
+        isFrom
+            ? CashbookFromDateChanged(picked)
+            : CashbookToDateChanged(picked),
+      );
     }
     return picked;
   }
@@ -125,97 +135,103 @@ class _CashbookBodyState extends State<_CashbookBody> {
         }
         if (state.pdfStatus == ApiStatus.SUCCESS && state.pdfUrl != null) {
           AppToastsUtils.showSuccessTop(
-              context, AppConstants.invoiceReadySuccessMsg);
+            context,
+            AppConstants.invoiceReadySuccessMsg,
+          );
         }
       },
       child: Scaffold(
         appBar: CustomAppBar(title: AppConstants.cashbookLabel),
-        body: Column(
-          children: [
-            BlocBuilder<CashbookBloc, CashbookState>(
-              buildWhen: (p, c) =>
-                  p.filterCollapsed != c.filterCollapsed ||
-                  p.fromDate != c.fromDate ||
-                  p.toDate != c.toDate ||
-                  p.accounts != c.accounts ||
-                  p.accountsStatus != c.accountsStatus,
-              builder: (context, state) => AnimatedSize(
-                duration: const Duration(milliseconds: 260),
-                curve: Curves.easeInOut,
-                alignment: .topCenter,
-                child: state.filterCollapsed
-                    ? AccountsCompactFilterBar(
-                        label: _accountController.text,
-                        placeholder: AppConstants.selectAccount,
-                        fromDate: state.fromDate,
-                        toDate: state.toDate,
-                        onExpand: () {
-                          context
-                              .read<CashbookBloc>()
-                              .add(const CashbookFilterCollapsed(false));
-                          if (_scrollController.hasClients) {
-                            _scrollController.animateTo(
-                              0,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeOut,
+        body: NotificationListener<ScrollNotification>(
+          onNotification: _handleScrollNotification,
+          child: Column(
+            children: [
+              BlocBuilder<CashbookBloc, CashbookState>(
+                buildWhen: (p, c) =>
+                    p.filterCollapsed != c.filterCollapsed ||
+                    p.fromDate != c.fromDate ||
+                    p.toDate != c.toDate ||
+                    p.accounts != c.accounts ||
+                    p.accountsStatus != c.accountsStatus,
+                builder: (context, state) => AnimatedSize(
+                  duration: const Duration(milliseconds: 260),
+                  curve: Curves.easeInOut,
+                  alignment: .topCenter,
+                  child: state.filterCollapsed
+                      ? AccountsCompactFilterBar(
+                          label: _accountController.text,
+                          placeholder: AppConstants.selectAccount,
+                          fromDate: state.fromDate,
+                          toDate: state.toDate,
+                          onExpand: () {
+                            context.read<CashbookBloc>().add(
+                              const CashbookFilterCollapsed(false),
                             );
-                          }
-                        },
-                      )
-                    : AccountsFilterFormCompact(
-                        label: AppConstants.accountBtn,
-                        hintText: AppConstants.selectAccountHint,
-                        items: state.accounts.map((a) => a.name).toList(),
-                        subtitles:
-                            state.accounts.map((a) => a.group ?? '').toList(),
-                        isLoading:
-                            state.accountsStatus == ApiStatus.INITIAL ||
-                                state.accountsStatus == ApiStatus.LOADING,
-                        controller: _accountController,
-                        onItemChanged: _onAccountChanged,
-                        onPickDateRange: _showDateRangePopup,
-                        onView: _fetch,
-                        onPrint: _print,
-                      ),
-              ),
-            ),
-            Expanded(
-              child: ColoredBox(
-                color: context.white,
-                child: BlocBuilder<CashbookBloc, CashbookState>(
-                  buildWhen: (previous, current) =>
-                      previous.apiStatus != current.apiStatus ||
-                      previous.message != current.message ||
-                      previous.statements != current.statements,
-                  builder: (context, state) {
-                    if (state.apiStatus == ApiStatus.INITIAL) {
-                      return const AccountsIdleState(
-                        subtitle: AppConstants.selectAnAccountAndTap,
-                      );
-                    }
-                    if (state.apiStatus == ApiStatus.LOADING) {
-                      return const AccountsShimmerBody();
-                    }
-                    if (state.apiStatus == ApiStatus.FAILURE) {
-                      return AccountsErrorBody(
-                        message:
-                            state.message ?? AppConstants.somethingWentWrong,
-                        onRetry: _fetch,
-                      );
-                    }
-                    if (state.apiStatus == ApiStatus.SUCCESS &&
-                        state.statements.isEmpty) {
-                      return const AccountsEmptyState();
-                    }
-                    return CashbookStatementsBody(
-                      statements: state.statements,
-                      scrollController: _scrollController,
-                    );
-                  },
+                            if (_scrollController.hasClients) {
+                              _scrollController.animateTo(
+                                0,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                              );
+                            }
+                          },
+                        )
+                      : AccountsFilterFormCompact(
+                          label: AppConstants.accountBtn,
+                          hintText: AppConstants.selectAccountHint,
+                          items: state.accounts.map((a) => a.name).toList(),
+                          subtitles: state.accounts
+                              .map((a) => a.group ?? '')
+                              .toList(),
+                          isLoading:
+                              state.accountsStatus == ApiStatus.INITIAL ||
+                              state.accountsStatus == ApiStatus.LOADING,
+                          controller: _accountController,
+                          onItemChanged: _onAccountChanged,
+                          onPickDateRange: _showDateRangePopup,
+                          onView: _fetch,
+                          onPrint: _print,
+                        ),
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                child: ColoredBox(
+                  color: context.white,
+                  child: BlocBuilder<CashbookBloc, CashbookState>(
+                    buildWhen: (previous, current) =>
+                        previous.apiStatus != current.apiStatus ||
+                        previous.message != current.message ||
+                        previous.statements != current.statements,
+                    builder: (context, state) {
+                      if (state.apiStatus == ApiStatus.INITIAL) {
+                        return const AccountsIdleState(
+                          subtitle: AppConstants.selectAnAccountAndTap,
+                        );
+                      }
+                      if (state.apiStatus == ApiStatus.LOADING) {
+                        return const AccountsShimmerBody();
+                      }
+                      if (state.apiStatus == ApiStatus.FAILURE) {
+                        return AccountsErrorBody(
+                          message:
+                              state.message ?? AppConstants.somethingWentWrong,
+                          onRetry: _fetch,
+                        );
+                      }
+                      if (state.apiStatus == ApiStatus.SUCCESS &&
+                          state.statements.isEmpty) {
+                        return const AccountsEmptyState();
+                      }
+                      return CashbookStatementsBody(
+                        statements: state.statements,
+                        scrollController: _scrollController,
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -43,7 +43,6 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
     _fromDate = _toDate.subtractMonths(1);
     _customerController = TextEditingController();
     _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
   }
 
@@ -54,13 +53,18 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
     super.dispose();
   }
 
-  void _onScroll() {
-    if (!_scrollController.hasClients) return;
-    final maxExtent = _scrollController.position.maxScrollExtent;
-    final canCollapse = maxExtent > 0;
-    final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
-    final collapsed = canCollapse && _scrollController.offset > threshold;
-    if (collapsed != _filterCollapsed) setState(() => _filterCollapsed = collapsed);
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification &&
+        notification.dragDetails != null) {
+      final maxExtent = notification.metrics.maxScrollExtent;
+      if (maxExtent <= 0) return false;
+      final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
+      final collapsed = notification.metrics.pixels > threshold;
+      if (collapsed != _filterCollapsed) {
+        setState(() => _filterCollapsed = collapsed);
+      }
+    }
+    return false;
   }
 
   void _fetch() {
@@ -123,85 +127,95 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
       child: Scaffold(
         backgroundColor: context.grey50,
         appBar: CustomAppBar(title: AppConstants.customerReceivableLabel),
-        body: Column(
-          children: [
-            AnimatedSize(
-              duration: const Duration(milliseconds: 260),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              child: _filterCollapsed
-                  ? AccountsCompactFilterBar(
-                      label: _customerController.text,
-                      placeholder: AppConstants.selectCustomer,
-                      fromDate: _fromDate,
-                      toDate: _toDate,
-                      onExpand: () {
-                        setState(() => _filterCollapsed = false);
-                        if (_scrollController.hasClients) {
-                          _scrollController.animateTo(
-                            0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                        }
-                      },
-                    )
-                  : BlocBuilder<CustomerRecievablesBloc,
-                      CustomerRecievablesState>(
-                      buildWhen: (p, c) =>
-                          p.parties != c.parties ||
-                          p.partiesStatus != c.partiesStatus,
-                      builder: (context, state) => AccountsFilterFormCompact(
-                        label: AppConstants.customerBtn,
-                        hintText: AppConstants.selectCustomerHint,
-                        items: state.parties.map((p) => p.name).toList(),
-                        isLoading: state.partiesStatus == ApiStatus.INITIAL ||
-                            state.partiesStatus == ApiStatus.LOADING,
-                        controller: _customerController,
-                        onItemChanged: _onPartyChanged,
-                        onPickDateRange: _showDateRangePopup,
-                        onView: _fetch,
-                        onPrint: _print,
+        body: NotificationListener<ScrollNotification>(
+          onNotification: _handleScrollNotification,
+          child: Column(
+            children: [
+              AnimatedSize(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeInOut,
+                alignment: Alignment.topCenter,
+                child: _filterCollapsed
+                    ? AccountsCompactFilterBar(
+                        label: _customerController.text,
+                        placeholder: AppConstants.selectCustomer,
+                        fromDate: _fromDate,
+                        toDate: _toDate,
+                        onExpand: () {
+                          setState(() => _filterCollapsed = false);
+                          if (_scrollController.hasClients) {
+                            _scrollController.animateTo(
+                              0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
+                          }
+                        },
+                      )
+                    : BlocBuilder<
+                        CustomerRecievablesBloc,
+                        CustomerRecievablesState
+                      >(
+                        buildWhen: (p, c) =>
+                            p.parties != c.parties ||
+                            p.partiesStatus != c.partiesStatus,
+                        builder: (context, state) => AccountsFilterFormCompact(
+                          label: AppConstants.customerBtn,
+                          hintText: AppConstants.selectCustomerHint,
+                          items: state.parties.map((p) => p.name).toList(),
+                          isLoading:
+                              state.partiesStatus == ApiStatus.INITIAL ||
+                              state.partiesStatus == ApiStatus.LOADING,
+                          controller: _customerController,
+                          onItemChanged: _onPartyChanged,
+                          onPickDateRange: _showDateRangePopup,
+                          onView: _fetch,
+                          onPrint: _print,
+                        ),
                       ),
-                    ),
-            ),
-            Expanded(
-              child: ColoredBox(
-                color: context.white,
-                child: BlocBuilder<CustomerRecievablesBloc,
-                    CustomerRecievablesState>(
-                  buildWhen: (previous, current) =>
-                      previous.apiStatus != current.apiStatus ||
-                      previous.message != current.message ||
-                      previous.items != current.items,
-                  builder: (context, state) {
-                    if (state.apiStatus == ApiStatus.LOADING) {
-                      return const AccountsShimmerBody();
-                    }
-                    if (state.apiStatus == ApiStatus.FAILURE) {
-                      return AccountsErrorBody(
-                        message:
-                            state.message ?? AppConstants.somethingWentWrong,
-                        onRetry: _fetch,
-                      );
-                    }
-                    if (state.apiStatus == ApiStatus.SUCCESS) {
-                      if (state.items.isEmpty) {
-                        return const AccountsEmptyState();
-                      }
-                      return CustomerReceivablesTable(
-                        items: state.items,
-                        scrollController: _scrollController,
-                      );
-                    }
-                    return const AccountsIdleState(
-                      subtitle: AppConstants.selectACustomerAndTap,
-                    );
-                  },
+              ),
+              Expanded(
+                child: ColoredBox(
+                  color: context.white,
+                  child:
+                      BlocBuilder<
+                        CustomerRecievablesBloc,
+                        CustomerRecievablesState
+                      >(
+                        buildWhen: (previous, current) =>
+                            previous.apiStatus != current.apiStatus ||
+                            previous.message != current.message ||
+                            previous.items != current.items,
+                        builder: (context, state) {
+                          if (state.apiStatus == ApiStatus.LOADING) {
+                            return const AccountsShimmerBody();
+                          }
+                          if (state.apiStatus == ApiStatus.FAILURE) {
+                            return AccountsErrorBody(
+                              message:
+                                  state.message ??
+                                  AppConstants.somethingWentWrong,
+                              onRetry: _fetch,
+                            );
+                          }
+                          if (state.apiStatus == ApiStatus.SUCCESS) {
+                            if (state.items.isEmpty) {
+                              return const AccountsEmptyState();
+                            }
+                            return CustomerReceivablesTable(
+                              items: state.items,
+                              scrollController: _scrollController,
+                            );
+                          }
+                          return const AccountsIdleState(
+                            subtitle: AppConstants.selectACustomerAndTap,
+                          );
+                        },
+                      ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

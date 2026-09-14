@@ -42,7 +42,6 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
     _fromDate = _toDate.subtractMonths(1);
     _vendorController = TextEditingController();
     _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetch());
   }
 
@@ -53,13 +52,18 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
     super.dispose();
   }
 
-  void _onScroll() {
-    if (!_scrollController.hasClients) return;
-    final maxExtent = _scrollController.position.maxScrollExtent;
-    final canCollapse = maxExtent > 0;
-    final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
-    final collapsed = canCollapse && _scrollController.offset > threshold;
-    if (collapsed != _filterCollapsed) setState(() => _filterCollapsed = collapsed);
+  bool _handleScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification &&
+        notification.dragDetails != null) {
+      final maxExtent = notification.metrics.maxScrollExtent;
+      if (maxExtent <= 0) return false;
+      final threshold = maxExtent < 40 ? maxExtent / 2 : 40.0;
+      final collapsed = notification.metrics.pixels > threshold;
+      if (collapsed != _filterCollapsed) {
+        setState(() => _filterCollapsed = collapsed);
+      }
+    }
+    return false;
   }
 
   void _fetch() {
@@ -116,76 +120,80 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
       child: Scaffold(
         backgroundColor: context.grey50,
         appBar: CustomAppBar(title: AppConstants.vendorPayableLabel),
-        body: Column(
-          children: [
-            AnimatedSize(
-              duration: const Duration(milliseconds: 260),
-              curve: Curves.easeInOut,
-              alignment: Alignment.topCenter,
-              child: _filterCollapsed
-                  ? AccountsCompactFilterBar(
-                      label: _vendorController.text,
-                      placeholder: 'Select vendor…',
-                      fromDate: _fromDate,
-                      toDate: _toDate,
-                      onExpand: () {
-                        setState(() => _filterCollapsed = false);
-                        if (_scrollController.hasClients) {
-                          _scrollController.animateTo(
-                            0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOut,
-                          );
-                        }
-                      },
-                    )
-                  : AccountsFilterFormCompact(
-                      label: 'Vendor',
-                      hintText: 'Select Vendor',
-                      items: const [],
-                      isLoading: false,
-                      controller: _vendorController,
-                      onItemChanged: (_) {},
-                      onPickDateRange: _showDateRangePopup,
-                      onView: _fetch,
-                      onPrint: _print,
-                    ),
-            ),
-            Expanded(
-              child: ColoredBox(
-                color: context.white,
-                child: BlocBuilder<VendorPayableBloc, VendorPayableState>(
-                  buildWhen: (previous, current) =>
-                      previous.apiStatus != current.apiStatus ||
-                      previous.message != current.message ||
-                      previous.items != current.items,
-                  builder: (context, state) {
-                    if (state.apiStatus == ApiStatus.LOADING) {
-                      return const AccountsShimmerBody();
-                    }
-                    if (state.apiStatus == ApiStatus.FAILURE) {
-                      return AccountsErrorBody(
-                        message: state.message ?? AppConstants.somethingWentWrong,
-                        onRetry: _fetch,
-                      );
-                    }
-                    if (state.apiStatus == ApiStatus.SUCCESS) {
-                      if (state.items.isEmpty) {
-                        return const AccountsEmptyState();
+        body: NotificationListener<ScrollNotification>(
+          onNotification: _handleScrollNotification,
+          child: Column(
+            children: [
+              AnimatedSize(
+                duration: const Duration(milliseconds: 260),
+                curve: Curves.easeInOut,
+                alignment: Alignment.topCenter,
+                child: _filterCollapsed
+                    ? AccountsCompactFilterBar(
+                        label: _vendorController.text,
+                        placeholder: 'Select vendor…',
+                        fromDate: _fromDate,
+                        toDate: _toDate,
+                        onExpand: () {
+                          setState(() => _filterCollapsed = false);
+                          if (_scrollController.hasClients) {
+                            _scrollController.animateTo(
+                              0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOut,
+                            );
+                          }
+                        },
+                      )
+                    : AccountsFilterFormCompact(
+                        label: 'Vendor',
+                        hintText: 'Select Vendor',
+                        items: const [],
+                        isLoading: false,
+                        controller: _vendorController,
+                        onItemChanged: (_) {},
+                        onPickDateRange: _showDateRangePopup,
+                        onView: _fetch,
+                        onPrint: _print,
+                      ),
+              ),
+              Expanded(
+                child: ColoredBox(
+                  color: context.white,
+                  child: BlocBuilder<VendorPayableBloc, VendorPayableState>(
+                    buildWhen: (previous, current) =>
+                        previous.apiStatus != current.apiStatus ||
+                        previous.message != current.message ||
+                        previous.items != current.items,
+                    builder: (context, state) {
+                      if (state.apiStatus == ApiStatus.LOADING) {
+                        return const AccountsShimmerBody();
                       }
-                      return VendorPayableTable(
-                        items: state.items,
-                        scrollController: _scrollController,
+                      if (state.apiStatus == ApiStatus.FAILURE) {
+                        return AccountsErrorBody(
+                          message:
+                              state.message ?? AppConstants.somethingWentWrong,
+                          onRetry: _fetch,
+                        );
+                      }
+                      if (state.apiStatus == ApiStatus.SUCCESS) {
+                        if (state.items.isEmpty) {
+                          return const AccountsEmptyState();
+                        }
+                        return VendorPayableTable(
+                          items: state.items,
+                          scrollController: _scrollController,
+                        );
+                      }
+                      return const AccountsIdleState(
+                        subtitle: 'Select a vendor and tap View',
                       );
-                    }
-                    return const AccountsIdleState(
-                      subtitle: 'Select a vendor and tap View',
-                    );
-                  },
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
