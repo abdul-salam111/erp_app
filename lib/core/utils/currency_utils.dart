@@ -106,16 +106,22 @@ extension CurrencyFormatting on num {
     return NumberFormat.compact(locale: "en_US").format(this);
   }
 
-  /// Custom compact formatting
+  /// Custom compact formatting — negative-safe. Preserves sign so
+  /// -1,234,567 renders as "-1.2M" instead of falling through to raw.
   String toCompact({int decimals = 1}) {
-    if (this >= 1000000000) {
-      return '${(this / 1000000000).toStringAsFixed(decimals)}B';
-    } else if (this >= 1000000) {
-      return '${(this / 1000000).toStringAsFixed(decimals)}M';
-    } else if (this >= 1000) {
-      return '${(this / 1000).toStringAsFixed(decimals)}K';
+    final isNeg = this < 0;
+    final abs = this.abs();
+    final String formatted;
+    if (abs >= 1000000000) {
+      formatted = '${(abs / 1000000000).toStringAsFixed(decimals)}B';
+    } else if (abs >= 1000000) {
+      formatted = '${(abs / 1000000).toStringAsFixed(decimals)}M';
+    } else if (abs >= 1000) {
+      formatted = '${(abs / 1000).toStringAsFixed(decimals)}K';
+    } else {
+      formatted = abs.toStringAsFixed(0);
     }
-    return toStringAsFixed(0);
+    return isNeg ? '-$formatted' : formatted;
   }
 
   /// Compact for social media: 1000 -> 1k, 1500000 -> 1.5m

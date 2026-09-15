@@ -422,6 +422,7 @@ class _OrdersTable extends StatelessWidget {
                   isHeader: true,
                   child: Text(
                     _cols[i],
+                    textAlign: i == 3 ? .center : .start,
                     style: context.labelSmall.copyWith(
                       fontWeight: .w700,
                       fontSize: 10,
@@ -774,10 +775,12 @@ class _StatusBadge extends StatelessWidget {
     }
 
     return Container(
+      width: double.infinity,
       padding: .symmetric(horizontal: 3, vertical: 3),
       decoration: BoxDecoration(color: bg, borderRadius: .circular(4)),
       child: Text(
         status.isEmpty ? '-' : status,
+        textAlign: .center,
         style: context.labelSmall.copyWith(
           color: fg,
           fontSize: 9.5,

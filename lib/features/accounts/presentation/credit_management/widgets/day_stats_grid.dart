@@ -78,7 +78,7 @@ class _DayStatCard extends StatelessWidget {
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(10),
         border: .all(color: context.border),
         boxShadow: [

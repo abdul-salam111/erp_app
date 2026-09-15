@@ -262,7 +262,9 @@ class _ErrorCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.surfaceElevated,
         borderRadius: .circular(8),
-        border: .all(color: context.border),
+        border: .all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
       ),
       child: Text(
         message,

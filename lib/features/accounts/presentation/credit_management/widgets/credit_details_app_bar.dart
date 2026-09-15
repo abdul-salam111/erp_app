@@ -23,7 +23,7 @@ class CreditDetailsAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: context.primary,
+      backgroundColor: context.isDark ? AppColors.navyHeaderDark : context.primary,
       toolbarHeight: kToolbarHeight + 12,
       leadingWidth: 40,
       leading: IconButton(
@@ -92,9 +92,9 @@ class CreditDetailsAppBar extends StatelessWidget
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(kTextTabBarHeight),
         child: ColoredBox(
-          color: AppColors.primaryDark,
+          color: context.isDark ? context.background : AppColors.primaryDark,
           child: TabBar(
-            indicatorColor: context.primary,
+            indicatorColor: context.isDark ? context.white : context.primary,
             indicatorWeight: 3,
             indicatorSize: .tab,
             labelColor: context.white,

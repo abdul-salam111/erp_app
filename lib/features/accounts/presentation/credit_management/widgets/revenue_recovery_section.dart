@@ -74,7 +74,7 @@ class _RevenueRecoveryContent extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(8),
         border: .all(color: context.border),
         boxShadow: [
@@ -146,16 +146,20 @@ class _StatCard extends StatelessWidget {
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.isDark ? context.navyIconBg : context.surfaceElevated,
         borderRadius: .circular(10),
-        border: .all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.07),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: .all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.07),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: IntrinsicHeight(
         child: Row(
@@ -209,7 +213,7 @@ class _RevenueRecoveryShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(8),
         border: Border.all(color: context.border),
         boxShadow: [
@@ -264,7 +268,7 @@ class _RevenueBarChart extends StatelessWidget {
             getTooltipColor: (_) => barColor.withValues(alpha: 0.9),
             tooltipRoundedRadius: 6,
             getTooltipItem: (group, groupIndex, rod, rodIndex) => BarTooltipItem(
-              'Rs ${rod.toY.toStringAsFixed(0)}',
+              rod.toY.asPrice,
               context.labelSmall.copyWith(
                 color: context.white,
                 fontSize: 10,
@@ -280,9 +284,9 @@ class _RevenueBarChart extends StatelessWidget {
               reservedSize: 42,
               interval: yInterval,
               getTitlesWidget: (value, _) => Text(
-                'Rs. ${value.toInt()}',
+                value.toCompact(),
                 style: context.labelSmall.copyWith(
-                  fontSize: 8,
+                  fontSize: 9,
                   color: context.textSecondary,
                 ),
                 textAlign: .end,
@@ -320,7 +324,7 @@ class _RevenueBarChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: yInterval,
           getDrawingHorizontalLine: (_) => FlLine(
-            color: context.divider,
+            color: context.isDark ? context.navyBorder : context.divider,
             strokeWidth: 1,
           ),
         ),

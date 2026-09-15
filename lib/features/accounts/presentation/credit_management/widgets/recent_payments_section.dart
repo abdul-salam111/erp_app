@@ -43,7 +43,7 @@ class _RecentPaymentsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(8),
         border: Border.all(color: context.border),
         boxShadow: [
@@ -71,7 +71,9 @@ class _RecentPaymentsCard extends StatelessWidget {
           ),
           // ── Header ────────────────────────────────────────────────
           Container(
-            color: context.primary.withValues(alpha: 0.07),
+            color: context.isDark
+                ? AppColors.navyIconBgDark
+                : context.primary.withValues(alpha: 0.07),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [
@@ -236,7 +238,7 @@ class _RecentPaymentsShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(8),
         border: Border.all(color: context.border),
       ),
@@ -248,7 +250,9 @@ class _RecentPaymentsShimmer extends StatelessWidget {
             child: ShimmerBox(height: 13, width: 130, radius: 4),
           ),
           Container(
-            color: context.primary.withValues(alpha: 0.07),
+            color: context.isDark
+                ? AppColors.navyIconBgDark
+                : context.primary.withValues(alpha: 0.07),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [

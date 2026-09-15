@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/theme/theme_exports.dart';
+import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
 import '../../../domain/entities/credit_managment/party_credit_monthly_summary_entity.dart';
 import '../blocs/credit_management_details_cubit.dart';
@@ -14,7 +15,7 @@ class CreditTrendChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(8),
         border: .all(color: context.border),
         boxShadow: [
@@ -118,7 +119,7 @@ class _ChartBody extends StatelessWidget {
               getTooltipItems: (spots) => spots
                   .map(
                     (s) => LineTooltipItem(
-                      'Rs ${s.y.toStringAsFixed(0)}',
+                      s.y.asPrice,
                       context.labelSmall.copyWith(
                         color: context.white,
                         fontSize: 10,
@@ -135,19 +136,14 @@ class _ChartBody extends StatelessWidget {
                 showTitles: true,
                 reservedSize: 36,
                 interval: yInterval,
-                getTitlesWidget: (value, _) {
-                  final label = value >= 1000
-                      ? '${(value / 1000).toStringAsFixed(value % 1000 == 0 ? 0 : 1)}K'
-                      : value.toInt().toString();
-                  return Text(
-                    label,
-                    style: context.labelSmall.copyWith(
-                      fontSize: 9,
-                      color: context.textSecondary,
-                    ),
-                    textAlign: .start,
-                  );
-                },
+                getTitlesWidget: (value, _) => Text(
+                  value.toCompact(),
+                  style: context.labelSmall.copyWith(
+                    fontSize: 9,
+                    color: context.textSecondary,
+                  ),
+                  textAlign: .start,
+                ),
               ),
             ),
             rightTitles: const AxisTitles(
@@ -200,7 +196,7 @@ class _ChartBody extends StatelessWidget {
             drawVerticalLine: false,
             horizontalInterval: yInterval,
             getDrawingHorizontalLine: (_) => FlLine(
-              color: context.divider,
+              color: context.isDark ? context.navyBorder : context.divider,
               strokeWidth: 1,
             ),
           ),

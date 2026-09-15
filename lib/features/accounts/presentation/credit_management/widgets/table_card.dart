@@ -24,7 +24,7 @@ class TableCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(8),
         border: .all(color: context.border),
         boxShadow: [
@@ -57,7 +57,9 @@ class TableCard extends StatelessWidget {
             ),
           ),
           Container(
-            color: context.primary.withValues(alpha: 0.07),
+            color: context.isDark
+                ? AppColors.navyIconBgDark
+                : context.primary.withValues(alpha: 0.07),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
             child: header,
           ),

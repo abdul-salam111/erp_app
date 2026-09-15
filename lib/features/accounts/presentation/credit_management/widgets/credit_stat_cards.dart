@@ -92,7 +92,7 @@ class _StatCard extends StatelessWidget {
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(10),
         border: .all(
           color: context.isDark ? context.navyBorder : context.border,
