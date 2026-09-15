@@ -80,6 +80,13 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
       backgroundColor: context.transparent,
       builder: (_) => _MoreFieldsSheet(
         partyNames: widget.partyNames,
+        dateController: _dateController,
+        onDateTap: widget.onDateTap,
+        refDocNbrController: widget.refDocNbrController,
+        supplierController: widget.supplierController,
+        brokerController: widget.brokerController,
+        onSupplierChanged: widget.onSupplierChanged,
+        onBrokerChanged: widget.onBrokerChanged,
         weightSourceController: widget.weightSourceController,
         calculationsController: widget.calculationsController,
         orderSourceController: widget.orderSourceController,
@@ -112,67 +119,15 @@ class _PurchaseOrderFormState extends State<PurchaseOrderForm> {
             _FormHeader(onShowMore: _openMoreFieldsSheet),
             heightBox(10),
           ],
-          Row(
-            crossAxisAlignment: .start,
-            children: [
-              Expanded(
-                child: CustomTextFormField(
-                  controller: _dateController,
-                  label: AppConstants.dateLabel,
-                  isRequired: true,
-                  fieldHeight: 37,
-                  readOnly: true,
-                  onTap: widget.onDateTap,
-                  labelFontSize: 12,
-                  fillColor: context.isDark ? context.navyIconBg : null,
-                  borderColor: Colors.transparent,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: SearchableDropdown(
-                  items: widget.partyNames,
-                  controller: widget.supplierController,
-                  label: AppConstants.supplierLabel,
-                  isRequired: true,
-                  hintText: AppConstants.supplierLabel,
-                  onChanged: (value) => widget.onSupplierChanged?.call(value),
-                  fieldHeight: 40,
-                  isShowIcon: false,
-                  borderColor: Colors.transparent,
-                ),
-              ),
-            ],
-          ),
-          heightBox(10),
-          Row(
-            crossAxisAlignment: .start,
-            children: [
-              Expanded(
-                child: CustomTextFormField(
-                  controller: widget.refDocNbrController,
-                  label: 'Ref Doc Nbr',
-                  fieldHeight: 37,
-                  hintText: 'Ref Doc Nbr',
-                  labelFontSize: 12,
-                  fillColor: context.isDark ? context.navyIconBg : null,
-                  borderColor: Colors.transparent,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: SearchableDropdown(
-                  items: widget.partyNames,
-                  controller: widget.brokerController,
-                  label: 'Broker',
-                  hintText: AppConstants.brokerLabel,
-                  onChanged: (value) => widget.onBrokerChanged?.call(value),
-                  fieldHeight: 40,
-                  isShowIcon: false,
-                  borderColor: Colors.transparent,
-                ),
-              ),
-            ],
+          _TopFields(
+            partyNames: widget.partyNames,
+            dateController: _dateController,
+            onDateTap: widget.onDateTap,
+            refDocNbrController: widget.refDocNbrController,
+            supplierController: widget.supplierController,
+            brokerController: widget.brokerController,
+            onSupplierChanged: widget.onSupplierChanged,
+            onBrokerChanged: widget.onBrokerChanged,
           ),
           // ── Remaining fields (only inline when no items yet) ────
           if (_showAllFields) ...[
@@ -238,6 +193,101 @@ class _FormHeader extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Top fields (shared between inline + bottom sheet) ──────────────
+
+class _TopFields extends StatelessWidget {
+  final List<String> partyNames;
+  final TextEditingController dateController;
+  final VoidCallback onDateTap;
+  final TextEditingController refDocNbrController;
+  final TextEditingController supplierController;
+  final TextEditingController brokerController;
+  final ValueChanged<String>? onSupplierChanged;
+  final ValueChanged<String>? onBrokerChanged;
+
+  const _TopFields({
+    required this.partyNames,
+    required this.dateController,
+    required this.onDateTap,
+    required this.refDocNbrController,
+    required this.supplierController,
+    required this.brokerController,
+    required this.onSupplierChanged,
+    required this.onBrokerChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        Row(
+          crossAxisAlignment: .start,
+          children: [
+            Expanded(
+              child: CustomTextFormField(
+                controller: dateController,
+                label: AppConstants.dateLabel,
+                isRequired: true,
+                fieldHeight: 37,
+                readOnly: true,
+                onTap: onDateTap,
+                labelFontSize: 12,
+                fillColor: context.isDark ? context.navyIconBg : null,
+                borderColor: Colors.transparent,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: SearchableDropdown(
+                items: partyNames,
+                controller: supplierController,
+                label: AppConstants.supplierLabel,
+                isRequired: true,
+                hintText: AppConstants.supplierLabel,
+                onChanged: (value) => onSupplierChanged?.call(value),
+                fieldHeight: 40,
+                isShowIcon: false,
+                borderColor: Colors.transparent,
+              ),
+            ),
+          ],
+        ),
+        heightBox(10),
+        Row(
+          crossAxisAlignment: .start,
+          children: [
+            Expanded(
+              child: CustomTextFormField(
+                controller: refDocNbrController,
+                label: 'Ref Doc Nbr',
+                fieldHeight: 37,
+                hintText: 'Ref Doc Nbr',
+                labelFontSize: 12,
+                fillColor: context.isDark ? context.navyIconBg : null,
+                borderColor: Colors.transparent,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: SearchableDropdown(
+                items: partyNames,
+                controller: brokerController,
+                label: 'Broker',
+                hintText: AppConstants.brokerLabel,
+                onChanged: (value) => onBrokerChanged?.call(value),
+                fieldHeight: 40,
+                isShowIcon: false,
+                borderColor: Colors.transparent,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -378,6 +428,13 @@ class _ExtraFields extends StatelessWidget {
 
 class _MoreFieldsSheet extends StatelessWidget {
   final List<String> partyNames;
+  final TextEditingController dateController;
+  final VoidCallback onDateTap;
+  final TextEditingController refDocNbrController;
+  final TextEditingController supplierController;
+  final TextEditingController brokerController;
+  final ValueChanged<String>? onSupplierChanged;
+  final ValueChanged<String>? onBrokerChanged;
   final TextEditingController weightSourceController;
   final TextEditingController calculationsController;
   final TextEditingController orderSourceController;
@@ -388,6 +445,13 @@ class _MoreFieldsSheet extends StatelessWidget {
 
   const _MoreFieldsSheet({
     required this.partyNames,
+    required this.dateController,
+    required this.onDateTap,
+    required this.refDocNbrController,
+    required this.supplierController,
+    required this.brokerController,
+    required this.onSupplierChanged,
+    required this.onBrokerChanged,
     required this.weightSourceController,
     required this.calculationsController,
     required this.orderSourceController,
@@ -449,14 +513,30 @@ class _MoreFieldsSheet extends StatelessWidget {
             Flexible(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
-                child: _ExtraFields(
-                  weightSourceController: weightSourceController,
-                  calculationsController: calculationsController,
-                  orderSourceController: orderSourceController,
-                  paymentModeController: paymentModeController,
-                  selectedCurrencyController: selectedCurrencyController,
-                  currencyRateController: currencyRateController,
-                  rateController: rateController,
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    _TopFields(
+                      partyNames: partyNames,
+                      dateController: dateController,
+                      onDateTap: onDateTap,
+                      refDocNbrController: refDocNbrController,
+                      supplierController: supplierController,
+                      brokerController: brokerController,
+                      onSupplierChanged: onSupplierChanged,
+                      onBrokerChanged: onBrokerChanged,
+                    ),
+                    heightBox(10),
+                    _ExtraFields(
+                      weightSourceController: weightSourceController,
+                      calculationsController: calculationsController,
+                      orderSourceController: orderSourceController,
+                      paymentModeController: paymentModeController,
+                      selectedCurrencyController: selectedCurrencyController,
+                      currencyRateController: currencyRateController,
+                      rateController: rateController,
+                    ),
+                  ],
                 ),
               ),
             ),
