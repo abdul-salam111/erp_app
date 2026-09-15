@@ -269,10 +269,20 @@ class _OrderRowState extends State<_OrderRow> {
                                     value: order.rowsCount.toString(),
                                     textAlign: .center,
                                   ),
+                                  SizedBox(
+                                    width: 120,
+                                    child: _DetailChip(
+                                      label: AppConstants.remarksLabel,
+                                      value: order.remarks?.isNotEmpty == true
+                                          ? order.remarks!
+                                          : '—',
+                                      textAlign: .end,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 30),
                             GestureDetector(
                               onTap: widget.onView,
                               child: Icon(

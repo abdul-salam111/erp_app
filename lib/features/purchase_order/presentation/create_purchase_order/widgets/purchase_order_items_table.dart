@@ -239,19 +239,6 @@ class _ItemRow extends StatelessWidget {
                 overflow: .ellipsis,
               ),
             ),
-            if (onDelete != null)
-              GestureDetector(
-                onTap: onDelete,
-                behavior: HitTestBehavior.opaque,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: Icon(
-                    Iconsax.trash,
-                    size: 18,
-                    color: AppColors.errorBright,
-                  ),
-                ),
-              ),
             SizedBox(
               width: 20,
               child: Icon(
