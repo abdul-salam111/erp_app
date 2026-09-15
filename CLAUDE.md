@@ -83,6 +83,35 @@ context.titleMedium    // TextStyle
 context.bodySmall      // TextStyle
 ```
 
+## Dark Theme (must follow for all new/changed UI)
+Every screen and widget — existing or new — must look correct in **both** light and dark mode. Never hardcode a color that only works in one theme; always go through `context.*` / `AppColors.*Dark` tokens.
+
+- **Never use raw black/near-black or raw white as a screen or card background.** Use the theme tokens below, not `Colors.black`, `Color(0xFF000000)`, hex literals, etc.
+- **Screen background** — `context.background` (dark: `AppColors.backgroundDark`, a deep navy `#071121`, not pure black).
+- **Cards / elevated surfaces (default)** — `context.surfaceElevated`.
+- **Cards / elevated surfaces (accent look — headers, stat cards, drawers, icon chips)** — use the reusable **navy accent family** in `theme_utils.dart`, added specifically so this dark styling can be reused anywhere instead of re-deriving it per screen:
+  ```dart
+  context.navyCard       // card/container background
+  context.navyBorder     // card borders AND dividers (same token for both)
+  context.navyIconBg     // icon chip / avatar background
+  context.navyIconColor  // icon chip glyph color (accent blue)
+  ```
+  These fall back to the normal light-mode tokens automatically — call them unconditionally, don't wrap in `context.isDark ? ... : ...` unless you need a different light-mode value than the default fallback.
+- **Semantic / category colors (status badges, module icons, chart legends, etc.) must stay recognizable in dark mode too:**
+  - Keep the colored **glyph/text** (red = error, green = completed, orange = partial, category accent colors on Quick Actions, etc.) — do not flatten everything to navy.
+  - Only the **background chip** behind it should switch to `AppColors.navyIconBgDark` (or `context.navyIconBg`) in dark mode — a low-alpha tint of the category color (e.g. `color.withValues(alpha: 0.10)`) is usually invisible against a dark navy card.
+  - If a status color is itself too dark to read as text on a dark background (e.g. `AppColors.blueGreyDark`), swap it for a lighter variant in dark mode (e.g. `AppColors.grey300`, `AppColors.successLight`) rather than reusing the light-mode color as-is.
+- **Borders/dividers** — always `context.navyBorder` (or `context.border`/`context.divider` if not using the navy accent look), never a fixed grey/black hex.
+- **Progress bars / track backgrounds** — a low-alpha tint of the status color is usually invisible in dark mode; use a translucent white track (e.g. `AppColors.white.withValues(alpha: 0.08)`) instead, keep the fill color theme-aware.
+- **Headers/hero banners** (profile, admin dashboard, drawer) — solid `AppColors.navyHeaderDark` in dark mode instead of the light-mode gradient:
+  ```dart
+  decoration: BoxDecoration(
+    color: context.isDark ? AppColors.navyHeaderDark : null,
+    gradient: context.isDark ? null : lightModeGradient,
+  ),
+  ```
+- **Before calling any UI work done, check it in dark mode** (toggle via the profile screen's Appearance switch) — low-contrast text/icons on dark surfaces are the most common regression.
+
 ## Dashboard Architecture
 - `DashboardView` provides `DashboardBloc` and renders `AdminDashboard` (or role-specific variant).
 - Each dashboard is a `Scaffold` with `CustomAppBar` and a `SingleChildScrollView` body.
