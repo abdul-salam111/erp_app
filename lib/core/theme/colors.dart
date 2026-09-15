@@ -81,11 +81,11 @@ class AppColors {
 
   /// Surface colors for cards, sheets
   static const Color surfaceLight = grey50;
-  static const Color surfaceDark = grey800;
+  static const Color surfaceDark = Color(0xFF1E293B);
 
   /// Elevated surfaces
   static const Color surfaceElevatedLight = white;
-  static const Color surfaceElevatedDark = grey700;
+  static const Color surfaceElevatedDark = Color(0xFF2A3B54);
 
   // ============================================
   // TEXT COLORS
@@ -107,11 +107,11 @@ class AppColors {
 
   static const Color border = grey200;
   static const Color borderLight = grey200;
-  static const Color borderDark = Color(0xFF4A4A4A);
+  static const Color borderDark = Color(0xFF2A3B54);
 
   static const Color divider = grey200;
   static const Color dividerLight = grey200;
-  static const Color dividerDark = Color(0xFF4A4A4A);
+  static const Color dividerDark = Color(0xFF2A3B54);
 
   // ============================================
   // OVERLAY COLORS
@@ -221,11 +221,11 @@ class AppColors {
   static  Color navyBorderDark = Color(0xFF4A7FC7).withAlpha(80); // 50% opacity
 
   static const Color surfaceHeader = Color(0xFFF5F5F5);
-  static const Color surfaceHeaderDark = Color(0xFF3D3D3D);
+  static const Color surfaceHeaderDark = Color(0xFF2A3B54);
   static const Color tableRowAlt = Color(0xFFF9FAFB);
-  static const Color tableRowAltDark = Color(0xFF232323);
+  static const Color tableRowAltDark = Color(0xFF141E33);
   static const Color shimmerBase = Color(0xFFE8E8E8);
-  static const Color shimmerBaseDark = Color(0xFF2E2E2E);
+  static const Color shimmerBaseDark = Color(0xFF1E293B);
   static const Color black26 = Color(0x42000000);
   static const Color black54 = Color(0x8A000000);
 }

@@ -142,6 +142,7 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
         }
       },
       child: Scaffold(
+        backgroundColor: context.isDark ? context.background : context.surface,
         appBar: CustomAppBar(title: AppConstants.partyLedgerLabel),
         body: NotificationListener<ScrollNotification>(
           onNotification: _handleScrollNotification,
@@ -189,7 +190,9 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
               ),
               Expanded(
                 child: ColoredBox(
-                  color: context.surfaceElevated,
+                  color: context.isDark
+                      ? context.background
+                      : context.surfaceElevated,
                   child: BlocBuilder<PartyLedgerBloc, PartyLedgerState>(
                     buildWhen: (previous, current) =>
                         previous.apiStatus != current.apiStatus ||

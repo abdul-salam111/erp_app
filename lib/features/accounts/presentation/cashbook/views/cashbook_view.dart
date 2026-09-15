@@ -69,7 +69,7 @@ class _CashbookBodyState extends State<_CashbookBody> {
   void _fetch() {
     final bloc = context.read<CashbookBloc>();
     if (bloc.state.selectedAccountId == null) {
-      AppToastsUtils.showErrorTop(
+      AppToastsUtils.showInfoTop(
         context,
         AppConstants.pleaseSelectAnAccountFirstErrorMsg,
       );
@@ -141,6 +141,7 @@ class _CashbookBodyState extends State<_CashbookBody> {
         }
       },
       child: Scaffold(
+        backgroundColor: context.isDark ? context.background : context.surface,
         appBar: CustomAppBar(title: AppConstants.cashbookLabel),
         body: NotificationListener<ScrollNotification>(
           onNotification: _handleScrollNotification,
@@ -196,7 +197,9 @@ class _CashbookBodyState extends State<_CashbookBody> {
               ),
               Expanded(
                 child: ColoredBox(
-                  color: context.surfaceElevated,
+                  color: context.isDark
+                      ? context.background
+                      : context.surfaceElevated,
                   child: BlocBuilder<CashbookBloc, CashbookState>(
                     buildWhen: (previous, current) =>
                         previous.apiStatus != current.apiStatus ||

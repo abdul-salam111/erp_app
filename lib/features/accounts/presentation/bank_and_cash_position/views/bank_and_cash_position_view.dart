@@ -96,7 +96,7 @@ class _BankAndCashPositionBodyState extends State<_BankAndCashPositionBody> {
             .fold(0.0, (sum, bankCashItem) => sum + bankCashItem.amount);
 
         return Scaffold(
-          backgroundColor: context.surface,
+          backgroundColor: context.isDark ? context.background : context.surface,
           appBar: CustomAppBar(title: AppConstants.bankCashPositionLabel),
           body: Column(
             crossAxisAlignment: .stretch,

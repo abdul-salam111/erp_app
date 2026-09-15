@@ -19,9 +19,11 @@ class AccountsSearchBar extends StatelessWidget {
     return Container(
       height: 40,
       decoration: BoxDecoration(
-        color: context.surface,
+        color: context.isDark ? context.navyIconBg : context.surface,
         borderRadius: .circular(6),
-        border: Border.all(color: context.border),
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
       ),
       child: Row(
         children: [
@@ -34,6 +36,7 @@ class AccountsSearchBar extends StatelessWidget {
               style: context.bodySmall.copyWith(color: context.textPrimary),
               decoration: InputDecoration(
                 isDense: true,
+                filled: false,
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
