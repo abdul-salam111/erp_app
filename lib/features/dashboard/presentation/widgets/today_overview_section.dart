@@ -192,7 +192,12 @@ class TodayOverviewSection extends StatelessWidget {
                 crossAxisCount: context.gridColumnCount,
                 mainAxisSpacing: context.gridSpacing,
                 crossAxisSpacing: context.gridSpacing,
-                childAspectRatio: context.overviewCardRatio,
+                childAspectRatio: Responsive.value<double>(
+                  context,
+                  phone: 3.0,
+                  tablet: 3.2,
+                  ipad: 3.6,
+                ),
               ),
               itemBuilder: (context, i) {
                 if (isLoading) {

@@ -174,6 +174,8 @@ class AppConstants {
   static const String profileSubtitle = 'View your info';
   static const String successSuccessMsg = 'Success!';
   static const String submitBtn = 'Submit';
+  static const String cancelBtn = 'Cancel';
+  static const String applyBtn = 'Apply';
   static const String todayLabel = 'Today';
   static const String ddMMMYyyyLabel = 'dd MMM yyyy';
   static const String dateLabel = 'Date';

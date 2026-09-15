@@ -195,22 +195,32 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
               // ── Stats grid ──────────────────────────────────────
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                child: isLoading
-                    ? _StatsShimmer(
-                        columnCount: context.gridColumnCount,
-                        spacing: context.gridSpacing,
-                        ratio: context.overviewCardRatio,
-                      )
-                    : GridView.count(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: context.gridColumnCount,
-                        mainAxisSpacing: context.gridSpacing,
-                        crossAxisSpacing: context.gridSpacing,
-                        childAspectRatio: context.overviewCardRatio,
-                        children: _buildStatCards(state),
-                      ),
+                child: Builder(
+                  builder: (context) {
+                    final ratio = Responsive.value<double>(
+                      context,
+                      phone: 3.6,
+                      tablet: 3.8,
+                      ipad: 4.2,
+                    );
+                    return isLoading
+                        ? _StatsShimmer(
+                            columnCount: context.gridColumnCount,
+                            spacing: context.gridSpacing,
+                            ratio: ratio,
+                          )
+                        : GridView.count(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            crossAxisCount: context.gridColumnCount,
+                            mainAxisSpacing: context.gridSpacing,
+                            crossAxisSpacing: context.gridSpacing,
+                            childAspectRatio: ratio,
+                            children: _buildStatCards(state),
+                          );
+                  },
+                ),
               ),
 
               Divider(height: 1, thickness: 1, color: context.navyBorder),

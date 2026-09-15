@@ -54,32 +54,16 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
     super.dispose();
   }
 
-  Future<void> _pickFrom() async {
-    final picked = await showCompactDatePicker(
+  Future<void> _openDateRangePopup() async {
+    final result = await showDialog<_DateRange>(
       context: context,
-      initialDate: _fromDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      builder: (_) => _DateRangePickerDialog(from: _fromDate, to: _toDate),
     );
-    if (picked == null || !mounted) return;
+    if (result == null || !mounted) return;
     setState(() {
-      _fromDate = picked;
-      if (_toDate.isBefore(_fromDate)) _toDate = _fromDate;
+      _fromDate = result.from;
+      _toDate = result.to;
     });
-    context.read<AdminDashboardBloc>().add(
-      SaleOrderDateRangeChanged(fromDate: _fromDate, toDate: _toDate),
-    );
-  }
-
-  Future<void> _pickTo() async {
-    final picked = await showCompactDatePicker(
-      context: context,
-      initialDate: _toDate,
-      firstDate: _fromDate,
-      lastDate: DateTime(2100),
-    );
-    if (picked == null || !mounted) return;
-    setState(() => _toDate = picked);
     context.read<AdminDashboardBloc>().add(
       SaleOrderDateRangeChanged(fromDate: _fromDate, toDate: _toDate),
     );
@@ -147,6 +131,26 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                     ),
                     const Spacer(),
                     GestureDetector(
+                      onTap: _openDateRangePopup,
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: context.primary.withValues(alpha: 0.10),
+                          borderRadius: .circular(8),
+                          border: Border.all(
+                            color: context.primary.withValues(alpha: 0.25),
+                          ),
+                        ),
+                        child: Icon(
+                          Iconsax.calendar_1,
+                          size: 16,
+                          color: context.primary,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
                       onTap: () => setState(() => _showDetails = !_showDetails),
                       child: Container(
                         padding: .symmetric(horizontal: 12, vertical: 6),
@@ -163,30 +167,6 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                             fontWeight: .w600,
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // ── Date range row ───────────────────────────────────
-              Padding(
-                padding: .fromLTRB(12, 0, 12, 12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _DateButton(
-                        label: AppConstants.fromLabel,
-                        date: _fromDate,
-                        onTap: _pickFrom,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _DateButton(
-                        label: AppConstants.toLabel,
-                        date: _toDate,
-                        onTap: _pickTo,
                       ),
                     ),
                   ],
@@ -360,6 +340,145 @@ class _DateButton extends StatelessWidget {
                     fontWeight: .w600,
                     fontSize: 11,
                     height: 1,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Date range popup ─────────────────────────────────────────────────────────
+
+class _DateRange {
+  final DateTime from;
+  final DateTime to;
+  const _DateRange(this.from, this.to);
+}
+
+class _DateRangePickerDialog extends StatefulWidget {
+  final DateTime from;
+  final DateTime to;
+  const _DateRangePickerDialog({required this.from, required this.to});
+
+  @override
+  State<_DateRangePickerDialog> createState() => _DateRangePickerDialogState();
+}
+
+class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
+  late DateTime _from;
+  late DateTime _to;
+
+  @override
+  void initState() {
+    super.initState();
+    _from = widget.from;
+    _to = widget.to;
+  }
+
+  Future<void> _pickFrom() async {
+    final picked = await showCompactDatePicker(
+      context: context,
+      initialDate: _from,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (picked == null || !mounted) return;
+    setState(() {
+      _from = picked;
+      if (_to.isBefore(_from)) _to = _from;
+    });
+  }
+
+  Future<void> _pickTo() async {
+    final picked = await showCompactDatePicker(
+      context: context,
+      initialDate: _to,
+      firstDate: _from,
+      lastDate: DateTime(2100),
+    );
+    if (picked == null || !mounted) return;
+    setState(() => _to = picked);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: .circular(16)),
+      backgroundColor: context.navyCard,
+      child: Padding(
+        padding: .all(20),
+        child: Column(
+          mainAxisSize: .min,
+          crossAxisAlignment: .start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: .all(7),
+                  decoration: BoxDecoration(
+                    color: context.navyIconBg,
+                    borderRadius: .circular(8),
+                  ),
+                  child: Icon(
+                    Iconsax.calendar_1,
+                    color: context.navyIconColor,
+                    size: 16,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  AppConstants.dateLabel,
+                  style: context.titleSmall.copyWith(fontWeight: .w700),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _DateButton(
+              label: AppConstants.fromLabel,
+              date: _from,
+              onTap: _pickFrom,
+            ),
+            const SizedBox(height: 10),
+            _DateButton(
+              label: AppConstants.toLabel,
+              date: _to,
+              onTap: _pickTo,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: .end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    AppConstants.cancelBtn,
+                    style: context.labelSmall.copyWith(
+                      color: context.textSecondary,
+                      fontWeight: .w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: () =>
+                      Navigator.pop(context, _DateRange(_from, _to)),
+                  child: Container(
+                    padding: .symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: context.primary,
+                      borderRadius: .circular(8),
+                    ),
+                    child: Text(
+                      AppConstants.applyBtn,
+                      style: context.labelSmall.copyWith(
+                        color: AppColors.white,
+                        fontWeight: .w700,
+                      ),
+                    ),
                   ),
                 ),
               ],
