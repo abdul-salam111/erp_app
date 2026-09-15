@@ -218,7 +218,7 @@ class AppColors {
   static const Color navyCardDark = Color(0xFF1E293B);
   static const Color navyIconBgDark = Color(0xFF0F172A);
   static const Color navyIconColorDark = Color(0xFF3F7DC8);
-  static const Color navyBorderDark = Color(0xFF2E63B1);
+  static  Color navyBorderDark = Color(0xFF4A7FC7).withAlpha(80); // 50% opacity
 
   static const Color surfaceHeader = Color(0xFFF5F5F5);
   static const Color surfaceHeaderDark = Color(0xFF3D3D3D);

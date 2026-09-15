@@ -12,13 +12,13 @@ import '../../../../core/utils/feature_access.dart';
 enum _DrawerItemType { tile, expandable, category, divider }
 
 class DrawerItem {
-  final _DrawerItemType  _type;
-  final String?          label;
-  final IconData?        icon;
-  final String?          routeName;
-  final Color?           color;
+  final _DrawerItemType _type;
+  final String? label;
+  final IconData? icon;
+  final String? routeName;
+  final Color? color;
   final List<DrawerItem> children;
-  final String?          permissionKey;
+  final String? permissionKey;
 
   const DrawerItem.tile({
     required this.label,
@@ -26,34 +26,34 @@ class DrawerItem {
     this.routeName,
     this.color,
     this.permissionKey,
-  })  : _type    = _DrawerItemType.tile,
-        children = const [];
+  }) : _type = _DrawerItemType.tile,
+       children = const [];
 
   const DrawerItem.expandable({
     required this.label,
     required this.icon,
     required this.children,
     this.color,
-  })  : _type     = _DrawerItemType.expandable,
-        routeName = null,
-        permissionKey = null;
+  }) : _type = _DrawerItemType.expandable,
+       routeName = null,
+       permissionKey = null;
 
   const DrawerItem.category(this.label)
-      : _type    = _DrawerItemType.category,
-        icon      = null,
-        routeName = null,
-        color     = null,
-        children  = const [],
-        permissionKey = null;
+    : _type = _DrawerItemType.category,
+      icon = null,
+      routeName = null,
+      color = null,
+      children = const [],
+      permissionKey = null;
 
   const DrawerItem.divider()
-      : _type    = _DrawerItemType.divider,
-        label     = null,
-        icon      = null,
-        routeName = null,
-        color     = null,
-        children  = const [],
-        permissionKey = null;
+    : _type = _DrawerItemType.divider,
+      label = null,
+      icon = null,
+      routeName = null,
+      color = null,
+      children = const [],
+      permissionKey = null;
 }
 
 // ─── Permission helpers ─────────────────────────────────────────────────────
@@ -70,10 +70,10 @@ bool _expandableVisible(DrawerItem item) {
 // ─── App Drawer ───────────────────────────────────────────────────────────────
 
 class AppDrawer extends StatefulWidget {
-  final String           userName;
-  final String           orgName;
+  final String userName;
+  final String orgName;
   final List<DrawerItem> items;
-  final VoidCallback?    onOrgTap;
+  final VoidCallback? onOrgTap;
 
   const AppDrawer({
     super.key,
@@ -113,14 +113,14 @@ class _AppDrawerState extends State<AppDrawer>
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: context.surfaceElevated,
+      backgroundColor: context.navyCard,
       elevation: 0,
       width: 272,
       child: Column(
         children: [
           _DrawerHeader(
             userName: widget.userName,
-            orgName:  widget.orgName,
+            orgName: widget.orgName,
             onOrgTap: widget.onOrgTap,
           ),
           Expanded(
@@ -146,30 +146,35 @@ class _AppDrawerState extends State<AppDrawer>
     int animIndex = 0;
 
     void addAnimated(Widget w, {bool increment = true}) {
-      result.add(_AnimatedDrawerItem(
-        controller: _controller,
-        index: animIndex,
-        child: w,
-      ));
+      result.add(
+        _AnimatedDrawerItem(
+          controller: _controller,
+          index: animIndex,
+          child: w,
+        ),
+      );
       if (increment) animIndex++;
     }
 
     for (int i = 0; i < widget.items.length; i++) {
       final item = widget.items[i];
       final next = i + 1 < widget.items.length ? widget.items[i + 1] : null;
-      final nextIsNavItem = next != null &&
+      final nextIsNavItem =
+          next != null &&
           (next._type == _DrawerItemType.tile ||
-           next._type == _DrawerItemType.expandable);
+              next._type == _DrawerItemType.expandable);
 
       switch (item._type) {
         case _DrawerItemType.tile:
           if (!_tileVisible(item)) continue;
           addAnimated(_DrawerTile(item: item));
-          if (nextIsNavItem) addAnimated(_tileDivider(context), increment: false);
+          if (nextIsNavItem)
+            addAnimated(_tileDivider(context), increment: false);
         case _DrawerItemType.expandable:
           if (!_expandableVisible(item)) continue;
           addAnimated(_ExpandableTile(item: item));
-          if (nextIsNavItem) addAnimated(_tileDivider(context), increment: false);
+          if (nextIsNavItem)
+            addAnimated(_tileDivider(context), increment: false);
         case _DrawerItemType.category:
           addAnimated(_CategoryLabel(label: item.label!));
         case _DrawerItemType.divider:
@@ -180,20 +185,20 @@ class _AppDrawerState extends State<AppDrawer>
   }
 
   Widget _tileDivider(BuildContext context) => Divider(
-        height:    1,
-        thickness: 0.7,
-        indent:    56,
-        endIndent: 16,
-        color:     context.border,
-      );
+    height: 1,
+    thickness: 0.7,
+    indent: 56,
+    endIndent: 16,
+    color: context.navyBorder,
+  );
 }
 
 // ─── Animated drawer item ─────────────────────────────────────────────────────
 
 class _AnimatedDrawerItem extends StatelessWidget {
   final AnimationController controller;
-  final int                 index;
-  final Widget              child;
+  final int index;
+  final Widget child;
 
   const _AnimatedDrawerItem({
     required this.controller,
@@ -204,17 +209,17 @@ class _AnimatedDrawerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final start = (index * 0.07).clamp(0.0, 0.65);
-    final end   = (start + 0.45).clamp(start + 0.1, 1.0);
+    final end = (start + 0.45).clamp(start + 0.1, 1.0);
     final curve = CurvedAnimation(
       parent: controller,
-      curve:  Interval(start, end, curve: Curves.easeOut),
+      curve: Interval(start, end, curve: Curves.easeOut),
     );
     return FadeTransition(
       opacity: curve,
       child: SlideTransition(
         position: Tween<Offset>(
           begin: const Offset(-0.22, 0),
-          end:   Offset.zero,
+          end: Offset.zero,
         ).animate(curve),
         child: child,
       ),
@@ -247,12 +252,16 @@ class _DrawerTile extends StatelessWidget {
                 item.label!,
                 style: context.bodySmall.copyWith(
                   fontWeight: .w600,
-                  fontSize:   13,
-                  color:      context.textPrimary,
+                  fontSize: 13,
+                  color: context.textPrimary,
                 ),
               ),
             ),
-            Icon(Icons.chevron_right_rounded, size: 16, color: context.border),
+            Icon(
+              Icons.chevron_right_rounded,
+              size: 16,
+              color: context.navyBorder,
+            ),
           ],
         ),
       ),
@@ -264,17 +273,19 @@ class _DrawerTile extends StatelessWidget {
 
 class _IconBox extends StatelessWidget {
   final IconData icon;
-  final Color    color;
+  final Color color;
 
   const _IconBox({required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width:  34,
+      width: 34,
       height: 34,
       decoration: BoxDecoration(
-        color:        color.withValues(alpha: 0.12),
+        color: context.isDark
+            ? AppColors.navyIconBgDark
+            : color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(icon, size: 17, color: color),
@@ -340,7 +351,7 @@ class _ExpandableTileState extends State<_ExpandableTile>
               child: Row(
                 children: [
                   _IconBox(
-                    icon:  widget.item.icon!,
+                    icon: widget.item.icon!,
                     color: _expanded
                         ? context.primary
                         : (widget.item.color ?? context.primary),
@@ -351,19 +362,23 @@ class _ExpandableTileState extends State<_ExpandableTile>
                       widget.item.label!,
                       style: context.bodySmall.copyWith(
                         fontWeight: .w600,
-                        fontSize:   13,
-                        color: _expanded ? context.primary : context.textPrimary,
+                        fontSize: 13,
+                        color: _expanded
+                            ? context.primary
+                            : context.textPrimary,
                       ),
                     ),
                   ),
                   AnimatedRotation(
-                    turns:    _expanded ? 0.5 : 0,
+                    turns: _expanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 280),
-                    curve:    Curves.easeInOut,
+                    curve: Curves.easeInOut,
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      size:  18,
-                      color: _expanded ? context.primary : context.textSecondary,
+                      size: 18,
+                      color: _expanded
+                          ? context.primary
+                          : context.textSecondary,
                     ),
                   ),
                 ],
@@ -374,12 +389,10 @@ class _ExpandableTileState extends State<_ExpandableTile>
 
         // ── Children ──
         AnimatedSize(
-          duration:  const Duration(milliseconds: 300),
-          curve:     Curves.easeInOutCubic,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOutCubic,
           alignment: .topCenter,
-          child: _expanded
-              ? _buildChildren(context)
-              : const SizedBox.shrink(),
+          child: _expanded ? _buildChildren(context) : const SizedBox.shrink(),
         ),
       ],
     );
@@ -398,11 +411,11 @@ class _ExpandableTileState extends State<_ExpandableTile>
           _animatedChild(_ChildTile(item: tiles[i]), i, tiles.length),
           if (i < tiles.length - 1)
             Divider(
-              height:    1,
+              height: 1,
               thickness: 0.7,
-              indent:    72,
+              indent: 72,
               endIndent: 16,
-              color:     context.border,
+              color: context.navyBorder,
             ),
         ],
         const SizedBox(height: 4),
@@ -412,18 +425,18 @@ class _ExpandableTileState extends State<_ExpandableTile>
 
   Widget _animatedChild(Widget child, int index, int total) {
     final stagger = total > 1 ? 0.55 / total : 0.0;
-    final start   = (index * stagger).clamp(0.0, 0.55);
-    final end     = (start + 0.55).clamp(start + 0.1, 1.0);
-    final curve   = CurvedAnimation(
+    final start = (index * stagger).clamp(0.0, 0.55);
+    final end = (start + 0.55).clamp(start + 0.1, 1.0);
+    final curve = CurvedAnimation(
       parent: _childController,
-      curve:  Interval(start, end, curve: Curves.easeOut),
+      curve: Interval(start, end, curve: Curves.easeOut),
     );
     return FadeTransition(
       opacity: curve,
       child: SlideTransition(
         position: Tween<Offset>(
           begin: const Offset(-0.18, 0),
-          end:   Offset.zero,
+          end: Offset.zero,
         ).animate(curve),
         child: child,
       ),
@@ -446,7 +459,12 @@ class _ChildTile extends StatelessWidget {
         if (item.routeName != null) context.pushNamed(item.routeName!);
       },
       child: Padding(
-        padding: const EdgeInsets.only(left: 52, right: 16, top: 10, bottom: 10),
+        padding: const EdgeInsets.only(
+          left: 52,
+          right: 16,
+          top: 10,
+          bottom: 10,
+        ),
         child: Row(
           children: [
             Icon(item.icon, size: 16, color: context.textSecondary),
@@ -456,8 +474,8 @@ class _ChildTile extends StatelessWidget {
                 item.label!,
                 style: context.bodySmall.copyWith(
                   fontWeight: .w400,
-                  color:      context.textPrimary,
-                  fontSize:   13,
+                  color: context.textPrimary,
+                  fontSize: 13,
                 ),
               ),
             ),
@@ -482,10 +500,10 @@ class _CategoryLabel extends StatelessWidget {
       child: Text(
         label.toUpperCase(),
         style: context.labelSmall.copyWith(
-          color:         context.textSecondary,
-          fontWeight:    .w700,
+          color: context.textSecondary,
+          fontWeight: .w700,
           letterSpacing: 1.0,
-          fontSize:      10,
+          fontSize: 10,
         ),
       ),
     );
@@ -500,11 +518,11 @@ class _ItemDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Divider(
-      indent:    16,
+      indent: 16,
       endIndent: 16,
-      height:    16,
+      height: 16,
       thickness: 1,
-      color:     context.border,
+      color: context.navyBorder,
     );
   }
 }
@@ -521,10 +539,12 @@ class _LogoutButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Material(
-        color:        context.error.withValues(alpha: 0.07),
+        color: context.isDark
+            ? AppColors.navyIconBgDark
+            : context.error.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
-          onTap:        onTap,
+          onTap: onTap,
           borderRadius: BorderRadius.circular(10),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -536,7 +556,7 @@ class _LogoutButton extends StatelessWidget {
                   child: Text(
                     AppConstants.logout,
                     style: context.bodySmall.copyWith(
-                      color:      context.error,
+                      color: context.error,
                       fontWeight: .w600,
                     ),
                   ),
@@ -553,8 +573,8 @@ class _LogoutButton extends StatelessWidget {
 // ─── Drawer header ────────────────────────────────────────────────────────────
 
 class _DrawerHeader extends StatelessWidget {
-  final String        userName;
-  final String        orgName;
+  final String userName;
+  final String orgName;
   final VoidCallback? onOrgTap;
 
   const _DrawerHeader({
@@ -568,48 +588,54 @@ class _DrawerHeader extends StatelessWidget {
     final top = MediaQuery.paddingOf(context).top;
 
     return Container(
-      width:        double.infinity,
+      width: double.infinity,
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [context.primary, context.primary.withValues(alpha: 0.72)],
-          begin:  .topLeft,
-          end:    .bottomRight,
-        ),
+        color: context.isDark ? AppColors.navyHeaderDark : null,
+        gradient: context.isDark
+            ? null
+            : LinearGradient(
+                colors: [
+                  context.primary,
+                  context.primary.withValues(alpha: 0.72),
+                ],
+                begin: .topLeft,
+                end: .bottomRight,
+              ),
       ),
       child: Stack(
         children: [
           // Decorative circles
           Positioned(
             right: -28,
-            top:   top - 20,
+            top: top - 20,
             child: _Circle(size: 110, opacity: 0.08),
           ),
           Positioned(
             right: 50,
-            top:   top + 30,
+            top: top + 30,
             child: _Circle(size: 55, opacity: 0.05),
           ),
           Positioned(
-            left:   -20,
+            left: -20,
             bottom: -20,
-            child:  _Circle(size: 80, opacity: 0.06),
+            child: _Circle(size: 80, opacity: 0.06),
           ),
 
           // Content — horizontal: avatar | name + role
           Padding(
             padding: EdgeInsets.only(
-              top:    top + 22,
+              top: top + 22,
               bottom: 22,
-              left:   20,
-              right:  20,
+              left: 20,
+              right: 20,
             ),
             child: Row(
               crossAxisAlignment: .center,
               children: [
                 // Avatar with ring
                 Container(
-                  width:  58,
+                  width: 58,
                   height: 58,
                   decoration: BoxDecoration(
                     shape: .circle,
@@ -622,7 +648,7 @@ class _DrawerHeader extends StatelessWidget {
                   child: const Icon(
                     Iconsax.profile_circle,
                     color: AppColors.white,
-                    size:  28,
+                    size: 28,
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -630,12 +656,12 @@ class _DrawerHeader extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: .start,
-                    mainAxisSize:       .min,
+                    mainAxisSize: .min,
                     children: [
                       Text(
                         userName,
                         style: context.titleSmall.copyWith(
-                          color:      AppColors.white,
+                          color: AppColors.white,
                           fontWeight: .w700,
                         ),
                       ),
@@ -646,10 +672,10 @@ class _DrawerHeader extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 9,
-                            vertical:   4,
+                            vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color:        AppColors.white.withValues(alpha: 0.20),
+                            color: AppColors.white.withValues(alpha: 0.20),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
@@ -658,7 +684,7 @@ class _DrawerHeader extends StatelessWidget {
                               Icon(
                                 Iconsax.buildings,
                                 color: AppColors.white.withValues(alpha: 0.90),
-                                size:  11,
+                                size: 11,
                               ),
                               const SizedBox(width: 5),
                               Flexible(
@@ -667,9 +693,11 @@ class _DrawerHeader extends StatelessWidget {
                                   overflow: .ellipsis,
                                   maxLines: 1,
                                   style: context.labelSmall.copyWith(
-                                    color:      AppColors.white.withValues(alpha: 0.92),
+                                    color: AppColors.white.withValues(
+                                      alpha: 0.92,
+                                    ),
                                     fontWeight: .w600,
-                                    fontSize:   11,
+                                    fontSize: 11,
                                   ),
                                 ),
                               ),
@@ -677,8 +705,10 @@ class _DrawerHeader extends StatelessWidget {
                                 const SizedBox(width: 5),
                                 Icon(
                                   Icons.swap_horiz_rounded,
-                                  color: AppColors.white.withValues(alpha: 0.85),
-                                  size:  12,
+                                  color: AppColors.white.withValues(
+                                    alpha: 0.85,
+                                  ),
+                                  size: 12,
                                 ),
                               ],
                             ],
@@ -708,7 +738,7 @@ class _Circle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width:  size,
+      width: size,
       height: size,
       decoration: BoxDecoration(
         shape: .circle,

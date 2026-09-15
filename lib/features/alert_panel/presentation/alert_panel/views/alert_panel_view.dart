@@ -9,7 +9,6 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../alert_panel_exports.dart';
 
-
 class AlertPanelView extends StatelessWidget {
   const AlertPanelView({super.key});
 
@@ -32,41 +31,41 @@ class _AlertPanelBody extends StatefulWidget {
 class _AlertPanelBodyState extends State<_AlertPanelBody>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
-  late final List<Animation<double>>  _fades;
-  late final List<Animation<Offset>>  _slides;
+  late final List<Animation<double>> _fades;
+  late final List<Animation<Offset>> _slides;
 
   static const _offscreen = Offset(0, 0.06);
 
   static const _alerts = <_AlertItem>[
     _AlertItem(
-      title:    AppConstants.pendingQCTitle,
+      title: AppConstants.pendingQCTitle,
       subtitle: AppConstants.itemsReceivedButNotYetTitle,
-      count:    5,
-      color:    AppColors.amber,
+      count: 5,
+      color: AppColors.amber,
     ),
     _AlertItem(
-      title:    AppConstants.lowStockTitle,
+      title: AppConstants.lowStockTitle,
       subtitle: AppConstants.itemsBelowMinimumThresholdTitle,
-      count:    3,
-      color:    AppColors.orange,
+      count: 3,
+      color: AppColors.orange,
     ),
     _AlertItem(
-      title:    AppConstants.overdueMaintenanceTitle,
+      title: AppConstants.overdueMaintenanceTitle,
       subtitle: AppConstants.scheduledMaintenanceIsPastDueTitle,
-      count:    6,
-      color:    AppColors.errorBright,
+      count: 6,
+      color: AppColors.errorBright,
     ),
     _AlertItem(
-      title:    AppConstants.pendingAssetRegistrationTitle,
+      title: AppConstants.pendingAssetRegistrationTitle,
       subtitle: AppConstants.gRNItemsAwaitingTitle,
-      count:    3,
-      color:    AppColors.cyan,
+      count: 3,
+      color: AppColors.cyan,
     ),
     _AlertItem(
-      title:    AppConstants.delayedRepairTitle,
+      title: AppConstants.delayedRepairTitle,
       subtitle: AppConstants.twoAssetsOverdueFromRepairTitle,
-      count:    2,
-      color:    AppColors.errorBright,
+      count: 2,
+      color: AppColors.errorBright,
     ),
   ];
 
@@ -115,7 +114,10 @@ class _AlertPanelBodyState extends State<_AlertPanelBody>
     return BlocConsumer<AlertPanelBloc, AlertPanelState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
-          AppToastsUtils.showSuccessTop(context, AppConstants.resolvedSuccessfullySuccessMsg);
+          AppToastsUtils.showSuccessTop(
+            context,
+            AppConstants.resolvedSuccessfullySuccessMsg,
+          );
         }
         if (state.apiStatus == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(context, state.message.toString());
@@ -135,7 +137,9 @@ class _AlertPanelBodyState extends State<_AlertPanelBody>
                   position: _slides[0],
                   child: _SummaryCard(
                     totalCount: _alerts.fold(0, (sum, a) => sum + a.count),
-                    onResolve: () => context.read<AlertPanelBloc>().add(AlertPanelSubmitted()),
+                    onResolve: () => context.read<AlertPanelBloc>().add(
+                      AlertPanelSubmitted(),
+                    ),
                     isLoading: state.apiStatus == ApiStatus.LOADING,
                   ),
                 ),
@@ -145,24 +149,27 @@ class _AlertPanelBodyState extends State<_AlertPanelBody>
               // ── Alert cards ──
               Container(
                 decoration: BoxDecoration(
-                  color:        context.surfaceElevated,
+                  color: context.navyCard,
                   borderRadius: BorderRadius.circular(14),
-                  border:       Border.all(color: context.border),
+                  border: Border.all(color: context.navyBorder),
                   boxShadow: [
                     BoxShadow(
-                      color:     AppColors.black.withValues(alpha: 0.05),
+                      color: AppColors.black.withValues(alpha: 0.05),
                       blurRadius: 10,
-                      offset:    const Offset(0, 3),
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
                 child: ListView.separated(
-                  shrinkWrap:  true,
-                  padding:     EdgeInsets.zero,
-                  physics:     const NeverScrollableScrollPhysics(),
-                  itemCount:   _alerts.length,
-                  separatorBuilder: (_, __) =>
-                      Divider(height: 1, thickness: 1, color: context.border),
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _alerts.length,
+                  separatorBuilder: (_, __) => Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: context.navyBorder,
+                  ),
                   itemBuilder: (context, index) => FadeTransition(
                     opacity: _fades[index + 1],
                     child: SlideTransition(
@@ -183,9 +190,9 @@ class _AlertPanelBodyState extends State<_AlertPanelBody>
 // ─── Summary header card ──────────────────────────────────────────────────────
 
 class _SummaryCard extends StatelessWidget {
-  final int          totalCount;
+  final int totalCount;
   final VoidCallback onResolve;
-  final bool         isLoading;
+  final bool isLoading;
 
   const _SummaryCard({
     required this.totalCount,
@@ -198,14 +205,14 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color:        context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: BorderRadius.circular(14),
-        border:       Border.all(color: context.border),
+        border: Border.all(color: context.navyBorder),
         boxShadow: [
           BoxShadow(
-            color:     AppColors.black.withValues(alpha: 0.05),
+            color: AppColors.black.withValues(alpha: 0.05),
             blurRadius: 10,
-            offset:    const Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -216,34 +223,39 @@ class _SummaryCard extends StatelessWidget {
             clipBehavior: .none,
             children: [
               Container(
-                width:  42,
+                width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color:        AppColors.errorBright.withValues(alpha: 0.10),
+                  color: context.isDark
+                      ? AppColors.navyIconBgDark
+                      : AppColors.errorBright.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Iconsax.notification,
                   color: AppColors.errorBright,
-                  size:  20,
+                  size: 20,
                 ),
               ),
               Positioned(
-                top:   -4,
+                top: -4,
                 right: -4,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
-                    color:        AppColors.errorBright,
+                    color: AppColors.errorBright,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     '$totalCount',
                     style: const TextStyle(
-                      color:      AppColors.white,
-                      fontSize:   10,
+                      color: AppColors.white,
+                      fontSize: 10,
                       fontWeight: .w700,
-                      height:     1,
+                      height: 1,
                     ),
                   ),
                 ),
@@ -259,7 +271,7 @@ class _SummaryCard extends StatelessWidget {
                   AppConstants.alert,
                   style: context.titleSmall.copyWith(
                     fontWeight: .w700,
-                    color:      context.textPrimary,
+                    color: context.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -277,26 +289,28 @@ class _SummaryCard extends StatelessWidget {
           OutlinedButton(
             onPressed: isLoading ? null : onResolve,
             style: OutlinedButton.styleFrom(
-              foregroundColor:  context.primary,
-              side:             BorderSide(color: context.primary.withValues(alpha: 0.6)),
-              shape:            RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              padding:          const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              minimumSize:      .zero,
-              tapTargetSize:    MaterialTapTargetSize.shrinkWrap,
+              foregroundColor: context.primary,
+              side: BorderSide(color: context.primary.withValues(alpha: 0.6)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              minimumSize: .zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: isLoading
                 ? SizedBox(
-                    width:  14,
+                    width: 14,
                     height: 14,
-                    child:  CircularProgressIndicator(
+                    child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color:       context.primary,
+                      color: context.primary,
                     ),
                   )
                 : Text(
                     AppConstants.resolve,
                     style: context.labelSmall.copyWith(
-                      color:      context.primary,
+                      color: context.primary,
                       fontWeight: .w600,
                     ),
                   ),
@@ -328,14 +342,14 @@ class _AlertTile extends StatelessWidget {
                   item.title,
                   style: context.bodySmall.copyWith(
                     fontWeight: .w700,
-                    color:      context.textPrimary,
+                    color: context.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   item.subtitle,
                   style: context.labelSmall.copyWith(
-                    color:  context.textSecondary,
+                    color: context.textSecondary,
                     height: 1.3,
                   ),
                 ),
@@ -345,20 +359,22 @@ class _AlertTile extends StatelessWidget {
           const SizedBox(width: 12),
           // Count badge
           Container(
-            width:  32,
+            width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color:  item.color.withValues(alpha: 0.14),
-              shape:  .circle,
+              color: context.isDark
+                  ? AppColors.navyIconBgDark
+                  : item.color.withValues(alpha: 0.14),
+              shape: .circle,
             ),
             alignment: .center,
             child: Text(
               '${item.count}',
               style: TextStyle(
-                color:      item.color,
-                fontSize:   13,
+                color: item.color,
+                fontSize: 13,
                 fontWeight: .w700,
-                height:     1,
+                height: 1,
               ),
             ),
           ),
@@ -373,8 +389,8 @@ class _AlertTile extends StatelessWidget {
 class _AlertItem {
   final String title;
   final String subtitle;
-  final int    count;
-  final Color  color;
+  final int count;
+  final Color color;
 
   const _AlertItem({
     required this.title,

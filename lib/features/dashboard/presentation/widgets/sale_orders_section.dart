@@ -412,7 +412,7 @@ class _OrdersTable extends StatelessWidget {
       children: [
         // ── Header ──────────────────────────────────────
         Container(
-          color: context.surface,
+          color: context.isDark ? AppColors.navyIconBgDark : context.surface,
           child: Row(
             children: [
               ...List.generate(
@@ -434,12 +434,15 @@ class _OrdersTable extends StatelessWidget {
             ],
           ),
         ),
+        Divider(height: 1, thickness: 1, color: context.navyBorder),
         // ── Rows ─────────────────────────────────────────
         ...orders.asMap().entries.map((e) {
           final i = e.key;
           final row = e.value;
           return Material(
-            color: i.isOdd ? context.tableRowAlt : context.surfaceElevated,
+            color: context.isDark
+                ? (i.isOdd ? AppColors.navyIconBgDark : context.navyCard)
+                : (i.isOdd ? context.tableRowAlt : context.surfaceElevated),
             child: InkWell(
               onTap: () => _showOrderDetail(context, row),
               child: Row(
@@ -510,10 +513,10 @@ class _OrderDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final lower = row.status.toLowerCase();
     final statusColor = lower.contains('complet')
-        ? AppColors.greenDark
+        ? (context.isDark ? AppColors.successLight : AppColors.greenDark)
         : lower.contains('partial') || lower.contains('progress')
         ? AppColors.orange
-        : AppColors.blueGreyDark;
+        : (context.isDark ? AppColors.grey300 : AppColors.blueGreyDark);
     final progressFraction = (row.progress.clamp(0, 100)) / 100.0;
 
     return Container(
@@ -639,7 +642,9 @@ class _OrderDetailSheet extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progressFraction,
               minHeight: 10,
-              backgroundColor: statusColor.withValues(alpha: 0.12),
+              backgroundColor: context.isDark
+                  ? AppColors.white.withValues(alpha: 0.08)
+                  : statusColor.withValues(alpha: 0.12),
               valueColor: AlwaysStoppedAnimation<Color>(statusColor),
             ),
           ),
@@ -724,13 +729,26 @@ class _StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lower = status.toLowerCase();
+    final isDark = context.isDark;
     final (bg, fg) = lower.contains('complet')
-        ? (AppColors.greenDark.withValues(alpha: 0.12), AppColors.greenDark)
+        ? (
+            isDark
+                ? AppColors.navyIconBgDark
+                : AppColors.greenDark.withValues(alpha: 0.12),
+            isDark ? AppColors.successLight : AppColors.greenDark,
+          )
         : lower.contains('partial') || lower.contains('progress')
-        ? (AppColors.orange.withValues(alpha: 0.12), AppColors.orange)
+        ? (
+            isDark
+                ? AppColors.navyIconBgDark
+                : AppColors.orange.withValues(alpha: 0.12),
+            AppColors.orange,
+          )
         : (
-            AppColors.blueGreyDark.withValues(alpha: 0.10),
-            AppColors.blueGreyDark,
+            isDark
+                ? AppColors.navyIconBgDark
+                : AppColors.blueGreyDark.withValues(alpha: 0.10),
+            isDark ? AppColors.grey300 : AppColors.blueGreyDark,
           );
 
     if (large) {
