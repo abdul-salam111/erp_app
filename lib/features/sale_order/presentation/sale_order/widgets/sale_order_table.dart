@@ -24,14 +24,22 @@ class SaleOrderTable extends StatelessWidget {
       child: Column(
         children: [
           const _TableHeader(),
-          Divider(height: 1, thickness: 1, color: context.border),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: context.isDark ? context.navyBorder : context.border,
+          ),
           Expanded(
             child: ListView.separated(
               controller: scrollController,
               itemCount: orders.length,
-              separatorBuilder: (_, __) =>
-                  Divider(height: 1, thickness: 1, color: context.divider),
+              separatorBuilder: (_, __) => Divider(
+                height: 1,
+                thickness: 1,
+                color: context.isDark ? context.navyBorder : context.divider,
+              ),
               itemBuilder: (_, i) => _OrderRow(
+                index: i,
                 order: orders[i],
                 onView: onView != null ? () => onView!(orders[i]) : null,
               ),
@@ -48,13 +56,17 @@ class _TableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final headerColor = context.isDark
+        ? AppColors.surfaceHeaderDark
+        : context.primary;
+    final labelColor = context.isDark ? context.primary : context.white;
     return Container(
       decoration: BoxDecoration(
-        color: context.primary,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(6),
           topRight: Radius.circular(6),
         ),
+        color: headerColor,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Row(
@@ -62,22 +74,24 @@ class _TableHeader extends StatelessWidget {
           Expanded(
             flex: 8,
             child: Text(
-              AppConstants.partyLabel,
+              AppConstants.partyLabel.toUpperCase(),
               style: context.labelSmall.copyWith(
-                color: context.white,
-                fontWeight: .w600,
-                fontSize: 11,
+                color: labelColor,
+                fontWeight: .w700,
+                fontSize: 12,
+                letterSpacing: 0.6,
               ),
             ),
           ),
           Expanded(
             flex: 3,
             child: Text(
-              AppConstants.dateLabel,
+              AppConstants.dateLabel.toUpperCase(),
               style: context.labelSmall.copyWith(
-                color: context.white,
-                fontWeight: .w600,
-                fontSize: 11,
+                color: labelColor,
+                fontWeight: .w700,
+                fontSize: 12,
+                letterSpacing: 0.6,
               ),
               textAlign: .center,
             ),
@@ -85,11 +99,12 @@ class _TableHeader extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              AppConstants.netAmountLabel,
+              AppConstants.netAmountLabel.toUpperCase(),
               style: context.labelSmall.copyWith(
-                color: context.white,
-                fontWeight: .w600,
-                fontSize: 11,
+                color: labelColor,
+                fontWeight: .w700,
+                fontSize: 12,
+                letterSpacing: 0.6,
               ),
               textAlign: .end,
             ),
@@ -102,9 +117,10 @@ class _TableHeader extends StatelessWidget {
 }
 
 class _OrderRow extends StatefulWidget {
+  final int index;
   final SaleOrderEntity order;
   final VoidCallback? onView;
-  const _OrderRow({required this.order, this.onView});
+  const _OrderRow({required this.index, required this.order, this.onView});
 
   @override
   State<_OrderRow> createState() => _OrderRowState();
@@ -116,11 +132,19 @@ class _OrderRowState extends State<_OrderRow> {
   @override
   Widget build(BuildContext context) {
     final order = widget.order;
+    final isOdd = widget.index.isOdd;
 
-    return ColoredBox(
-      color: _expanded
-          ? context.primary.withValues(alpha: 0.06)
-          : context.transparent,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: _expanded
+            ? context.primary.withValues(alpha: 0.06)
+            : (isOdd ? context.tableRowAlt : context.transparent),
+        border: _expanded
+            ? Border(
+                bottom: BorderSide(color: AppColors.primary, width: 1.5),
+              )
+            : null,
+      ),
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -210,7 +234,11 @@ class _OrderRowState extends State<_OrderRow> {
                 ? Column(
                     crossAxisAlignment: .start,
                     children: [
-                      Divider(height: 1, thickness: 1, color: context.primary.withAlpha(30)),
+                      Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: context.primary.withAlpha(30),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 8, 8, 10),
                         child: Row(
@@ -280,8 +308,8 @@ class _DetailChip extends StatelessWidget {
       crossAxisAlignment: textAlign == .end
           ? .end
           : textAlign == .center
-              ? .center
-              : .start,
+          ? .center
+          : .start,
       children: [
         Text(
           label,

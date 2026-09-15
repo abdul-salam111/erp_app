@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
+import '../../../../../core/widgets/shimmer_box.dart';
 import 'inventory_models.dart';
 import 'inventory_search_field.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
@@ -201,7 +202,7 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
                 ),
                 Expanded(
                   child: widget.isLoading && rows.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
+                      ? _buildShimmerList(context)
                       : rows.isEmpty
                       ? Center(
                           child: Column(
@@ -255,6 +256,48 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
       ],
     );
   }
+}
+
+Widget _buildShimmerList(BuildContext context) {
+  return ListView.separated(
+    padding: EdgeInsets.zero,
+    itemCount: 6,
+    separatorBuilder: (_, __) => Divider(
+      height: 1,
+      thickness: 1,
+      color: context.isDark ? context.navyBorder : context.border,
+    ),
+    itemBuilder: (_, __) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      child: Row(
+        children: [
+          const ShimmerBox(width: 30, height: 30, radius: 15),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              children: const [
+                ShimmerBox(width: 130, height: 12, radius: 4),
+                SizedBox(height: 6),
+                ShimmerBox(width: 80, height: 10, radius: 4),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          const ShimmerBox(width: 60, height: 22, radius: 20),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: .end,
+            children: const [
+              ShimmerBox(width: 40, height: 12, radius: 4),
+              SizedBox(height: 4),
+              ShimmerBox(width: 30, height: 10, radius: 4),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _StockReceivedTile extends StatelessWidget {

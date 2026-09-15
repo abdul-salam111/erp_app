@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
+import '../../../../../core/widgets/shimmer_box.dart';
 import 'inventory_models.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
 
@@ -139,10 +140,7 @@ class CurrentStockSection extends StatelessWidget {
                 Divider(height: 1, thickness: 1, color: context.border),
                 // ── All rows (no scroll — outer screen scrolls) ──
                 if (isLoading && items.isEmpty)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 32),
-                    child: Center(child: CircularProgressIndicator()),
-                  )
+                  ..._buildShimmerRows(context)
                 else if (items.isEmpty)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 32),
@@ -168,6 +166,52 @@ class CurrentStockSection extends StatelessWidget {
       ],
     );
   }
+}
+
+List<Widget> _buildShimmerRows(BuildContext context) {
+  return List.generate(6, (i) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 5,
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: const [
+                    ShimmerBox(width: 140, height: 12, radius: 4),
+                    SizedBox(height: 6),
+                    ShimmerBox(width: 80, height: 10, radius: 4),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                width: 80,
+                child: Column(
+                  children: [
+                    ShimmerBox(width: 40, height: 12, radius: 4),
+                    SizedBox(height: 4),
+                    ShimmerBox(width: 30, height: 10, radius: 4),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                width: 54,
+                child: Align(
+                  alignment: .centerRight,
+                  child: ShimmerBox(width: 40, height: 12, radius: 4),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (i < 5)
+          Divider(height: 1, thickness: 1, color: context.border),
+      ],
+    );
+  });
 }
 
 class CurrentStockTableRow extends StatelessWidget {

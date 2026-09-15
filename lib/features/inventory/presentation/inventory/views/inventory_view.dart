@@ -5,6 +5,7 @@ import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../core/widgets/shimmer_box.dart';
 import '../../../inventory_exports.dart';
 import '../widgets/inventory_widgets.dart';
 
@@ -195,12 +196,28 @@ class _InventoryBodyState extends State<_InventoryBody> {
                   // ── Scrollable rows ─────────────────────────────────────
                   if (state.currentStockStatus == ApiStatus.LOADING &&
                       items.isEmpty)
-                    SliverToBoxAdapter(
-                      child: Container(
+                    SliverList.builder(
+                      itemCount: 6,
+                      itemBuilder: (context, i) => Container(
                         margin: EdgeInsets.symmetric(horizontal: hPad),
-                        color: context.navyCard,
-                        padding: const EdgeInsets.symmetric(vertical: 32),
-                        child: const Center(child: CircularProgressIndicator()),
+                        decoration: BoxDecoration(
+                          color: i.isOdd
+                              ? context.tableRowAlt
+                              : context.navyCard,
+                          border: Border(
+                            left: BorderSide(
+                              color: context.isDark
+                                  ? context.navyBorder
+                                  : context.border,
+                            ),
+                            right: BorderSide(
+                              color: context.isDark
+                                  ? context.navyBorder
+                                  : context.border,
+                            ),
+                          ),
+                        ),
+                        child: const _CurrentStockShimmerRow(),
                       ),
                     )
                   else if (filteredItems.isEmpty)
@@ -502,6 +519,49 @@ class _ColumnHeaderRow extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _CurrentStockShimmerRow extends StatelessWidget {
+  const _CurrentStockShimmerRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 5,
+            child: Column(
+              crossAxisAlignment: .start,
+              children: const [
+                ShimmerBox(width: 140, height: 12, radius: 4),
+                SizedBox(height: 6),
+                ShimmerBox(width: 80, height: 10, radius: 4),
+              ],
+            ),
+          ),
+          const SizedBox(
+            width: 80,
+            child: Column(
+              children: [
+                ShimmerBox(width: 40, height: 12, radius: 4),
+                SizedBox(height: 4),
+                ShimmerBox(width: 30, height: 10, radius: 4),
+              ],
+            ),
+          ),
+          const SizedBox(
+            width: 54,
+            child: Align(
+              alignment: .centerRight,
+              child: ShimmerBox(width: 40, height: 12, radius: 4),
+            ),
+          ),
+        ],
       ),
     );
   }
