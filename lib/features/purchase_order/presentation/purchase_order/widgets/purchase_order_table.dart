@@ -134,10 +134,17 @@ class _OrderRowState extends State<_OrderRow> {
     final order = widget.order;
     final isOdd = widget.index.isOdd;
 
-    return ColoredBox(
-      color: _expanded
-          ? context.primary.withValues(alpha: 0.06)
-          : (isOdd ? context.tableRowAlt : context.transparent),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: _expanded
+            ? context.primary.withValues(alpha: 0.06)
+            : (isOdd ? context.tableRowAlt : context.transparent),
+        border: _expanded
+            ? Border(
+                bottom: BorderSide(color: AppColors.primary, width: 1.5),
+              )
+            : null,
+      ),
       child: Column(
         crossAxisAlignment: .start,
         children: [

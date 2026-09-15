@@ -69,6 +69,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     // Default colors based on theme
     final defaultFillColor = widget.fillColor ?? context.surface;
     final defaultBorderColor = widget.borderColor ?? context.border;
+    // When a borderColor is explicitly provided (e.g. Colors.transparent to
+    // hide the outline), reuse it for the focused state too so focus doesn't
+    // reintroduce a visible border.
+    final focusedBorderColor = widget.borderColor ?? context.primary;
     final defaultLabelColor = widget.labelColor ?? context.textSecondary;
 
     return Column(
@@ -147,7 +151,10 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               // Focused border
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide(color: context.primary, width: 2),
+                borderSide: BorderSide(
+                  color: focusedBorderColor,
+                  width: widget.borderColor == null ? 2 : 1,
+                ),
               ),
 
               // Error border

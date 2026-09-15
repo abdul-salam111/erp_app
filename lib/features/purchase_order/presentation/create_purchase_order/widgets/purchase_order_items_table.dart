@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
@@ -37,29 +38,35 @@ class PurchaseOrderRowItem {
 
 class PurchaseOrderItemsTable extends StatelessWidget {
   final List<PurchaseOrderRowItem> rows;
+  final VoidCallback? onAddRow;
   final void Function(int index)? onDelete;
   final void Function(int index, PurchaseOrderRowItem updated)? onEdit;
 
   const PurchaseOrderItemsTable({
     super.key,
     required this.rows,
+    this.onAddRow,
     this.onDelete,
     this.onEdit,
   });
 
   @override
   Widget build(BuildContext context) {
+    final dividerColor = context.isDark ? context.navyBorder : context.divider;
     return Container(
+      clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(8),
-        border: Border.all(color: context.border),
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
       ),
       child: Column(
         crossAxisAlignment: .start,
         children: [
           const _TableHeader(),
-          Divider(height: 1, thickness: 1, color: context.border),
+          Divider(height: 1, thickness: 1, color: dividerColor),
           ...rows.asMap().entries.map(
             (e) => Column(
               children: [
@@ -69,12 +76,47 @@ class PurchaseOrderItemsTable extends StatelessWidget {
                   onDelete: onDelete != null ? () => onDelete!(e.key) : null,
                   onEdit: onEdit != null ? (updated) => onEdit!(e.key, updated) : null,
                 ),
-                if (e.key < rows.length - 1)
-                  Divider(height: 1, thickness: 1, color: context.divider),
+                Divider(height: 1, thickness: 1, color: dividerColor),
               ],
             ),
           ),
+          if (onAddRow != null) _AddRowFooter(onTap: onAddRow!),
         ],
+      ),
+    );
+  }
+}
+
+// ── Add Row footer (ghost row that lives inside the table) ────────────────────
+
+class _AddRowFooter extends StatelessWidget {
+  final VoidCallback onTap;
+  const _AddRowFooter({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: context.isDark ? AppColors.navyCardDark : context.grey50,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          child: Row(
+            mainAxisAlignment: .center,
+            children: [
+              Icon(Icons.add_rounded, size: 18, color: context.primary),
+              const SizedBox(width: 6),
+              Text(
+                'Add Row',
+                style: context.bodySmall.copyWith(
+                  color: context.primary,
+                  fontWeight: .w600,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -85,26 +127,31 @@ class _TableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final headerColor = context.isDark
+        ? AppColors.surfaceHeaderDark
+        : context.primary;
+    final labelColor = context.isDark ? context.primary : context.white;
     final cellStyle = TextStyle(
-      color: context.white,
-      fontWeight: .w600,
-      fontSize: 11,
+      color: labelColor,
+      fontWeight: .w700,
+      fontSize: 12,
+      letterSpacing: 0.6,
     );
     return Container(
-      decoration: BoxDecoration(
-        color: context.primary,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(8),
-        ),
-      ),
+      decoration: BoxDecoration(color: headerColor),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       child: Row(
         children: [
           SizedBox(width: 22, child: Text('#', style: cellStyle)),
-          Expanded(flex: 5, child: Text('Item', style: cellStyle)),
-          Expanded(flex: 3, child: Text('Mode', style: cellStyle, textAlign: .center)),
-          Expanded(flex: 2, child: Text('Qty', style: cellStyle, textAlign: .end)),
+          Expanded(flex: 5, child: Text('ITEM', style: cellStyle)),
+          Expanded(
+            flex: 3,
+            child: Text('MODE', style: cellStyle, textAlign: .center),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text('QTY', style: cellStyle, textAlign: .end),
+          ),
           const SizedBox(width: 20),
         ],
       ),
@@ -122,36 +169,28 @@ class _ItemRow extends StatelessWidget {
   const _ItemRow({required this.index, required this.item, this.onDelete, this.onEdit});
 
   Future<void> _openDetails(BuildContext context) async {
-    final action = await showModalBottomSheet<_RowDetailAction>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: context.transparent,
-      builder: (_) => _RowDetailsSheet(index: index, item: item, canEdit: onEdit != null, canDelete: onDelete != null),
+    final updated = await showAddRowBottomSheet(
+      context,
+      initialItem: item,
+      onDelete: onDelete,
     );
-    if (!context.mounted) return;
-    switch (action) {
-      case _RowDetailAction.edit:
-        final updated = await showAddRowBottomSheet(context, initialItem: item);
-        if (updated != null) onEdit?.call(updated);
-      case _RowDetailAction.delete:
-        onDelete?.call();
-      case null:
-        break;
-    }
+    if (updated != null) onEdit?.call(updated);
   }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => _openDetails(context),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 22,
-              child: Text(
-                '${index + 1}',
+    return Material(
+      color: context.isDark ? AppColors.navyIconBgDark : AppColors.white,
+      child: InkWell(
+        onTap: () => _openDetails(context),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 22,
+                child: Text(
+                  '${index + 1}',
                 style: context.labelSmall.copyWith(
                   color: context.textSecondary,
                   fontSize: 11,
@@ -211,12 +250,18 @@ class _ItemRow extends StatelessWidget {
           ],
         ),
       ),
+      ),
     );
   }
 }
 
 // ── Row Details Bottom Sheet ──────────────────────────────────────────────────
-
+// Kept for reference. The details sheet used to be shown on row tap, then the
+// user chose "Edit" to open the Add Row sheet. That extra step was removed —
+// tapping a row now opens the edit sheet directly, with delete moved into the
+// edit sheet's header. This code is preserved (commented out) in case we ever
+// want to reintroduce the read-only preview.
+/*
 enum _RowDetailAction { edit, delete }
 
 class _RowDetailsSheet extends StatelessWidget {
@@ -234,35 +279,40 @@ class _RowDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dividerColor = context.isDark ? context.navyBorder : context.border;
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        color: context.navyCard,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SafeArea(
         top: false,
         child: Column(
           mainAxisSize: .min,
           children: [
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             Container(
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.grey300,
+                color: context.isDark ? context.navyBorder : AppColors.grey300,
                 borderRadius: .circular(2),
               ),
             ),
+
+            // ── Header: icon + item name + mode chip + close ──
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+              padding: const EdgeInsets.fromLTRB(20, 14, 12, 14),
               child: Row(
                 children: [
                   Container(
-                    width: 34,
-                    height: 34,
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
-                      color: context.primary.withValues(alpha: 0.10),
-                      shape: .circle,
+                      color: context.isDark
+                          ? AppColors.navyIconBgDark
+                          : context.primary.withValues(alpha: 0.10),
+                      borderRadius: .circular(12),
                     ),
                     alignment: .center,
                     child: Text(
@@ -270,187 +320,317 @@ class _RowDetailsSheet extends StatelessWidget {
                       style: context.bodySmall.copyWith(
                         color: context.primary,
                         fontWeight: .w700,
-                        fontSize: 13,
+                        fontSize: 15,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: .start,
+                      mainAxisSize: .min,
                       children: [
                         Text(
                           item.item,
-                          style: context.bodySmall.copyWith(
+                          style: context.titleSmall.copyWith(
                             fontWeight: .w700,
-                            fontSize: 14,
-                            color: context.textPrimary,
+                            fontSize: 15,
                           ),
                           maxLines: 1,
                           overflow: .ellipsis,
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          item.mode,
-                          style: context.labelSmall.copyWith(
-                            color: context.textSecondary,
-                            fontSize: 11,
-                          ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: context.isDark
+                                    ? AppColors.navyIconBgDark
+                                    : context.primary
+                                          .withValues(alpha: 0.08),
+                                borderRadius: .circular(20),
+                              ),
+                              child: Text(
+                                item.mode.isEmpty ? '—' : item.mode,
+                                style: context.labelSmall.copyWith(
+                                  color: context.primary,
+                                  fontWeight: .w600,
+                                  fontSize: 10,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Icon(
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(
                       Icons.close_rounded,
                       size: 20,
                       color: context.textSecondary,
                     ),
+                    splashRadius: 20,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            Divider(height: 1, thickness: 1, color: dividerColor),
+
+            // ── Stat grid (2 columns of pill cards) ──
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: context.surface,
-                  borderRadius: .circular(10),
-                  border: Border.all(color: context.border),
-                ),
-                child: Column(
-                  children: [
-                    _DetailTileRow(
-                      left: _DetailTile(label: 'Contract Qty', value: item.contractQty.toStringAsFixed(2)),
-                      right: _DetailTile(label: 'Price', value: item.price.asPrice),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Column(
+                children: [
+                  _StatRow(
+                    left: _StatTile(
+                      icon: Iconsax.box_1,
+                      label: 'Contract Qty',
+                      value: item.contractQty.toStringAsFixed(2),
                     ),
-                    Divider(height: 1, thickness: 1, color: context.border),
-                    _DetailTileRow(
-                      left: _DetailTile(label: 'Rate Unit', value: item.rateUnit.isEmpty ? '—' : item.rateUnit),
-                      right: _DetailTile(label: 'Disc %', value: '${item.discPercent.toStringAsFixed(2)}%'),
+                    right: _StatTile(
+                      icon: Iconsax.tag,
+                      label: 'Price',
+                      value: item.price.asPrice,
                     ),
-                    Divider(height: 1, thickness: 1, color: context.border),
-                    _DetailTileRow(
-                      left: _DetailTile(label: 'Disc Value', value: item.discValue.asPrice),
-                      right: _DetailTile(label: 'VAT %', value: '${item.vatPercent.toStringAsFixed(2)}%'),
+                  ),
+                  const SizedBox(height: 10),
+                  _StatRow(
+                    left: _StatTile(
+                      icon: Iconsax.ruler,
+                      label: 'Rate Unit',
+                      value: item.rateUnit.isEmpty ? '—' : item.rateUnit,
                     ),
-                    Divider(height: 1, thickness: 1, color: context.border),
-                    _DetailTileRow(
-                      left: _DetailTile(label: 'VAT Amount', value: item.vatAmount.asPrice),
-                      right: const SizedBox.shrink(),
+                    right: _StatTile(
+                      icon: Iconsax.discount_shape,
+                      label: 'Disc %',
+                      value: '${item.discPercent.toStringAsFixed(2)}%',
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 10),
+                  _StatRow(
+                    left: _StatTile(
+                      icon: Iconsax.minus_square,
+                      label: 'Disc Value',
+                      value: item.discValue.asPrice,
+                    ),
+                    right: _StatTile(
+                      icon: Iconsax.percentage_square,
+                      label: 'VAT %',
+                      value: '${item.vatPercent.toStringAsFixed(2)}%',
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  _StatTile(
+                    icon: Iconsax.receipt_2,
+                    label: 'VAT Amount',
+                    value: item.vatAmount.asPrice,
+                    fullWidth: true,
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 10),
+
+            // ── Total pill ──
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
                 decoration: BoxDecoration(
-                  color: context.primary.withValues(alpha: 0.06),
-                  borderRadius: .circular(10),
-                  border: Border.all(color: context.primary.withValues(alpha: 0.2)),
+                  gradient: LinearGradient(
+                    colors: [
+                      context.primary.withValues(alpha: 0.14),
+                      context.primary.withValues(alpha: 0.04),
+                    ],
+                    begin: .topLeft,
+                    end: .bottomRight,
+                  ),
+                  borderRadius: .circular(14),
+                  border: Border.all(
+                    color: context.primary.withValues(alpha: 0.30),
+                  ),
                 ),
                 child: Row(
-                  mainAxisAlignment: .spaceBetween,
                   children: [
-                    Text(
-                      'Total',
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w700,
-                        fontSize: 13,
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: context.primary.withValues(alpha: 0.20),
+                        shape: .circle,
+                      ),
+                      child: Icon(
+                        Iconsax.wallet_3,
+                        size: 17,
                         color: context.primary,
                       ),
                     ),
-                    Text(
-                      item.total.asPrice,
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w700,
-                        fontSize: 15,
-                        color: context.primary,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: .start,
+                        mainAxisSize: .min,
+                        children: [
+                          Text(
+                            'Line Total',
+                            style: context.labelSmall.copyWith(
+                              color: context.textSecondary,
+                              fontSize: 11,
+                              fontWeight: .w500,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            item.total.asPrice,
+                            style: context.titleSmall.copyWith(
+                              color: context.primary,
+                              fontWeight: .w700,
+                              fontSize: 18,
+                              height: 1.1,
+                            ),
+                            maxLines: 1,
+                            overflow: .ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+
+            // ── Remarks ──
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                 decoration: BoxDecoration(
-                  color: context.surface,
-                  borderRadius: .circular(10),
-                  border: Border.all(color: context.border),
+                  color: context.isDark
+                      ? AppColors.navyIconBgDark
+                      : context.grey50,
+                  borderRadius: .circular(12),
                 ),
                 child: Column(
                   crossAxisAlignment: .start,
+                  mainAxisSize: .min,
                   children: [
-                    Text(
-                      'Remarks',
-                      style: context.labelSmall.copyWith(
-                        color: context.textSecondary,
-                        fontSize: 10,
-                      ),
+                    Row(
+                      children: [
+                        Icon(
+                          Iconsax.note_text,
+                          size: 13,
+                          color: context.textSecondary,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Remarks',
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 11,
+                            fontWeight: .w600,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 3),
+                    const SizedBox(height: 6),
                     Text(
-                      item.remarks?.isNotEmpty == true ? item.remarks! : '—',
+                      item.remarks?.isNotEmpty == true
+                          ? item.remarks!
+                          : 'No remarks added',
                       style: context.bodySmall.copyWith(
-                        fontSize: 12,
-                        color: context.textPrimary,
+                        fontSize: 13,
+                        color: item.remarks?.isNotEmpty == true
+                            ? context.textPrimary
+                            : context.textSecondary,
+                        fontStyle: item.remarks?.isNotEmpty == true
+                            ? .normal
+                            : .italic,
                       ),
                     ),
                   ],
                 ),
               ),
             ),
+
+            // ── Actions ──
             if (canEdit || canDelete)
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
                 child: Row(
                   children: [
                     if (canDelete)
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () =>
-                              Navigator.of(context).pop(_RowDetailAction.delete),
-                          icon: Icon(Icons.delete_outline_rounded,
-                              size: 16, color: context.error),
-                          label: Text(
-                            'Remove Row',
-                            style: context.bodySmall.copyWith(
-                              fontWeight: .w600,
-                              fontSize: 13,
-                              color: context.error,
-                            ),
+                      TextButton.icon(
+                        onPressed: () => Navigator.of(context)
+                            .pop(_RowDetailAction.delete),
+                        icon: Icon(
+                          Icons.delete_outline_rounded,
+                          size: 18,
+                          color: context.error,
+                        ),
+                        label: Text(
+                          'Remove',
+                          style: context.bodySmall.copyWith(
+                            fontWeight: .w600,
+                            fontSize: 13,
+                            color: context.error,
                           ),
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: context.error.withValues(alpha: 0.4)),
-                            minimumSize: const Size.fromHeight(44),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: .circular(8),
-                            ),
+                        ),
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size(0, 46),
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: .circular(10),
+                          ),
+                          backgroundColor: context.error.withValues(
+                            alpha: 0.08,
                           ),
                         ),
                       ),
-                    if (canEdit && canDelete) const SizedBox(width: 12),
+                    if (canEdit && canDelete) const SizedBox(width: 8),
                     if (canEdit)
                       Expanded(
-                        child: CustomButton(
-                          text: 'Edit Row',
-                          onPressed: () =>
-                              Navigator.of(context).pop(_RowDetailAction.edit),
-                          radius: 8,
-                          elevation: 0,
-                          fontsize: 13,
-                          size: const Size.fromHeight(44),
+                        child: Material(
+                          color: context.primary,
+                          borderRadius: .circular(10),
+                          child: InkWell(
+                            borderRadius: .circular(10),
+                            onTap: () => Navigator.of(context)
+                                .pop(_RowDetailAction.edit),
+                            child: SizedBox(
+                              height: 46,
+                              child: Row(
+                                mainAxisAlignment: .center,
+                                children: [
+                                  Icon(
+                                    Iconsax.edit,
+                                    size: 17,
+                                    color: AppColors.white,
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Edit Row',
+                                    style: context.bodySmall.copyWith(
+                                      color: AppColors.white,
+                                      fontWeight: .w700,
+                                      fontSize: 14,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                   ],
@@ -465,18 +645,19 @@ class _RowDetailsSheet extends StatelessWidget {
   }
 }
 
-class _DetailTileRow extends StatelessWidget {
+class _StatRow extends StatelessWidget {
   final Widget left;
   final Widget right;
-  const _DetailTileRow({required this.left, required this.right});
+  const _StatRow({required this.left, required this.right});
 
   @override
   Widget build(BuildContext context) {
     return IntrinsicHeight(
       child: Row(
+        crossAxisAlignment: .stretch,
         children: [
           Expanded(child: left),
-          VerticalDivider(width: 1, thickness: 1, color: context.border),
+          const SizedBox(width: 10),
           Expanded(child: right),
         ],
       ),
@@ -484,59 +665,94 @@ class _DetailTileRow extends StatelessWidget {
   }
 }
 
-class _DetailTile extends StatelessWidget {
+class _StatTile extends StatelessWidget {
+  final IconData icon;
   final String label;
   final String value;
-  const _DetailTile({required this.label, required this.value});
+  final bool fullWidth;
+  const _StatTile({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.fullWidth = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      child: Column(
-        crossAxisAlignment: .start,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: context.isDark
+            ? AppColors.navyIconBgDark
+            : context.grey50,
+        borderRadius: .circular(12),
+      ),
+      child: Row(
         children: [
-          Text(
-            label,
-            style: context.labelSmall.copyWith(
-              color: context.textSecondary,
-              fontSize: 10,
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: context.primary.withValues(alpha: 0.10),
+              borderRadius: .circular(8),
             ),
+            child: Icon(icon, size: 15, color: context.primary),
           ),
-          const SizedBox(height: 3),
-          Text(
-            value,
-            style: context.bodySmall.copyWith(
-              fontWeight: .w600,
-              fontSize: 13,
-              color: context.textPrimary,
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              mainAxisSize: .min,
+              children: [
+                Text(
+                  label,
+                  style: context.labelSmall.copyWith(
+                    color: context.textSecondary,
+                    fontSize: 10.5,
+                    fontWeight: .w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: context.bodySmall.copyWith(
+                    fontWeight: .w700,
+                    fontSize: 13,
+                    color: context.textPrimary,
+                    height: 1.1,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+              ],
             ),
-            maxLines: 1,
-            overflow: .ellipsis,
           ),
         ],
       ),
     );
   }
 }
+*/
 
 // ── Add Row Bottom Sheet ───────────────────────────────────────────────────────
 
 Future<PurchaseOrderRowItem?> showAddRowBottomSheet(
   BuildContext context, {
   PurchaseOrderRowItem? initialItem,
+  VoidCallback? onDelete,
 }) {
   return showModalBottomSheet<PurchaseOrderRowItem>(
     context: context,
     isScrollControlled: true,
     backgroundColor: context.transparent,
-    builder: (_) => _AddRowSheet(initialItem: initialItem),
+    builder: (_) => _AddRowSheet(initialItem: initialItem, onDelete: onDelete),
   );
 }
 
 class _AddRowSheet extends StatefulWidget {
   final PurchaseOrderRowItem? initialItem;
-  const _AddRowSheet({this.initialItem});
+  final VoidCallback? onDelete;
+  const _AddRowSheet({this.initialItem, this.onDelete});
 
   @override
   State<_AddRowSheet> createState() => _AddRowSheetState();
@@ -632,171 +848,253 @@ class _AddRowSheetState extends State<_AddRowSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final dividerColor = context.isDark ? context.navyBorder : context.border;
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 80),
-      decoration: BoxDecoration(
-        color: context.surfaceElevated,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            child: Column(
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.grey300,
-                    borderRadius: .circular(2),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 60),
+        decoration: BoxDecoration(
+          color: context.navyCard,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          children: [
+            // ── Handle bar ──────────────────────────────────────
+            const SizedBox(height: 10),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: context.isDark ? context.navyBorder : AppColors.grey300,
+                borderRadius: .circular(2),
+              ),
+            ),
+            // ── Header (icon + title + close) ───────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 14, 12, 14),
+              child: Row(
+                children: [
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: context.isDark
+                          ? AppColors.navyIconBgDark
+                          : context.primary.withValues(alpha: 0.10),
+                      borderRadius: .circular(10),
+                    ),
+                    child: Icon(
+                      _isEdit ? Iconsax.edit : Iconsax.add_square,
+                      size: 18,
+                      color: context.primary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: .spaceBetween,
-                  children: [
-                    Text(
-                      _isEdit ? 'Edit Row' : 'Add Row',
-                      style: context.titleSmall.copyWith(fontWeight: .w600),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      mainAxisSize: .min,
+                      children: [
+                        Text(
+                          _isEdit ? 'Edit Row' : 'Add Row',
+                          style: context.titleSmall.copyWith(
+                            fontWeight: .w700,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Fill in the item details below',
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
                     ),
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Icon(
-                        Icons.close_rounded,
+                  ),
+                  if (widget.onDelete != null)
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        widget.onDelete!();
+                      },
+                      icon: Icon(
+                        Iconsax.trash,
                         size: 20,
-                        color: context.textSecondary,
+                        color: context.error,
                       ),
+                      splashRadius: 20,
+                      tooltip: 'Remove Row',
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Divider(color: context.border),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-              children: [
-                _SheetField(
-                  label: 'Item',
-                  controller: _itemController,
-                  hintText: 'Enter item name',
-                ),
-                const SizedBox(height: 12),
-                _SheetField(
-                  label: 'Mode',
-                  controller: _modeController,
-                  hintText: 'Contract Mode',
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _SheetField(
-                        label: 'Contract Qty',
-                        controller: _qtyController,
-                        hintText: '0.00',
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        onChanged: (_) => _calculate(),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _SheetField(
-                        label: 'Price',
-                        controller: _priceController,
-                        hintText: '0.00',
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        onChanged: (_) => _calculate(),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _SheetField(
-                        label: 'Rate Unit',
-                        controller: _rateUnitController,
-                        hintText: 'e.g. /Kg',
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _SheetField(
-                        label: 'Disc %',
-                        controller: _discPercentController,
-                        hintText: '0.00',
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        onChanged: (_) => _calculate(),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _ReadOnlyField(label: 'Disc Value', value: _discValue.asPrice),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _SheetField(
-                        label: 'VAT %',
-                        controller: _vatPercentController,
-                        hintText: '0.00',
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        onChanged: (_) => _calculate(),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _ReadOnlyField(label: 'VAT Amount', value: _vatAmount.asPrice),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _ReadOnlyField(label: 'Total', value: _total.asPrice),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _SheetField(
-                  label: 'Remarks',
-                  controller: _remarksController,
-                  hintText: 'Optional remarks',
-                  maxLines: 6,
-                  contentPadding: const EdgeInsets.all(15),
-                ),
-                const SizedBox(height: 8),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              8,
-              16,
-              MediaQuery.of(context).padding.bottom + 12,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
+                  IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: context.primary,
-                      side: BorderSide(color: context.primary),
-                      minimumSize: const Size.fromHeight(44),
+                    icon: Icon(
+                      Icons.close_rounded,
+                      size: 20,
+                      color: context.textSecondary,
+                    ),
+                    splashRadius: 20,
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 1, thickness: 1, color: dividerColor),
+
+            // ── Scrollable form ──────────────────────────────────
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(16, 18, 16, 20),
+                children: [
+                  const _SectionHeader(
+                    icon: Iconsax.box,
+                    label: 'Item Details',
+                  ),
+                  const SizedBox(height: 10),
+                  _SheetField(
+                    label: 'Item',
+                    controller: _itemController,
+                    hintText: 'Enter item name',
+                  ),
+                  const SizedBox(height: 12),
+                  _SheetField(
+                    label: 'Mode',
+                    controller: _modeController,
+                    hintText: 'Contract Mode',
+                  ),
+
+                  const SizedBox(height: 22),
+                  const _SectionHeader(
+                    icon: Iconsax.dollar_circle,
+                    label: 'Pricing',
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _SheetField(
+                          label: 'Contract Qty',
+                          controller: _qtyController,
+                          hintText: '0.00',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          onChanged: (_) => _calculate(),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _SheetField(
+                          label: 'Price',
+                          controller: _priceController,
+                          hintText: '0.00',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          onChanged: (_) => _calculate(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _SheetField(
+                          label: 'Rate Unit',
+                          controller: _rateUnitController,
+                          hintText: 'e.g. /Kg',
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _SheetField(
+                          label: 'Disc %',
+                          controller: _discPercentController,
+                          hintText: '0.00',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          onChanged: (_) => _calculate(),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 22),
+                  const _SectionHeader(
+                    icon: Iconsax.receipt_item,
+                    label: 'Tax',
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _ReadOnlyField(
+                          label: 'Disc Value',
+                          value: _discValue.asPrice,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _SheetField(
+                          label: 'VAT %',
+                          controller: _vatPercentController,
+                          hintText: '0.00',
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          onChanged: (_) => _calculate(),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _ReadOnlyField(
+                    label: 'VAT Amount',
+                    value: _vatAmount.asPrice,
+                  ),
+
+                  const SizedBox(height: 18),
+                  _TotalCard(total: _total),
+
+                  const SizedBox(height: 22),
+                  const _SectionHeader(
+                    icon: Iconsax.note_text,
+                    label: 'Notes',
+                  ),
+                  const SizedBox(height: 10),
+                  _SheetField(
+                    label: 'Remarks',
+                    controller: _remarksController,
+                    hintText: 'Optional remarks',
+                    maxLines: 5,
+                    contentPadding: const EdgeInsets.all(14),
+                  ),
+                ],
+              ),
+            ),
+
+            // ── Sticky footer buttons ────────────────────────────
+            Container(
+              decoration: BoxDecoration(
+                color: context.navyCard,
+                border: Border(top: BorderSide(color: dividerColor)),
+              ),
+              padding: EdgeInsets.fromLTRB(
+                16,
+                12,
+                16,
+                MediaQuery.of(context).padding.bottom + 12,
+              ),
+              child: Row(
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: TextButton.styleFrom(
+                      foregroundColor: context.textSecondary,
+                      minimumSize: const Size(88, 46),
                       shape: RoundedRectangleBorder(
-                        borderRadius: .circular(8),
+                        borderRadius: .circular(10),
                       ),
                     ),
                     child: Text(
@@ -804,33 +1102,155 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                       style: context.bodySmall.copyWith(
                         fontWeight: .w600,
                         fontSize: 14,
-                        color: context.primary,
+                        color: context.textSecondary,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: CustomButton(
-                    text: _isEdit ? 'Save Changes' : 'Add Row',
-                    onPressed: _save,
-                    radius: 8,
-                    elevation: 0,
-                    fontsize: 14,
-                    size: const Size.fromHeight(44),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Material(
+                      color: context.primary,
+                      borderRadius: .circular(10),
+                      elevation: 0,
+                      child: InkWell(
+                        onTap: _save,
+                        borderRadius: .circular(10),
+                        child: SizedBox(
+                          height: 46,
+                          child: Row(
+                            mainAxisAlignment: .center,
+                            children: [
+                              Icon(
+                                _isEdit
+                                    ? Icons.check_rounded
+                                    : Icons.add_rounded,
+                                size: 18,
+                                color: AppColors.white,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                _isEdit ? 'Save Changes' : 'Add Row',
+                                style: context.bodySmall.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: .w700,
+                                  fontSize: 14,
+                                  letterSpacing: 0.3,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
 }
 
 // ── Sheet helpers ─────────────────────────────────────────────────────────────
+
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _SectionHeader({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 15, color: context.primary),
+        const SizedBox(width: 8),
+        Text(
+          label.toUpperCase(),
+          style: context.labelSmall.copyWith(
+            color: context.primary,
+            fontWeight: .w700,
+            fontSize: 11,
+            letterSpacing: 1.0,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Container(
+            height: 1,
+            color: context.isDark ? context.navyBorder : context.divider,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TotalCard extends StatelessWidget {
+  final double total;
+  const _TotalCard({required this.total});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      decoration: BoxDecoration(
+        color: context.isDark
+            ? AppColors.navyIconBgDark
+            : context.primary.withValues(alpha: 0.06),
+        borderRadius: .circular(12),
+        border: Border.all(color: context.primary.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: context.primary.withValues(alpha: 0.18),
+              shape: .circle,
+            ),
+            child: Icon(
+              Iconsax.wallet_3,
+              size: 16,
+              color: context.primary,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              mainAxisSize: .min,
+              children: [
+                Text(
+                  'Line Total',
+                  style: context.labelSmall.copyWith(
+                    color: context.textSecondary,
+                    fontSize: 11,
+                    fontWeight: .w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  total.asPrice,
+                  style: context.titleSmall.copyWith(
+                    color: context.primary,
+                    fontWeight: .w700,
+                    fontSize: 17,
+                    height: 1.1,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class _SheetField extends StatelessWidget {
   final String label;
@@ -856,16 +1276,25 @@ class _SheetField extends StatelessWidget {
     return Column(
       crossAxisAlignment: .start,
       children: [
-        FormLabel(text: label),
-        const SizedBox(height: 4),
+        Text(
+          label,
+          style: context.labelSmall.copyWith(
+            color: context.textSecondary,
+            fontSize: 11,
+            fontWeight: .w600,
+          ),
+        ),
+        const SizedBox(height: 6),
         CustomTextFormField(
           controller: controller,
-          fieldHeight: maxLines != null ? null : 45,
+          fieldHeight: maxLines != null ? null : 44,
           hintText: hintText,
           keyboardType: keyboardType ?? TextInputType.text,
           onChanged: onChanged,
           maxLines: maxLines ?? 1,
           contentPadding: contentPadding,
+          fillColor: context.isDark ? AppColors.navyIconBgDark : null,
+          borderColor: Colors.transparent,
         ),
       ],
     );
@@ -882,23 +1311,41 @@ class _ReadOnlyField extends StatelessWidget {
     return Column(
       crossAxisAlignment: .start,
       children: [
-        FormLabel(text: label),
-        const SizedBox(height: 4),
+        Row(
+          children: [
+            Text(
+              label,
+              style: context.labelSmall.copyWith(
+                color: context.textSecondary,
+                fontSize: 11,
+                fontWeight: .w600,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Icon(
+              Icons.lock_outline_rounded,
+              size: 11,
+              color: context.textSecondary.withValues(alpha: 0.6),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
         Container(
-          height: 45,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          height: 44,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: context.surface,
-            borderRadius: .circular(6),
-            border: Border.all(color: context.border),
+            color: context.isDark
+                ? AppColors.navyIconBgDark.withValues(alpha: 0.55)
+                : context.surface,
+            borderRadius: .circular(8),
           ),
           alignment: .centerLeft,
           child: Text(
             value,
             style: context.bodySmall.copyWith(
               fontSize: 13,
-              color: context.textPrimary,
-              fontWeight: .w500,
+              color: context.textSecondary,
+              fontWeight: .w600,
             ),
           ),
         ),
