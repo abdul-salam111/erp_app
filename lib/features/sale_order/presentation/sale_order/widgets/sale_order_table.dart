@@ -9,12 +9,14 @@ class SaleOrderTable extends StatelessWidget {
   final List<SaleOrderEntity> orders;
   final ScrollController? scrollController;
   final void Function(SaleOrderEntity order)? onView;
+  final void Function(SaleOrderEntity order)? onDelete;
 
   const SaleOrderTable({
     super.key,
     required this.orders,
     this.scrollController,
     this.onView,
+    this.onDelete,
   });
 
   @override
@@ -42,6 +44,7 @@ class SaleOrderTable extends StatelessWidget {
                 index: i,
                 order: orders[i],
                 onView: onView != null ? () => onView!(orders[i]) : null,
+                onDelete: onDelete != null ? () => onDelete!(orders[i]) : null,
               ),
             ),
           ),
@@ -120,7 +123,13 @@ class _OrderRow extends StatefulWidget {
   final int index;
   final SaleOrderEntity order;
   final VoidCallback? onView;
-  const _OrderRow({required this.index, required this.order, this.onView});
+  final VoidCallback? onDelete;
+  const _OrderRow({
+    required this.index,
+    required this.order,
+    this.onView,
+    this.onDelete,
+  });
 
   @override
   State<_OrderRow> createState() => _OrderRowState();
@@ -260,13 +269,6 @@ class _OrderRowState extends State<_OrderRow> {
                                     value: order.rowsCount.toString(),
                                     textAlign: .center,
                                   ),
-                                  _DetailChip(
-                                    label: AppConstants.remarksLabel,
-                                    value: order.remarks?.isNotEmpty == true
-                                        ? order.remarks!
-                                        : '—',
-                                    textAlign: .end,
-                                  ),
                                 ],
                               ),
                             ),
@@ -277,6 +279,15 @@ class _OrderRowState extends State<_OrderRow> {
                                 Iconsax.eye,
                                 size: 20,
                                 color: context.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            GestureDetector(
+                              onTap: widget.onDelete,
+                              child: Icon(
+                                Iconsax.trash,
+                                size: 20,
+                                color: AppColors.errorBright,
                               ),
                             ),
                           ],
