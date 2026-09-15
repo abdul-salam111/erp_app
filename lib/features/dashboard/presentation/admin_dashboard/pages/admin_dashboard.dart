@@ -28,7 +28,7 @@ class AdminDashboard extends StatelessWidget {
             label: AppConstants.dashboardLabel,
             icon: Iconsax.home_2,
             color: AppColors.primary,
-            routeName: RouteNames.alert_panel,
+            routeName: RouteNames.dashboard,
           ),
           DrawerItem.tile(
             label: AppConstants.alertsTitle,

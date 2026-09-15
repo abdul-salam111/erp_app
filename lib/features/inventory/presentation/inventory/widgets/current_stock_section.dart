@@ -207,7 +207,7 @@ class CurrentStockTableRow extends StatelessWidget {
                 Text(
                   item.category,
                   style: context.labelSmall.copyWith(
-                    color:context.textDisabled,
+                    color: context.textSecondary,
                     fontSize: 10,
                   ),
                   maxLines: 1,
@@ -233,7 +233,7 @@ class CurrentStockTableRow extends StatelessWidget {
                   item.weight,
                   textAlign: .center,
                   style: context.labelSmall.copyWith(
-                    color:context.textDisabled,
+                    color: context.textSecondary,
                     fontSize: 10,
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 
 class InventorySearchField extends StatelessWidget {
@@ -16,9 +17,11 @@ class InventorySearchField extends StatelessWidget {
     return Container(
       height: 40,
       decoration: BoxDecoration(
-        color: context.grey50,
+        color: context.isDark ? AppColors.navyCardDark : context.grey50,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: context.border),
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
       ),
       child: Row(
         children: [
@@ -32,10 +35,15 @@ class InventorySearchField extends StatelessWidget {
               style: context.bodyMedium.copyWith(color: context.textPrimary),
               decoration: InputDecoration(
                 isDense: true,
+                filled: false,
+                fillColor: Colors.transparent,
                 contentPadding: EdgeInsets.zero,
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                focusedErrorBorder: InputBorder.none,
                 hintText: hintText,
                 hintStyle: context.bodyMedium.copyWith(
                   color: context.textSecondary,

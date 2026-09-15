@@ -198,7 +198,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                     SliverToBoxAdapter(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: hPad),
-                        color: context.surfaceElevated,
+                        color: context.navyCard,
                         padding: const EdgeInsets.symmetric(vertical: 32),
                         child: const Center(child: CircularProgressIndicator()),
                       ),
@@ -207,7 +207,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                     SliverToBoxAdapter(
                       child: Container(
                         margin: EdgeInsets.symmetric(horizontal: hPad),
-                        color: context.surfaceElevated,
+                        color: context.navyCard,
                         padding: const EdgeInsets.symmetric(vertical: 32),
                         child: Center(
                           child: Text(
@@ -220,20 +220,25 @@ class _InventoryBodyState extends State<_InventoryBody> {
                       ),
                     )
                   else
-                    SliverList.separated(
+                    SliverList.builder(
                       itemCount: filteredItems.length,
-                      separatorBuilder: (_, __) => Container(
-                        margin: EdgeInsets.symmetric(horizontal: hPad),
-                        height: 1,
-                        color: context.border,
-                      ),
                       itemBuilder: (context, i) => Container(
                         margin: EdgeInsets.symmetric(horizontal: hPad),
                         decoration: BoxDecoration(
-                          color: context.surfaceElevated,
+                          color: i.isOdd
+                              ? context.tableRowAlt
+                              : context.navyCard,
                           border: Border(
-                            left: BorderSide(color: context.border),
-                            right: BorderSide(color: context.border),
+                            left: BorderSide(
+                              color: context.isDark
+                                  ? context.navyBorder
+                                  : context.border,
+                            ),
+                            right: BorderSide(
+                              color: context.isDark
+                                  ? context.navyBorder
+                                  : context.border,
+                            ),
                           ),
                         ),
                         child: CurrentStockTableRow(item: filteredItems[i]),
@@ -248,15 +253,27 @@ class _InventoryBodyState extends State<_InventoryBody> {
                           height: 14,
                           margin: EdgeInsets.symmetric(horizontal: hPad),
                           decoration: BoxDecoration(
-                            color: context.surfaceElevated,
+                            color: context.navyCard,
                             borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(14),
                               bottomRight: Radius.circular(14),
                             ),
                             border: Border(
-                              bottom: BorderSide(color: context.border),
-                              left: BorderSide(color: context.border),
-                              right: BorderSide(color: context.border),
+                              bottom: BorderSide(
+                                color: context.isDark
+                                    ? context.navyBorder
+                                    : context.border,
+                              ),
+                              left: BorderSide(
+                                color: context.isDark
+                                    ? context.navyBorder
+                                    : context.border,
+                              ),
+                              right: BorderSide(
+                                color: context.isDark
+                                    ? context.navyBorder
+                                    : context.border,
+                              ),
                             ),
                           ),
                         ),
@@ -328,9 +345,11 @@ class _CurrentStockCard extends StatelessWidget {
       padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 8),
       child: Container(
         decoration: BoxDecoration(
-          color: context.surfaceElevated,
+          color: context.navyCard,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: context.border),
+          border: Border.all(
+            color: context.isDark ? context.navyBorder : context.border,
+          ),
           boxShadow: [
             BoxShadow(
               color: AppColors.black.withValues(alpha: 0.04),
@@ -410,15 +429,23 @@ class _ColumnHeaderRow extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: hPad),
       decoration: BoxDecoration(
-        color: context.surfaceHeader,
+        color: context.isDark
+            ? AppColors.navyIconBgDark
+            : context.surfaceHeader,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(14),
           topRight: Radius.circular(14),
         ),
         border: Border(
-          top: BorderSide(color: context.border),
-          left: BorderSide(color: context.border),
-          right: BorderSide(color: context.border),
+          top: BorderSide(
+            color: context.isDark ? context.navyBorder : context.border,
+          ),
+          left: BorderSide(
+            color: context.isDark ? context.navyBorder : context.border,
+          ),
+          right: BorderSide(
+            color: context.isDark ? context.navyBorder : context.border,
+          ),
         ),
       ),
       child: ClipRRect(
@@ -438,7 +465,7 @@ class _ColumnHeaderRow extends StatelessWidget {
                     child: Text(
                       AppConstants.productLabel,
                       style: context.labelSmall.copyWith(
-                        color: context.textPrimary,
+                        color: context.primary,
                         fontWeight: .w700,
                       ),
                     ),
@@ -449,7 +476,7 @@ class _ColumnHeaderRow extends StatelessWidget {
                       AppConstants.qtyWeight,
                       textAlign: .center,
                       style: context.labelSmall.copyWith(
-                        color: context.textPrimary,
+                        color: context.primary,
                         fontWeight: .w700,
                       ),
                     ),
@@ -460,7 +487,7 @@ class _ColumnHeaderRow extends StatelessWidget {
                       AppConstants.total,
                       textAlign: .end,
                       style: context.labelSmall.copyWith(
-                        color: context.textPrimary,
+                        color: context.primary,
                         fontWeight: .w700,
                       ),
                     ),
@@ -468,7 +495,11 @@ class _ColumnHeaderRow extends StatelessWidget {
                 ],
               ),
             ),
-            Divider(height: 1, thickness: 1, color: context.border),
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: context.isDark ? context.navyBorder : context.border,
+            ),
           ],
         ),
       ),

@@ -60,9 +60,11 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
         // ── Header card ───────────────────────────────────────────────────────
         Container(
           decoration: BoxDecoration(
-            color: context.surfaceElevated,
+            color: context.navyCard,
             borderRadius: .circular(14),
-            border: .all(color: context.border),
+            border: .all(
+              color: context.isDark ? context.navyBorder : context.border,
+            ),
             boxShadow: [
               BoxShadow(
                 color: AppColors.black.withValues(alpha: 0.04),
@@ -125,9 +127,11 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
         Container(
           height: 300,
           decoration: BoxDecoration(
-            color: context.surfaceElevated,
+            color: context.navyCard,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: context.border),
+            border: Border.all(
+              color: context.isDark ? context.navyBorder : context.border,
+            ),
             boxShadow: [
               BoxShadow(
                 color: AppColors.black.withValues(alpha: 0.04),
@@ -170,7 +174,9 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
                               border: Border.all(
                                 color: sel
                                     ? context.primary.withValues(alpha: 0.30)
-                                    : context.border,
+                                    : (context.isDark
+                                          ? context.navyBorder
+                                          : context.border),
                               ),
                             ),
                             child: Text(
@@ -188,17 +194,44 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
                     }),
                   ),
                 ),
-                Divider(height: 1, thickness: 1, color: context.border),
+                Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: context.isDark ? context.navyBorder : context.border,
+                ),
                 Expanded(
                   child: widget.isLoading && rows.isEmpty
                       ? const Center(child: CircularProgressIndicator())
                       : rows.isEmpty
                       ? Center(
-                          child: Text(
-                            query.isEmpty
-                                ? AppConstants.noStockReceived
-                                : AppConstants.noItemsMatchSearch,
-                            style: TextStyle(color: context.textSecondary),
+                          child: Column(
+                            mainAxisSize: .min,
+                            children: [
+                              Container(
+                                padding: .all(14),
+                                decoration: BoxDecoration(
+                                  shape: .circle,
+                                  color: context.isDark
+                                      ? AppColors.navyIconBgDark
+                                      : context.primary.withValues(alpha: 0.08),
+                                ),
+                                child: Icon(
+                                  Icons.inbox_outlined,
+                                  size: 26,
+                                  color: context.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                query.isEmpty
+                                    ? AppConstants.noStockReceived
+                                    : AppConstants.noItemsMatchSearch,
+                                style: context.bodySmall.copyWith(
+                                  color: context.textSecondary,
+                                  fontWeight: .w500,
+                                ),
+                              ),
+                            ],
                           ),
                         )
                       : ListView.separated(
@@ -207,7 +240,9 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
                           separatorBuilder: (_, __) => Divider(
                             height: 1,
                             thickness: 1,
-                            color: context.border,
+                            color: context.isDark
+                                ? context.navyBorder
+                                : context.border,
                           ),
                           itemBuilder: (context, i) =>
                               _StockReceivedTile(row: rows[i]),
@@ -263,7 +298,7 @@ class _StockReceivedTile extends StatelessWidget {
                 Text(
                   row.city,
                   style: context.labelSmall.copyWith(
-                    color: context.textDisabled,
+                    color: context.textSecondary,
                   ),
                 ),
               ],
@@ -300,7 +335,7 @@ class _StockReceivedTile extends StatelessWidget {
                   Text(
                     row.category!,
                     style: context.labelSmall.copyWith(
-                      color: context.textDisabled,
+                      color: context.textSecondary,
                       fontSize: 10,
                     ),
                   ),
