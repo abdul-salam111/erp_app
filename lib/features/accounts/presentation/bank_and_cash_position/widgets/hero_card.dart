@@ -45,7 +45,7 @@ class BankAndCashHeroCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(6, 6, 6, 0),
       height: context.screenHeight * 0.30,
-      decoration: const BoxDecoration(),
+      decoration: BoxDecoration(color: context.background),
       clipBehavior: .hardEdge,
       child: Stack(
         children: [

@@ -107,7 +107,7 @@ class _BankAndCashPositionBodyState extends State<_BankAndCashPositionBody> {
                 child: _collapsed
                     ? const SizedBox.shrink()
                     : ColoredBox(
-                        color: context.surfaceElevated,
+                        color: context.background,
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: isLoading

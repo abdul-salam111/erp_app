@@ -20,7 +20,7 @@ class BankAndCashList extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 4, 12, 12),
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(14),
         border: .all(color: context.border),
         boxShadow: context.isDark
@@ -54,7 +54,7 @@ class BankAndCashListShimmer extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 4, 12, 12),
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(14),
         border: Border.all(color: context.border),
       ),

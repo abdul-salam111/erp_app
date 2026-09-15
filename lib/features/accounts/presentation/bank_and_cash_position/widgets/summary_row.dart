@@ -75,7 +75,7 @@ class _SummaryCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.navyCard,
         borderRadius: .circular(14),
         border: .all(color: context.border),
         boxShadow: context.isDark
