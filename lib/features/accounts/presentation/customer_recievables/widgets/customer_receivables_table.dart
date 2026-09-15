@@ -22,13 +22,10 @@ class CustomerReceivablesTable extends StatelessWidget {
         const _TableHeader(),
         Divider(height: 1, thickness: 1, color: context.divider),
         Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: ListView.builder(
             controller: scrollController,
             itemCount: items.length,
-            separatorBuilder: (_, __) =>
-                Divider(height: 1, thickness: 1, color: context.divider),
-            itemBuilder: (_, i) => _CustomerRow(item: items[i]),
+            itemBuilder: (_, i) => _CustomerRow(item: items[i], index: i),
           ),
         ),
       ],
@@ -44,8 +41,11 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-     color:context.primary.withValues(alpha: 0.2),
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      color: context.primary.withValues(alpha: 0.2),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.pagePadding.left,
+        vertical: 10,
+      ),
       child: Row(
         children: [
           Expanded(flex: 8, child: _HeaderText(AppConstants.partyBtn)),
@@ -85,8 +85,9 @@ class _HeaderText extends StatelessWidget {
 
 class _CustomerRow extends StatefulWidget {
   final CustomerReceivableItemEntity item;
+  final int index;
 
-  const _CustomerRow({required this.item});
+  const _CustomerRow({required this.item, required this.index});
 
   @override
   State<_CustomerRow> createState() => _CustomerRowState();
@@ -98,11 +99,12 @@ class _CustomerRowState extends State<_CustomerRow> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
+    final isOdd = widget.index.isOdd;
 
     return ColoredBox(
       color: _expanded
           ? context.primary.withValues(alpha: 0.05)
-          : context.transparent,
+          : (isOdd ? context.tableRowAlt : context.transparent),
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -110,7 +112,10 @@ class _CustomerRowState extends State<_CustomerRow> {
           InkWell(
             onTap: () => setState(() => _expanded = !_expanded),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.pagePadding.left,
+                vertical: 8,
+              ),
               child: Row(
                 crossAxisAlignment: .center,
                 children: [
@@ -201,7 +206,12 @@ class _CustomerRowState extends State<_CustomerRow> {
                           color: context.divider,
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(6, 8, 10, 10),
+                          padding: EdgeInsets.fromLTRB(
+                            context.pagePadding.left,
+                            8,
+                            context.pagePadding.right,
+                            10,
+                          ),
                           child: Row(
                             children: [
                               _ExpandedCell(

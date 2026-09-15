@@ -72,6 +72,13 @@ extension AppColorExtension on BuildContext {
   Color get border => isDark ? AppColors.borderDark : AppColors.borderLight;
   Color get divider => isDark ? AppColors.dividerDark : AppColors.dividerLight;
 
+  // Financial semantic colors (theme-aware) — bright variants in dark mode
+  // stay legible on navy backgrounds.
+  Color get debitColor =>
+      isDark ? const Color(0xFFF87171) : AppColors.debitRed;
+  Color get creditColor =>
+      isDark ? const Color(0xFF34D399) : AppColors.creditGreen;
+
   // Flat surface fills (theme-aware)
   Color get tableRowAlt =>
       isDark ? AppColors.tableRowAltDark : AppColors.tableRowAlt;

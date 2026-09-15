@@ -32,20 +32,27 @@ class AccountsLedgerRow extends StatelessWidget {
         '${rowBalance.abs().formatPrice()} '
         '${rowBalance >= 0 ? AppConstants.dr : AppConstants.cr}';
 
+    final debitFg = context.debitColor;
+    final creditFg = context.creditColor;
+
     final Color iconBg;
     final Color iconColor;
     final IconData iconData;
     if (isOpening) {
-      iconBg = context.surface;
+      iconBg = context.isDark ? context.navyIconBg : context.surface;
       iconColor = context.textSecondary;
       iconData = Icons.horizontal_rule_rounded;
     } else if (isDrOnly) {
-      iconBg = context.debitContainer;
-      iconColor = AppColors.debitRed;
+      iconBg = context.isDark
+          ? debitFg.withValues(alpha: 0.16)
+          : context.debitContainer;
+      iconColor = debitFg;
       iconData = Icons.arrow_upward_rounded;
     } else if (isCrOnly) {
-      iconBg = context.creditContainer;
-      iconColor = AppColors.creditGreen;
+      iconBg = context.isDark
+          ? creditFg.withValues(alpha: 0.16)
+          : context.creditContainer;
+      iconColor = creditFg;
       iconData = Icons.arrow_downward_rounded;
     } else {
       iconBg = context.primary.withValues(alpha: 0.12);
@@ -61,10 +68,10 @@ class AccountsLedgerRow extends StatelessWidget {
       amountColor = context.textSecondary;
     } else if (isDrOnly) {
       amountText = drAmt.formatPrice();
-      amountColor = AppColors.debitRed;
+      amountColor = debitFg;
     } else if (isCrOnly) {
       amountText = crAmt.formatPrice();
-      amountColor = AppColors.creditGreen;
+      amountColor = creditFg;
     } else {
       amountText = '${drAmt.formatPrice()} / ${crAmt.formatPrice()}';
       amountColor = context.textPrimary;
@@ -82,7 +89,11 @@ class AccountsLedgerRow extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: context.border)),
+          border: Border(
+            top: BorderSide(
+              color: context.isDark ? context.navyBorder : context.border,
+            ),
+          ),
         ),
         child: Row(
           children: [

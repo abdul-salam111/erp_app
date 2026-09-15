@@ -223,7 +223,7 @@ class AppColors {
   static const Color surfaceHeader = Color(0xFFF5F5F5);
   static const Color surfaceHeaderDark = Color(0xFF2A3B54);
   static const Color tableRowAlt = Color(0xFFF9FAFB);
-  static const Color tableRowAltDark = Color(0xFF141E33);
+  static const Color tableRowAltDark = Color(0xFF0E1929);
   static const Color shimmerBase = Color(0xFFE8E8E8);
   static const Color shimmerBaseDark = Color(0xFF1E293B);
   static const Color black26 = Color(0x42000000);

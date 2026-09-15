@@ -17,23 +17,18 @@ class VendorPayableTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: context.pagePadding.left),
-      child: Column(
-        children: [
-          const _TableHeader(),
-          Divider(height: 1, thickness: 1, color: context.divider),
-          Expanded(
-            child: ListView.separated(
-              controller: scrollController,
-              itemCount: items.length,
-              separatorBuilder: (_, __) =>
-                  Divider(height: 1, thickness: 1, color: context.divider),
-              itemBuilder: (_, i) => _VendorRow(item: items[i]),
-            ),
+    return Column(
+      children: [
+        const _TableHeader(),
+        Divider(height: 1, thickness: 1, color: context.divider),
+        Expanded(
+          child: ListView.builder(
+            controller: scrollController,
+            itemCount: items.length,
+            itemBuilder: (_, i) => _VendorRow(item: items[i], index: i),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -47,7 +42,10 @@ class _TableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: context.primary.withValues(alpha: 0.2),
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.pagePadding.left,
+        vertical: 10,
+      ),
       child: Row(
         children: [
           Expanded(flex: 8, child: const _HeaderText('Vendor')),
@@ -87,8 +85,9 @@ class _HeaderText extends StatelessWidget {
 
 class _VendorRow extends StatefulWidget {
   final CustomerReceivableItemEntity item;
+  final int index;
 
-  const _VendorRow({required this.item});
+  const _VendorRow({required this.item, required this.index});
 
   @override
   State<_VendorRow> createState() => _VendorRowState();
@@ -100,18 +99,22 @@ class _VendorRowState extends State<_VendorRow> {
   @override
   Widget build(BuildContext context) {
     final item = widget.item;
+    final isOdd = widget.index.isOdd;
 
     return ColoredBox(
       color: _expanded
           ? context.primary.withValues(alpha: 0.05)
-          : context.transparent,
+          : (isOdd ? context.tableRowAlt : context.transparent),
       child: Column(
         crossAxisAlignment: .start,
         children: [
           InkWell(
             onTap: () => setState(() => _expanded = !_expanded),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.pagePadding.left,
+                vertical: 8,
+              ),
               child: Row(
                 crossAxisAlignment: .center,
                 children: [
@@ -197,7 +200,12 @@ class _VendorRowState extends State<_VendorRow> {
                           color: context.divider,
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(6, 8, 10, 10),
+                          padding: EdgeInsets.fromLTRB(
+                            context.pagePadding.left,
+                            8,
+                            context.pagePadding.right,
+                            10,
+                          ),
                           child: Row(
                             children: [
                               _ExpandedCell(

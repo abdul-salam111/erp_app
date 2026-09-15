@@ -84,8 +84,12 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: context.surface,
-                border: Border(top: BorderSide(color: context.border)),
+                color: context.isDark ? context.navyIconBg : context.surface,
+                border: Border(
+                  top: BorderSide(
+                    color: context.isDark ? context.navyBorder : context.border,
+                  ),
+                ),
               ),
               child: Text(
                 pagedEntry.type.toUpperCase(),
@@ -113,8 +117,11 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.surface,
         borderRadius: .circular(10),
+        border: context.isDark
+            ? Border.all(color: context.navyBorder)
+            : null,
       ),
       child: Column(
         children: [
@@ -125,7 +132,11 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(10),
               ),
-              border: Border(bottom: BorderSide(color: context.border)),
+              border: Border(
+                bottom: BorderSide(
+                  color: context.isDark ? context.navyBorder : context.border,
+                ),
+              ),
             ),
             child: Column(
               crossAxisAlignment: .start,
@@ -207,9 +218,11 @@ class _TotalChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.isDark ? context.navyIconBg : context.surfaceElevated,
         borderRadius: .circular(8),
-        border: .all(color: context.border),
+        border: .all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
       ),
       child: Column(
         crossAxisAlignment: .start,
