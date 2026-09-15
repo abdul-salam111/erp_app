@@ -7,6 +7,7 @@ class OverviewStatCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
+  final bool showBorder;
 
   const OverviewStatCard({
     super.key,
@@ -14,6 +15,7 @@ class OverviewStatCard extends StatelessWidget {
     required this.value,
     required this.icon,
     required this.color,
+    this.showBorder = false,
   });
 
   @override
@@ -24,6 +26,11 @@ class OverviewStatCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: context.navyCard,
           borderRadius: .circular(10),
+          border: showBorder
+              ? Border.all(
+                  color: context.isDark ? context.navyBorder : context.border,
+                )
+              : null,
           boxShadow: [
             BoxShadow(
               color: AppColors.black.withValues(alpha: 0.08),

@@ -240,15 +240,18 @@ class _AllOverviewSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * 0.8,
+      ),
       decoration: BoxDecoration(
-        color: context.navyCard,
+        color: context.background,
         borderRadius: const .vertical(top: Radius.circular(24)),
       ),
       padding: EdgeInsets.fromLTRB(
         20,
         12,
         20,
-        MediaQuery.viewInsetsOf(context).bottom + 24,
+        MediaQuery.viewInsetsOf(context).bottom + 45,
       ),
       child: Column(
         mainAxisSize: .min,
@@ -335,6 +338,7 @@ class _AllOverviewSheet extends StatelessWidget {
                     value: values[i].formatPrice(symbol: currencySymbol),
                     icon: _meta[i].icon,
                     color: _meta[i].color,
+                    showBorder: true,
                   )
                   .animate()
                   .slideY(
