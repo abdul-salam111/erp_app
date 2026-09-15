@@ -26,7 +26,9 @@ class AccountsCompactFilterBar extends StatelessWidget {
     return GestureDetector(
       onTap: onExpand,
       child: Container(
-        decoration: BoxDecoration(color: context.surface),
+        decoration: BoxDecoration(
+          color: context.isDark ? context.navyCard : context.surface,
+        ),
         padding: EdgeInsets.fromLTRB(
           context.pagePadding.left,
           10,

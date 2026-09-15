@@ -15,10 +15,7 @@ class AccountsQuickActions extends StatefulWidget {
   State<AccountsQuickActions> createState() => _AccountsQuickActionsState();
 }
 
-class _AccountsQuickActionsState extends State<AccountsQuickActions>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
+class _AccountsQuickActionsState extends State<AccountsQuickActions> {
   static const _items = <_QAItem>[
     _QAItem(
       label: AppConstants.accountStatementsLabel,
@@ -65,31 +62,19 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    )..forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final cardHeight = Responsive.value<double>(
       context,
       phone: 100,
-      tablet: 116,
+      tablet: 120,
       ipad: 130,
     );
+    final spacing = context.gridSpacing;
 
     final visibleItems = _items
-        .where((i) => i.permissionKey == null || featureAccess.has(i.permissionKey!))
+        .where(
+          (i) => i.permissionKey == null || featureAccess.has(i.permissionKey!),
+        )
         .toList();
 
     return Column(
@@ -103,29 +88,12 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
           physics: const NeverScrollableScrollPhysics(),
           itemCount: visibleItems.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: context.gridColumnCount,
+            crossAxisCount: 2,
             mainAxisExtent: cardHeight,
-            mainAxisSpacing: context.gridSpacing,
-            crossAxisSpacing: context.gridSpacing,
+            mainAxisSpacing: spacing,
+            crossAxisSpacing: spacing,
           ),
-          itemBuilder: (_, i) {
-            final start = (i * 0.1).clamp(0.0, 0.55);
-            final end   = (start + 0.5).clamp(0.0, 1.0);
-            final curve = CurvedAnimation(
-              parent: _controller,
-              curve:  Interval(start, end, curve: Curves.easeOut),
-            );
-            return FadeTransition(
-              opacity: curve,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(-0.22, 0),
-                  end:   Offset.zero,
-                ).animate(curve),
-                child: _QACard(item: visibleItems[i]),
-              ),
-            );
-          },
+          itemBuilder: (context, index) => _QACard(item: visibleItems[index]),
         ),
       ],
     );
@@ -134,48 +102,55 @@ class _AccountsQuickActionsState extends State<AccountsQuickActions>
 
 class _QACard extends StatelessWidget {
   final _QAItem item;
+
   const _QACard({required this.item});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        if (item.routeName != null) context.pushNamed(item.routeName!);
-      },
-      borderRadius: .circular(10),
+      onTap: item.routeName != null
+          ? () => context.pushNamed(item.routeName!)
+          : null,
+      borderRadius: BorderRadius.circular(10),
       child: Container(
         decoration: BoxDecoration(
-          color: item.color.withValues(alpha: context.isDark ? 0.20 : 0.10),
-          borderRadius: .circular(10),
+          color: context.isDark
+              ? context.navyCard
+              : item.color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
           mainAxisAlignment: .center,
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
-                color: context.surfaceElevated,
+                color: context.isDark
+                    ? context.navyIconBg
+                    : context.surfaceElevated,
                 shape: .circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: item.color.withValues(alpha: 0.25),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                boxShadow: context.isDark
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: item.color.withValues(alpha: 0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
               ),
-              child: Icon(item.icon, color: _legibleColor(context, item.color), size: 18),
+              child: Icon(item.icon, color: item.color, size: 24),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Padding(
-              padding: .symmetric(horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
                 item.label,
-                style: context.labelSmall.copyWith(
-                  color: _legibleColor(context, item.color),
+                style: context.labelMedium.copyWith(
+                  color: context.isDark ? context.textPrimary : item.color,
                   fontWeight: .w600,
-                  fontSize: 12,
+                  fontSize: 14,
                 ),
                 textAlign: .center,
                 maxLines: 2,
@@ -189,24 +164,18 @@ class _QACard extends StatelessWidget {
   }
 }
 
-/// Module accent colors (e.g. blueGrey, tealDark) are tuned for light
-/// backgrounds and lose contrast against the dark, low-alpha-tinted card
-/// background used here in dark mode — lighten them so they stay legible
-/// without losing their per-category identity.
-Color _legibleColor(BuildContext context, Color base) =>
-    context.isDark ? Color.lerp(base, Colors.white, 0.35)! : base;
-
 class _QAItem {
   final String label;
   final IconData icon;
   final Color color;
   final String? routeName;
   final String? permissionKey;
+
   const _QAItem({
     required this.label,
     required this.icon,
     required this.color,
-    this.routeName,
+    required this.routeName,
     this.permissionKey,
   });
 }

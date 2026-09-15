@@ -1,12 +1,7 @@
-// ignore_for_file: avoid_print, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
-import 'package:another_flushbar/flushbar.dart';
+import 'package:floating_snackbar/floating_snackbar.dart';
 import 'package:mantic_erp_app/core/theme/colors.dart';
-
-// ============================================================================
-// TOAST POSITION ENUM 📍
-// ============================================================================
+import 'package:mantic_erp_app/core/theme/theme_utils.dart';
 
 enum ToastPosition {
   top,
@@ -18,34 +13,9 @@ enum ToastPosition {
   center,
 }
 
-// ============================================================================
-// TOAST TYPE ENUM 🎨
-// ============================================================================
-
 enum ToastType { success, error, warning, info, custom }
 
-// ============================================================================
-// COMPLETE TOAST UTILITY 🎯
-// ============================================================================
-
 class AppToastsUtils {
-  static Flushbar<dynamic>? _currentFlushbar;
-
-  // ========================================================================
-  // DISMISS CURRENT TOAST
-  // ========================================================================
-
-  static void _dismissCurrentToast() {
-    if (_currentFlushbar != null && _currentFlushbar!.isShowing()) {
-      _currentFlushbar!.dismiss();
-      _currentFlushbar = null;
-    }
-  }
-
-  // ========================================================================
-  // MAIN SHOW METHOD (WITH ALL OPTIONS) 🎨
-  // ========================================================================
-
   static void show(
     BuildContext context, {
     required String message,
@@ -63,228 +33,157 @@ class AppToastsUtils {
     bool showProgressIndicator = false,
     double? maxWidth,
   }) {
-    _dismissCurrentToast();
+    final resolvedIconColor = iconColor ?? textColor ?? AppColors.white;
+    final leading = icon != null
+        ? Icon(icon, color: resolvedIconColor)
+        : Icon(_iconFor(type), color: resolvedIconColor);
 
-    // Get config based on type
-    final config = _getToastConfig(type);
-
-    // Get position settings
-    final positionConfig = _getPositionConfig(position);
-
-    _currentFlushbar = Flushbar(
-      title: title ?? config.title,
-      message: message,
-      backgroundColor: backgroundColor ?? config.backgroundColor,
-      messageColor: textColor ?? AppColors.white,
-      titleColor: textColor ?? AppColors.white,
-      icon: icon != null
-          ? Icon(icon, color: iconColor ?? AppColors.white)
-          : Icon(config.icon, color: iconColor ?? AppColors.white),
+    FloatingSnackBar.show(
+      context,
+      message,
+      title: title,
+      type: _typeFor(type),
+      position: _positionFor(position),
       duration: duration,
-      flushbarPosition: positionConfig.flushbarPosition,
-      margin: positionConfig.margin,
-      borderRadius: BorderRadius.circular(12),
-      isDismissible: isDismissible,
-      dismissDirection: positionConfig.dismissDirection,
-      animationDuration: const Duration(milliseconds: 400),
-      forwardAnimationCurve: Curves.easeOutBack,
-      reverseAnimationCurve: Curves.fastOutSlowIn,
-      boxShadows: const [
-        BoxShadow(color: AppColors.black26, offset: Offset(0, 2), blurRadius: 8),
-      ],
-      mainButton: mainButton,
-      onTap: onTap != null ? (_) => onTap() : null,
-      showProgressIndicator: showProgressIndicator,
-      progressIndicatorBackgroundColor: AppColors.white.withValues(alpha: 0.24),
-      progressIndicatorValueColor: AlwaysStoppedAnimation<Color>(
-        textColor ?? AppColors.white,
-      ),
-      maxWidth: maxWidth,
-    )..show(context).then((_) => _currentFlushbar = null);
+      leading: leading,
+      backgroundColor: backgroundColor ?? _backgroundFor(context, type),
+      textColor: textColor ?? AppColors.white,
+      dismissOnTap: isDismissible,
+      showProgress: showProgressIndicator,
+    );
   }
 
-  // ========================================================================
-  // PREDEFINED TOAST METHODS 🎯
-  // ========================================================================
-
-  // ✅ SUCCESS TOAST
   static void showSuccess(
     BuildContext context,
     String message, {
     String? title,
     ToastPosition position = ToastPosition.top,
     Duration duration = const Duration(seconds: 3),
-  }) {
-    show(
-      context,
-      message: message,
-      title: title,
-      type: ToastType.success,
-      position: position,
-      duration: duration,
-    );
-  }
+  }) => show(
+    context,
+    message: message,
+    title: title,
+    type: ToastType.success,
+    position: position,
+    duration: duration,
+  );
 
-  // ❌ ERROR TOAST
   static void showError(
     BuildContext context,
     String message, {
     String? title,
     ToastPosition position = ToastPosition.top,
     Duration duration = const Duration(seconds: 3),
-  }) {
-    show(
-      context,
-      message: message,
-      title: title,
-      type: ToastType.error,
-      position: position,
-      duration: duration,
-    );
-  }
+  }) => show(
+    context,
+    message: message,
+    title: title,
+    type: ToastType.error,
+    position: position,
+    duration: duration,
+  );
 
-  // ⚠️ WARNING TOAST
   static void showWarning(
     BuildContext context,
     String message, {
     String? title,
     ToastPosition position = ToastPosition.top,
     Duration duration = const Duration(seconds: 3),
-  }) {
-    show(
-      context,
-      message: message,
-      title: title,
-      type: ToastType.warning,
-      position: position,
-      duration: duration,
-    );
-  }
+  }) => show(
+    context,
+    message: message,
+    title: title,
+    type: ToastType.warning,
+    position: position,
+    duration: duration,
+  );
 
-  // ℹ️ INFO TOAST
   static void showInfo(
     BuildContext context,
     String message, {
     String? title,
     ToastPosition position = ToastPosition.top,
     Duration duration = const Duration(seconds: 3),
-  }) {
-    show(
-      context,
-      message: message,
-      title: title,
-      type: ToastType.info,
-      position: position,
-      duration: duration,
-    );
-  }
+  }) => show(
+    context,
+    message: message,
+    title: title,
+    type: ToastType.info,
+    position: position,
+    duration: duration,
+  );
 
-  // ========================================================================
-  // DIRECTION-SPECIFIC METHODS 📍
-  // ========================================================================
+  static void showSuccessTop(BuildContext context, String message) =>
+      showSuccess(context, message, position: ToastPosition.top);
 
-  // TOP TOASTS
-  static void showSuccessTop(BuildContext context, String message) {
-    showSuccess(context, message, position: ToastPosition.top);
-  }
+  static void showErrorTop(BuildContext context, String message) =>
+      showError(context, message, position: ToastPosition.top);
 
-  static void showErrorTop(BuildContext context, String message) {
-    showError(context, message, position: ToastPosition.top);
-  }
+  static void showWarningTop(BuildContext context, String message) =>
+      showWarning(context, message, position: ToastPosition.top);
 
-  static void showWarningTop(BuildContext context, String message) {
-    showWarning(context, message, position: ToastPosition.top);
-  }
+  static void showInfoTop(BuildContext context, String message) =>
+      showInfo(context, message, position: ToastPosition.top);
 
-  static void showInfoTop(BuildContext context, String message) {
-    showInfo(context, message, position: ToastPosition.top);
-  }
+  static void showSuccessBottom(BuildContext context, String message) =>
+      showSuccess(context, message, position: ToastPosition.bottom);
 
-  // BOTTOM TOASTS
-  static void showSuccessBottom(BuildContext context, String message) {
-    showSuccess(context, message, position: ToastPosition.bottom);
-  }
+  static void showErrorBottom(BuildContext context, String message) =>
+      showError(context, message, position: ToastPosition.bottom);
 
-  static void showErrorBottom(BuildContext context, String message) {
-    showError(context, message, position: ToastPosition.bottom);
-  }
+  static void showWarningBottom(BuildContext context, String message) =>
+      showWarning(context, message, position: ToastPosition.bottom);
 
-  static void showWarningBottom(BuildContext context, String message) {
-    showWarning(context, message, position: ToastPosition.bottom);
-  }
+  static void showInfoBottom(BuildContext context, String message) =>
+      showInfo(context, message, position: ToastPosition.bottom);
 
-  static void showInfoBottom(BuildContext context, String message) {
-    showInfo(context, message, position: ToastPosition.bottom);
-  }
+  // Corner positions are collapsed to top/bottom — floating_snackbar only
+  // supports top/bottom anchoring.
+  static void showSuccessTopLeft(BuildContext context, String message) =>
+      showSuccess(context, message, position: ToastPosition.top);
 
-  // TOP LEFT TOASTS
-  static void showSuccessTopLeft(BuildContext context, String message) {
-    showSuccess(context, message, position: ToastPosition.topLeft);
-  }
+  static void showErrorTopLeft(BuildContext context, String message) =>
+      showError(context, message, position: ToastPosition.top);
 
-  static void showErrorTopLeft(BuildContext context, String message) {
-    showError(context, message, position: ToastPosition.topLeft);
-  }
+  static void showSuccessTopRight(BuildContext context, String message) =>
+      showSuccess(context, message, position: ToastPosition.top);
 
-  // TOP RIGHT TOASTS
-  static void showSuccessTopRight(BuildContext context, String message) {
-    showSuccess(context, message, position: ToastPosition.topRight);
-  }
+  static void showErrorTopRight(BuildContext context, String message) =>
+      showError(context, message, position: ToastPosition.top);
 
-  static void showErrorTopRight(BuildContext context, String message) {
-    showError(context, message, position: ToastPosition.topRight);
-  }
+  static void showSuccessBottomLeft(BuildContext context, String message) =>
+      showSuccess(context, message, position: ToastPosition.bottom);
 
-  // BOTTOM LEFT TOASTS
-  static void showSuccessBottomLeft(BuildContext context, String message) {
-    showSuccess(context, message, position: ToastPosition.bottomLeft);
-  }
+  static void showErrorBottomLeft(BuildContext context, String message) =>
+      showError(context, message, position: ToastPosition.bottom);
 
-  static void showErrorBottomLeft(BuildContext context, String message) {
-    showError(context, message, position: ToastPosition.bottomLeft);
-  }
+  static void showSuccessBottomRight(BuildContext context, String message) =>
+      showSuccess(context, message, position: ToastPosition.bottom);
 
-  // BOTTOM RIGHT TOASTS
-  static void showSuccessBottomRight(BuildContext context, String message) {
-    showSuccess(context, message, position: ToastPosition.bottomRight);
-  }
+  static void showErrorBottomRight(BuildContext context, String message) =>
+      showError(context, message, position: ToastPosition.bottom);
 
-  static void showErrorBottomRight(BuildContext context, String message) {
-    showError(context, message, position: ToastPosition.bottomRight);
-  }
-
-  // CENTER TOAST
   static void showCenter(
     BuildContext context,
     String message, {
     ToastType type = ToastType.info,
-  }) {
-    show(context, message: message, type: type, position: ToastPosition.center);
-  }
+  }) => show(context, message: message, type: type, position: ToastPosition.top);
 
-  // ========================================================================
-  // SPECIAL TOASTS 🌟
-  // ========================================================================
-
-  // Loading Toast
   static void showLoading(
     BuildContext context,
     String message, {
     ToastPosition position = ToastPosition.top,
-  }) {
-    show(
-      context,
-      message: message,
-      title: 'Loading',
-      type: ToastType.info,
-      position: position,
-      duration: const Duration(days: 1), // Won't auto-dismiss
-      showProgressIndicator: true,
-      isDismissible: false,
-    );
-  }
+  }) => show(
+    context,
+    message: message,
+    title: 'Loading',
+    type: ToastType.info,
+    position: position,
+    duration: const Duration(days: 1),
+    showProgressIndicator: true,
+    isDismissible: false,
+  );
 
-  // Toast with Action Button
   static void showWithAction(
     BuildContext context, {
     required String message,
@@ -293,446 +192,121 @@ class AppToastsUtils {
     ToastType type = ToastType.info,
     ToastPosition position = ToastPosition.bottom,
   }) {
-    show(
+    FloatingSnackBar.show(
       context,
-      message: message,
-      type: type,
-      position: position,
-      mainButton: TextButton(
-        onPressed: () {
-          dismissCurrent();
-          onActionPressed();
-        },
-        child: Text(actionText, style: const TextStyle(color: AppColors.white)),
+      message,
+      type: _typeFor(type),
+      position: _positionFor(position),
+      backgroundColor: _backgroundFor(context, type),
+      textColor: AppColors.white,
+      leading: Icon(_iconFor(type), color: AppColors.white),
+      action: FloatingSnackBarAction(
+        label: actionText,
+        onPressed: onActionPressed,
+        textColor: AppColors.white,
       ),
     );
   }
 
-  // Persistent Toast (doesn't auto-dismiss)
   static void showPersistent(
     BuildContext context,
     String message, {
     ToastType type = ToastType.info,
     ToastPosition position = ToastPosition.top,
-  }) {
-    show(
-      context,
-      message: message,
-      type: type,
-      position: position,
-      duration: const Duration(days: 1), // Won't auto-dismiss
-      isDismissible: true,
-    );
-  }
+  }) => show(
+    context,
+    message: message,
+    type: type,
+    position: position,
+    duration: const Duration(days: 1),
+  );
 
-  // Long Duration Toast
   static void showLong(
     BuildContext context,
     String message, {
     ToastType type = ToastType.info,
     ToastPosition position = ToastPosition.top,
-  }) {
-    show(
-      context,
-      message: message,
-      type: type,
-      position: position,
-      duration: const Duration(seconds: 5),
-    );
-  }
+  }) => show(
+    context,
+    message: message,
+    type: type,
+    position: position,
+    duration: const Duration(seconds: 5),
+  );
 
-  // Short Duration Toast
   static void showShort(
     BuildContext context,
     String message, {
     ToastType type = ToastType.info,
     ToastPosition position = ToastPosition.top,
-  }) {
-    show(
-      context,
-      message: message,
-      type: type,
-      position: position,
-      duration: const Duration(seconds: 1),
-    );
+  }) => show(
+    context,
+    message: message,
+    type: type,
+    position: position,
+    duration: const Duration(seconds: 1),
+  );
+
+  static void dismissCurrent([BuildContext? context]) {
+    FloatingSnackBar.dismiss(context);
   }
 
-  // ========================================================================
-  // HELPER METHODS 🔧
-  // ========================================================================
-
-  static void dismissCurrent() {
-    _dismissCurrentToast();
-  }
-
-  static _ToastConfig _getToastConfig(ToastType type) {
-    switch (type) {
-      case ToastType.success:
-        return _ToastConfig(
-          title: 'Success',
-          backgroundColor: AppColors.success,
-          icon: Icons.check_circle,
-        );
-      case ToastType.error:
-        return _ToastConfig(
-          title: 'Error',
-          backgroundColor: AppColors.error,
-          icon: Icons.error,
-        );
-      case ToastType.warning:
-        return _ToastConfig(
-          title: 'Warning',
-          backgroundColor: AppColors.orange,
-          icon: Icons.warning,
-        );
-      case ToastType.info:
-        return _ToastConfig(
-          title: 'Info',
-          backgroundColor: AppColors.info,
-          icon: Icons.info,
-        );
-      case ToastType.custom:
-        return _ToastConfig(
-          title: '',
-          backgroundColor: AppColors.grey400,
-          icon: Icons.notifications,
-        );
-    }
-  }
-
-  static _PositionConfig _getPositionConfig(ToastPosition position) {
-    switch (position) {
-      case ToastPosition.top:
-        return _PositionConfig(
-          flushbarPosition: FlushbarPosition.TOP,
-          margin: const EdgeInsets.all(8),
-          dismissDirection: FlushbarDismissDirection.VERTICAL,
-        );
+  static FloatingSnackBarPosition _positionFor(ToastPosition p) {
+    switch (p) {
       case ToastPosition.bottom:
-        return _PositionConfig(
-          flushbarPosition: FlushbarPosition.BOTTOM,
-          margin: const EdgeInsets.all(8),
-          dismissDirection: FlushbarDismissDirection.VERTICAL,
-        );
-      case ToastPosition.topLeft:
-        return _PositionConfig(
-          flushbarPosition: FlushbarPosition.TOP,
-          margin: const EdgeInsets.only(left: 8, top: 8, right: 200),
-          dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-        );
-      case ToastPosition.topRight:
-        return _PositionConfig(
-          flushbarPosition: FlushbarPosition.TOP,
-          margin: const EdgeInsets.only(left: 200, top: 8, right: 8),
-          dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-        );
       case ToastPosition.bottomLeft:
-        return _PositionConfig(
-          flushbarPosition: FlushbarPosition.BOTTOM,
-          margin: const EdgeInsets.only(left: 8, bottom: 8, right: 200),
-          dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-        );
       case ToastPosition.bottomRight:
-        return _PositionConfig(
-          flushbarPosition: FlushbarPosition.BOTTOM,
-          margin: const EdgeInsets.only(left: 200, bottom: 8, right: 8),
-          dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-        );
+        return FloatingSnackBarPosition.bottom;
+      case ToastPosition.top:
+      case ToastPosition.topLeft:
+      case ToastPosition.topRight:
       case ToastPosition.center:
-        return _PositionConfig(
-          flushbarPosition: FlushbarPosition.TOP,
-          margin: EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical:
-                MediaQueryData.fromView(
-                  WidgetsBinding.instance.platformDispatcher.views.first,
-                ).size.height *
-                0.4,
-          ),
-          dismissDirection: FlushbarDismissDirection.VERTICAL,
-        );
+        return FloatingSnackBarPosition.top;
     }
   }
-}
 
-// ============================================================================
-// HELPER CLASSES 🎨
-// ============================================================================
+  static FloatingSnackBarType _typeFor(ToastType t) {
+    switch (t) {
+      case ToastType.success:
+        return FloatingSnackBarType.success;
+      case ToastType.error:
+        return FloatingSnackBarType.error;
+      case ToastType.warning:
+        return FloatingSnackBarType.warning;
+      case ToastType.info:
+        return FloatingSnackBarType.info;
+      case ToastType.custom:
+        return FloatingSnackBarType.normal;
+    }
+  }
 
-class _ToastConfig {
-  final String title;
-  final Color backgroundColor;
-  final IconData icon;
+  static Color _backgroundFor(BuildContext context, ToastType t) {
+    switch (t) {
+      case ToastType.success:
+        return AppColors.success;
+      case ToastType.error:
+        return AppColors.error;
+      case ToastType.warning:
+        return AppColors.orange;
+      case ToastType.info:
+        return context.isDark ? AppColors.backgroundDark : AppColors.info;
+      case ToastType.custom:
+        return AppColors.grey400;
+    }
+  }
 
-  _ToastConfig({
-    required this.title,
-    required this.backgroundColor,
-    required this.icon,
-  });
-}
-
-class _PositionConfig {
-  final FlushbarPosition flushbarPosition;
-  final EdgeInsets margin;
-  final FlushbarDismissDirection dismissDirection;
-
-  _PositionConfig({
-    required this.flushbarPosition,
-    required this.margin,
-    required this.dismissDirection,
-  });
-}
-
-// ============================================================================
-// USAGE EXAMPLES 📝
-// ============================================================================
-
-class ToastExamplesScreen extends StatefulWidget {
-  const ToastExamplesScreen({super.key});
-
-  @override
-  State<ToastExamplesScreen> createState() => _ToastExamplesScreenState();
-}
-
-class _ToastExamplesScreenState extends State<ToastExamplesScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Toast Examples')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: .stretch,
-          children: [
-            // ============================================================
-            // BASIC TOASTS
-            // ============================================================
-            const Text(
-              'Basic Toasts:',
-              style: TextStyle(fontSize: 18, fontWeight: .bold),
-            ),
-            const SizedBox(height: 8),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showSuccess(context, 'Success message!'),
-              child: const Text('Success Toast'),
-            ),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showError(context, 'Error message!'),
-              child: const Text('Error Toast'),
-            ),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showWarning(context, 'Warning message!'),
-              child: const Text('Warning Toast'),
-            ),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showInfo(context, 'Info message!'),
-              child: const Text('Info Toast'),
-            ),
-
-            const Divider(height: 32),
-
-            // ============================================================
-            // TOP POSITION
-            // ============================================================
-            const Text(
-              'Top Position:',
-              style: TextStyle(fontSize: 18, fontWeight: .bold),
-            ),
-            const SizedBox(height: 8),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showSuccessTop(context, 'Success from top!'),
-              child: const Text('Success Top'),
-            ),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showErrorTop(context, 'Error from top!'),
-              child: const Text('Error Top'),
-            ),
-
-            const Divider(height: 32),
-
-            // ============================================================
-            // BOTTOM POSITION
-            // ============================================================
-            const Text(
-              'Bottom Position:',
-              style: TextStyle(fontSize: 18, fontWeight: .bold),
-            ),
-            const SizedBox(height: 8),
-
-            ElevatedButton(
-              onPressed: () => AppToastsUtils.showSuccessBottom(
-                context,
-                'Success from bottom!',
-              ),
-              child: const Text('Success Bottom'),
-            ),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showErrorBottom(context, 'Error from bottom!'),
-              child: const Text('Error Bottom'),
-            ),
-
-            const Divider(height: 32),
-
-            // ============================================================
-            // CORNER POSITIONS
-            // ============================================================
-            const Text(
-              'Corner Positions:',
-              style: TextStyle(fontSize: 18, fontWeight: .bold),
-            ),
-            const SizedBox(height: 8),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showSuccessTopLeft(context, 'Top Left!'),
-              child: const Text('Top Left'),
-            ),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showSuccessTopRight(context, 'Top Right!'),
-              child: const Text('Top Right'),
-            ),
-
-            ElevatedButton(
-              onPressed: () =>
-                  AppToastsUtils.showSuccessBottomLeft(context, 'Bottom Left!'),
-              child: const Text('Bottom Left'),
-            ),
-
-            ElevatedButton(
-              onPressed: () => AppToastsUtils.showSuccessBottomRight(
-                context,
-                'Bottom Right!',
-              ),
-              child: const Text('Bottom Right'),
-            ),
-
-            const Divider(height: 32),
-
-            // ============================================================
-            // CENTER POSITION
-            // ============================================================
-            const Text(
-              'Center Position:',
-              style: TextStyle(fontSize: 18, fontWeight: .bold),
-            ),
-            const SizedBox(height: 8),
-
-            ElevatedButton(
-              onPressed: () => AppToastsUtils.showCenter(
-                context,
-                'Center toast!',
-                type: ToastType.success,
-              ),
-              child: const Text('Center Toast'),
-            ),
-
-            const Divider(height: 32),
-
-            // ============================================================
-            // SPECIAL TOASTS
-            // ============================================================
-            const Text(
-              'Special Toasts:',
-              style: TextStyle(fontSize: 18, fontWeight: .bold),
-            ),
-            const SizedBox(height: 8),
-
-            ElevatedButton(
-              onPressed: () {
-                AppToastsUtils.showLoading(context, 'Loading data...');
-                Future.delayed(const Duration(seconds: 3), () {
-                  AppToastsUtils.dismissCurrent();
-                  AppToastsUtils.showSuccess(context, 'Data loaded!');
-                });
-              },
-              child: const Text('Loading Toast'),
-            ),
-
-            ElevatedButton(
-              onPressed: () => AppToastsUtils.showWithAction(
-                context,
-                message: 'Item deleted',
-                actionText: 'UNDO',
-                onActionPressed: () {
-                  AppToastsUtils.showSuccess(context, 'Undo successful!');
-                },
-              ),
-              child: const Text('Toast with Action'),
-            ),
-
-            ElevatedButton(
-              onPressed: () => AppToastsUtils.showPersistent(
-                context,
-                'This toast stays until dismissed',
-                type: ToastType.warning,
-              ),
-              child: const Text('Persistent Toast'),
-            ),
-
-            ElevatedButton(
-              onPressed: () => AppToastsUtils.showLong(
-                context,
-                'Long duration toast (5 seconds)',
-                type: ToastType.info,
-              ),
-              child: const Text('Long Toast'),
-            ),
-
-            ElevatedButton(
-              onPressed: () => AppToastsUtils.showShort(
-                context,
-                'Quick!',
-                type: ToastType.info,
-              ),
-              child: const Text('Short Toast'),
-            ),
-
-            const Divider(height: 32),
-
-            // ============================================================
-            // CUSTOM TOAST
-            // ============================================================
-            const Text(
-              'Custom Toast:',
-              style: TextStyle(fontSize: 18, fontWeight: .bold),
-            ),
-            const SizedBox(height: 8),
-
-            ElevatedButton(
-              onPressed: () => AppToastsUtils.show(
-                context,
-                message: 'Fully customized toast!',
-                title: 'Custom',
-                backgroundColor: AppColors.purple,
-                icon: Icons.star,
-                iconColor: AppColors.amber,
-                position: ToastPosition.bottom,
-                duration: const Duration(seconds: 4),
-                onTap: () {
-                  print('Toast tapped!');
-                },
-              ),
-              child: const Text('Custom Toast'),
-            ),
-          ],
-        ),
-      ),
-    );
+  static IconData _iconFor(ToastType t) {
+    switch (t) {
+      case ToastType.success:
+        return Icons.check_circle;
+      case ToastType.error:
+        return Icons.error;
+      case ToastType.warning:
+        return Icons.warning;
+      case ToastType.info:
+        return Icons.info;
+      case ToastType.custom:
+        return Icons.notifications;
+    }
   }
 }

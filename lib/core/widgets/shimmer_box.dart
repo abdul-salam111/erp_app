@@ -6,12 +6,16 @@ class ShimmerBox extends StatefulWidget {
   final double? width;
   final double? height;
   final double  radius;
+  final Color? baseColor;
+  final Color? highlightColor;
 
   const ShimmerBox({
     super.key,
     this.width,
     this.height,
     this.radius = 8,
+    this.baseColor,
+    this.highlightColor,
   });
 
   @override
@@ -54,9 +58,9 @@ class _ShimmerBoxState extends State<ShimmerBox>
             begin: Alignment(_anim.value - 1, 0),
             end:   Alignment(_anim.value + 1, 0),
             colors: [
-              context.shimmerBase,
-              context.surfaceHeader,
-              context.shimmerBase,
+              widget.baseColor ?? context.shimmerBase,
+              widget.highlightColor ?? context.surfaceHeader,
+              widget.baseColor ?? context.shimmerBase,
             ],
           ),
         ),

@@ -35,7 +35,7 @@ dependencies:
   dio: ^5.9.0
   http_parser: ^4.1.2
   pretty_dio_logger: ^1.4.0
-  another_flushbar: ^1.12.32
+  floating_snackbar: ^2.0.0
   flutter_secure_storage: ^9.2.4
   google_fonts: ^6.3.2
   iconsax: ^0.0.8

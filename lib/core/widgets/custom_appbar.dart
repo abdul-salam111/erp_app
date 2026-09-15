@@ -35,7 +35,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       centerTitle: true,
-      backgroundColor: context.primary,
+      backgroundColor: context.isDark ? AppColors.navyHeaderDark : context.primary,
       actions: [
         if (currentUser.isAdmin && initials.isNotEmpty)
           Padding(

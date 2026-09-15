@@ -71,7 +71,7 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
 
   void _fetch() {
     if (_selectedPartyId == null) {
-      AppToastsUtils.showErrorTop(
+      AppToastsUtils.showInfoTop(
         context,
         AppConstants.pleaseSelectAPartyFirstErrorMsg,
       );

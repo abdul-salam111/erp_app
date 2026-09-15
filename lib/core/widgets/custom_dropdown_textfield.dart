@@ -154,8 +154,12 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    final defaultFillColor = widget.fillColor ?? context.surface;
-    final defaultBorderColor = widget.borderColor ?? context.border.withAlpha(50);
+    final defaultFillColor = widget.fillColor ??
+        (context.isDark ? context.navyIconBg : context.surface);
+    final defaultBorderColor = widget.borderColor ??
+        (context.isDark
+            ? context.navyBorder
+            : context.border.withAlpha(50));
 
     final field = CompositedTransformTarget(
       link: _layerLink,
@@ -268,14 +272,17 @@ class _DropdownList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = dropdownBackgroundColor ?? context.surfaceElevated;
+    final bg = dropdownBackgroundColor ??
+        (context.isDark ? context.navyCard : context.surfaceElevated);
     return Material(
       color: bg,
       shadowColor: context.shadow,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(6),
-        side: BorderSide(color: context.border),
+        side: BorderSide(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
       ),
       clipBehavior: .antiAlias,
       child: ConstrainedBox(

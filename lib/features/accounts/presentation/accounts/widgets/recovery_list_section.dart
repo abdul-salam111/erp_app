@@ -44,17 +44,24 @@ class _RecoverySearchBarState extends State<RecoverySearchBar> {
           final isLoading =
               state.recoveryDueStatus == ApiStatus.INITIAL ||
               state.recoveryDueStatus == ApiStatus.LOADING;
-          if (isLoading) return ShimmerBox(height: 46, radius: 10);
+          if (isLoading) {
+            return ShimmerBox(
+              height: 46,
+              radius: 10,
+              baseColor: context.isDark ? context.navyIconBg : null,
+              highlightColor: context.isDark ? context.navyCard : null,
+            );
+          }
 
           return StatefulBuilder(
             builder: (context, setLocal) => Container(
               width: double.infinity,
               height: 46,
               decoration: BoxDecoration(
-                color: context.surface,
+                color: context.isDark ? context.navyIconBg : context.surface,
                 borderRadius: .circular(10),
-                border: Border(
-                  bottom: BorderSide(color: context.border),
+                border: Border.all(
+                  color: context.isDark ? context.navyBorder : context.border,
                 ),
               ),
               child: Row(
@@ -80,6 +87,7 @@ class _RecoverySearchBarState extends State<RecoverySearchBar> {
                       ),
                       decoration: InputDecoration(
                         isDense: true,
+                        filled: false,
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -145,7 +153,12 @@ class RecoveryInvoiceList extends StatelessWidget {
               4,
               (i) => Padding(
                 padding: EdgeInsets.only(bottom: i < 3 ? 8 : 0),
-                child: const ShimmerBox(height: 82, radius: 10),
+                child: ShimmerBox(
+                  height: 82,
+                  radius: 10,
+                  baseColor: context.isDark ? context.navyIconBg : null,
+                  highlightColor: context.isDark ? context.navyCard : null,
+                ),
               ),
             ),
           );
@@ -413,16 +426,20 @@ class _CustomerTile extends StatelessWidget {
     return Container(
       padding: .all(8),
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.isDark ? context.navyIconBg : context.surfaceElevated,
         borderRadius: .circular(10),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.03),
-            blurRadius: 4,
-            offset: const Offset(0, 1),
-          ),
-        ],
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.03),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: .start,

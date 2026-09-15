@@ -49,7 +49,7 @@ class AccountsFilterFormCompact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.surface,
+      color: context.isDark ? context.background : context.surface,
       padding: EdgeInsets.fromLTRB(
         context.pagePadding.left,
         12,
@@ -64,15 +64,20 @@ class AccountsFilterFormCompact extends StatelessWidget {
           12,
         ),
         decoration: BoxDecoration(
-          color: context.surfaceElevated,
+          color: context.isDark ? context.navyCard : context.surfaceElevated,
           borderRadius: .circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: context.black.withValues(alpha: 0.06),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: context.isDark
+              ? Border.all(color: context.navyBorder)
+              : null,
+          boxShadow: context.isDark
+              ? null
+              : [
+                  BoxShadow(
+                    color: context.black.withValues(alpha: 0.06),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Column(
           crossAxisAlignment: .start,
@@ -89,7 +94,16 @@ class AccountsFilterFormCompact extends StatelessWidget {
                     child:
                         selectorOverride ??
                         (isLoading
-                            ? const ShimmerBox(height: 40, radius: 10)
+                            ? ShimmerBox(
+                                height: 40,
+                                radius: 10,
+                                baseColor: context.isDark
+                                    ? context.navyIconBg
+                                    : null,
+                                highlightColor: context.isDark
+                                    ? context.navyCard
+                                    : null,
+                              )
                             : SearchableDropdown(
                                 items: items,
                                 subtitles: subtitles,
@@ -162,9 +176,11 @@ class _DateRangeIconButton extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: context.surface,
+          color: context.isDark ? context.navyIconBg : context.surface,
           borderRadius: .circular(6),
-          border: Border.all(color: context.border),
+          border: Border.all(
+            color: context.isDark ? context.navyBorder : context.border,
+          ),
         ),
         child: Icon(Iconsax.calendar_1, size: 18, color: context.primary),
       ),

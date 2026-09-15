@@ -85,7 +85,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
   void _fetch() {
     final bloc = context.read<AccountLedgerBloc>();
     if (!widget.isEmployeeMode && bloc.state.selectedAccountId == null) {
-      AppToastsUtils.showErrorTop(
+      AppToastsUtils.showInfoTop(
         context,
         AppConstants.pleaseSelectAnAccountFirstErrorMsg,
       );
@@ -159,7 +159,7 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
         }
       },
       child: Scaffold(
-        backgroundColor: context.surface,
+        backgroundColor: context.isDark ? context.background : context.surface,
         appBar: CustomAppBar(title: AppConstants.accountLedgerLabel),
         body: NotificationListener<ScrollNotification>(
           onNotification: _handleScrollNotification,
@@ -223,7 +223,9 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
 
               Expanded(
                 child: ColoredBox(
-                  color: context.surfaceElevated,
+                  color: context.isDark
+                      ? context.background
+                      : context.surfaceElevated,
                   child: BlocBuilder<AccountLedgerBloc, AccountLedgerState>(
                     buildWhen: (previous, current) =>
                         previous.apiStatus != current.apiStatus ||
