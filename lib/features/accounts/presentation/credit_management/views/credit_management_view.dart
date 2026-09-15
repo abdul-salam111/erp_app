@@ -66,7 +66,7 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
     return UnfocusWrapper(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: context.surface,
+        backgroundColor: context.isDark ? context.background : context.surface,
         appBar: CustomAppBar(title: AppConstants.creditManagmentTitle),
         body: Column(
           children: [
@@ -116,14 +116,24 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                           isDense: true,
                           contentPadding: const EdgeInsets.symmetric(vertical: 7),
                           filled: true,
-                          fillColor: context.surfaceElevated,
+                          fillColor: context.isDark
+                              ? context.navyIconBg
+                              : context.surfaceElevated,
                           border: OutlineInputBorder(
                             borderRadius: .circular(8),
-                            borderSide: BorderSide(color: context.border),
+                            borderSide: BorderSide(
+                              color: context.isDark
+                                  ? context.navyBorder
+                                  : context.border,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: .circular(8),
-                            borderSide: BorderSide(color: context.border),
+                            borderSide: BorderSide(
+                              color: context.isDark
+                                  ? context.navyBorder
+                                  : context.border,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: .circular(8),
@@ -139,7 +149,9 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
             ),
             Expanded(
               child: ColoredBox(
-                color: context.surfaceElevated,
+                color: context.isDark
+                    ? context.background
+                    : context.surfaceElevated,
                 child: BlocBuilder<CreditManagementBloc, CreditManagementState>(
                   buildWhen: (p, c) =>
                       p.apiStatus != c.apiStatus || p.agingData != c.agingData,

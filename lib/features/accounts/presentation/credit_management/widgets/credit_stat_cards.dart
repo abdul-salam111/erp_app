@@ -94,14 +94,18 @@ class _StatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.surfaceElevated,
         borderRadius: .circular(10),
-        border: .all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.07),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: .all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.07),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: IntrinsicHeight(
         child: Row(

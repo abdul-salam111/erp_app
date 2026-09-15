@@ -28,23 +28,18 @@ class CreditTable extends StatelessWidget {
       );
     }
 
-    return Padding(
-      padding: .symmetric(horizontal: context.pagePadding.left),
-      child: Column(
-        children: [
-          const _TableHeader(),
-          Divider(height: 1, thickness: 1, color: context.divider),
-          Expanded(
-            child: ListView.separated(
-              controller: scrollController,
-              itemCount: items.length,
-              separatorBuilder: (_, __) =>
-                  Divider(height: 1, thickness: 1, color: context.divider),
-              itemBuilder: (_, i) => _CreditTableRow(item: items[i]),
-            ),
+    return Column(
+      children: [
+        const _TableHeader(),
+        Divider(height: 1, thickness: 1, color: context.divider),
+        Expanded(
+          child: ListView.builder(
+            controller: scrollController,
+            itemCount: items.length,
+            itemBuilder: (_, i) => _CreditTableRow(item: items[i], index: i),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -56,23 +51,26 @@ class _TableHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.primary,
+        color: context.primary.withValues(alpha: 0.2),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(10),
           topRight: Radius.circular(10),
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.pagePadding.left,
+        vertical: 10,
+      ),
       child: Row(
         children: [
           Expanded(
             flex: 6,
             child: Text(
-              'Customer',
+              'CUSTOMER',
               style: context.labelSmall.copyWith(
-                color: context.white,
+                color: context.primary,
                 fontWeight: .w600,
-                fontSize: 11,
+                fontSize: 12,
               ),
               maxLines: 1,
               overflow: .ellipsis,
@@ -82,11 +80,11 @@ class _TableHeader extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              'Balance',
+              'BALANCE',
               style: context.labelSmall.copyWith(
-                color: context.white,
+                color: context.primary,
                 fontWeight: .w600,
-                fontSize: 11,
+                fontSize: 12,
               ),
               textAlign: .end,
               maxLines: 1,
@@ -102,7 +100,8 @@ class _TableHeader extends StatelessWidget {
 
 class _CreditTableRow extends StatefulWidget {
   final PartyCreditEntity item;
-  const _CreditTableRow({required this.item});
+  final int index;
+  const _CreditTableRow({required this.item, required this.index});
 
   @override
   State<_CreditTableRow> createState() => _CreditTableRowState();
@@ -128,18 +127,22 @@ class _CreditTableRowState extends State<_CreditTableRow> {
   Widget build(BuildContext context) {
     final item = widget.item;
     final color = _ratingColor;
+    final isOdd = widget.index.isOdd;
 
     return ColoredBox(
       color: _expanded
           ? context.primary.withValues(alpha: 0.06)
-          : context.transparent,
+          : (isOdd ? context.tableRowAlt : context.transparent),
       child: Column(
         crossAxisAlignment: .start,
         children: [
           InkWell(
             onTap: () => setState(() => _expanded = !_expanded),
             child: Padding(
-              padding: .symmetric(horizontal: 5, vertical: 10),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.pagePadding.left,
+                vertical: 10,
+              ),
               child: Row(
                 children: [
                   _CrBadge(
@@ -227,9 +230,13 @@ class _CreditTableRowState extends State<_CreditTableRow> {
             alignment: .topCenter,
             child: _expanded
                 ? Container(
-                    color: context.transparent,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 5,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: context.primary, width: 1.5),
+                      ),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.pagePadding.left,
                       vertical: 5,
                     ),
                     child: Row(
