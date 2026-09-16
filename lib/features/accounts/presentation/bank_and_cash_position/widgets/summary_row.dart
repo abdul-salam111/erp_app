@@ -72,57 +72,63 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GlassSurface(
+      radius: 14,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(14),
-        border: .all(color: context.border),
-        boxShadow: context.isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.04),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-      ),
       child: isLoading
           ? Column(
               crossAxisAlignment: .start,
               children: [
                 ShimmerBox(height: 13, width: 60, radius: 4),
                 const SizedBox(height: 8),
-                ShimmerBox(height: 16, width: double.infinity, radius: 4),
+                ShimmerBox(height: 18, width: double.infinity, radius: 4),
               ],
             )
-          : Column(
-              crossAxisAlignment: .start,
+          : Row(
               children: [
-                Row(
-                  children: [
-                    Icon(icon, size: 13, color: color),
-                    const SizedBox(width: 4),
-                    Text(
-                      label,
-                      style: context.labelSmall.copyWith(
-                        color: context.textSecondary,
-                        fontWeight: .w600,
-                      ),
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    shape: .circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        color.withValues(alpha: 0.28),
+                        color.withValues(alpha: 0.06),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  amount.abs().withCommas,
-                  style: context.bodySmall.copyWith(
-                    fontWeight: .w700,
-                    color: context.textPrimary,
-                    fontSize: 14,
                   ),
-                  maxLines: 1,
-                  overflow: .ellipsis,
+                  child: Icon(icon, color: color, size: 16),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    mainAxisSize: .min,
+                    children: [
+                      Text(
+                        label.toUpperCase(),
+                        style: context.labelSmall.copyWith(
+                          color: context.textSecondary,
+                          fontWeight: .w700,
+                          fontSize: 10,
+                          letterSpacing: 0.7,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        amount.abs().withCommas,
+                        style: context.bodySmall.copyWith(
+                          fontWeight: .w800,
+                          color: context.textPrimary,
+                          fontSize: 16,
+                          height: 1,
+                        ),
+                        maxLines: 1,
+                        overflow: .ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

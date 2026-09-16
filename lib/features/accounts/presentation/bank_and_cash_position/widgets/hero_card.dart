@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
@@ -35,12 +36,10 @@ class BankAndCashHeroCard extends StatelessWidget {
     final maxY = rawMax + pad;
     final interval = (maxY - minY) / 4;
 
-    final chartWidth = max(
-      MediaQuery.sizeOf(context).width - 12,
-      orderedItems.length * 25.0,
-    );
-    final isScrollable =
-        orderedItems.length * 25.0 > MediaQuery.sizeOf(context).width - 12;
+    const perPoint = 25.0;
+    final availableWidth = MediaQuery.sizeOf(context).width - 12;
+    final naturalWidth = orderedItems.length * perPoint;
+    final chartWidth = max(availableWidth, naturalWidth);
 
     return Container(
       margin: const EdgeInsets.fromLTRB(6, 6, 6, 0),
@@ -197,8 +196,7 @@ class BankAndCashHeroCard extends StatelessWidget {
               ),
             ],
           ),
-          if (isScrollable)
-            Positioned(right: 10, top: 6, child: _ScrollHintChip()),
+          Positioned(right: 10, top: 8, child: _ScrollHintChip()),
         ],
       ),
     );
@@ -210,23 +208,33 @@ class _ScrollHintChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = context.primary;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: context.textPrimary.withValues(alpha: 0.08),
-        borderRadius: .circular(20),
+        color: accent.withValues(alpha: 0.16),
+        borderRadius: .circular(999),
+        border: .all(color: accent.withValues(alpha: 0.30)),
       ),
       child: Row(
         mainAxisSize: .min,
         children: [
-          Icon(Icons.swipe_outlined, size: 12, color: context.textSecondary),
-          const SizedBox(width: 4),
+          Icon(Icons.swipe_left_alt_outlined, size: 14, color: accent)
+              .animate(onPlay: (c) => c.repeat(reverse: true))
+              .moveX(
+                begin: 4,
+                end: -4,
+                duration: 900.ms,
+                curve: Curves.easeInOut,
+              ),
+          const SizedBox(width: 5),
           Text(
-            'Scroll',
+            'Swipe',
             style: context.labelSmall.copyWith(
-              color: context.textSecondary,
-              fontSize: 10,
-              fontWeight: .w600,
+              color: accent,
+              fontSize: 10.5,
+              fontWeight: .w700,
+              letterSpacing: 0.4,
             ),
           ),
         ],

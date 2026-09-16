@@ -17,30 +17,24 @@ class BankAndCashList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(14),
-        border: .all(color: context.border),
-        boxShadow: context.isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.04),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-      ),
-      clipBehavior: .hardEdge,
-      child: ListView.separated(
-        controller: scrollController,
-        padding: .zero,
-        itemCount: bankCashItems.length,
-        separatorBuilder: (_, __) =>
-            Divider(height: 1, thickness: 1, color: context.border, indent: 62),
-        itemBuilder: (context, i) => _BankTile(item: bankCashItems[i]),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+      child: GlassSurface(
+        radius: 14,
+        clipBehavior: .hardEdge,
+        child: ListView.separated(
+          controller: scrollController,
+          padding: .zero,
+          itemCount: bankCashItems.length,
+          separatorBuilder: (_, __) => Divider(
+            height: 1,
+            thickness: 1,
+            color: (context.isDark ? context.navyBorder : context.border)
+                .withValues(alpha: 0.5),
+            indent: 62,
+          ),
+          itemBuilder: (context, i) => _BankTile(item: bankCashItems[i]),
+        ),
       ),
     );
   }
@@ -51,47 +45,54 @@ class BankAndCashListShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(14),
-        border: Border.all(color: context.border),
-      ),
-      clipBehavior: .hardEdge,
-      child: ListView.separated(
-        padding: .zero,
-        itemCount: 7,
-        separatorBuilder: (_, __) =>
-            Divider(height: 1, thickness: 1, color: context.border, indent: 62),
-        itemBuilder: (_, __) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: Row(
-            children: [
-              ShimmerBox(height: 42, width: 42, radius: 10),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+      child: GlassSurface(
+        radius: 14,
+        clipBehavior: .hardEdge,
+        child: ListView.separated(
+          padding: .zero,
+          itemCount: 7,
+          separatorBuilder: (_, __) => Divider(
+            height: 1,
+            thickness: 1,
+            color: (context.isDark ? context.navyBorder : context.border)
+                .withValues(alpha: 0.5),
+            indent: 62,
+          ),
+          itemBuilder: (_, __) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Row(
+              children: [
+                ShimmerBox(height: 42, width: 42, radius: 10),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    mainAxisSize: .min,
+                    children: [
+                      ShimmerBox(
+                        height: 13,
+                        width: double.infinity,
+                        radius: 4,
+                      ),
+                      const SizedBox(height: 5),
+                      ShimmerBox(height: 11, width: 100, radius: 4),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: .end,
                   mainAxisSize: .min,
                   children: [
-                    ShimmerBox(height: 13, width: double.infinity, radius: 4),
+                    ShimmerBox(height: 13, width: 70, radius: 4),
                     const SizedBox(height: 5),
-                    ShimmerBox(height: 11, width: 100, radius: 4),
+                    ShimmerBox(height: 18, width: 48, radius: 20),
                   ],
                 ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: .end,
-                mainAxisSize: .min,
-                children: [
-                  ShimmerBox(height: 13, width: 70, radius: 4),
-                  const SizedBox(height: 5),
-                  ShimmerBox(height: 18, width: 48, radius: 20),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -147,8 +148,13 @@ class _BankTile extends StatelessWidget {
             height: 42,
             alignment: .center,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.14),
               borderRadius: .circular(10),
+              gradient: RadialGradient(
+                colors: [
+                  color.withValues(alpha: 0.30),
+                  color.withValues(alpha: 0.06),
+                ],
+              ),
             ),
             child: Text(
               initials,
@@ -196,28 +202,31 @@ class _BankTile extends StatelessWidget {
             crossAxisAlignment: .end,
             mainAxisSize: .min,
             children: [
-              Text(
-                item.amount.abs().withCommas,
-                style: context.bodySmall.copyWith(
-                  fontWeight: .w700,
-                  color: context.textPrimary,
-                  fontSize: 13,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                decoration: BoxDecoration(
+                  color: typeBg,
+                  borderRadius: .circular(999),
+                ),
+                child: Text(
+                  (isCredit ? AppConstants.credit : AppConstants.debit)
+                      .toUpperCase(),
+                  style: context.labelSmall.copyWith(
+                    color: typeColor,
+                    fontWeight: .w700,
+                    fontSize: 9,
+                    letterSpacing: 0.6,
+                  ),
                 ),
               ),
               const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: typeBg,
-                  borderRadius: .circular(20),
-                ),
-                child: Text(
-                  isCredit ? AppConstants.credit : AppConstants.debit,
-                  style: context.labelSmall.copyWith(
-                    color: typeColor,
-                    fontWeight: .w600,
-                    fontSize: 10,
-                  ),
+              Text(
+                item.amount.abs().withCommas,
+                style: context.bodySmall.copyWith(
+                  fontWeight: .w800,
+                  color: typeColor,
+                  fontSize: 14,
+                  height: 1,
                 ),
               ),
             ],
