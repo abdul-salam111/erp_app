@@ -206,32 +206,8 @@ class _AccountsBodyState extends State<_AccountsBody>
                     child: SectionHeader(
                       title: AppConstants.recoveryDueTodayTitle,
                       trailing: context.isPhone
-                          ? TextButton(
-                              onPressed: () =>
-                                  _showRecoveryListSheet(context),
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                minimumSize: Size.zero,
-                                tapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap,
-                              ),
-                              child: Row(
-                                mainAxisSize: .min,
-                                children: [
-                                  Text(
-                                    AppConstants.showDetails,
-                                    style: context.labelMedium.copyWith(
-                                      color: context.primary,
-                                      fontWeight: .w600,
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.chevron_right_rounded,
-                                    color: context.primary,
-                                    size: 18,
-                                  ),
-                                ],
-                              ),
+                          ? _ShowDetailsButton(
+                              onTap: () => _showRecoveryListSheet(context),
                             )
                           : null,
                     ),
@@ -729,6 +705,56 @@ class _RecoveryProgressCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ShowDetailsButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const _ShowDetailsButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final content = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Row(
+        mainAxisSize: .min,
+        children: [
+          Text(
+            AppConstants.showDetails,
+            style: context.labelMedium.copyWith(
+              color: context.primary,
+              fontWeight: .w600,
+            ),
+          ),
+          const SizedBox(width: 2),
+          Icon(
+            Icons.chevron_right_rounded,
+            color: context.primary,
+            size: 18,
+          ),
+        ],
+      ),
+    );
+
+    if (context.isDark) {
+      return GestureDetector(
+        onTap: onTap,
+        child: GlassContainer(
+          shape: const LiquidRoundedSuperellipse(borderRadius: 999),
+          child: content,
+        ),
+      );
+    }
+
+    return TextButton(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero,
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: content,
     );
   }
 }
