@@ -200,8 +200,9 @@ class _AdminSliverAppBar extends StatelessWidget {
 
   String get _initials {
     final parts = currentUser.fullName.trim().split(' ');
-    if (parts.length >= 2)
+    if (parts.length >= 2) {
       return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    }
     return parts.first.isNotEmpty ? parts.first[0].toUpperCase() : '?';
   }
 
@@ -320,8 +321,8 @@ class _AdminSliverAppBar extends StatelessWidget {
                       begin: .topLeft,
                       end: .bottomRight,
                     ),
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(28 * t),
+              borderRadius: .vertical(
+                bottom: .circular(28 * t),
               ),
             ),
             child: Stack(

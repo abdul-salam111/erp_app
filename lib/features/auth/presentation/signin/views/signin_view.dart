@@ -184,13 +184,13 @@ class _LoginCardState extends State<_LoginCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(
+      width: .infinity,
+      padding: .all(
         Responsive.value<double>(context, phone: 24, tablet: 32, ipad: 40),
       ),
       decoration: BoxDecoration(
         color: context.surfaceElevated,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: .circular(24),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withValues(alpha: 0.08),
@@ -217,9 +217,9 @@ class _LoginCardState extends State<_LoginCard> {
                   height: 72,
                   decoration: BoxDecoration(
                     color: context.loginBackground,
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: .circular(18),
                   ),
-                  padding: const EdgeInsets.all(10),
+                  padding: const .all(10),
                   child: Image.asset(AppImages.manticLogo, fit: .contain),
                 ),
               ),
@@ -246,7 +246,7 @@ class _LoginCardState extends State<_LoginCard> {
                 children: [
                   Expanded(child: Container(height: 1, color: context.divider)),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const .symmetric(horizontal: 10),
                     child: Container(
                       width: 6,
                       height: 6,

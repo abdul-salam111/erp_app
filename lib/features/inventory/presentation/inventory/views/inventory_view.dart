@@ -200,7 +200,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                     SliverList.builder(
                       itemCount: 6,
                       itemBuilder: (context, i) => Container(
-                        margin: EdgeInsets.symmetric(horizontal: hPad),
+                        margin: .symmetric(horizontal: hPad),
                         decoration: BoxDecoration(
                           color: i.isOdd
                               ? context.tableRowAlt
@@ -224,9 +224,9 @@ class _InventoryBodyState extends State<_InventoryBody> {
                   else if (filteredItems.isEmpty)
                     SliverToBoxAdapter(
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: hPad),
+                        margin: .symmetric(horizontal: hPad),
                         color: context.navyCard,
-                        padding: const EdgeInsets.symmetric(vertical: 32),
+                        padding: const .symmetric(vertical: 32),
                         child: Center(
                           child: Text(
                             query.isEmpty
@@ -241,7 +241,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
                     SliverList.builder(
                       itemCount: filteredItems.length,
                       itemBuilder: (context, i) => Container(
-                        margin: EdgeInsets.symmetric(horizontal: hPad),
+                        margin: .symmetric(horizontal: hPad),
                         decoration: BoxDecoration(
                           color: i.isOdd
                               ? context.tableRowAlt
@@ -269,12 +269,12 @@ class _InventoryBodyState extends State<_InventoryBody> {
                       children: [
                         Container(
                           height: 14,
-                          margin: EdgeInsets.symmetric(horizontal: hPad),
+                          margin: .symmetric(horizontal: hPad),
                           decoration: BoxDecoration(
                             color: context.navyCard,
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(14),
-                              bottomRight: Radius.circular(14),
+                            borderRadius: const .only(
+                              bottomLeft: .circular(14),
+                              bottomRight: .circular(14),
                             ),
                             border: Border(
                               bottom: BorderSide(
