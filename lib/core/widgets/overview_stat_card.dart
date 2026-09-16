@@ -128,8 +128,16 @@ class OverviewStatCard extends StatelessWidget {
                       height: 30,
                       decoration: BoxDecoration(
                         borderRadius: .circular(8),
+                        gradient: context.isDark
+                            ? RadialGradient(
+                                colors: [
+                                  color.withValues(alpha: 0.28),
+                                  color.withValues(alpha: 0.06),
+                                ],
+                              )
+                            : null,
                         color: context.isDark
-                            ? context.navyIconBg
+                            ? null
                             : color.withValues(alpha: 0.10),
                       ),
                       child: Icon(icon, color: color, size: 16),

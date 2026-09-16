@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
@@ -164,56 +166,101 @@ class _QuickActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onTap = item.routeName != null
+        ? () => context.pushNamed(item.routeName!)
+        : null;
+    final content = _body(context);
+    return context.isDark ? _glass(context, content, onTap) : _solid(context, content, onTap);
+  }
+
+  Widget _glass(BuildContext context, Widget child, VoidCallback? onTap) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            gradient: LinearGradient(
+              begin: .topLeft,
+              end: .bottomRight,
+              colors: [
+                AppColors.white.withValues(alpha: 0.06),
+                AppColors.white.withValues(alpha: 0.02),
+              ],
+            ),
+            border: Border.all(
+              color: AppColors.white.withValues(alpha: 0.10),
+              width: 1,
+            ),
+          ),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(10),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _solid(BuildContext context, Widget child, VoidCallback? onTap) {
     return InkWell(
-      onTap: item.routeName != null
-          ? () => context.pushNamed(item.routeName!)
-          : null,
+      onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
         decoration: BoxDecoration(
-          color: context.isDark
-              ? context.navyCard
-              : item.color.withValues(alpha: 0.12),
+          color: item.color.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: context.isDark
-                    ? context.navyIconBg
-                    : context.surfaceElevated,
-                shape: .circle,
-                boxShadow: context.isDark
-                    ? null
-                    : [
-                        BoxShadow(
-                          color: item.color.withValues(alpha: 0.25),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-              ),
-              child: Icon(item.icon, color: item.color, size: 20),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              item.label,
-              style: context.labelSmall.copyWith(
-                color: context.isDark ? context.textPrimary : item.color,
-                fontWeight: .w600,
-                fontSize: 11,
-              ),
-              textAlign: .center,
-              maxLines: 1,
-              overflow: .ellipsis,
-            ),
-          ],
-        ),
+        child: child,
       ),
+    );
+  }
+
+  Widget _body(BuildContext context) {
+    return Column(
+      mainAxisAlignment: .center,
+      children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            shape: .circle,
+            gradient: context.isDark
+                ? RadialGradient(
+                    colors: [
+                      item.color.withValues(alpha: 0.28),
+                      item.color.withValues(alpha: 0.06),
+                    ],
+                  )
+                : null,
+            color: context.isDark ? null : context.surfaceElevated,
+            boxShadow: context.isDark
+                ? null
+                : [
+                    BoxShadow(
+                      color: item.color.withValues(alpha: 0.25),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+          ),
+          child: Icon(item.icon, color: item.color, size: 20),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          item.label,
+          style: context.labelSmall.copyWith(
+            color: context.isDark ? context.textPrimary : item.color,
+            fontWeight: .w600,
+            fontSize: 11,
+          ),
+          textAlign: .center,
+          maxLines: 1,
+          overflow: .ellipsis,
+        ),
+      ],
     );
   }
 }
