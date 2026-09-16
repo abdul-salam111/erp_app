@@ -10,6 +10,7 @@ class OverviewStatCard extends StatelessWidget {
   final IconData icon;
   final Color color;
   final bool showBorder;
+  final VoidCallback? onTap;
 
   const OverviewStatCard({
     super.key,
@@ -18,12 +19,24 @@ class OverviewStatCard extends StatelessWidget {
     required this.icon,
     required this.color,
     this.showBorder = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final card = context.isDark ? _glassCard(context) : _solidCard(context);
     return IntrinsicHeight(
-      child: context.isDark ? _glassCard(context) : _solidCard(context),
+      child: onTap == null
+          ? card
+          : Material(
+              color: AppColors.transparent,
+              borderRadius: BorderRadius.circular(10),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: onTap,
+                child: card,
+              ),
+            ),
     );
   }
 
@@ -173,6 +186,14 @@ class OverviewStatCard extends StatelessWidget {
                         ],
                       ),
                     ),
+                    if (onTap != null) ...[
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 18,
+                        color: context.textSecondary.withValues(alpha: 0.7),
+                      ),
+                    ],
                   ],
                 ),
               ),

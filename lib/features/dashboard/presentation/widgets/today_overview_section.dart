@@ -208,6 +208,13 @@ class TodayOverviewSection extends StatelessWidget {
                   value: '$sym ${values[i].toCompact(decimals: 2)}',
                   icon: _meta[i].icon,
                   color: _meta[i].color,
+                  onTap: () => _showFullValueDialog(
+                    context,
+                    label: _meta[i].label,
+                    fullValue: values[i].formatPrice(symbol: sym),
+                    icon: _meta[i].icon,
+                    color: _meta[i].color,
+                  ),
                 );
               },
             ),
@@ -360,4 +367,86 @@ class _AllOverviewSheet extends StatelessWidget {
       ),
     );
   }
+}
+
+// ─── Full value popup ─────────────────────────────────────────────────────────
+
+Future<void> _showFullValueDialog(
+  BuildContext context, {
+  required String label,
+  required String fullValue,
+  required IconData icon,
+  required Color color,
+}) {
+  return showDialog<void>(
+    context: context,
+    builder: (dialogContext) {
+      return Dialog(
+        backgroundColor: AppColors.transparent,
+        elevation: 0,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
+        child: GlassSurface(
+          radius: 16,
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+          child: Column(
+            mainAxisSize: .min,
+            crossAxisAlignment: .start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: .circular(10),
+                      gradient: context.isDark
+                          ? RadialGradient(
+                              colors: [
+                                color.withValues(alpha: 0.28),
+                                color.withValues(alpha: 0.06),
+                              ],
+                            )
+                          : null,
+                      color: context.isDark
+                          ? null
+                          : color.withValues(alpha: 0.10),
+                    ),
+                    child: Icon(icon, color: color, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: context.titleSmall.copyWith(
+                        color: context.textPrimary,
+                        fontWeight: .w700,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(dialogContext),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 20,
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                fullValue,
+                style: context.titleLarge.copyWith(
+                  color: context.textPrimary,
+                  fontWeight: .w700,
+                  fontSize: 26,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import '../../../../core/constants/const_exports.dart';
 import '../../../../core/services/current_user.dart';
-import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -46,43 +46,9 @@ class NewOrdersSection extends StatelessWidget {
           children: [
             SectionHeader(
               title: AppConstants.newOrders,
-              trailing: GestureDetector(
+              trailing: _DatePill(
+                label: _formatDate(state.selectedDailyDate),
                 onTap: () => _pickDate(context, state.selectedDailyDate),
-                child: Container(
-                  padding: .symmetric(horizontal: 4, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: context.primary.withValues(alpha: 0.07),
-                    borderRadius: .circular(20),
-                    border: .all(
-                      color: context.primary.withValues(alpha: 0.25),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: .min,
-                    children: [
-                      Icon(
-                        Icons.calendar_today_outlined,
-                        size: 13,
-                        color: context.primary,
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        _formatDate(state.selectedDailyDate),
-                        style: context.labelSmall.copyWith(
-                          color: context.primary,
-                          fontWeight: .w600,
-                          fontSize: 10,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        size: 14,
-                        color: context.primary,
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -99,24 +65,76 @@ class NewOrdersSection extends StatelessWidget {
   }
 }
 
+// ── Date pill (glass in dark, tinted in light) ───────────────────────────────
+
+class _DatePill extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _DatePill({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final row = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      child: Row(
+        mainAxisSize: .min,
+        children: [
+          Icon(
+            Icons.calendar_today_outlined,
+            size: 13,
+            color: context.primary,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: context.labelSmall.copyWith(
+              color: context.primary,
+              fontWeight: .w600,
+              fontSize: 10,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 14,
+            color: context.primary,
+          ),
+        ],
+      ),
+    );
+
+    if (context.isDark) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: GlassContainer(
+          shape: const LiquidRoundedSuperellipse(borderRadius: 20),
+          child: row,
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.primary.withValues(alpha: 0.07),
+          borderRadius: .circular(20),
+          border: Border.all(color: context.primary.withValues(alpha: 0.25)),
+        ),
+        child: row,
+      ),
+    );
+  }
+}
+
 // ── Shimmer skeleton ─────────────────────────────────────────────────────────
 
 class _NewOrdersShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(12),
-        border: Border.all(color: context.navyBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return GlassSurface(
+      radius: 12,
       child: Column(
         children: List.generate(3, (i) {
           return Column(
@@ -161,28 +179,25 @@ class _NewOrdersShimmer extends StatelessWidget {
 class _EmptyOrders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: .symmetric(vertical: 36),
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(12),
-        border: Border.all(color: context.navyBorder),
-      ),
-      child: Column(
-        mainAxisSize: .min,
-        children: [
-          Image.asset('assets/icons/empty.png', width: 72, height: 72),
-
-          Text(
-            AppConstants.noOrdersToday,
-            textAlign: .center,
-            style: context.bodySmall.copyWith(
-              color: context.textSecondary,
-              fontWeight: .w500,
+    return GlassSurface(
+      radius: 12,
+      padding: const EdgeInsets.symmetric(vertical: 36),
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisSize: .min,
+          children: [
+            Image.asset('assets/icons/empty.png', width: 72, height: 72),
+            Text(
+              AppConstants.noOrdersToday,
+              textAlign: .center,
+              style: context.bodySmall.copyWith(
+                color: context.textSecondary,
+                fontWeight: .w500,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -196,19 +211,8 @@ class _OrdersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(12),
-        border: Border.all(color: context.navyBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return GlassSurface(
+      radius: 12,
       child: ListView.separated(
         shrinkWrap: true,
         padding: EdgeInsets.zero,

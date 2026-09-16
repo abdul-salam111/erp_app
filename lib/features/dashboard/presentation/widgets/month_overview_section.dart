@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/services/current_user.dart';
 import '../../../../core/theme/colors.dart';
@@ -109,19 +110,8 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
             state.monthlyStatsDetailStatus == ApiStatus.INITIAL ||
             state.monthlyStatsDetailStatus == ApiStatus.LOADING;
 
-        return Container(
-          decoration: BoxDecoration(
-            color: context.navyCard,
-            borderRadius: .circular(16),
-            border: context.isDark ? null : Border.all(color: context.border),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.06),
-                blurRadius: 14,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        return GlassSurface(
+          radius: 16,
           child: Column(
             crossAxisAlignment: .start,
             children: [
@@ -148,43 +138,9 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                       style: context.titleSmall.copyWith(fontWeight: .w700),
                     ),
                     const Spacer(),
-                    GestureDetector(
+                    _MonthPill(
+                      label: _monthLabel(state.selectedMonth),
                       onTap: () => _pickMonth(context, state.selectedMonth),
-                      child: Container(
-                        padding: .symmetric(horizontal: 4, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: context.primary.withValues(alpha: 0.07),
-                          borderRadius: .circular(20),
-                          border: .all(
-                            color: context.primary.withValues(alpha: 0.25),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: .min,
-                          children: [
-                            Icon(
-                              Icons.calendar_month_rounded,
-                              size: 13,
-                              color: context.primary,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              _monthLabel(state.selectedMonth),
-                              style: context.labelSmall.copyWith(
-                                color: context.primary,
-                                fontWeight: .w600,
-                                fontSize: 10,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              size: 14,
-                              color: context.primary,
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -235,41 +191,14 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                       final selected = p.key == state.selectedPanelKey;
                       return Padding(
                         padding: const EdgeInsets.only(right: 6),
-                        child: GestureDetector(
+                        child: _PanelChip(
+                          label: p.label,
+                          selected: selected,
                           onTap: selected
                               ? null
                               : () => context.read<AdminDashboardBloc>().add(
                                   MonthlyStatsDetailKeyChanged(p.key),
                                 ),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 200),
-                            padding: .symmetric(horizontal: 10, vertical: 5),
-                            decoration: BoxDecoration(
-                              color: selected
-                                  ? context.primary
-                                  : context.isDark
-                                  ? AppColors.navyIconBgDark
-                                  : context.primary.withValues(alpha: 0.07),
-                              borderRadius: .circular(20),
-                              border: Border.all(
-                                color: selected
-                                    ? context.primary
-                                    : context.isDark
-                                    ? context.navyBorder
-                                    : context.primary.withValues(alpha: 0.25),
-                              ),
-                            ),
-                            child: Text(
-                              p.label,
-                              style: context.labelSmall.copyWith(
-                                color: selected
-                                    ? context.white
-                                    : context.primary,
-                                fontWeight: selected ? .w600 : .w500,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
                         ),
                       );
                     }).toList(),
@@ -534,7 +463,12 @@ class _MonthStatCard extends StatelessWidget {
             ? AppColors.navyIconBgDark
             : context.surfaceElevated,
         borderRadius: .circular(10),
-        border: context.isDark ? null : .all(color: context.border),
+        border: Border.all(
+          color: context.isDark
+              ? AppColors.white.withValues(alpha: 0.06)
+              : AppColors.black.withValues(alpha: 0.06),
+          width: 0.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.07),
@@ -563,7 +497,7 @@ class _MonthStatCard extends StatelessWidget {
                           style: context.bodyMedium.copyWith(
                             fontWeight: .w700,
                             color: context.textPrimary,
-                            fontSize: 13,
+                            fontSize: 15,
                             height: 1,
                           ),
                           maxLines: 1,
@@ -711,6 +645,132 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ─── Month picker pill (glass in dark) ───────────────────────────────────────
+
+class _MonthPill extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _MonthPill({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final row = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      child: Row(
+        mainAxisSize: .min,
+        children: [
+          Icon(
+            Icons.calendar_month_rounded,
+            size: 13,
+            color: context.primary,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: context.labelSmall.copyWith(
+              color: context.primary,
+              fontWeight: .w600,
+              fontSize: 10,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Icon(
+            Icons.keyboard_arrow_down_rounded,
+            size: 14,
+            color: context.primary,
+          ),
+        ],
+      ),
+    );
+
+    if (context.isDark) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: GlassContainer(
+          shape: const LiquidRoundedSuperellipse(borderRadius: 20),
+          child: row,
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.primary.withValues(alpha: 0.07),
+          borderRadius: .circular(20),
+          border: Border.all(color: context.primary.withValues(alpha: 0.25)),
+        ),
+        child: row,
+      ),
+    );
+  }
+}
+
+// ─── Panel chip (glass in dark when unselected, primary when selected) ───────
+
+class _PanelChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback? onTap;
+  const _PanelChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final text = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      child: Text(
+        label,
+        style: context.labelSmall.copyWith(
+          color: selected ? context.white : context.primary,
+          fontWeight: selected ? .w600 : .w500,
+          fontSize: 10,
+        ),
+      ),
+    );
+
+    if (selected) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.primary,
+            borderRadius: .circular(20),
+          ),
+          child: text,
+        ),
+      );
+    }
+
+    if (context.isDark) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: GlassContainer(
+          shape: const LiquidRoundedSuperellipse(borderRadius: 20),
+          child: text,
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: context.primary.withValues(alpha: 0.07),
+          borderRadius: .circular(20),
+          border: Border.all(color: context.primary.withValues(alpha: 0.25)),
+        ),
+        child: text,
       ),
     );
   }

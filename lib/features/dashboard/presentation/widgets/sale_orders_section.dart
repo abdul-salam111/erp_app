@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
@@ -91,19 +92,8 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
         final notStarted = summary?.ttlNotStartedOrders ?? 0;
         final completedDeg = total > 0 ? (completed / total) * 180.0 : 0.0;
 
-        return Container(
-          decoration: BoxDecoration(
-            color: context.navyCard,
-            borderRadius: .circular(16),
-            border: Border.all(color: context.navyBorder),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.06),
-                blurRadius: 14,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        return GlassSurface(
+          radius: 16,
           child: Column(
             crossAxisAlignment: .start,
             children: [
@@ -130,45 +120,87 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                       style: context.titleSmall.copyWith(fontWeight: .w700),
                     ),
                     const Spacer(),
-                    GestureDetector(
-                      onTap: _openDateRangePopup,
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        margin: const EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                          color: context.primary.withValues(alpha: 0.10),
-                          borderRadius: .circular(8),
-                          border: Border.all(
-                            color: context.primary.withValues(alpha: 0.25),
-                          ),
-                        ),
-                        child: Icon(
-                          Iconsax.calendar_1,
-                          size: 16,
-                          color: context.primary,
-                        ),
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: context.isDark
+                          ? GlassIconButton(
+                              onPressed: _openDateRangePopup,
+                              size: 32,
+                              iconSize: 16,
+                              shape: GlassIconButtonShape.roundedSquare,
+                              borderRadius: 8,
+                              icon: Icon(
+                                Iconsax.calendar_1,
+                                size: 16,
+                                color: context.primary,
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: _openDateRangePopup,
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  color: context.primary.withValues(alpha: 0.10),
+                                  borderRadius: .circular(8),
+                                  border: Border.all(
+                                    color: context.primary.withValues(alpha: 0.25),
+                                  ),
+                                ),
+                                child: Icon(
+                                  Iconsax.calendar_1,
+                                  size: 16,
+                                  color: context.primary,
+                                ),
+                              ),
+                            ),
                     ),
-                    GestureDetector(
-                      onTap: () => setState(() => _showDetails = !_showDetails),
-                      child: Container(
-                        padding: .symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: context.primary,
-                          borderRadius: .circular(8),
-                        ),
-                        child: Text(
-                          _showDetails
-                              ? AppConstants.hideDetails
-                              : AppConstants.showDetails,
-                          style: context.labelSmall.copyWith(
-                            color: AppColors.white,
-                            fontWeight: .w600,
+                    context.isDark
+                        ? GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () =>
+                                setState(() => _showDetails = !_showDetails),
+                            child: GlassContainer(
+                              shape: const LiquidRoundedSuperellipse(
+                                borderRadius: 8,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                child: Text(
+                                  _showDetails
+                                      ? AppConstants.hideDetails
+                                      : AppConstants.showDetails,
+                                  style: context.labelSmall.copyWith(
+                                    color: context.primary,
+                                    fontWeight: .w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : GestureDetector(
+                            onTap: () =>
+                                setState(() => _showDetails = !_showDetails),
+                            child: Container(
+                              padding: .symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: context.primary,
+                                borderRadius: .circular(8),
+                              ),
+                              child: Text(
+                                _showDetails
+                                    ? AppConstants.hideDetails
+                                    : AppConstants.showDetails,
+                                style: context.labelSmall.copyWith(
+                                  color: AppColors.white,
+                                  fontWeight: .w600,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -406,86 +438,123 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: .circular(16)),
-      backgroundColor: context.navyCard,
-      child: Padding(
-        padding: .all(20),
-        child: Column(
-          mainAxisSize: .min,
-          crossAxisAlignment: .start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: .all(7),
-                  decoration: BoxDecoration(
-                    color: context.navyIconBg,
-                    borderRadius: .circular(8),
-                  ),
-                  child: Icon(
-                    Iconsax.calendar_1,
-                    color: context.navyIconColor,
-                    size: 16,
-                  ),
+    final content = Padding(
+      padding: .all(20),
+      child: Column(
+        mainAxisSize: .min,
+        crossAxisAlignment: .start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: .all(7),
+                decoration: BoxDecoration(
+                  color: context.navyIconBg,
+                  borderRadius: .circular(8),
                 ),
-                const SizedBox(width: 10),
-                Text(
-                  AppConstants.dateLabel,
-                  style: context.titleSmall.copyWith(fontWeight: .w700),
+                child: Icon(
+                  Iconsax.calendar_1,
+                  color: context.navyIconColor,
+                  size: 16,
                 ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _DateButton(
-              label: AppConstants.fromLabel,
-              date: _from,
-              onTap: _pickFrom,
-            ),
-            const SizedBox(height: 10),
-            _DateButton(
-              label: AppConstants.toLabel,
-              date: _to,
-              onTap: _pickTo,
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: .end,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    AppConstants.cancelBtn,
-                    style: context.labelSmall.copyWith(
-                      color: context.textSecondary,
-                      fontWeight: .w600,
-                    ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                AppConstants.dateLabel,
+                style: context.titleSmall.copyWith(fontWeight: .w700),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _DateButton(
+            label: AppConstants.fromLabel,
+            date: _from,
+            onTap: _pickFrom,
+          ),
+          const SizedBox(height: 10),
+          _DateButton(
+            label: AppConstants.toLabel,
+            date: _to,
+            onTap: _pickTo,
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: .end,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  AppConstants.cancelBtn,
+                  style: context.labelSmall.copyWith(
+                    color: context.textSecondary,
+                    fontWeight: .w600,
                   ),
                 ),
-                const SizedBox(width: 4),
-                GestureDetector(
-                  onTap: () =>
-                      Navigator.pop(context, _DateRange(_from, _to)),
-                  child: Container(
-                    padding: .symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: context.primary,
-                      borderRadius: .circular(8),
-                    ),
-                    child: Text(
-                      AppConstants.applyBtn,
-                      style: context.labelSmall.copyWith(
-                        color: AppColors.white,
-                        fontWeight: .w700,
+              ),
+              const SizedBox(width: 4),
+              context.isDark
+                  ? GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () =>
+                          Navigator.pop(context, _DateRange(_from, _to)),
+                      child: GlassContainer(
+                        shape: const LiquidRoundedSuperellipse(borderRadius: 8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Text(
+                            AppConstants.applyBtn,
+                            style: context.labelSmall.copyWith(
+                              color: context.primary,
+                              fontWeight: .w700,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : GestureDetector(
+                      onTap: () =>
+                          Navigator.pop(context, _DateRange(_from, _to)),
+                      child: Container(
+                        padding: .symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: context.primary,
+                          borderRadius: .circular(8),
+                        ),
+                        child: Text(
+                          AppConstants.applyBtn,
+                          style: context.labelSmall.copyWith(
+                            color: AppColors.white,
+                            fontWeight: .w700,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
+    );
+
+    return Dialog(
+      backgroundColor: AppColors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 80),
+      child: context.isDark
+          ? GlassContainer(
+              shape: const LiquidRoundedSuperellipse(borderRadius: 16),
+              child: content,
+            )
+          : Material(
+              color: context.navyCard,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              clipBehavior: .antiAlias,
+              child: content,
+            ),
     );
   }
 }

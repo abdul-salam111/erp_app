@@ -83,7 +83,11 @@ class ForceUpdateService {
       }),
     });
 
-    await _remoteConfig.fetchAndActivate();
+    try {
+      await _remoteConfig.fetchAndActivate();
+    } catch (_) {
+      // Network cancelled / offline / RC unreachable — fall back to defaults.
+    }
   }
 
   Future<ForceUpdateConfig> getConfig() async {
