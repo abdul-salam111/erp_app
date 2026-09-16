@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import '../../constants/const_exports.dart';
 import '../../theme/theme_exports.dart';
 import '../../utils/utils_exports.dart';
@@ -122,7 +123,7 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(2),
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 14),
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
@@ -144,28 +145,30 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
                   ),
                   const SizedBox(height: 8),
                 ],
+                _BalanceHero(
+                  amount: widget.balance.abs().formatPrice(),
+                  suffix: widget.balance >= 0
+                      ? AppConstants.dr
+                      : AppConstants.cr,
+                ),
+                const SizedBox(height: 10),
                 Row(
                   children: [
                     Expanded(
-                      child: _TotalChip(
-                        label: AppConstants.balanceLabel,
-                        amount:
-                            '${widget.balance.abs().formatPrice()} '
-                            '${widget.balance >= 0 ? AppConstants.dr : AppConstants.cr}',
-                      ),
-                    ),
-                    const SizedBox(width: 2),
-                    Expanded(
-                      child: _TotalChip(
+                      child: _TotalStatTile(
                         label: AppConstants.debit,
                         amount: widget.ttlDebit.formatPrice(),
+                        accent: context.debitColor,
+                        icon: Iconsax.arrow_up_3,
                       ),
                     ),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: 10),
                     Expanded(
-                      child: _TotalChip(
+                      child: _TotalStatTile(
                         label: AppConstants.credit,
                         amount: widget.ttlCredit.formatPrice(),
+                        accent: context.creditColor,
+                        icon: Iconsax.arrow_down,
                       ),
                     ),
                   ],
@@ -199,47 +202,178 @@ class _PagedEntry {
   const _PagedEntry({required this.type, required this.entry});
 }
 
-class _TotalChip extends StatelessWidget {
-  final String label;
+class _BalanceHero extends StatelessWidget {
   final String amount;
+  final String suffix;
 
-  const _TotalChip({required this.label, required this.amount});
+  const _BalanceHero({required this.amount, required this.suffix});
 
   @override
   Widget build(BuildContext context) {
+    final accent = context.primary;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: BoxDecoration(
-        color: context.isDark ? context.navyIconBg : context.surfaceElevated,
-        borderRadius: .circular(8),
-        border: .all(
-          color: context.isDark ? context.navyBorder : context.border,
+        borderRadius: .circular(12),
+        gradient: LinearGradient(
+          begin: .centerLeft,
+          end: .centerRight,
+          colors: [
+            accent.withValues(alpha: 0.14),
+            accent.withValues(alpha: 0.04),
+          ],
         ),
+        border: .all(color: accent.withValues(alpha: 0.20), width: 1),
       ),
-      child: Column(
-        crossAxisAlignment: .start,
-        mainAxisSize: .min,
+      child: Row(
         children: [
-          Text(
-            label,
-            style: context.labelSmall.copyWith(
-              color: context.textSecondary,
-              fontWeight: .w600,
-              fontSize: 10,
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              shape: .circle,
+              gradient: RadialGradient(
+                colors: [
+                  accent.withValues(alpha: 0.32),
+                  accent.withValues(alpha: 0.08),
+                ],
+              ),
+            ),
+            child: Icon(Iconsax.wallet_3, color: accent, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: .start,
+              mainAxisSize: .min,
+              children: [
+                Text(
+                  AppConstants.balanceLabel.toUpperCase(),
+                  style: context.labelSmall.copyWith(
+                    color: context.textSecondary,
+                    fontWeight: .w700,
+                    fontSize: 10,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  amount,
+                  style: context.titleMedium.copyWith(
+                    color: context.textPrimary,
+                    fontWeight: .w800,
+                    fontSize: 20,
+                    height: 1,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 3),
-          Text(
-            amount,
-            style: context.labelSmall.copyWith(
-              color: context.textPrimary,
-              fontWeight: .w700,
-              fontSize: 12.5,
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              borderRadius: .circular(999),
+              color: accent.withValues(alpha: 0.16),
+              border: .all(color: accent.withValues(alpha: 0.24)),
             ),
-            maxLines: 1,
-            overflow: .ellipsis,
+            child: Text(
+              suffix,
+              style: context.labelSmall.copyWith(
+                color: accent,
+                fontWeight: .w700,
+                fontSize: 11,
+                letterSpacing: 0.4,
+              ),
+            ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TotalStatTile extends StatelessWidget {
+  final String label;
+  final String amount;
+  final Color accent;
+  final IconData icon;
+
+  const _TotalStatTile({
+    required this.label,
+    required this.amount,
+    required this.accent,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: .circular(10),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: .circular(10),
+          border: .all(color: accent.withValues(alpha: 0.12)),
+        ),
+        child: Column(
+          mainAxisSize: .min,
+          children: [
+            Container(height: 2, color: accent.withValues(alpha: 0.55)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+              child: Row(
+                children: [
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      shape: .circle,
+                      gradient: RadialGradient(
+                        colors: [
+                          accent.withValues(alpha: 0.28),
+                          accent.withValues(alpha: 0.06),
+                        ],
+                      ),
+                    ),
+                    child: Icon(icon, color: accent, size: 15),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      mainAxisSize: .min,
+                      children: [
+                        Text(
+                          label.toUpperCase(),
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontWeight: .w700,
+                            fontSize: 9.5,
+                            letterSpacing: 0.7,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          amount,
+                          style: context.bodySmall.copyWith(
+                            color: context.textPrimary,
+                            fontWeight: .w800,
+                            fontSize: 13.5,
+                            height: 1,
+                          ),
+                          maxLines: 1,
+                          overflow: .ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -35,27 +35,18 @@ class AccountsLedgerRow extends StatelessWidget {
     final debitFg = context.debitColor;
     final creditFg = context.creditColor;
 
-    final Color iconBg;
     final Color iconColor;
     final IconData iconData;
     if (isOpening) {
-      iconBg = context.isDark ? context.navyIconBg : context.surface;
       iconColor = context.textSecondary;
       iconData = Icons.horizontal_rule_rounded;
     } else if (isDrOnly) {
-      iconBg = context.isDark
-          ? debitFg.withValues(alpha: 0.16)
-          : context.debitContainer;
       iconColor = debitFg;
       iconData = Icons.arrow_upward_rounded;
     } else if (isCrOnly) {
-      iconBg = context.isDark
-          ? creditFg.withValues(alpha: 0.16)
-          : context.creditContainer;
       iconColor = creditFg;
       iconData = Icons.arrow_downward_rounded;
     } else {
-      iconBg = context.primary.withValues(alpha: 0.12);
       iconColor = context.primary;
       iconData = Icons.swap_horiz_rounded;
     }
@@ -87,11 +78,12 @@ class AccountsLedgerRow extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(context, date, dr, cr),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: context.isDark ? context.navyBorder : context.border,
+              color: (context.isDark ? context.navyBorder : context.border)
+                  .withValues(alpha: 0.5),
             ),
           ),
         ),
@@ -101,8 +93,13 @@ class AccountsLedgerRow extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: iconBg,
                 borderRadius: .circular(12),
+                gradient: RadialGradient(
+                  colors: [
+                    iconColor.withValues(alpha: 0.28),
+                    iconColor.withValues(alpha: 0.06),
+                  ],
+                ),
               ),
               child: Icon(iconData, size: 18, color: iconColor),
             ),
@@ -139,27 +136,40 @@ class AccountsLedgerRow extends StatelessWidget {
               crossAxisAlignment: .end,
               children: [
                 if (!isOpening)
-                  Text(
-                    isDrOnly
-                        ? AppConstants.debit
-                        : isCrOnly
-                            ? AppConstants.credit
-                            : AppConstants.drCr,
-                    style: context.labelSmall.copyWith(
-                      color: context.textSecondary,
-                      fontSize: 10,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: .circular(999),
+                      color: amountColor.withValues(alpha: 0.14),
+                    ),
+                    child: Text(
+                      isDrOnly
+                          ? AppConstants.debit.toUpperCase()
+                          : isCrOnly
+                              ? AppConstants.credit.toUpperCase()
+                              : AppConstants.drCr.toUpperCase(),
+                      style: context.labelSmall.copyWith(
+                        color: amountColor,
+                        fontSize: 9,
+                        fontWeight: .w700,
+                        letterSpacing: 0.6,
+                      ),
                     ),
                   ),
-                if (!isOpening) const SizedBox(height: 2),
+                if (!isOpening) const SizedBox(height: 4),
                 Text(
                   amountText,
                   style: context.bodySmall.copyWith(
-                    fontWeight: .w700,
+                    fontWeight: .w800,
                     color: amountColor,
                     fontSize: 14,
+                    height: 1,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 4),
                 Text(
                   rowBalanceText,
                   style: context.labelSmall.copyWith(

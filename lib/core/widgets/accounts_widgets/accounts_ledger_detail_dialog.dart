@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../constants/const_exports.dart';
 import '../../theme/theme_exports.dart';
 import '../../../features/accounts/domain/entities/shared/ledger_entry_base.dart';
+import '../glass_surface.dart';
 import 'accounts_amount_card.dart';
 import 'ledger_formate_balance.dart';
 import 'accounts_info_row.dart';
@@ -57,10 +58,11 @@ class AccountsLedgerDetailDialog extends StatelessWidget {
                 : AppConstants.drCrTransaction;
 
     return Dialog(
-      backgroundColor: context.surfaceElevated,
-      shape: RoundedRectangleBorder(borderRadius: .circular(20)),
+      backgroundColor: AppColors.transparent,
+      elevation: 0,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Padding(
+      child: GlassSurface(
+        radius: 20,
         padding: const EdgeInsets.fromLTRB(20, 22, 20, 20),
         child: Column(
           mainAxisSize: .min,
