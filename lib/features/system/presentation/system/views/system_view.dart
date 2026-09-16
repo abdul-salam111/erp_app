@@ -52,7 +52,7 @@ class _SystemBodyState extends State<_SystemBody>
           subtitle: 'Manage system users',
           icon: Iconsax.profile_2user,
           color: AppColors.teal,
-          routeName: RouteNames.security,
+          routeName: RouteNames.users,
         ),
         _SystemMenuItem(
           label: 'Roles',

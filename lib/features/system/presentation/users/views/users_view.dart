@@ -8,8 +8,8 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../system_exports.dart';
 
-class SecurityView extends StatelessWidget {
-  const SecurityView({super.key});
+class UsersView extends StatelessWidget {
+  const UsersView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,287 +28,18 @@ class _SecurityBody extends StatefulWidget {
 }
 
 class _SecurityBodyState extends State<_SecurityBody> {
-  static const _menu = <_SecurityMenuItem>[
-    _SecurityMenuItem(title: 'Users', icon: Iconsax.profile_2user),
-    _SecurityMenuItem(title: 'Roles', icon: Iconsax.setting_2),
-    _SecurityMenuItem(
-      title: 'Teams',
-      icon: Iconsax.people,
-      comingSoon: true,
-    ),
-    _SecurityMenuItem(
-      title: 'Active Sessions',
-      icon: Iconsax.monitor,
-      comingSoon: true,
-    ),
-    _SecurityMenuItem(title: 'Block Ips', icon: Iconsax.shield_slash),
-    _SecurityMenuItem(
-      title: 'Activity Log',
-      icon: Iconsax.activity,
-      comingSoon: true,
-    ),
-  ];
-
-  int _selectedIndex = 0;
-
-  void _selectMenu(int index) {
-    if (index == _selectedIndex) return;
-    setState(() => _selectedIndex = index);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final item = _menu[_selectedIndex];
-    final content = item.title == 'Users'
-        ? const _UsersContent(key: ValueKey('users'))
-        : _PlaceholderContent(key: ValueKey(item.title), title: item.title);
-
     return Scaffold(
       backgroundColor: context.background,
-      appBar: CustomAppBar(title: 'Security'),
-      body: context.isPhone
-          ? Column(
-              crossAxisAlignment: .stretch,
-              children: [
-                _SecurityChips(
-                  menu: _menu,
-                  selectedIndex: _selectedIndex,
-                  onSelected: _selectMenu,
-                ),
-                Expanded(child: content),
-              ],
-            )
-          : Row(
-              crossAxisAlignment: .stretch,
-              children: [
-                _SecuritySidebar(
-                  menu: _menu,
-                  selectedIndex: _selectedIndex,
-                  onSelected: _selectMenu,
-                ),
-                VerticalDivider(width: 1, color: context.divider),
-                Expanded(child: content),
-              ],
-            ),
-    );
-  }
-}
-
-class _SecuritySidebar extends StatelessWidget {
-  final List<_SecurityMenuItem> menu;
-  final int selectedIndex;
-  final ValueChanged<int> onSelected;
-
-  const _SecuritySidebar({
-    required this.menu,
-    required this.selectedIndex,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final width = Responsive.value<double>(
-      context,
-      phone: 200,
-      tablet: 220,
-      ipad: 260,
-    );
-    return Container(
-      width: width,
-      color: context.surface,
-      child: Column(
-        crossAxisAlignment: .stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            color: context.primary,
-            child: Row(
-              children: [
-                const Icon(Iconsax.lock_1, size: 16, color: AppColors.white),
-                const SizedBox(width: 8),
-                Text(
-                  'SECURITY',
-                  style: context.labelMedium.copyWith(
-                    color: AppColors.white,
-                    fontWeight: .w700,
-                    letterSpacing: 1.1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: menu.length,
-              itemBuilder: (context, index) {
-                final selected = index == selectedIndex;
-                final item = menu[index];
-                return InkWell(
-                  onTap: () => onSelected(index),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    color: selected
-                        ? context.primary.withValues(alpha: 0.06)
-                        : context.transparent,
-                    child: Row(
-                      children: [
-                        Icon(
-                          item.icon,
-                          size: 18,
-                          color: selected
-                              ? context.primary
-                              : context.textSecondary,
-                        ),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Text(
-                            item.title,
-                            style: context.bodyMedium.copyWith(
-                              color: selected
-                                  ? context.primary
-                                  : context.textPrimary,
-                              fontWeight: selected ? .w600 : .w400,
-                            ),
-                          ),
-                        ),
-                        if (item.comingSoon) ...[
-                          const SizedBox(width: 6),
-                          const _ComingSoonBadge(),
-                        ],
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SecurityChips extends StatelessWidget {
-  final List<_SecurityMenuItem> menu;
-  final int selectedIndex;
-  final ValueChanged<int> onSelected;
-
-  const _SecurityChips({
-    required this.menu,
-    required this.selectedIndex,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: context.surface,
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: SingleChildScrollView(
-        scrollDirection: .horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Row(
-          children: List.generate(menu.length, (index) {
-            final selected = index == selectedIndex;
-            final item = menu[index];
-            return Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: InkWell(
-                onTap: () => onSelected(index),
-                borderRadius: BorderRadius.circular(20),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: selected
-                        ? context.primary
-                        : context.primary.withValues(alpha: 0.06),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: .min,
-                    children: [
-                      Icon(
-                        item.icon,
-                        size: 15,
-                        color: selected ? AppColors.white : context.primary,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        item.title,
-                        style: context.labelMedium.copyWith(
-                          color: selected ? AppColors.white : context.primary,
-                          fontWeight: .w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }),
-        ),
-      ),
-    );
-  }
-}
-
-class _ComingSoonBadge extends StatelessWidget {
-  const _ComingSoonBadge();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: AppColors.green.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        'Coming soon',
-        style: context.labelSmall.copyWith(
-          color: AppColors.greenDark,
-          fontSize: 9,
-          fontWeight: .w600,
-        ),
-      ),
-    );
-  }
-}
-
-class _PlaceholderContent extends StatelessWidget {
-  final String title;
-
-  const _PlaceholderContent({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: .min,
-        children: [
-          Icon(Iconsax.box_1, size: 40, color: context.textDisabled),
-          const SizedBox(height: 10),
-          Text(
-            '$title — coming soon',
-            style: context.bodyMedium.copyWith(color: context.textSecondary),
-          ),
-        ],
-      ),
+      appBar: CustomAppBar(title: 'Users'),
+      body: const _UsersContent(),
     );
   }
 }
 
 class _UsersContent extends StatefulWidget {
-  const _UsersContent({super.key});
+  const _UsersContent();
 
   @override
   State<_UsersContent> createState() => _UsersContentState();
@@ -810,18 +541,6 @@ class _ActionLink extends StatelessWidget {
       ),
     );
   }
-}
-
-class _SecurityMenuItem {
-  final String title;
-  final IconData icon;
-  final bool comingSoon;
-
-  const _SecurityMenuItem({
-    required this.title,
-    required this.icon,
-    this.comingSoon = false,
-  });
 }
 
 class _UserRow {

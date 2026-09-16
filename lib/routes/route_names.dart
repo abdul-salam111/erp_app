@@ -15,7 +15,7 @@ class RouteNames {
   static const String inventory = 'inventory';
   static const String production = 'production';
   static const String analytics = 'analytics';
-  static const String security = 'security';
+  static const String users = 'users';
   static const String account_ledger = 'account_ledger';
   static const String organizationSelection = 'organizationSelection';
   static const String party_ledger = 'party_ledger';

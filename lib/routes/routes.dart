@@ -200,9 +200,9 @@ class AppRoutes {
         builder: (context, state) => const AnalyticsView(),
       ),
       GoRoute(
-        path: RoutePaths.security,
-        name: RouteNames.security,
-        builder: (context, state) => const SecurityView(),
+        path: RoutePaths.users,
+        name: RouteNames.users,
+        builder: (context, state) => const UsersView(),
       ),
       GoRoute(
         path: RoutePaths.account_ledger,

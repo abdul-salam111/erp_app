@@ -1,4 +1,4 @@
-import '../../features/system/presentation/security/blocs/security_bloc.dart';
+import '../../features/system/presentation/users/blocs/security_bloc.dart';
 import 'app_dependencies.dart';
 
 // Security is a sub-module of system — it reuses system's data and domain
