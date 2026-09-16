@@ -264,57 +264,61 @@ class _DateFilterForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.surfaceElevated,
+      color: context.isDark ? context.background : context.surface,
       padding: EdgeInsets.fromLTRB(
         context.pagePadding.left,
         12,
         context.pagePadding.right,
-        8,
+        12,
       ),
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    _Label(AppConstants.fromDateBtn),
-                    const SizedBox(height: 6),
-                    _DateTile(
-                      date: fromDate.format(AppConstants.ddMMMYyyyLabel),
-                      onTap: onPickFrom,
-                    ),
-                  ],
+      child: GlassSurface(
+        radius: 12,
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      _Label(AppConstants.fromDateBtn),
+                      const SizedBox(height: 6),
+                      _DateTile(
+                        date: fromDate.format(AppConstants.ddMMMYyyyLabel),
+                        onTap: onPickFrom,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    _Label(AppConstants.toDateBtn),
-                    const SizedBox(height: 6),
-                    _DateTile(
-                      date: toDate.format(AppConstants.ddMMMYyyyLabel),
-                      onTap: onPickTo,
-                    ),
-                  ],
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      _Label(AppConstants.toDateBtn),
+                      const SizedBox(height: 6),
+                      _DateTile(
+                        date: toDate.format(AppConstants.ddMMMYyyyLabel),
+                        onTap: onPickTo,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          CustomButton(
-            text: AppConstants.view,
-            onPressed: onView,
-            radius: 6,
-            elevation: 0,
-            fontsize: 14,
-            size: const Size.fromHeight(38),
-          ),
-        ],
+              ],
+            ),
+            const SizedBox(height: 12),
+            CustomButton(
+              text: AppConstants.view,
+              onPressed: onView,
+              radius: 8,
+              elevation: 0,
+              fontsize: 14,
+              size: const Size.fromHeight(42),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -346,24 +350,27 @@ class _DateTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: context.surface,
+          color: context.isDark ? context.navyIconBg : context.surface,
           borderRadius: .circular(6),
-          border: Border.all(color: context.border),
+          border: Border.all(
+            color: context.isDark
+                ? context.navyBorder
+                : context.border.withAlpha(50),
+          ),
         ),
         child: Row(
           children: [
-            Icon(Iconsax.calendar_1, size: 15, color: context.textSecondary),
-            const SizedBox(width: 8),
+            Icon(Iconsax.calendar_1, size: 18, color: context.textSecondary),
+            const SizedBox(width: 10),
             Expanded(
               child: Text(
                 date,
-                style: context.bodySmall.copyWith(
-                  color: context.textPrimary,
-                  fontSize: 13,
-                ),
+                style: context.bodySmall.copyWith(color: context.textPrimary),
                 overflow: .ellipsis,
               ),
             ),

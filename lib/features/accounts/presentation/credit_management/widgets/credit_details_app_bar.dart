@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/theme_exports.dart';
+import '../../../../../core/widgets/widgets.dart';
 
 class CreditDetailsAppBar extends StatelessWidget
     implements PreferredSizeWidget {
@@ -25,11 +26,8 @@ class CreditDetailsAppBar extends StatelessWidget
     return AppBar(
       backgroundColor: context.isDark ? AppColors.navyHeaderDark : context.primary,
       toolbarHeight: kToolbarHeight + 12,
-      leadingWidth: 40,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, color: context.white, size: 18),
-        onPressed: () => Navigator.pop(context),
-      ),
+      leadingWidth: 46,
+      leading: const GlassBackButton(),
       centerTitle: false,
       title: Column(
         crossAxisAlignment: .start,

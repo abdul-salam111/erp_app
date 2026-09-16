@@ -13,19 +13,8 @@ class CreditTrendChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(8),
-        border: .all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return GlassSurface(
+      radius: 10,
       padding: const EdgeInsets.fromLTRB(4, 12, 4, 8),
       child: Column(
         crossAxisAlignment: .start,
@@ -97,15 +86,19 @@ class _ChartBody extends StatelessWidget {
     final yInterval = (chartMaxY / 4).ceilToDouble();
     final lineColor = context.primary;
 
-    final spots = items
-        .asMap()
-        .entries
-        .map((e) => FlSpot(e.key.toDouble(), e.value.totalAmount))
-        .toList();
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: LineChart(
+      child: TweenAnimationBuilder<double>(
+        duration: const Duration(milliseconds: 900),
+        curve: Curves.easeOutCubic,
+        tween: Tween(begin: 0.0, end: 1.0),
+        builder: (context, t, _) {
+          final spots = items
+              .asMap()
+              .entries
+              .map((e) => FlSpot(e.key.toDouble(), e.value.totalAmount * t))
+              .toList();
+          return LineChart(
         LineChartData(
           minX: 0,
           maxX: (items.length - 1).toDouble(),
@@ -232,6 +225,8 @@ class _ChartBody extends StatelessWidget {
             ),
           ],
         ),
+      );
+        },
       ),
     );
   }

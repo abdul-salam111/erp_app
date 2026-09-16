@@ -33,12 +33,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final initials = orgName.isNotEmpty ? _orgInitials(orgName) : '';
     final canPop = Navigator.of(context).canPop();
     final resolvedLeading =
-        leading ?? (canPop ? const _GlassBackButton() : null);
+        leading ?? (canPop ? const GlassBackButton() : null);
 
     return AppBar(
       iconTheme: const IconThemeData(color: AppColors.white),
       leading: resolvedLeading,
-      leadingWidth: resolvedLeading is _GlassBackButton ? 46 : null,
+      leadingWidth: resolvedLeading is GlassBackButton ? 46 : null,
       automaticallyImplyLeading: leading == null,
       title: Text(
         title,
@@ -67,8 +67,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _GlassBackButton extends StatelessWidget {
-  const _GlassBackButton();
+class GlassBackButton extends StatelessWidget {
+  const GlassBackButton({super.key});
 
   @override
   Widget build(BuildContext context) {

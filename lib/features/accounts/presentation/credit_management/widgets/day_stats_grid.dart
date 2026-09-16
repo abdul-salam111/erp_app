@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/theme_exports.dart';
+import '../../../../../core/widgets/widgets.dart';
 
 class DayStatsGrid extends StatelessWidget {
   final String firstSegment;
@@ -28,7 +29,7 @@ class DayStatsGrid extends StatelessWidget {
                 accentColor: AppColors.grey400,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
             Expanded(
               child: _DayStatCard(
                 label: '60 Days',
@@ -38,7 +39,7 @@ class DayStatsGrid extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
@@ -48,7 +49,7 @@ class DayStatsGrid extends StatelessWidget {
                 accentColor: AppColors.orange,
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
             Expanded(
               child: _DayStatCard(
                 label: '90+ Days',
@@ -75,28 +76,18 @@ class _DayStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: .hardEdge,
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(10),
-        border: .all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.07),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: IntrinsicHeight(
+    return SizedBox(
+      height: 68,
+      child: GlassSurface(
+        radius: 10,
+        clipBehavior: .hardEdge,
         child: Row(
           crossAxisAlignment: .stretch,
           children: [
             Container(width: 4, color: accentColor),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+                padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
                 child: Column(
                   crossAxisAlignment: .start,
                   mainAxisAlignment: .center,
@@ -104,20 +95,22 @@ class _DayStatCard extends StatelessWidget {
                     Text(
                       value,
                       style: context.bodyMedium.copyWith(
-                        fontWeight: .w700,
+                        fontWeight: .w800,
                         color: context.textPrimary,
-                        fontSize: 13,
+                        fontSize: 17,
                         height: 1,
                       ),
                       maxLines: 1,
                       overflow: .ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 7),
                     Text(
-                      label,
+                      label.toUpperCase(),
                       style: context.labelSmall.copyWith(
                         color: context.textSecondary,
-                        fontSize: 10,
+                        fontWeight: .w700,
+                        fontSize: 9.5,
+                        letterSpacing: 0.7,
                         height: 1.1,
                       ),
                       maxLines: 1,

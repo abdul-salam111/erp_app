@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
+import '../../../../../core/widgets/glass_surface.dart';
 import '../../../../../core/widgets/shimmer_box.dart';
 import 'inventory_models.dart';
 import 'inventory_search_field.dart';
@@ -59,59 +60,50 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
       crossAxisAlignment: .start,
       children: [
         // ── Header card ───────────────────────────────────────────────────────
-        Container(
-          decoration: BoxDecoration(
-            color: context.navyCard,
-            borderRadius: .circular(14),
-            border: .all(
-              color: context.isDark ? context.navyBorder : context.border,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: .fromLTRB(14, 14, 14, 14),
-            child: Row(
-              children: [
-                Container(
-                  padding: .all(8),
-                  decoration: BoxDecoration(
-                    color: context.primary.withValues(alpha: 0.12),
-                    borderRadius: .circular(10),
-                  ),
-                  child: Icon(
-                    Icons.inventory_2_outlined,
-                    color: context.primary,
-                    size: 17,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      Text(
-                        AppConstants.stockReceived,
-                        style: context.titleSmall.copyWith(fontWeight: .w700),
-                      ),
-                      const SizedBox(height: 1),
-                      Text(
-                        AppConstants.incomingStockByPartyItem,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: context.textSecondary,
-                        ),
-                      ),
+        GlassSurface(
+          radius: 14,
+          padding: .fromLTRB(14, 14, 14, 14),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  borderRadius: .circular(10),
+                  gradient: RadialGradient(
+                    colors: [
+                      context.primary.withValues(alpha: 0.28),
+                      context.primary.withValues(alpha: 0.06),
                     ],
                   ),
                 ),
-              ],
-            ),
+                child: Icon(
+                  Icons.inventory_2_outlined,
+                  color: context.primary,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Text(
+                      AppConstants.stockReceived,
+                      style: context.titleSmall.copyWith(fontWeight: .w700),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      AppConstants.incomingStockByPartyItem,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
 
@@ -125,24 +117,11 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
         const SizedBox(height: 8),
 
         // ── Scrollable list card ──────────────────────────────────────────────
-        Container(
+        SizedBox(
           height: 300,
-          decoration: BoxDecoration(
-            color: context.navyCard,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: context.isDark ? context.navyBorder : context.border,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
+          child: GlassSurface(
+            radius: 14,
+            clipBehavior: Clip.hardEdge,
             child: Column(
               crossAxisAlignment: .start,
               children: [
@@ -241,12 +220,17 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
                           separatorBuilder: (_, __) => Divider(
                             height: 1,
                             thickness: 1,
-                            color: context.isDark
-                                ? context.navyBorder
-                                : context.border,
+                            color: (context.isDark
+                                    ? context.navyBorder
+                                    : context.border)
+                                .withValues(alpha: 0.5),
                           ),
-                          itemBuilder: (context, i) =>
-                              _StockReceivedTile(row: rows[i]),
+                          itemBuilder: (context, i) => ColoredBox(
+                            color: context.isDark
+                                ? AppColors.white.withValues(alpha: 0.03)
+                                : context.tableRowAlt,
+                            child: _StockReceivedTile(row: rows[i]),
+                          ),
                         ),
                 ),
               ],
@@ -311,9 +295,19 @@ class _StockReceivedTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 15,
-            backgroundColor: row.avatarColor.withValues(alpha: 0.15),
+          Container(
+            width: 30,
+            height: 30,
+            alignment: .center,
+            decoration: BoxDecoration(
+              shape: .circle,
+              gradient: RadialGradient(
+                colors: [
+                  row.avatarColor.withValues(alpha: 0.30),
+                  row.avatarColor.withValues(alpha: 0.06),
+                ],
+              ),
+            ),
             child: Text(
               row.initials,
               style: context.labelSmall.copyWith(

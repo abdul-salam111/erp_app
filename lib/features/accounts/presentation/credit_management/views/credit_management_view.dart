@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
@@ -84,7 +85,10 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                   secondSegmentAmount: data?.secondSegmentAmount ?? 0,
                   thirdSegmentAmount: data?.thirdSegmentAmount ?? 0,
                   fourthSegmentAmount: data?.fourthSegmentAmount ?? 0,
-                );
+                )
+                    .animate()
+                    .fadeIn(duration: 400.ms)
+                    .slideY(begin: 0.15, curve: Curves.easeOutCubic);
               },
             ),
             BlocBuilder<CreditManagementBloc, CreditManagementState>(
@@ -144,7 +148,10 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                     ),
                     const SizedBox(height: 8),
                   ],
-                );
+                )
+                    .animate()
+                    .fadeIn(delay: 100.ms, duration: 400.ms)
+                    .slideY(begin: 0.15, curve: Curves.easeOutCubic);
               },
             ),
             Expanded(
@@ -177,7 +184,10 @@ class _CreditManagementBodyState extends State<_CreditManagementBody> {
                     return CreditTable(
                       scrollController: _scrollController,
                       items: filtered,
-                    );
+                    )
+                        .animate()
+                        .fadeIn(delay: 200.ms, duration: 450.ms)
+                        .slideY(begin: 0.10, curve: Curves.easeOutCubic);
                   },
                 ),
               ),

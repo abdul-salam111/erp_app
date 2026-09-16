@@ -41,19 +41,9 @@ class _RecentPaymentsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(8),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return GlassSurface(
+      radius: 10,
+      clipBehavior: .hardEdge,
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -71,9 +61,16 @@ class _RecentPaymentsCard extends StatelessWidget {
           ),
           // ── Header ────────────────────────────────────────────────
           Container(
-            color: context.isDark
-                ? AppColors.navyIconBgDark
-                : context.primary.withValues(alpha: 0.07),
+            decoration: BoxDecoration(
+              color: context.primary.withValues(
+                alpha: context.isDark ? 0.14 : 0.07,
+              ),
+              border: Border(
+                bottom: BorderSide(
+                  color: context.primary.withValues(alpha: 0.22),
+                ),
+              ),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [
@@ -121,11 +118,12 @@ class _HeaderCell extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: Text(
-        text,
+        text.toUpperCase(),
         style: context.labelSmall.copyWith(
           color: context.primary,
-          fontWeight: .w600,
-          fontSize: 11,
+          fontWeight: .w700,
+          fontSize: 10.5,
+          letterSpacing: 0.7,
         ),
         textAlign: align,
       ),
@@ -236,12 +234,9 @@ class _RecentPaymentsShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(8),
-        border: Border.all(color: context.border),
-      ),
+    return GlassSurface(
+      radius: 10,
+      clipBehavior: .hardEdge,
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -250,9 +245,16 @@ class _RecentPaymentsShimmer extends StatelessWidget {
             child: ShimmerBox(height: 13, width: 130, radius: 4),
           ),
           Container(
-            color: context.isDark
-                ? AppColors.navyIconBgDark
-                : context.primary.withValues(alpha: 0.07),
+            decoration: BoxDecoration(
+              color: context.primary.withValues(
+                alpha: context.isDark ? 0.14 : 0.07,
+              ),
+              border: Border(
+                bottom: BorderSide(
+                  color: context.primary.withValues(alpha: 0.22),
+                ),
+              ),
+            ),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Row(
               children: [

@@ -7,6 +7,7 @@ import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../core/widgets/glass_surface.dart';
 import '../../../alert_panel_exports.dart';
 
 class AlertPanelView extends StatelessWidget {
@@ -147,19 +148,9 @@ class _AlertPanelBodyState extends State<_AlertPanelBody>
               const SizedBox(height: 16),
 
               // ── Alert cards ──
-              Container(
-                decoration: BoxDecoration(
-                  color: context.navyCard,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: context.navyBorder),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.black.withValues(alpha: 0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
+              GlassSurface(
+                radius: 14,
+                clipBehavior: Clip.hardEdge,
                 child: ListView.separated(
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
@@ -168,7 +159,10 @@ class _AlertPanelBodyState extends State<_AlertPanelBody>
                   separatorBuilder: (_, __) => Divider(
                     height: 1,
                     thickness: 1,
-                    color: context.navyBorder,
+                    color: (context.isDark
+                            ? context.navyBorder
+                            : context.border)
+                        .withValues(alpha: 0.5),
                   ),
                   itemBuilder: (context, index) => FadeTransition(
                     opacity: _fades[index + 1],
@@ -202,20 +196,9 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GlassSurface(
+      radius: 14,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: context.navyBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
       child: Row(
         children: [
           // Bell with badge
@@ -226,10 +209,13 @@ class _SummaryCard extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: context.isDark
-                      ? AppColors.navyIconBgDark
-                      : AppColors.errorBright.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(12),
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.errorBright.withValues(alpha: 0.28),
+                      AppColors.errorBright.withValues(alpha: 0.06),
+                    ],
+                  ),
                 ),
                 child: const Icon(
                   Iconsax.notification,
@@ -362,10 +348,13 @@ class _AlertTile extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: context.isDark
-                  ? AppColors.navyIconBgDark
-                  : item.color.withValues(alpha: 0.14),
               shape: .circle,
+              gradient: RadialGradient(
+                colors: [
+                  item.color.withValues(alpha: 0.30),
+                  item.color.withValues(alpha: 0.06),
+                ],
+              ),
             ),
             alignment: .center,
             child: Text(

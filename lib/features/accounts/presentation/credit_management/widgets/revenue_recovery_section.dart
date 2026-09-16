@@ -72,20 +72,9 @@ class _RevenueRecoveryContent extends StatelessWidget {
       ('Average Sale', averageSale.asPrice, AppColors.orange),
     ];
 
-    return Container(
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(8),
-        border: .all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+    return GlassSurface(
+      radius: 10,
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -97,7 +86,7 @@ class _RevenueRecoveryContent extends StatelessWidget {
               color: context.textPrimary,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Row(
             children: [
               for (int i = 0; i < stats.length; i++) ...[
@@ -143,63 +132,61 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: .hardEdge,
-      decoration: BoxDecoration(
-        color: context.isDark ? context.navyIconBg : context.surfaceElevated,
+    return SizedBox(
+      height: 60,
+      child: ClipRRect(
         borderRadius: .circular(10),
-        border: .all(
-          color: context.isDark ? context.navyBorder : context.border,
-        ),
-        boxShadow: context.isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.07),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-      ),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: .stretch,
-          children: [
-            Container(width: 4, color: accentColor),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
-                child: Column(
-                  crossAxisAlignment: .start,
-                  mainAxisAlignment: .center,
-                  children: [
-                    Text(
-                      value,
-                      style: context.bodyMedium.copyWith(
-                        fontWeight: .w700,
-                        color: context.textPrimary,
-                        fontSize: 11,
-                        height: 1,
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.isDark
+                ? context.navyIconBg
+                : context.surfaceElevated,
+            borderRadius: .circular(10),
+            border: .all(
+              color: context.isDark ? context.navyBorder : context.border,
+            ),
+          ),
+          child: Row(
+            crossAxisAlignment: .stretch,
+            children: [
+              Container(width: 4, color: accentColor),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    mainAxisAlignment: .center,
+                    children: [
+                      Text(
+                        value,
+                        style: context.bodyMedium.copyWith(
+                          fontWeight: .w800,
+                          color: context.textPrimary,
+                          fontSize: 14,
+                          height: 1,
+                        ),
+                        maxLines: 1,
+                        overflow: .ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: .ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      label,
-                      style: context.labelSmall.copyWith(
-                        color: context.textSecondary,
-                        fontSize: 9,
-                        height: 1.1,
+                      const SizedBox(height: 6),
+                      Text(
+                        label.toUpperCase(),
+                        style: context.labelSmall.copyWith(
+                          color: context.textSecondary,
+                          fontWeight: .w700,
+                          fontSize: 8.5,
+                          letterSpacing: 0.6,
+                          height: 1.1,
+                        ),
+                        maxLines: 1,
+                        overflow: .ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: .ellipsis,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -211,20 +198,9 @@ class _RevenueRecoveryShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(8),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.04),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+    return GlassSurface(
+      radius: 10,
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -258,7 +234,11 @@ class _RevenueBarChart extends StatelessWidget {
     final maxY = maxSale == 0 ? 1000.0 : (maxSale * 1.25).ceilToDouble();
     final yInterval = (maxY / 5).ceilToDouble();
 
-    return BarChart(
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 900),
+      curve: Curves.easeOutCubic,
+      tween: Tween(begin: 0.0, end: 1.0),
+      builder: (context, t, _) => BarChart(
       BarChartData(
         maxY: maxY,
         minY: 0,
@@ -335,7 +315,7 @@ class _RevenueBarChart extends StatelessWidget {
                 x: b.x,
                 barRods: [
                   BarChartRodData(
-                    toY: b.sale,
+                    toY: b.sale * t,
                     color: barColor,
                     width: 14,
                     borderRadius: const BorderRadius.vertical(
@@ -346,6 +326,7 @@ class _RevenueBarChart extends StatelessWidget {
               ),
             )
             .toList(),
+      ),
       ),
     );
   }

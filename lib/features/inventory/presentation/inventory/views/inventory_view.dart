@@ -5,6 +5,7 @@ import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../core/widgets/glass_surface.dart';
 import '../../../../../core/widgets/shimmer_box.dart';
 import '../../../inventory_exports.dart';
 import '../widgets/inventory_widgets.dart';
@@ -360,60 +361,51 @@ class _CurrentStockCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 8),
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.navyCard,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: context.isDark ? context.navyBorder : context.border,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.black.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: _green.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.warehouse_outlined,
-                  color: _green,
-                  size: 17,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  mainAxisAlignment: .center,
-                  children: [
-                    Text(
-                      AppConstants.currentStock,
-                      style: context.titleSmall.copyWith(fontWeight: .w700),
-                    ),
-                    const SizedBox(height: 1),
-                    Text(
-                      AppConstants.liveInventoryByProduct,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: context.textSecondary,
-                      ),
-                    ),
+      child: GlassSurface(
+        radius: 14,
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: RadialGradient(
+                  colors: [
+                    _green.withValues(alpha: 0.28),
+                    _green.withValues(alpha: 0.06),
                   ],
                 ),
               ),
-            ],
-          ),
+              child: const Icon(
+                Icons.warehouse_outlined,
+                color: _green,
+                size: 18,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: .start,
+                mainAxisAlignment: .center,
+                children: [
+                  Text(
+                    AppConstants.currentStock,
+                    style: context.titleSmall.copyWith(fontWeight: .w700),
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    AppConstants.liveInventoryByProduct,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

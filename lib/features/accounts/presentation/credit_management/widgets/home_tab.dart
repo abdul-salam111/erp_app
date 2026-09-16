@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../blocs/credit_management_details_cubit.dart';
 import 'credit_trend_chart.dart';
 import 'day_stats_grid.dart';
@@ -67,22 +69,40 @@ class _HomeTabState extends State<HomeTab> {
         child: Column(
           crossAxisAlignment: .start,
           children: [
-            _CurrentBalanceCard(balance: widget.balance),
+            _CurrentBalanceCard(balance: widget.balance)
+                .animate()
+                .fadeIn(duration: 400.ms)
+                .slideY(begin: 0.15, curve: Curves.easeOutCubic),
             const SizedBox(height: 8),
             DayStatsGrid(
               firstSegment: widget.firstSegmentAmount.asPrice,
               secondSegment: widget.secondSegmentAmount.asPrice,
               thirdSegment: widget.thirdSegmentAmount.asPrice,
               fourthSegment: widget.fourthSegmentAmount.asPrice,
-            ),
+            )
+                .animate()
+                .fadeIn(delay: 100.ms, duration: 400.ms)
+                .slideY(begin: 0.15, curve: Curves.easeOutCubic),
             const SizedBox(height: 8),
-            const UnpaidInvoicesSection(),
+            const UnpaidInvoicesSection()
+                .animate()
+                .fadeIn(delay: 200.ms, duration: 400.ms)
+                .slideY(begin: 0.12, curve: Curves.easeOutCubic),
             const SizedBox(height: 12),
-            const CreditTrendChart(),
+            const CreditTrendChart()
+                .animate()
+                .fadeIn(delay: 300.ms, duration: 450.ms)
+                .slideY(begin: 0.12, curve: Curves.easeOutCubic),
             const SizedBox(height: 12),
-            const RecentPaymentsSection(),
+            const RecentPaymentsSection()
+                .animate()
+                .fadeIn(delay: 400.ms, duration: 450.ms)
+                .slideY(begin: 0.10, curve: Curves.easeOutCubic),
             const SizedBox(height: 12),
-            const RevenueRecoverySection(),
+            const RevenueRecoverySection()
+                .animate()
+                .fadeIn(delay: 500.ms, duration: 450.ms)
+                .slideY(begin: 0.10, curve: Curves.easeOutCubic),
           ],
         ),
       ),
@@ -96,53 +116,42 @@ class _CurrentBalanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
+      height: 80,
       width: double.infinity,
-      clipBehavior: .hardEdge,
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(10),
-        border: Border.all(
-          color: context.isDark ? context.navyBorder : context.border,
-        ),
-        boxShadow: context.isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.07),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-      ),
-      child: IntrinsicHeight(
+      child: GlassSurface(
+        radius: 10,
+        clipBehavior: .hardEdge,
         child: Row(
           crossAxisAlignment: .stretch,
           children: [
             Container(width: 4, color: AppColors.primary),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
                 child: Column(
                   crossAxisAlignment: .start,
+                  mainAxisAlignment: .center,
                   children: [
                     Text(
                       balance,
                       style: context.titleMedium.copyWith(
-                        fontWeight: .w700,
+                        fontWeight: .w800,
                         color: context.textPrimary,
-                        fontSize: 16,
+                        fontSize: 22,
                         height: 1,
                       ),
                       maxLines: 1,
                       overflow: .ellipsis,
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     Text(
-                      'Current Balance',
+                      'CURRENT BALANCE',
                       style: context.labelSmall.copyWith(
                         color: context.textSecondary,
-                        fontSize: 11,
+                        fontWeight: .w700,
+                        fontSize: 10,
+                        letterSpacing: 0.8,
                         height: 1.1,
                       ),
                     ),
