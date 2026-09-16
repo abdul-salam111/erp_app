@@ -61,6 +61,7 @@ dependencies:
   url_launcher: ^6.0.0
   file_picker: ^10.1.9
   youtube_player_flutter: ^9.1.1
+  liquid_glass_widgets: ^1.6.1
 
 
   

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'core/app_updates/force_update_gate.dart';
 import 'core/app_updates/force_update_service.dart';
 import 'core/config/app_config.dart';
@@ -19,9 +20,15 @@ void main() async {
     AppConfig.instance.initialize(),
     ForceUpdateService().initialize(),
     setupLocator(),
+    LiquidGlassWidgets.initialize(),
   ]);
-  
-  runApp(const MyApp());
+
+  runApp(
+    LiquidGlassWidgets.wrap(
+      brightnessResolver: Theme.maybeBrightnessOf,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:mantic_erp_app/core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/routes/route_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
@@ -266,18 +267,31 @@ class _AdminSliverAppBar extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Center(
-          child: GestureDetector(
-            onTap: () => context.pushNamed(RouteNames.profile),
-            child: CircleAvatar(
-              radius: 19,
-              backgroundColor: AppColors.white.withValues(alpha: 0.15),
-              child: const Icon(
-                Iconsax.profile_circle,
-                color: AppColors.white,
-                size: 20,
-              ),
-            ),
-          ),
+          child: context.isDark
+              ? SizedBox(
+                  width: 38,
+                  height: 38,
+                  child: GlassIconButton(
+                    onPressed: () => context.pushNamed(RouteNames.profile),
+                    icon: const Icon(
+                      Iconsax.profile_circle,
+                      color: AppColors.white,
+                      size: 20,
+                    ),
+                  ),
+                )
+              : GestureDetector(
+                  onTap: () => context.pushNamed(RouteNames.profile),
+                  child: CircleAvatar(
+                    radius: 19,
+                    backgroundColor: AppColors.white.withValues(alpha: 0.15),
+                    child: const Icon(
+                      Iconsax.profile_circle,
+                      color: AppColors.white,
+                      size: 20,
+                    ),
+                  ),
+                ),
         ),
         SizedBox(width: hPad),
       ],
@@ -460,6 +474,16 @@ class _AdminHeaderIconBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isDark) {
+      return SizedBox(
+        width: 38,
+        height: 38,
+        child: GlassIconButton(
+          onPressed: onTap,
+          icon: Icon(icon, color: AppColors.white, size: 20),
+        ),
+      );
+    }
     return GestureDetector(
       onTap: onTap,
       child: Container(

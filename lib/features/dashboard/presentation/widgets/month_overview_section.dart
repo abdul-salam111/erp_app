@@ -199,9 +199,9 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                   builder: (context) {
                     final ratio = Responsive.value<double>(
                       context,
-                      phone: 3.6,
-                      tablet: 3.8,
-                      ipad: 4.2,
+                      phone: 3.2,
+                      tablet: 3.4,
+                      ipad: 3.8,
                     );
                     return isLoading
                         ? _StatsShimmer(

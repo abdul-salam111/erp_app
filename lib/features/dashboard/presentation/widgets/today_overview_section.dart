@@ -194,9 +194,9 @@ class TodayOverviewSection extends StatelessWidget {
                 crossAxisSpacing: context.gridSpacing,
                 childAspectRatio: Responsive.value<double>(
                   context,
-                  phone: 3.0,
-                  tablet: 3.2,
-                  ipad: 3.6,
+                  phone: 2.5,
+                  tablet: 2.7,
+                  ipad: 3.1,
                 ),
               ),
               itemBuilder: (context, i) {
@@ -205,7 +205,7 @@ class TodayOverviewSection extends StatelessWidget {
                 }
                 return OverviewStatCard(
                   label: _meta[i].label,
-                  value: values[i].formatPrice(symbol: sym),
+                  value: '$sym ${values[i].toCompact(decimals: 2)}',
                   icon: _meta[i].icon,
                   color: _meta[i].color,
                 );
@@ -340,7 +340,7 @@ class _AllOverviewSheet extends StatelessWidget {
             itemBuilder: (context, i) {
               return OverviewStatCard(
                     label: _meta[i].label,
-                    value: values[i].formatPrice(symbol: currencySymbol),
+                    value: '$currencySymbol ${values[i].toCompact(decimals: 2)}',
                     icon: _meta[i].icon,
                     color: _meta[i].color,
                     showBorder: true,
