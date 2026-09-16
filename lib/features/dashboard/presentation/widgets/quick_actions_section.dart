@@ -174,30 +174,32 @@ class _QuickActionCard extends StatelessWidget {
   }
 
   Widget _glass(BuildContext context, Widget child, VoidCallback? onTap) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            gradient: LinearGradient(
-              begin: .topLeft,
-              end: .bottomRight,
-              colors: [
-                AppColors.white.withValues(alpha: 0.06),
-                AppColors.white.withValues(alpha: 0.02),
-              ],
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              gradient: LinearGradient(
+                begin: .topLeft,
+                end: .bottomRight,
+                colors: [
+                  AppColors.white.withValues(alpha: 0.06),
+                  AppColors.white.withValues(alpha: 0.02),
+                ],
+              ),
+              border: Border.all(
+                color: AppColors.white.withValues(alpha: 0.10),
+                width: 1,
+              ),
             ),
-            border: Border.all(
-              color: AppColors.white.withValues(alpha: 0.10),
-              width: 1,
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(10),
+              child: child,
             ),
-          ),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(10),
-            child: child,
           ),
         ),
       ),

@@ -41,34 +41,36 @@ class OverviewStatCard extends StatelessWidget {
   }
 
   Widget _glassCard(BuildContext context) {
-    return ClipRRect(
-      borderRadius: .circular(10),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: .circular(10),
-            gradient: LinearGradient(
-              begin: .topLeft,
-              end: .bottomRight,
-              colors: [
-                AppColors.white.withValues(alpha: 0.06),
-                AppColors.white.withValues(alpha: 0.02),
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: .circular(10),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: .circular(10),
+              gradient: LinearGradient(
+                begin: .topLeft,
+                end: .bottomRight,
+                colors: [
+                  AppColors.white.withValues(alpha: 0.06),
+                  AppColors.white.withValues(alpha: 0.02),
+                ],
+              ),
+              border: Border.all(
+                color: AppColors.white.withValues(alpha: 0.10),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
               ],
             ),
-            border: Border.all(
-              color: AppColors.white.withValues(alpha: 0.10),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.08),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            child: _body(context),
           ),
-          child: _body(context),
         ),
       ),
     );

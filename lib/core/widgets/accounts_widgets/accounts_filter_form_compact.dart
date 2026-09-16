@@ -1,8 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../constants/const_exports.dart';
 import '../../theme/theme_exports.dart';
 import '../../utils/utils_exports.dart';
+import '../glass_surface.dart';
 import '../shimmer_box.dart';
 import '../custom_dropdown_textfield.dart';
 import '../custom_button.dart';
@@ -56,28 +59,13 @@ class AccountsFilterFormCompact extends StatelessWidget {
         context.pagePadding.right,
         12,
       ),
-      child: Container(
+      child: GlassSurface(
+        radius: 12,
         padding: EdgeInsets.fromLTRB(
           context.pagePadding.left,
           12,
           context.pagePadding.right,
           12,
-        ),
-        decoration: BoxDecoration(
-          color: context.isDark ? context.navyCard : context.surfaceElevated,
-          borderRadius: .circular(12),
-          border: context.isDark
-              ? Border.all(color: context.navyBorder)
-              : null,
-          boxShadow: context.isDark
-              ? null
-              : [
-                  BoxShadow(
-                    color: context.black.withValues(alpha: 0.06),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
         ),
         child: Column(
           crossAxisAlignment: .start,
@@ -170,17 +158,48 @@ class _DateRangeIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isDark) {
+      return GestureDetector(
+        onTap: onTap,
+        child: RepaintBoundary(
+          child: ClipRRect(
+            borderRadius: .circular(6),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: .circular(6),
+                  gradient: LinearGradient(
+                    begin: .topLeft,
+                    end: .bottomRight,
+                    colors: [
+                      AppColors.white.withValues(alpha: 0.06),
+                      AppColors.white.withValues(alpha: 0.02),
+                    ],
+                  ),
+                  border: Border.all(
+                    color: AppColors.white.withValues(alpha: 0.10),
+                    width: 1,
+                  ),
+                ),
+                child: Icon(Iconsax.calendar_1, size: 18, color: context.primary),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: context.isDark ? context.navyIconBg : context.surface,
+          color: context.surface,
           borderRadius: .circular(6),
-          border: Border.all(
-            color: context.isDark ? context.navyBorder : context.border,
-          ),
+          border: Border.all(color: context.border),
         ),
         child: Icon(Iconsax.calendar_1, size: 18, color: context.primary),
       ),
@@ -243,56 +262,61 @@ class _DateRangeDialogState extends State<_DateRangeDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: .circular(16)),
-      child: Padding(
-        padding: .all(20),
-        child: Column(
-          mainAxisSize: .min,
-          crossAxisAlignment: .start,
+    final body = Column(
+      mainAxisSize: .min,
+      crossAxisAlignment: .start,
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                Icon(Iconsax.calendar, color: context.primary, size: 18),
-                const SizedBox(width: 8),
-                Text(
-                  AppConstants.selectDateRangeLabel,
-                  style: context.titleSmall.copyWith(fontWeight: .w700),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            FormLabel(text: AppConstants.fromDateBtn),
-            const SizedBox(height: 6),
-            FieldTile(
-              icon: Iconsax.calendar_1,
-              label: _fromDate.format(AppConstants.ddMMMYyyyLabel),
-              onTap: () => _pick(true),
-            ),
-            const SizedBox(height: 14),
-            FormLabel(text: AppConstants.toDateBtn),
-            const SizedBox(height: 6),
-            FieldTile(
-              icon: Iconsax.calendar_1,
-              label: _toDate.format(AppConstants.ddMMMYyyyLabel),
-              onTap: () => _pick(false),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: CustomButton(
-                text: AppConstants.close,
-                onPressed: () => Navigator.pop(context),
-                radius: 8,
-                elevation: 0,
-                fontsize: 14,
-                size: const Size.fromHeight(40),
-                backgroundColor: context.primary.withValues(alpha: 0.12),
-                textColor: context.primary,
-              ),
+            Icon(Iconsax.calendar, color: context.primary, size: 18),
+            const SizedBox(width: 8),
+            Text(
+              AppConstants.selectDateRangeLabel,
+              style: context.titleSmall.copyWith(fontWeight: .w700),
             ),
           ],
         ),
+        const SizedBox(height: 16),
+        FormLabel(text: AppConstants.fromDateBtn),
+        const SizedBox(height: 6),
+        FieldTile(
+          icon: Iconsax.calendar_1,
+          label: _fromDate.format(AppConstants.ddMMMYyyyLabel),
+          onTap: () => _pick(true),
+        ),
+        const SizedBox(height: 14),
+        FormLabel(text: AppConstants.toDateBtn),
+        const SizedBox(height: 6),
+        FieldTile(
+          icon: Iconsax.calendar_1,
+          label: _toDate.format(AppConstants.ddMMMYyyyLabel),
+          onTap: () => _pick(false),
+        ),
+        const SizedBox(height: 20),
+        SizedBox(
+          width: double.infinity,
+          child: CustomButton(
+            text: AppConstants.close,
+            onPressed: () => Navigator.pop(context),
+            radius: 8,
+            elevation: 0,
+            fontsize: 14,
+            size: const Size.fromHeight(40),
+            backgroundColor: context.primary.withValues(alpha: 0.12),
+            textColor: context.primary,
+          ),
+        ),
+      ],
+    );
+
+    return Dialog(
+      backgroundColor: AppColors.transparent,
+      elevation: 0,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+      child: GlassSurface(
+        radius: 16,
+        padding: const EdgeInsets.all(20),
+        child: body,
       ),
     );
   }

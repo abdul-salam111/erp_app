@@ -3,6 +3,7 @@ import '../../constants/const_exports.dart';
 import '../../theme/theme_exports.dart';
 import '../../utils/utils_exports.dart';
 import '../../../features/accounts/domain/entities/shared/ledger_entry_base.dart';
+import '../glass_surface.dart';
 
 typedef AccountsLedgerGroup = ({String type, List<LedgerEntryBase> entries});
 
@@ -115,23 +116,14 @@ class _AccountsYearCardState extends State<AccountsYearCard> {
     final hasContent = allEntries.isNotEmpty;
     final visibleEntries = allEntries.take(_visibleCount).toList();
 
-    return Container(
-      decoration: BoxDecoration(
-        color: context.surface,
-        borderRadius: .circular(10),
-        border: context.isDark
-            ? Border.all(color: context.navyBorder)
-            : null,
-      ),
+    return GlassSurface(
+      radius: 10,
+      clipBehavior: Clip.hardEdge,
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: context.surface,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(10),
-              ),
               border: Border(
                 bottom: BorderSide(
                   color: context.isDark ? context.navyBorder : context.border,
