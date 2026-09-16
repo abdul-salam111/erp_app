@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../constants/const_exports.dart';
@@ -32,6 +30,11 @@ class AccountsFilterFormCompact extends StatelessWidget {
   // Replaces the account/party dropdown with a custom widget (e.g. a search
   // field) while keeping the same label + date-range-icon row layout.
   final Widget? selectorOverride;
+  // When both provided, the currently selected range is rendered as a small
+  // chip beneath the selector row so users can read it without opening the
+  // date-range popup. Tapping the chip re-opens the popup.
+  final DateTime? fromDate;
+  final DateTime? toDate;
 
   const AccountsFilterFormCompact({
     super.key,
@@ -47,6 +50,8 @@ class AccountsFilterFormCompact extends StatelessWidget {
     required this.onPrint,
     this.showAccountSelector = true,
     this.selectorOverride,
+    this.fromDate,
+    this.toDate,
   });
 
   @override
@@ -75,41 +80,35 @@ class AccountsFilterFormCompact extends StatelessWidget {
                 FormLabel(text: label ?? ''),
                 const SizedBox(height: 6),
               ],
-              Row(
-                crossAxisAlignment: .start,
-                children: [
-                  Expanded(
-                    child:
-                        selectorOverride ??
-                        (isLoading
-                            ? ShimmerBox(
-                                height: 40,
-                                radius: 10,
-                                baseColor: context.isDark
-                                    ? context.navyIconBg
-                                    : null,
-                                highlightColor: context.isDark
-                                    ? context.navyCard
-                                    : null,
-                              )
-                            : SearchableDropdown(
-                                items: items,
-                                subtitles: subtitles,
-                                controller: controller!,
-                                hintText: hintText ?? '',
-                                onChanged: onItemChanged ?? (_) {},
-                                fieldHeight: 40,
-                              )),
-                  ),
-                  const SizedBox(width: 8),
-                  _DateRangeIconButton(onTap: onPickDateRange),
-                ],
-              ),
+              selectorOverride ??
+                  (isLoading
+                      ? ShimmerBox(
+                          height: 40,
+                          radius: 10,
+                          baseColor: context.isDark
+                              ? context.navyIconBg
+                              : null,
+                          highlightColor: context.isDark
+                              ? context.navyCard
+                              : null,
+                        )
+                      : SearchableDropdown(
+                          items: items,
+                          subtitles: subtitles,
+                          controller: controller!,
+                          hintText: hintText ?? '',
+                          onChanged: onItemChanged ?? (_) {},
+                          fieldHeight: 40,
+                        )),
               const SizedBox(height: 10),
-            ] else ...[
-              Align(
-                alignment: .centerRight,
-                child: _DateRangeIconButton(onTap: onPickDateRange),
+            ],
+            if (fromDate != null && toDate != null) ...[
+              FormLabel(text: AppConstants.selectDateRangeLabel),
+              const SizedBox(height: 6),
+              _DateRangeChip(
+                fromDate: fromDate!,
+                toDate: toDate!,
+                onTap: onPickDateRange,
               ),
               const SizedBox(height: 10),
             ],
@@ -152,56 +151,56 @@ class AccountsFilterFormCompact extends StatelessWidget {
   }
 }
 
-class _DateRangeIconButton extends StatelessWidget {
+class _DateRangeChip extends StatelessWidget {
+  final DateTime fromDate;
+  final DateTime toDate;
   final VoidCallback onTap;
-  const _DateRangeIconButton({required this.onTap});
+
+  const _DateRangeChip({
+    required this.fromDate,
+    required this.toDate,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    if (context.isDark) {
-      return GestureDetector(
-        onTap: onTap,
-        child: RepaintBoundary(
-          child: ClipRRect(
-            borderRadius: .circular(6),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: .circular(6),
-                  gradient: LinearGradient(
-                    begin: .topLeft,
-                    end: .bottomRight,
-                    colors: [
-                      AppColors.white.withValues(alpha: 0.06),
-                      AppColors.white.withValues(alpha: 0.02),
-                    ],
-                  ),
-                  border: Border.all(
-                    color: AppColors.white.withValues(alpha: 0.10),
-                    width: 1,
-                  ),
-                ),
-                child: Icon(Iconsax.calendar_1, size: 18, color: context.primary),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
+    final fillColor = context.isDark ? context.navyIconBg : context.surface;
+    final borderColor = context.isDark
+        ? context.navyBorder
+        : context.border.withAlpha(50);
+    final label =
+        '${fromDate.format('dd MMM yyyy')}  →  ${toDate.format('dd MMM yyyy')}';
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: Container(
-        width: 40,
         height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
-          color: context.surface,
+          color: fillColor,
           borderRadius: .circular(6),
-          border: Border.all(color: context.border),
+          border: .all(color: borderColor),
         ),
-        child: Icon(Iconsax.calendar_1, size: 18, color: context.primary),
+        child: Row(
+          children: [
+            Icon(Iconsax.calendar_1, size: 18, color: context.textSecondary),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                label,
+                style: context.bodySmall.copyWith(color: context.textPrimary),
+                maxLines: 1,
+                overflow: .ellipsis,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Icon(
+              Icons.edit_calendar_outlined,
+              size: 18,
+              color: context.textSecondary,
+            ),
+          ],
+        ),
       ),
     );
   }

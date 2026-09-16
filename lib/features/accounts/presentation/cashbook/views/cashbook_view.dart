@@ -192,6 +192,8 @@ class _CashbookBodyState extends State<_CashbookBody> {
                           onPickDateRange: _showDateRangePopup,
                           onView: _fetch,
                           onPrint: _print,
+                          fromDate: state.fromDate,
+                          toDate: state.toDate,
                         ),
                 ),
               ),

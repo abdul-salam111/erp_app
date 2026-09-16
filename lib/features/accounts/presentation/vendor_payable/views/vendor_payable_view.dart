@@ -154,6 +154,8 @@ class _VendorPayableBodyState extends State<_VendorPayableBody> {
                         onPickDateRange: _showDateRangePopup,
                         onView: _fetch,
                         onPrint: _print,
+                        fromDate: _fromDate,
+                        toDate: _toDate,
                       ),
               ),
               Expanded(

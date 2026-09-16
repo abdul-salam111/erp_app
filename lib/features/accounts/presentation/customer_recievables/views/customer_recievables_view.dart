@@ -155,6 +155,8 @@ class _CustomerRecievablesBodyState extends State<_CustomerRecievablesBody> {
                         onPickDateRange: _showDateRangePopup,
                         onView: _fetch,
                         onPrint: _print,
+                        fromDate: _fromDate,
+                        toDate: _toDate,
                       ),
               ),
               Expanded(

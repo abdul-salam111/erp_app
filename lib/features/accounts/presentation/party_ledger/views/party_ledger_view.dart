@@ -185,6 +185,8 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
                           onPickDateRange: _showDateRangePopup,
                           onView: _fetch,
                           onPrint: _print,
+                          fromDate: _fromDate,
+                          toDate: _toDate,
                         ),
                       ),
               ),

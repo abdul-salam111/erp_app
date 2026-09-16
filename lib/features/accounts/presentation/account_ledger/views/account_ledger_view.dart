@@ -217,6 +217,8 @@ class _AccountLedgerBodyState extends State<_AccountLedgerBody> {
                           onView: _fetch,
                           onPrint: _print,
                           showAccountSelector: !widget.isEmployeeMode,
+                          fromDate: state.fromDate,
+                          toDate: state.toDate,
                         ),
                 ),
               ),
