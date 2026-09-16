@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:mantic_erp_app/features/dashboard/presentation/widgets/dashboard_widgets.dart';
 import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
@@ -251,6 +252,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                             state.recoveryDueStatus == ApiStatus.INITIAL ||
                             state.recoveryDueStatus == ApiStatus.LOADING;
                         final rd = state.recoveryDue;
+                        final gap = context.gridSpacing + 8;
                         String fmt(double? v) => v == null
                             ? AppConstants.rs0
                             : 'Rs ${v.formatPrice()}';
@@ -265,14 +267,14 @@ class _AccountsBodyState extends State<_AccountsBody>
                                     Expanded(
                                       child: ShimmerBox(height: 62, radius: 10),
                                     ),
-                                    SizedBox(width: context.gridSpacing),
+                                    SizedBox(width: gap),
                                     Expanded(
                                       child: ShimmerBox(height: 62, radius: 10),
                                     ),
                                   ],
                                 ),
                               ),
-                              SizedBox(height: context.gridSpacing),
+                              SizedBox(height: gap),
                               ShimmerBox(height: 62, radius: 10),
                             ],
                           );
@@ -292,7 +294,7 @@ class _AccountsBodyState extends State<_AccountsBody>
                                       color: _statItems[0].color,
                                     ),
                                   ),
-                                  SizedBox(width: context.gridSpacing),
+                                  SizedBox(width: gap),
                                   Expanded(
                                     child: OverviewStatCard(
                                       label: _statItems[1].label,
@@ -304,12 +306,15 @@ class _AccountsBodyState extends State<_AccountsBody>
                                 ],
                               ),
                             ),
-                            SizedBox(height: context.gridSpacing),
-                            OverviewStatCard(
+                            SizedBox(height: gap),
+                            _RecoveryProgressCard(
                               label: _statItems[2].label,
-                              value: fmt(rd?.ttlRecoveryAmount),
                               icon: _statItems[2].icon,
                               color: _statItems[2].color,
+                              target: rd?.ttlRecoveryAmount ?? 0,
+                              received: rd?.ttlReceivedAmount ?? 0,
+                              targetLabel: fmt(rd?.ttlRecoveryAmount),
+                              receivedLabel: fmt(rd?.ttlReceivedAmount),
                             ),
                           ],
                         );
@@ -346,7 +351,7 @@ class _RecoveryListSheet extends StatelessWidget {
         maxHeight: MediaQuery.sizeOf(context).height * 0.88,
       ),
       decoration: BoxDecoration(
-        color: context.navyCard,
+        color: context.background,
         borderRadius: const .vertical(top: Radius.circular(24)),
       ),
       child: Column(
@@ -363,55 +368,89 @@ class _RecoveryListSheet extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 16),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
             child: Row(
-              crossAxisAlignment: .start,
+              crossAxisAlignment: .center,
               children: [
                 Container(
-                  padding: .all(9),
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
-                    color: context.navyIconBg,
-                    borderRadius: .circular(10),
+                    borderRadius: .circular(12),
+                    gradient: LinearGradient(
+                      begin: .topLeft,
+                      end: .bottomRight,
+                      colors: [
+                        context.primary.withValues(alpha: 0.28),
+                        context.primary.withValues(alpha: 0.10),
+                      ],
+                    ),
                   ),
                   child: Icon(
                     Icons.receipt_long_outlined,
-                    color: context.navyIconColor,
-                    size: 18,
+                    color: context.primary,
+                    size: 22,
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
-                    AppConstants.recoveryDueTodayTitle,
-                    style: context.titleSmall.copyWith(
-                      fontWeight: .w700,
-                      color: context.textPrimary,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    mainAxisSize: .min,
+                    children: [
+                      Text(
+                        AppConstants.recoveryDueTodayTitle,
+                        style: context.titleSmall.copyWith(
+                          fontWeight: .w700,
+                          color: context.textPrimary,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Filter, search and track pending invoices',
+                        style: context.labelSmall.copyWith(
+                          color: context.textSecondary,
+                          fontSize: 11.5,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: .all(6),
-                    decoration: BoxDecoration(
-                      color: context.isDark
-                          ? context.navyIconBg
-                          : context.surface,
-                      shape: .circle,
-                    ),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: 16,
-                      color: context.textSecondary,
-                    ),
-                  ),
-                ),
+                context.isDark
+                    ? GlassIconButton(
+                        onPressed: () => Navigator.pop(context),
+                        size: 32,
+                        iconSize: 14,
+                        shape: GlassIconButtonShape.circle,
+                        icon: Icon(
+                          Icons.close_rounded,
+                          size: 14,
+                          color: context.textSecondary,
+                        ),
+                      )
+                    : GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: context.surface,
+                            shape: .circle,
+                            border: Border.all(color: context.border),
+                          ),
+                          child: Icon(
+                            Icons.close_rounded,
+                            size: 16,
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
           Divider(
             height: 1,
             thickness: 1,
@@ -505,30 +544,190 @@ class _RecoveryFilterBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      child: Text(
+        label,
+        textAlign: .center,
+        style: context.labelSmall.copyWith(
+          color: selected ? AppColors.white : context.textSecondary,
+          fontWeight: .w600,
+        ),
+      ),
+    );
+
+    if (selected) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.primary,
+            borderRadius: .circular(20),
+            border: Border.all(color: context.primary),
+          ),
+          child: text,
+        ),
+      );
+    }
+
+    if (context.isDark) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: GlassContainer(
+          shape: const LiquidRoundedSuperellipse(borderRadius: 20),
+          child: text,
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: .symmetric(horizontal: 8, vertical: 4),
+      child: Container(
         decoration: BoxDecoration(
-          color: selected
-              ? context.primary
-              : (context.isDark ? context.navyIconBg : AppColors.transparent),
           borderRadius: .circular(20),
-          border: Border.all(
-            color: selected
-                ? context.primary
-                : (context.isDark ? context.navyBorder : context.border),
-          ),
+          border: Border.all(color: context.border),
         ),
-        child: Text(
-          label,
-          textAlign: .center,
-          style: context.labelSmall.copyWith(
-            color: selected ? AppColors.white : context.textSecondary,
-            fontWeight: .w600,
+        child: text,
+      ),
+    );
+  }
+}
+
+// ─── Recovery progress card (full-width) ─────────────────────────────────────
+
+class _RecoveryProgressCard extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final Color color;
+  final double target;
+  final double received;
+  final String targetLabel;
+  final String receivedLabel;
+
+  const _RecoveryProgressCard({
+    required this.label,
+    required this.icon,
+    required this.color,
+    required this.target,
+    required this.received,
+    required this.targetLabel,
+    required this.receivedLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final progress = target > 0
+        ? (received / target).clamp(0.0, 1.0)
+        : 0.0;
+    final pctLabel = '${(progress * 100).round()}%';
+
+    return GlassSurface(
+      radius: 10,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+      child: Column(
+        crossAxisAlignment: .start,
+        mainAxisSize: .min,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  borderRadius: .circular(10),
+                  gradient: context.isDark
+                      ? RadialGradient(
+                          colors: [
+                            color.withValues(alpha: 0.28),
+                            color.withValues(alpha: 0.06),
+                          ],
+                        )
+                      : null,
+                  color: context.isDark
+                      ? null
+                      : color.withValues(alpha: 0.10),
+                ),
+                child: Icon(icon, color: color, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: .start,
+                  mainAxisSize: .min,
+                  children: [
+                    Text(
+                      targetLabel,
+                      style: context.bodyMedium.copyWith(
+                        fontWeight: .w700,
+                        color: context.textPrimary,
+                        fontSize: 18,
+                        height: 1,
+                      ),
+                      maxLines: 1,
+                      overflow: .ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      label,
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: context.isDark ? 0.18 : 0.12),
+                  borderRadius: .circular(20),
+                ),
+                child: Text(
+                  pctLabel,
+                  style: context.labelSmall.copyWith(
+                    color: color,
+                    fontWeight: .w700,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
+          const SizedBox(height: 14),
+          ClipRRect(
+            borderRadius: .circular(6),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 8,
+              backgroundColor: context.isDark
+                  ? AppColors.white.withValues(alpha: 0.08)
+                  : color.withValues(alpha: 0.12),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              Text(
+                '$receivedLabel recovered',
+                style: context.labelSmall.copyWith(
+                  color: context.textSecondary,
+                  fontSize: 11,
+                ),
+              ),
+              Text(
+                'of $targetLabel',
+                style: context.labelSmall.copyWith(
+                  color: context.textSecondary,
+                  fontSize: 11,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -204,13 +204,42 @@ class RecoveryInvoiceList extends StatelessWidget {
         return Column(
           crossAxisAlignment: .start,
           children: [
-            // "Showing X–Y of Z" label
             Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Text(
-                'Showing $start–$end of $total records',
-                style: context.labelSmall.copyWith(
-                  color: context.textSecondary,
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: context.isDark
+                      ? AppColors.white.withValues(alpha: 0.05)
+                      : context.primary.withValues(alpha: 0.06),
+                  borderRadius: .circular(20),
+                  border: Border.all(
+                    color: context.isDark
+                        ? AppColors.white.withValues(alpha: 0.08)
+                        : context.primary.withValues(alpha: 0.15),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: .min,
+                  children: [
+                    Icon(
+                      Icons.list_alt_rounded,
+                      size: 12,
+                      color: context.textSecondary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$start–$end of $total',
+                      style: context.labelSmall.copyWith(
+                        color: context.textSecondary,
+                        fontWeight: .w600,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -421,43 +450,39 @@ class _CustomerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final remaining = invoice.remainingAmount;
-    final total     = invoice.docAmount;
+    final total = invoice.docAmount;
 
-    return Container(
-      padding: .all(8),
-      decoration: BoxDecoration(
-        color: context.isDark ? context.navyIconBg : context.surfaceElevated,
-        borderRadius: .circular(10),
-        border: Border.all(
-          color: context.isDark ? context.navyBorder : context.border,
-        ),
-        boxShadow: context.isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.03),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-      ),
+    return GlassSurface(
+      radius: 12,
+      padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: .start,
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 15,
-                backgroundColor: context.primary.withValues(alpha: 0.12),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: .circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      context.primary.withValues(alpha: 0.32),
+                      context.primary.withValues(alpha: 0.08),
+                    ],
+                  ),
+                ),
+                alignment: .center,
                 child: Text(
                   invoice.initials,
                   style: context.labelMedium.copyWith(
                     color: context.primary,
                     fontWeight: .w700,
+                    fontSize: 14,
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: .start,
@@ -468,19 +493,33 @@ class _CustomerTile extends StatelessWidget {
                       style: context.bodySmall.copyWith(
                         fontWeight: .w700,
                         color: context.textPrimary,
+                        fontSize: 13,
                       ),
                       maxLines: 1,
                       overflow: .ellipsis,
                     ),
                     if (invoice.party.locationName.isNotEmpty) ...[
                       const SizedBox(height: 2),
-                      Text(
-                        invoice.party.locationName,
-                        style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
-                        ),
-                        maxLines: 1,
-                        overflow: .ellipsis,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_outlined,
+                            size: 11,
+                            color: context.textSecondary,
+                          ),
+                          const SizedBox(width: 2),
+                          Flexible(
+                            child: Text(
+                              invoice.party.locationName,
+                              style: context.labelSmall.copyWith(
+                                color: context.textSecondary,
+                                fontSize: 11,
+                              ),
+                              maxLines: 1,
+                              overflow: .ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ],
@@ -552,8 +591,9 @@ class _CustomerTile extends StatelessWidget {
               ],
             ],
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 10),
           Row(
+            crossAxisAlignment: .end,
             children: [
               Column(
                 crossAxisAlignment: .start,
@@ -563,6 +603,7 @@ class _CustomerTile extends StatelessWidget {
                     style: context.labelSmall.copyWith(
                       color: context.primary,
                       fontWeight: .w600,
+                      fontSize: 11,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -570,6 +611,7 @@ class _CustomerTile extends StatelessWidget {
                     invoice.docDate,
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
+                      fontSize: 10.5,
                     ),
                   ),
                 ],
@@ -583,6 +625,7 @@ class _CustomerTile extends StatelessWidget {
                     style: context.labelMedium.copyWith(
                       color: context.primary,
                       fontWeight: .w700,
+                      fontSize: 15,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -590,6 +633,7 @@ class _CustomerTile extends StatelessWidget {
                     'of Rs ${total.formatPrice()}',
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
+                      fontSize: 10.5,
                     ),
                   ),
                 ],
