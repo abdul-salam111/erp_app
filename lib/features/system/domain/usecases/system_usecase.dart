@@ -1,14 +1,16 @@
 import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/utils/result.dart';
+import '../entities/system_entity.dart';
 import '../repositories/system_repository.dart';
 
-class SystemUsecase implements Usecase<dynamic, NoParams> {
+class GetUsersListUsecase
+    implements Usecase<List<SystemUserEntity>, NoParams> {
   final SystemRepository repository;
 
-  SystemUsecase({required this.repository});
+  GetUsersListUsecase({required this.repository});
 
   @override
-  Future<Result<dynamic>> call(NoParams params) {
-    return repository.performAction();
+  Future<Result<List<SystemUserEntity>>> call(NoParams params) {
+    return repository.getUsersList();
   }
 }

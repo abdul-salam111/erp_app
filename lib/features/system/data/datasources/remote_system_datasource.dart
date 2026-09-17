@@ -1,9 +1,9 @@
-import '../../../../core/shared/shared_exports.dart';
 import '../../../../core/constants/const_exports.dart';
+import '../../../../core/shared/shared_exports.dart';
+import '../models/response_models/get_users_list/user_list_item_model.dart';
 
 abstract interface class IRemoteSystemDataSource {
-  // TODO: Define your datasource methods here
-  Future<dynamic> performAction();
+  Future<List<UserListItemModel>> getUsersList();
 }
 
 class RemoteSystemDataSourceImpl extends BaseRemoteDatasource
@@ -11,11 +11,12 @@ class RemoteSystemDataSourceImpl extends BaseRemoteDatasource
   RemoteSystemDataSourceImpl({required super.dioHelper});
 
   @override
-  Future<dynamic> performAction() async {
-    return post(
-      url: ApiEndPoints.accounts.accountLedger,
-      parser: (json) => json, // TODO: Replace with your model parser
-      body: {}, // TODO: Add your request body
+  Future<List<UserListItemModel>> getUsersList() {
+    return postList<UserListItemModel>(
+      url: ApiEndPoints.security.usersList,
+      body: const {},
+      parser: (json) =>
+          UserListItemModel.fromJson(json as Map<String, dynamic>),
     );
   }
 }

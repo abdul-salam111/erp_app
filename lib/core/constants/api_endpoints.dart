@@ -16,6 +16,7 @@ class ApiEndPoints {
   static const overtime = _Overtime();
   static const profile = _Profile();
   static const partah = _Partah();
+  static const security = _Security();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -195,4 +196,14 @@ final class _Partah {
   String get saveCategoryItems => '$_categoryBase/SaveCategoryItems';
 
   String get loadParta => '$_partaBase/LoadParta';
+}
+
+// ─── Security / Users & Roles ───────────────────────────────────────────────
+
+final class _Security {
+  const _Security();
+
+  static String get _base => '${ApiEndPoints._base}/security';
+
+  String get usersList => '$_base/user/getList';
 }

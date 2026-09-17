@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
@@ -18,38 +19,113 @@ class UsersView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<SecurityBloc>(),
-      child: const _SecurityBody(),
+      create: (_) =>
+          sl<UsersBloc>()..add(const UsersListFetched()),
+      child: const _UsersBody(),
     );
   }
 }
 
-class _SecurityBody extends StatefulWidget {
-  const _SecurityBody();
+class _UsersBody extends StatefulWidget {
+  const _UsersBody();
 
   @override
-  State<_SecurityBody> createState() => _SecurityBodyState();
+  State<_UsersBody> createState() => _UsersBodyState();
 }
 
-class _SecurityBodyState extends State<_SecurityBody> {
+class _UsersBodyState extends State<_UsersBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: context.background,
       appBar: CustomAppBar(title: 'Users'),
       body: const _UsersContent(),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.pushNamed(RouteNames.new_user),
-        backgroundColor: context.primary,
-        foregroundColor: AppColors.white,
-        elevation: 4,
-        highlightElevation: 6,
-        icon: const Icon(Icons.add_rounded, size: 20),
-        label: Text(
-          'New User',
-          style: context.labelMedium.copyWith(
-            color: AppColors.white,
-            fontWeight: .w700,
+      floatingActionButton: _GradientFab(
+        label: 'New User',
+        onTap: () => context.pushNamed(RouteNames.new_user),
+      ),
+    );
+  }
+}
+
+class _GradientFab extends StatefulWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _GradientFab({required this.label, required this.onTap});
+
+  @override
+  State<_GradientFab> createState() => _GradientFabState();
+}
+
+class _GradientFabState extends State<_GradientFab> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedScale(
+      scale: _pressed ? 0.96 : 1,
+      duration: const Duration(milliseconds: 140),
+      curve: Curves.easeOutCubic,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            begin: .topLeft,
+            end: .bottomRight,
+            colors: [
+              context.primary,
+              context.primary.withValues(alpha: 0.82),
+            ],
+          ),
+          border: Border.all(
+            color: AppColors.white.withValues(alpha: 0.18),
+          ),
+        ),
+        child: Material(
+          color: AppColors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          child: InkWell(
+            onTap: widget.onTap,
+            onHighlightChanged: (v) => setState(() => _pressed = v),
+            borderRadius: BorderRadius.circular(20),
+            splashColor: AppColors.white.withValues(alpha: 0.10),
+            highlightColor: AppColors.white.withValues(alpha: 0.06),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 9,
+              ),
+              child: Row(
+                mainAxisSize: .min,
+                children: [
+                  Container(
+                    width: 20,
+                    height: 20,
+                    alignment: .center,
+                    decoration: BoxDecoration(
+                      shape: .circle,
+                      color: AppColors.white.withValues(alpha: 0.22),
+                    ),
+                    child: const Icon(
+                      Icons.add_rounded,
+                      size: 14,
+                      color: AppColors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    widget.label,
+                    style: context.labelMedium.copyWith(
+                      color: AppColors.white,
+                      fontWeight: .w700,
+                      fontSize: 13,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -65,72 +141,6 @@ class _UsersContent extends StatefulWidget {
 }
 
 class _UsersContentState extends State<_UsersContent> {
-  static const _users = <_UserRow>[
-    _UserRow(
-      name: '',
-      email: 'HrCommisionagent@gmail.com',
-      designation: 'Owner',
-      department: 'Department',
-      active: false,
-    ),
-    _UserRow(
-      name: 'Tayyab Bahir',
-      email: 'tayyabb@bahooricemills.com',
-      designation: 'Owner',
-      department: 'Department',
-      active: false,
-    ),
-    _UserRow(
-      name: 'Bilal Khalid',
-      email: 'ST-team@bahoofoods.com',
-      designation: 'Admin Officer',
-      department: 'Department',
-      active: true,
-    ),
-    _UserRow(
-      name: 'Altaf Hussain',
-      email: 'admin@bahoofoods.com',
-      designation: 'Accounts',
-      department: 'Department',
-      active: false,
-    ),
-    _UserRow(
-      name: 'Saddam Hussain',
-      email: 'saddam@bahoofoods.com',
-      designation: 'Accounts',
-      department: 'Department',
-      active: true,
-    ),
-    _UserRow(
-      name: 'Ghulam Abbas',
-      email: 'abbas@bahoofoods.com',
-      designation: 'Accounts',
-      department: 'Department',
-      active: true,
-    ),
-    _UserRow(
-      name: 'Muneeb UR Rehman',
-      email: 'muneeb@bahoofoods.com',
-      designation: 'Gate Clerk',
-      department: 'Department',
-      active: true,
-    ),
-    _UserRow(
-      name: 'Ayesha Rehman',
-      email: 'ayesha@bahoofoods.com',
-      designation: 'Quality Executive',
-      department: 'Department',
-      active: true,
-    ),
-    _UserRow(
-      name: 'Nimra Shakir',
-      email: 'nimrashakir@bahoofoods.com',
-      designation: 'QA',
-      department: 'Department',
-      active: true,
-    ),
-  ];
-
   final _searchController = TextEditingController();
   String _query = '';
 
@@ -140,10 +150,10 @@ class _UsersContentState extends State<_UsersContent> {
     super.dispose();
   }
 
-  List<_UserRow> get _filtered {
-    return _users.where((user) {
-      if (_query.isEmpty) return true;
-      final q = _query.toLowerCase();
+  List<SystemUserEntity> _filter(List<SystemUserEntity> all) {
+    if (_query.isEmpty) return all;
+    final q = _query.toLowerCase();
+    return all.where((user) {
       return user.name.toLowerCase().contains(q) ||
           user.email.toLowerCase().contains(q) ||
           user.designation.toLowerCase().contains(q);
@@ -152,7 +162,6 @@ class _UsersContentState extends State<_UsersContent> {
 
   @override
   Widget build(BuildContext context) {
-    final rows = _filtered;
     return Column(
       crossAxisAlignment: .stretch,
       children: [
@@ -170,22 +179,68 @@ class _UsersContentState extends State<_UsersContent> {
         Expanded(
           child: Padding(
             padding: context.pagePadding.copyWith(top: 0),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              child: rows.isEmpty
-                  ? Center(
-                      key: const ValueKey('empty'),
-                      child: Text(
-                        'No users found',
-                        style: context.bodyMedium.copyWith(
+            child: BlocBuilder<UsersBloc, UsersState>(
+              buildWhen: (p, c) =>
+                  p.apiStatus != c.apiStatus ||
+                  p.users != c.users ||
+                  p.message != c.message,
+              builder: (context, state) {
+                if (state.apiStatus == ApiStatus.LOADING) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.apiStatus == ApiStatus.FAILURE) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: .min,
+                      children: [
+                        Icon(
+                          Iconsax.warning_2,
+                          size: 40,
                           color: context.textSecondary,
                         ),
-                      ),
-                    )
-                  : _UsersTableCard(key: ValueKey(_query), rows: rows)
-                      .animate()
-                      .fadeIn(delay: 200.ms, duration: 450.ms)
-                      .slideY(begin: 0.10, curve: Curves.easeOutCubic),
+                        const SizedBox(height: 12),
+                        Text(
+                          state.message ?? 'Failed to load users',
+                          style: context.bodyMedium.copyWith(
+                            color: context.textSecondary,
+                          ),
+                          textAlign: .center,
+                        ),
+                        const SizedBox(height: 12),
+                        TextButton.icon(
+                          onPressed: () => context
+                              .read<UsersBloc>()
+                              .add(const UsersListFetched()),
+                          icon: const Icon(Iconsax.refresh, size: 16),
+                          label: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                final rows = _filter(
+                  (state.users ?? const <SystemUserEntity>[])
+                      .where((u) => !u.isArchived)
+                      .toList(),
+                );
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  child: rows.isEmpty
+                      ? Center(
+                          key: const ValueKey('empty'),
+                          child: Text(
+                            'No users found',
+                            style: context.bodyMedium.copyWith(
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        )
+                      : _UsersTableCard(key: ValueKey(_query), rows: rows)
+                          .animate()
+                          .fadeIn(delay: 200.ms, duration: 450.ms)
+                          .slideY(begin: 0.10, curve: Curves.easeOutCubic),
+                );
+              },
             ),
           ),
         ),
@@ -250,7 +305,7 @@ class _Toolbar extends StatelessWidget {
 }
 
 class _UsersTableCard extends StatelessWidget {
-  final List<_UserRow> rows;
+  final List<SystemUserEntity> rows;
 
   const _UsersTableCard({super.key, required this.rows});
 
@@ -282,7 +337,7 @@ class _UsersTableCard extends StatelessWidget {
                 _HeaderCell('Designation', flex: 2),
                 if (showAllColumns) ...[
                   const SizedBox(width: 12),
-                  _HeaderCell('Department', flex: 2),
+                  _HeaderCell('Role', flex: 2),
                 ],
                 const SizedBox(width: 20),
               ],
@@ -332,7 +387,7 @@ class _HeaderCell extends StatelessWidget {
 }
 
 class _UserTableRow extends StatefulWidget {
-  final _UserRow user;
+  final SystemUserEntity user;
   final int index;
 
   const _UserTableRow({required this.user, required this.index});
@@ -348,6 +403,8 @@ class _UserTableRowState extends State<_UserTableRow> {
   Widget build(BuildContext context) {
     final user = widget.user;
     final showAllColumns = !context.isPhone;
+    final primaryRoleName =
+        user.roles.isNotEmpty ? user.roles.first.name : '—';
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
       duration: Duration(milliseconds: 300 + (widget.index * 40).clamp(0, 400)),
@@ -429,11 +486,13 @@ class _UserTableRowState extends State<_UserTableRow> {
                     Expanded(
                       flex: 2,
                       child: Text(
-                        user.designation,
+                        user.designation.isEmpty ? '—' : user.designation,
                         style: context.bodySmall.copyWith(
                           color: context.textPrimary,
                           fontSize: 12,
                         ),
+                        maxLines: 1,
+                        overflow: .ellipsis,
                       ),
                     ),
                     if (showAllColumns) ...[
@@ -441,11 +500,13 @@ class _UserTableRowState extends State<_UserTableRow> {
                       Expanded(
                         flex: 2,
                         child: Text(
-                          user.department,
+                          primaryRoleName,
                           style: context.bodySmall.copyWith(
                             color: context.textPrimary,
                             fontSize: 12,
                           ),
+                          maxLines: 1,
+                          overflow: .ellipsis,
                         ),
                       ),
                     ],
@@ -485,16 +546,20 @@ class _UserTableRowState extends State<_UserTableRow> {
                         children: [
                           Expanded(
                             child: _DetailColumn(
-                              label: 'Department',
+                              label: 'Roles',
                               alignment: .start,
                               value: Text(
-                                user.department,
+                                user.roles.isEmpty
+                                    ? '—'
+                                    : user.roles
+                                        .map((r) => r.name)
+                                        .join(', '),
                                 style: context.bodySmall.copyWith(
                                   color: context.textPrimary,
                                   fontSize: 12,
                                   fontWeight: .w600,
                                 ),
-                                maxLines: 1,
+                                maxLines: 2,
                                 overflow: .ellipsis,
                               ),
                             ),
@@ -686,18 +751,3 @@ class _UserAvatar extends StatelessWidget {
   }
 }
 
-class _UserRow {
-  final String name;
-  final String email;
-  final String designation;
-  final String department;
-  final bool active;
-
-  const _UserRow({
-    required this.name,
-    required this.email,
-    required this.designation,
-    required this.department,
-    required this.active,
-  });
-}

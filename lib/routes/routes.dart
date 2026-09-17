@@ -215,6 +215,11 @@ class AppRoutes {
         builder: (context, state) => const RolesView(),
       ),
       GoRoute(
+        path: RoutePaths.new_role,
+        name: RouteNames.new_role,
+        builder: (context, state) => const NewRoleView(),
+      ),
+      GoRoute(
         path: RoutePaths.account_ledger,
         name: RouteNames.account_ledger,
         builder: (context, state) => const AccountLedgerView(),

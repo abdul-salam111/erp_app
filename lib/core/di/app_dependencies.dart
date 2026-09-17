@@ -11,7 +11,6 @@ import 'register_accounts.dart';
 import 'register_inventory.dart';
 import 'register_production.dart';
 import 'register_analytics.dart';
-import 'register_security.dart';
 import 'register_dashboard.dart';
 import 'register_system.dart';
 import 'register_attendance.dart';
@@ -40,7 +39,6 @@ Future<void> setupLocator() async {
   await registerInventory();
   await registerProduction();
   await registerAnalytics();
-  await registerSecurity();
   await registerDashboard();
   await registerSystem();
   await registerAttendance();

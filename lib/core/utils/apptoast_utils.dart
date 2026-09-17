@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:mantic_erp_app/core/theme/colors.dart';
 import 'package:mantic_erp_app/core/theme/theme_utils.dart';
 
@@ -475,13 +474,6 @@ class _GlassToastState extends State<_GlassToast>
         ],
       ),
     );
-
-    if (context.isDark) {
-      return GlassContainer(
-        shape: const LiquidRoundedSuperellipse(borderRadius: 14),
-        child: content,
-      );
-    }
 
     return Container(
       decoration: BoxDecoration(
