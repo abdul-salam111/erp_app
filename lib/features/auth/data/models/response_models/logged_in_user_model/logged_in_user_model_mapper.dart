@@ -19,6 +19,7 @@ extension OrganizationMapper on Organization {
   UserOrganizationEntity toEntity() {
     return UserOrganizationEntity(
       id: id,
+      misTenantId: misTenantId,
       name: name,
       branches: branches?.map((b) => b.toEntity()).toList() ?? const [],
     );

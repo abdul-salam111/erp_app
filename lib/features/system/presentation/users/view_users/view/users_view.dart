@@ -3,15 +3,16 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import '../../../../../core/constants/const_exports.dart';
-import '../../../../../core/di/di_exports.dart';
-import '../../../../../core/theme/colors.dart';
-import '../../../../../core/theme/theme_utils.dart';
-import '../../../../../core/utils/utils_exports.dart';
-import '../../../../../core/widgets/custom_appbar.dart';
-import '../../../../../core/widgets/glass_surface.dart';
-import '../../../../../routes/route_names.dart';
-import '../../../system_exports.dart';
+import '../../../../../../core/constants/const_exports.dart';
+import '../../../../../../core/di/di_exports.dart';
+import '../../../../../../core/theme/colors.dart';
+import '../../../../../../core/theme/theme_utils.dart';
+import '../../../../../../core/utils/utils_exports.dart';
+import '../../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../../core/widgets/glass_surface.dart';
+import '../../../../../../core/widgets/shimmer_box.dart';
+import '../../../../../../routes/route_names.dart';
+import '../../../../system_exports.dart';
 
 class UsersView extends StatelessWidget {
   const UsersView({super.key});
@@ -186,7 +187,7 @@ class _UsersContentState extends State<_UsersContent> {
                   p.message != c.message,
               builder: (context, state) {
                 if (state.apiStatus == ApiStatus.LOADING) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const _UsersTableShimmer();
                 }
                 if (state.apiStatus == ApiStatus.FAILURE) {
                   return Center(
@@ -299,6 +300,98 @@ class _Toolbar extends StatelessWidget {
             borderSide: BorderSide(color: context.primary),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _UsersTableShimmer extends StatelessWidget {
+  const _UsersTableShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    final showAllColumns = !context.isPhone;
+    return GlassSurface(
+      radius: 12,
+      clipBehavior: .hardEdge,
+      child: Column(
+        crossAxisAlignment: .stretch,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: context.primary.withValues(
+                alpha: context.isDark ? 0.14 : 0.07,
+              ),
+              border: Border(
+                bottom: BorderSide(
+                  color: context.primary.withValues(alpha: 0.22),
+                ),
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Row(
+              children: [
+                _HeaderCell('Name', flex: 4),
+                const SizedBox(width: 12),
+                _HeaderCell('Designation', flex: 2),
+                if (showAllColumns) ...[
+                  const SizedBox(width: 12),
+                  _HeaderCell('Role', flex: 2),
+                ],
+                const SizedBox(width: 20),
+              ],
+            ),
+          ),
+          for (int i = 0; i < 8; i++) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: Row(
+                      children: [
+                        const ShimmerBox(width: 34, height: 34, radius: 17),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: .start,
+                            mainAxisSize: .min,
+                            children: const [
+                              ShimmerBox(height: 12, radius: 4),
+                              SizedBox(height: 6),
+                              ShimmerBox(height: 10, width: 120, radius: 4),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    flex: 2,
+                    child: ShimmerBox(height: 12, radius: 4),
+                  ),
+                  if (showAllColumns) ...[
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      flex: 2,
+                      child: ShimmerBox(height: 12, radius: 4),
+                    ),
+                  ],
+                  const SizedBox(width: 8),
+                  const SizedBox(width: 20),
+                ],
+              ),
+            ),
+            if (i < 7)
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: context.divider.withValues(alpha: 0.5),
+              ),
+          ],
+        ],
       ),
     );
   }
@@ -602,9 +695,11 @@ class _UserTableRowState extends State<_UserTableRow> {
                                   _MiniAction(
                                     icon: Iconsax.edit_2,
                                     color: context.primary,
-                                    onTap: () => AppToastsUtils.showInfoTop(
-                                      context,
-                                      'Edit — coming soon',
+                                    onTap: () => context.pushNamed(
+                                      RouteNames.edit_user,
+                                      pathParameters: {
+                                        'id': user.id.toString(),
+                                      },
                                     ),
                                   ),
                                   const SizedBox(width: 6),

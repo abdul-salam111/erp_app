@@ -30,6 +30,8 @@ class OrgAccessor {
   UserOrganizationEntity? get _org =>
       SessionController.instance.selectedOrganization;
 
+  int? get id => _org?.id;
+  int? get misTenantId => _org?.misTenantId;
   String get name => _org?.name ?? '';
   String get tenantName => _org?.tenantName ?? '';
   String get productName => _org?.productName ?? '';

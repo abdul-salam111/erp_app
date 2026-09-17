@@ -16,6 +16,8 @@ class RoutePaths {
   static const String analytics = '/analytics';
   static const String users = '/users';
   static const String new_user = '/users/new';
+  static const String user_details = '/users/:id';
+  static const String edit_user = '/users/:id/edit';
   static const String roles = '/roles';
   static const String new_role = '/roles/new';
 

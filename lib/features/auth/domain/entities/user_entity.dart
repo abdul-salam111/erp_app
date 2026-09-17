@@ -58,6 +58,7 @@ class UserEntity extends Equatable {
 
 class UserOrganizationEntity extends Equatable {
   final int? id;
+  final int? misTenantId;
   final String? name;
   final String? tenantName;
   final String? productName;
@@ -70,6 +71,7 @@ class UserOrganizationEntity extends Equatable {
 
   const UserOrganizationEntity({
     this.id,
+    this.misTenantId,
     this.name,
     this.tenantName,
     this.productName,
@@ -103,6 +105,7 @@ class UserOrganizationEntity extends Equatable {
     ];
     return UserOrganizationEntity(
       id: id,
+      misTenantId: misTenantId,
       name: name,
       tenantName: tenantName,
       productName: productName,
@@ -117,6 +120,7 @@ class UserOrganizationEntity extends Equatable {
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'misTenantId': misTenantId,
         'name': name,
         'tenantName': tenantName,
         'productName': productName,
@@ -131,6 +135,7 @@ class UserOrganizationEntity extends Equatable {
   factory UserOrganizationEntity.fromJson(Map<String, dynamic> json) =>
       UserOrganizationEntity(
         id: json['id'] as int?,
+        misTenantId: json['misTenantId'] as int?,
         name: json['name'] as String?,
         tenantName: json['tenantName'] as String?,
         productName: json['productName'] as String?,
@@ -147,6 +152,7 @@ class UserOrganizationEntity extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        misTenantId,
         name,
         tenantName,
         productName,

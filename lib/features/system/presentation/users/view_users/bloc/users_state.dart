@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import '../../../../../core/constants/const_exports.dart';
-import '../../../domain/entities/system_entity.dart';
+import '../../../../../../core/constants/const_exports.dart';
+import '../../../../domain/entities/system_entity.dart';
 
 class UsersState extends Equatable {
   final List<SystemUserEntity>? users;

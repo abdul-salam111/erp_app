@@ -17,6 +17,8 @@ class RouteNames {
   static const String analytics = 'analytics';
   static const String users = 'users';
   static const String new_user = 'new_user';
+  static const String user_details = 'user_details';
+  static const String edit_user = 'edit_user';
   static const String roles = 'roles';
   static const String new_role = 'new_role';
   static const String account_ledger = 'account_ledger';

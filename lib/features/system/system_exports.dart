@@ -16,11 +16,14 @@ export 'presentation/system/views/system_view.dart';
 export 'presentation/setup/views/setup_view.dart';
 
 // Presentation — users screen
-export 'presentation/users/blocs/users_bloc.dart';
-export 'presentation/users/blocs/users_event.dart';
-export 'presentation/users/blocs/users_state.dart';
-export 'presentation/users/views/users_view.dart';
-export 'presentation/users/views/new_user_view.dart';
+export 'presentation/users/view_users/bloc/users_bloc.dart';
+export 'presentation/users/view_users/bloc/users_event.dart';
+export 'presentation/users/view_users/bloc/users_state.dart';
+export 'presentation/users/manage_user/bloc/new_user_bloc.dart';
+export 'presentation/users/manage_user/bloc/new_user_event.dart';
+export 'presentation/users/manage_user/bloc/new_user_state.dart';
+export 'presentation/users/view_users/view/users_view.dart';
+export 'presentation/users/manage_user/view/new_user_view.dart';
 
 // Presentation — roles screen
 export 'presentation/roles/views/roles_view.dart';

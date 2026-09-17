@@ -17,6 +17,7 @@ class ApiEndPoints {
   static const profile = _Profile();
   static const partah = _Partah();
   static const security = _Security();
+  static const backOffice = _BackOffice();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -206,4 +207,18 @@ final class _Security {
   static String get _base => '${ApiEndPoints._base}/security';
 
   String get usersList => '$_base/user/getList';
+  String userById(int id) => '$_base/user/GetById/$id';
+}
+
+// ─── BackOffice (org-level: branches, roles, landing pages) ────────────────
+
+final class _BackOffice {
+  const _BackOffice();
+
+  static String get _base => '${ApiEndPoints._base}/backoffice';
+
+  String get landingPageFeatures =>
+      '$_base/Organization/GetLandingPageFeatures';
+  String get branchList => '$_base/Branch/GetList';
+  String get roleList => '$_base/security/role/getList';
 }

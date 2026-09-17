@@ -210,6 +210,22 @@ class AppRoutes {
         builder: (context, state) => const NewUserView(),
       ),
       GoRoute(
+        path: RoutePaths.user_details,
+        name: RouteNames.user_details,
+        builder: (context, state) => NewUserView(
+          mode: UserFormMode.view,
+          userId: int.tryParse(state.pathParameters['id'] ?? ''),
+        ),
+      ),
+      GoRoute(
+        path: RoutePaths.edit_user,
+        name: RouteNames.edit_user,
+        builder: (context, state) => NewUserView(
+          mode: UserFormMode.edit,
+          userId: int.tryParse(state.pathParameters['id'] ?? ''),
+        ),
+      ),
+      GoRoute(
         path: RoutePaths.roles,
         name: RouteNames.roles,
         builder: (context, state) => const RolesView(),

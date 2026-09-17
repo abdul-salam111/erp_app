@@ -1,7 +1,7 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/shared/shared_exports.dart';
-import '../../../domain/usecases/system_usecase.dart';
+import '../../../../../../core/shared/shared_exports.dart';
+import '../../../../domain/usecases/system_usecase.dart';
 import 'users_event.dart';
 import 'users_state.dart';
 
