@@ -420,61 +420,133 @@ class _ProfileHeader extends StatelessWidget {
 }
 
 void _confirmLogout(BuildContext context) {
-  showDialog<void>(
+  final bloc = context.read<ProfileBloc>();
+  showDialog<bool>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Text(
-        'Sign Out',
-        style: TextStyle(fontWeight: .w700, fontSize: 17),
-      ),
-      content: const Text(
-        'Are you sure you want to sign out of your account?',
-        style: TextStyle(fontSize: 14),
-      ),
-      actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      actions: [
-        Row(
+    builder: (dialogContext) => const _LogoutConfirmDialog(),
+  ).then((confirmed) {
+    if (confirmed == true) {
+      bloc.add(const LogoutRequested());
+    }
+  });
+}
+
+class _LogoutConfirmDialog extends StatelessWidget {
+  const _LogoutConfirmDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: AppColors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      child: GlassSurface(
+        radius: 16,
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+        child: Column(
+          mainAxisSize: .min,
+          crossAxisAlignment: .stretch,
           children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: .center,
+                  decoration: BoxDecoration(
+                    shape: .circle,
+                    gradient: context.isDark
+                        ? RadialGradient(
+                            colors: [
+                              AppColors.errorBright.withValues(alpha: 0.28),
+                              AppColors.errorBright.withValues(alpha: 0.06),
+                            ],
+                          )
+                        : null,
+                    color: context.isDark
+                        ? null
+                        : AppColors.errorBright.withValues(alpha: 0.12),
+                  ),
+                  child: Icon(
+                    Iconsax.logout,
+                    color: AppColors.errorBright,
+                    size: 20,
                   ),
                 ),
-                child: const Text('Cancel'),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Sign out?',
+                    style: context.titleSmall.copyWith(
+                      fontWeight: .w700,
+                      color: context.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Text(
+              'Are you sure you want to sign out of your account?',
+              style: context.bodySmall.copyWith(
+                color: context.textSecondary,
+                fontSize: 13,
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                  context.read<ProfileBloc>().add(const LogoutRequested());
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.error,
-                  foregroundColor: AppColors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      side: BorderSide(
+                        color: context.isDark
+                            ? context.navyBorder
+                            : context.border,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: context.labelMedium.copyWith(
+                        color: context.textPrimary,
+                        fontWeight: .w600,
+                      ),
+                    ),
                   ),
-                  elevation: 0,
                 ),
-                child: const Text(
-                  'Sign Out',
-                  style: TextStyle(fontWeight: .w700),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      backgroundColor: AppColors.errorBright,
+                      foregroundColor: AppColors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      'Sign Out',
+                      style: context.labelMedium.copyWith(
+                        color: AppColors.white,
+                        fontWeight: .w700,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
 
 // ─── Wave clip ────────────────────────────────────────────────────────────────
@@ -514,19 +586,8 @@ class _SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(16),
-        border: Border.all(color: context.navyBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return GlassSurface(
+      radius: 16,
       child: Column(
         crossAxisAlignment: .start,
         children: [
@@ -582,24 +643,10 @@ class _CardContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: .circular(16),
-        border: Border.all(color: context.navyBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      // Material (not a color on the Container above) so ListTile/InkWell
-      // descendants (e.g. SwitchListTile) paint their splashes correctly.
+    return GlassSurface(
+      radius: 16,
       child: Material(
-        color: context.navyCard,
-        borderRadius: .circular(16),
-        clipBehavior: .antiAlias,
+        color: AppColors.transparent,
         child: Padding(padding: padding, child: child),
       ),
     );
@@ -774,19 +821,8 @@ class _ActionsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: .circular(16),
-        border: Border.all(color: context.navyBorder),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return GlassSurface(
+      radius: 16,
       child: Column(
         children: [
           if (hasMultiOrgs) ...[

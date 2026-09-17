@@ -8,6 +8,7 @@ import '../../../../../core/services/session_manager.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../../../core/widgets/glass_surface.dart';
 import '../../../../../routes/route_names.dart';
 import '../../../auth_exports.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
@@ -141,11 +142,17 @@ class _Header extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [context.primary, context.primary.withValues(alpha: 0.75)],
-            begin: .topLeft,
-            end: .bottomRight,
-          ),
+          color: context.isDark ? AppColors.navyHeaderDark : null,
+          gradient: context.isDark
+              ? null
+              : LinearGradient(
+                  colors: [
+                    context.primary,
+                    context.primary.withValues(alpha: 0.72),
+                  ],
+                  begin: .topLeft,
+                  end: .bottomRight,
+                ),
         ),
         child: SafeArea(
           bottom: false,
@@ -282,40 +289,23 @@ class _OrganizationCard extends StatelessWidget {
     return AnimatedOpacity(
       opacity: isDisabled && !isLoading ? 0.5 : 1.0,
       duration: const Duration(milliseconds: 200),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: .circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: _accentColor.withValues(alpha: 0.12),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
-            ),
-            const BoxShadow(
-              color: AppColors.shadow,
-              blurRadius: 4,
-              offset: Offset(0, 1),
-            ),
-          ],
-        ),
+      child: GlassSurface(
+        radius: 16,
         child: Material(
-          color: context.surface,
-          borderRadius: BorderRadius.circular(16),
+          color: AppColors.transparent,
           child: InkWell(
             onTap: isDisabled ? null : onTap,
             borderRadius: BorderRadius.circular(16),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: active
-                        ? _accentColor.withValues(alpha: 0.5)
-                        : _accentColor.withValues(alpha: 0.18),
-                  ),
-                  borderRadius: BorderRadius.circular(16),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: active
+                      ? _accentColor.withValues(alpha: 0.5)
+                      : _accentColor.withValues(alpha: 0.18),
                 ),
-                child: IntrinsicHeight(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: IntrinsicHeight(
                   child: Row(
                     crossAxisAlignment: .stretch,
                     children: [
@@ -464,8 +454,10 @@ class _OrganizationCard extends StatelessWidget {
             ),
           ),
         ),
-      ),
+      
     );
   }
 }
+
+
 
