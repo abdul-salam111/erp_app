@@ -30,21 +30,22 @@ class SplashServices {
 
       if (SessionController().islogin == true) {
         final session = SessionController();
-        final isAdmin = session.isAdmin;
 
-        if (isAdmin) {
-          if (session.selectedOrganization == null) {
-            final orgs = session.loggedInUser?.organizations ?? [];
-            if (orgs.length == 1) {
-              await session.saveSelectedOrganization(orgs.first);
-              if (!context.mounted) return;
-              context.goNamed(RouteNames.dashboard);
-            } else {
-              context.goNamed(RouteNames.organizationSelection);
-            }
+        if (session.selectedOrganization == null) {
+          final orgs = session.loggedInUser?.organizations ?? [];
+          if (orgs.length == 1) {
+            await session.saveSelectedOrganization(orgs.first);
+            if (!context.mounted) return;
           } else {
-            context.goNamed(RouteNames.dashboard);
+            context.goNamed(RouteNames.organizationSelection);
+            return;
           }
+        }
+
+        final isAdmin = session.isAdmin;
+        final roles = session.userRoles;
+        if (isAdmin || roles.length <= 1) {
+          context.goNamed(RouteNames.dashboard);
         } else {
           context.goNamed(RouteNames.choose_dashboard);
         }
