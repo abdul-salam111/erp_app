@@ -702,34 +702,34 @@ class _UserTableRowState extends State<_UserTableRow> {
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: _DetailColumn(
-                              label: 'Token',
-                              alignment: .center,
-                              value: _MiniAction(
-                                icon: Iconsax.key,
-                                color: AppColors.teal,
-                                onTap: () => AppToastsUtils.showInfoTop(
-                                  context,
-                                  'Tokens — coming soon',
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: _DetailColumn(
-                              label: 'Fin Year',
-                              alignment: .center,
-                              value: _MiniAction(
-                                icon: Iconsax.calendar_1,
-                                color: AppColors.purple,
-                                onTap: () => AppToastsUtils.showInfoTop(
-                                  context,
-                                  'Fin Years — coming soon',
-                                ),
-                              ),
-                            ),
-                          ),
+                          // Expanded(
+                          //   child: _DetailColumn(
+                          //     label: 'Token',
+                          //     alignment: .center,
+                          //     value: _MiniAction(
+                          //       icon: Iconsax.key,
+                          //       color: AppColors.teal,
+                          //       onTap: () => AppToastsUtils.showInfoTop(
+                          //         context,
+                          //         'Tokens — coming soon',
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          // Expanded(
+                          //   child: _DetailColumn(
+                          //     label: 'Fin Year',
+                          //     alignment: .center,
+                          //     value: _MiniAction(
+                          //       icon: Iconsax.calendar_1,
+                          //       color: AppColors.purple,
+                          //       onTap: () => AppToastsUtils.showInfoTop(
+                          //         context,
+                          //         'Fin Years — coming soon',
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           Expanded(
                             child: _DetailColumn(
                               label: 'Actions',

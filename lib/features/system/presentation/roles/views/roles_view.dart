@@ -1,54 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../../core/constants/const_exports.dart';
+import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/glass_surface.dart';
+import '../../../../../core/widgets/shimmer_box.dart';
 import '../../../../../routes/route_names.dart';
+import '../../../domain/entities/system_entity.dart';
+import '../bloc/roles_bloc.dart';
+import '../bloc/roles_event.dart';
+import '../bloc/roles_state.dart';
 
-class RolesView extends StatefulWidget {
+class RolesView extends StatelessWidget {
   const RolesView({super.key});
 
   @override
-  State<RolesView> createState() => _RolesViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => sl<RolesBloc>()..add(const RolesListFetched()),
+      child: const _RolesBody(),
+    );
+  }
 }
 
-class _RolesViewState extends State<RolesView> {
-  static const _roles = <_RoleRow>[
-    _RoleRow(name: 'Admin', color: AppColors.orange, canManage: false),
-    _RoleRow(
-      name: 'Control Panel Admin',
-      color: AppColors.primary,
-      canManage: false,
-    ),
-    _RoleRow(
-      name: 'Junior Accountant',
-      color: AppColors.teal,
-      canManage: true,
-    ),
-    _RoleRow(name: 'Production', color: AppColors.purple, canManage: true),
-    _RoleRow(
-      name: 'Gate and Weight',
-      color: AppColors.deepPurple,
-      canManage: true,
-    ),
-    _RoleRow(
-      name: 'GRN Store Clerk',
-      color: AppColors.tealDark,
-      canManage: true,
-    ),
-    _RoleRow(name: 'Prodcution', color: AppColors.blueGrey, canManage: true),
-    _RoleRow(name: 'Lab', color: AppColors.green, canManage: true),
-    _RoleRow(name: 'Cashier', color: AppColors.brown, canManage: true),
-    _RoleRow(name: 'Auditor', color: AppColors.blueGrey, canManage: true),
-    _RoleRow(name: 'CFO', color: AppColors.primaryDark, canManage: true),
-    _RoleRow(name: 'Manager', color: AppColors.errorBright, canManage: true),
-    _RoleRow(name: 'Director', color: AppColors.primary, canManage: true),
-  ];
+class _RolesBody extends StatefulWidget {
+  const _RolesBody();
 
+  @override
+  State<_RolesBody> createState() => _RolesBodyState();
+}
+
+class _RolesBodyState extends State<_RolesBody> {
   static const _filters = <String>['All', 'Manage', 'Not Allowed'];
 
   final _searchController = TextEditingController();
@@ -61,10 +49,13 @@ class _RolesViewState extends State<RolesView> {
     super.dispose();
   }
 
-  List<_RoleRow> get _filtered {
-    return _roles.where((role) {
-      if (_filter == 'Manage' && !role.canManage) return false;
-      if (_filter == 'Not Allowed' && role.canManage) return false;
+  bool _canManage(RoleEntity role) => !role.isSystemRole;
+
+  List<RoleEntity> _filtered(List<RoleEntity> all) {
+    return all.where((role) {
+      final canManage = _canManage(role);
+      if (_filter == 'Manage' && !canManage) return false;
+      if (_filter == 'Not Allowed' && canManage) return false;
       if (_query.isEmpty) return true;
       return role.name.toLowerCase().contains(_query.toLowerCase());
     }).toList();
@@ -72,7 +63,6 @@ class _RolesViewState extends State<RolesView> {
 
   @override
   Widget build(BuildContext context) {
-    final rows = _filtered;
     return Scaffold(
       backgroundColor: context.background,
       appBar: CustomAppBar(title: 'Roles'),
@@ -99,25 +89,94 @@ class _RolesViewState extends State<RolesView> {
           Expanded(
             child: Padding(
               padding: context.pagePadding.copyWith(top: 0),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
-                child: rows.isEmpty
-                    ? Center(
-                        key: const ValueKey('empty'),
-                        child: Text(
-                          'No roles found',
-                          style: context.bodyMedium.copyWith(
+              child: BlocBuilder<RolesBloc, RolesState>(
+                buildWhen: (p, c) =>
+                    p.apiStatus != c.apiStatus ||
+                    p.roles != c.roles ||
+                    p.message != c.message,
+                builder: (context, state) {
+                  if (state.apiStatus == ApiStatus.LOADING) {
+                    return const _RolesTableShimmer();
+                  }
+                  if (state.apiStatus == ApiStatus.FAILURE) {
+                    return Center(
+                      child: Column(
+                        mainAxisSize: .min,
+                        children: [
+                          Icon(
+                            Iconsax.warning_2,
+                            size: 40,
                             color: context.textSecondary,
                           ),
-                        ),
-                      )
-                    : _RolesTableCard(
-                        key: ValueKey('$_query$_filter'),
-                        rows: rows,
-                      )
-                        .animate()
-                        .fadeIn(delay: 200.ms, duration: 450.ms)
-                        .slideY(begin: 0.10, curve: Curves.easeOutCubic),
+                          const SizedBox(height: 12),
+                          Text(
+                            state.message ?? 'Failed to load roles',
+                            style: context.bodyMedium.copyWith(
+                              color: context.textSecondary,
+                            ),
+                            textAlign: .center,
+                          ),
+                          const SizedBox(height: 12),
+                          TextButton.icon(
+                            onPressed: () => context
+                                .read<RolesBloc>()
+                                .add(const RolesListFetched()),
+                            icon: const Icon(Iconsax.refresh, size: 16),
+                            label: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  final rows = _filtered(
+                    (state.roles ?? const <RoleEntity>[])
+                        .where((r) => !r.isArchived)
+                        .toList(),
+                  );
+                  Future<void> onRefresh() async {
+                    final bloc = context.read<RolesBloc>();
+                    bloc.add(const RolesListFetched());
+                    await bloc.stream.firstWhere(
+                      (s) => s.apiStatus != ApiStatus.LOADING,
+                    );
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: onRefresh,
+                    color: context.primary,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: rows.isEmpty
+                          ? ListView(
+                              key: const ValueKey('empty'),
+                              physics:
+                                  const AlwaysScrollableScrollPhysics(),
+                              children: [
+                                SizedBox(
+                                  height: MediaQuery.sizeOf(context).height *
+                                      0.5,
+                                  child: Center(
+                                    child: Text(
+                                      'No roles found',
+                                      style: context.bodyMedium.copyWith(
+                                        color: context.textSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : _RolesTableCard(
+                              key: ValueKey('$_query$_filter'),
+                              rows: rows,
+                              canManage: _canManage,
+                            )
+                              .animate()
+                              .fadeIn(delay: 200.ms, duration: 450.ms)
+                              .slideY(begin: 0.10, curve: Curves.easeOutCubic),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -411,9 +470,14 @@ class _FilterChip extends StatelessWidget {
 }
 
 class _RolesTableCard extends StatelessWidget {
-  final List<_RoleRow> rows;
+  final List<RoleEntity> rows;
+  final bool Function(RoleEntity) canManage;
 
-  const _RolesTableCard({super.key, required this.rows});
+  const _RolesTableCard({
+    super.key,
+    required this.rows,
+    required this.canManage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -467,14 +531,18 @@ class _RolesTableCard extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               padding: .zero,
+              physics: const AlwaysScrollableScrollPhysics(),
               itemCount: rows.length,
               separatorBuilder: (_, __) => Divider(
                 height: 1,
                 thickness: 1,
                 color: context.divider.withValues(alpha: 0.5),
               ),
-              itemBuilder: (context, index) =>
-                  _RoleTableRow(role: rows[index], index: index),
+              itemBuilder: (context, index) => _RoleTableRow(
+                role: rows[index],
+                index: index,
+                canManage: canManage(rows[index]),
+              ),
             ),
           ),
         ],
@@ -491,10 +559,30 @@ class _RolesTableCard extends StatelessWidget {
 }
 
 class _RoleTableRow extends StatelessWidget {
-  final _RoleRow role;
+  final RoleEntity role;
   final int index;
+  final bool canManage;
 
-  const _RoleTableRow({required this.role, required this.index});
+  const _RoleTableRow({
+    required this.role,
+    required this.index,
+    required this.canManage,
+  });
+
+  static const _palette = [
+    AppColors.primary,
+    AppColors.teal,
+    AppColors.purple,
+    AppColors.orange,
+    AppColors.green,
+    AppColors.deepPurple,
+    AppColors.tealDark,
+    AppColors.brown,
+    AppColors.errorBright,
+    AppColors.blueGrey,
+  ];
+
+  Color get _color => _palette[role.id.abs() % _palette.length];
 
   @override
   Widget build(BuildContext context) {
@@ -516,7 +604,7 @@ class _RoleTableRow extends StatelessWidget {
             Expanded(
               child: Row(
                 children: [
-                  _RoleAvatar(name: role.name, color: role.color),
+                  _RoleAvatar(name: role.name, color: _color),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -536,7 +624,7 @@ class _RoleTableRow extends StatelessWidget {
             const SizedBox(width: 12),
             SizedBox(
               width: 130,
-              child: role.canManage
+              child: canManage
                   ? Center(
                       child: _PermissionBadge(
                         onTap: () => AppToastsUtils.showInfoTop(
@@ -691,14 +779,103 @@ class _MiniAction extends StatelessWidget {
   }
 }
 
-class _RoleRow {
-  final String name;
-  final Color color;
-  final bool canManage;
+class _RolesTableShimmer extends StatelessWidget {
+  const _RolesTableShimmer();
 
-  const _RoleRow({
-    required this.name,
-    required this.color,
-    required this.canManage,
-  });
+  @override
+  Widget build(BuildContext context) {
+    return GlassSurface(
+      radius: 12,
+      clipBehavior: .hardEdge,
+      child: Column(
+        crossAxisAlignment: .stretch,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: context.primary.withValues(
+                alpha: context.isDark ? 0.14 : 0.07,
+              ),
+              border: Border(
+                bottom: BorderSide(
+                  color: context.primary.withValues(alpha: 0.22),
+                ),
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'ROLE',
+                    style: context.labelSmall.copyWith(
+                      color: context.primary,
+                      fontWeight: .w700,
+                      fontSize: 10.5,
+                      letterSpacing: 0.7,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                SizedBox(
+                  width: 130,
+                  child: Text(
+                    'PERMISSIONS',
+                    textAlign: .center,
+                    style: context.labelSmall.copyWith(
+                      color: context.primary,
+                      fontWeight: .w700,
+                      fontSize: 10.5,
+                      letterSpacing: 0.7,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 66,
+                  child: Text(
+                    'ACTIONS',
+                    textAlign: .center,
+                    style: context.labelSmall.copyWith(
+                      color: context.primary,
+                      fontWeight: .w700,
+                      fontSize: 10.5,
+                      letterSpacing: 0.7,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          for (int i = 0; i < 8; i++) ...[
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
+                children: [
+                  const ShimmerBox(width: 34, height: 34, radius: 17),
+                  const SizedBox(width: 12),
+                  const Expanded(child: ShimmerBox(height: 12, radius: 4)),
+                  const SizedBox(width: 12),
+                  const SizedBox(
+                    width: 130,
+                    child: ShimmerBox(height: 22, radius: 11),
+                  ),
+                  const SizedBox(width: 10),
+                  const ShimmerBox(width: 30, height: 30, radius: 8),
+                  const SizedBox(width: 6),
+                  const ShimmerBox(width: 30, height: 30, radius: 8),
+                ],
+              ),
+            ),
+            if (i < 7)
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: context.divider.withValues(alpha: 0.5),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
 }

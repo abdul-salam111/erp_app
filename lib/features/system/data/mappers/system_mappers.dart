@@ -132,5 +132,6 @@ extension RoleModelX on RoleModel {
         isSystemRole: flgSystem ?? false,
         totalUsers: totalUsers ?? 0,
         organizationId: misOrganizationId,
+        isArchived: archived ?? false,
       );
 }

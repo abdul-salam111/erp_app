@@ -230,6 +230,7 @@ class RoleEntity extends Equatable {
   final bool isSystemRole;
   final int totalUsers;
   final int? organizationId;
+  final bool isArchived;
 
   const RoleEntity({
     required this.id,
@@ -239,6 +240,7 @@ class RoleEntity extends Equatable {
     this.isSystemRole = false,
     this.totalUsers = 0,
     this.organizationId,
+    this.isArchived = false,
   });
 
   @override
@@ -250,5 +252,6 @@ class RoleEntity extends Equatable {
         isSystemRole,
         totalUsers,
         organizationId,
+        isArchived,
       ];
 }
