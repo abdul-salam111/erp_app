@@ -33,18 +33,18 @@ class _SystemBody extends StatefulWidget {
 class _SystemBodyState extends State<_SystemBody>
     with SingleTickerProviderStateMixin {
   static const _sections = <_SystemSection>[
-    _SystemSection(
-      title: 'General',
-      items: [
-        _SystemMenuItem(
-          label: 'Setup',
-          subtitle: 'Configure system',
-          icon: Iconsax.setting_2,
-          color: AppColors.primary,
-          routeName: RouteNames.system_setup,
-        ),
-      ],
-    ),
+    // _SystemSection(
+    //   title: 'General',
+    //   items: [
+    //     _SystemMenuItem(
+    //       label: 'Setup',
+    //       subtitle: 'Configure system',
+    //       icon: Iconsax.setting_2,
+    //       color: AppColors.primary,
+    //       routeName: RouteNames.system_setup,
+    //     ),
+    //   ],
+    // ),
     _SystemSection(
       title: 'Security',
       items: [
@@ -62,12 +62,12 @@ class _SystemBodyState extends State<_SystemBody>
           color: AppColors.purple,
           routeName: RouteNames.roles,
         ),
-        _SystemMenuItem(
-          label: 'PC Authorization',
-          subtitle: 'Manage PC authorization',
-          icon: Iconsax.shield_tick,
-          color: AppColors.orange,
-        ),
+        // _SystemMenuItem(
+        //   label: 'PC Authorization',
+        //   subtitle: 'Manage PC authorization',
+        //   icon: Iconsax.shield_tick,
+        //   color: AppColors.orange,
+        // ),
       ],
     ),
   ];
