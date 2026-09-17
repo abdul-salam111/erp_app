@@ -183,26 +183,10 @@ class _LoginCardState extends State<_LoginCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: .infinity,
+    return GlassSurface(
+      radius: 24,
       padding: .all(
         Responsive.value<double>(context, phone: 24, tablet: 32, ipad: 40),
-      ),
-      decoration: BoxDecoration(
-        color: context.surfaceElevated,
-        borderRadius: .circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.08),
-            blurRadius: 40,
-            offset: const Offset(0, 12),
-          ),
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Form(
         key: widget.formKey,
