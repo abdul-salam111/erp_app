@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../core/debug/cubit/api_debug_state.dart';
@@ -243,23 +244,7 @@ class _ProfileHeader extends StatelessWidget {
                   children: [
                     // Top bar: back
                     Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => context.pop(),
-                          child: Container(
-                            padding: .all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.white.withValues(alpha: 0.15),
-                              borderRadius: .circular(10),
-                            ),
-                            child: const Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              color: AppColors.white,
-                              size: 16,
-                            ),
-                          ),
-                        ),
-                      ],
+                      children: const [GlassBackButton()],
                     ).animate().fadeIn(delay: 0.ms, duration: 300.ms),
 
                     const SizedBox(height: 10),
@@ -790,19 +775,10 @@ class _AppearanceCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Switch(
+              GlassSwitch(
                 value: isDark,
-                activeThumbColor: context.primary,
-                activeTrackColor: context.primary.withValues(alpha: 0.35),
-                inactiveThumbColor: context.isDark
-                    ? AppColors.grey300
-                    : AppColors.white,
-                inactiveTrackColor: context.isDark
-                    ? AppColors.grey700
-                    : AppColors.grey300,
-                trackOutlineColor: WidgetStateProperty.all(
-                  context.isDark ? AppColors.grey600 : AppColors.grey400,
-                ),
+                useOwnLayer: true,
+                activeColor: context.primary,
                 onChanged: (_) => context.read<ThemeBloc>().add(ToggleTheme()),
               ),
             ],

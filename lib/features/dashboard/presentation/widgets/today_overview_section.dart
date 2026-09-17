@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import '../../../../core/constants/const_exports.dart';
 import '../../../../core/services/current_user.dart';
 import '../../../../core/theme/colors.dart';
@@ -315,19 +316,14 @@ class _AllOverviewSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  padding: .all(6),
-                  decoration: BoxDecoration(
-                    color: context.surface,
-                    shape: .circle,
-                  ),
-                  child: Icon(
-                    Icons.close_rounded,
-                    size: 16,
-                    color: context.textSecondary,
-                  ),
+              GlassIconButton(
+                onPressed: () => Navigator.pop(context),
+                size: 32,
+                iconSize: 16,
+                icon: Icon(
+                  Icons.close_rounded,
+                  size: 16,
+                  color: context.textPrimary,
                 ),
               ),
             ],
