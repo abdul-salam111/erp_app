@@ -49,7 +49,7 @@ class AppConstants {
   static const String purchaseLabel = 'Purchase';
   static const String salesLabel = 'Sales';
   static const String productionLabel = 'Production';
-  static const String analyticsLabel = 'Analytics';
+  static const String analyticsLabel = 'Insights';
   static const String securityLabel = 'Security';
   static const String systemLabel = 'System';
   static const String assetsLabel = 'Assets';
