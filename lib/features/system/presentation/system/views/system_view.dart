@@ -8,6 +8,7 @@ import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../../core/widgets/glass_surface.dart';
 import '../../../system_exports.dart';
 
 class SystemView extends StatelessWidget {
@@ -59,6 +60,7 @@ class _SystemBodyState extends State<_SystemBody>
           subtitle: 'Manage security roles',
           icon: Iconsax.security_user,
           color: AppColors.purple,
+          routeName: RouteNames.roles,
         ),
         _SystemMenuItem(
           label: 'PC Authorization',
@@ -276,65 +278,65 @@ class _SystemTileState extends State<_SystemTile> {
     return AnimatedScale(
       scale: _pressed ? 0.97 : 1,
       duration: const Duration(milliseconds: 120),
-      child: Material(
-        color: context.surface,
-        borderRadius: BorderRadius.circular(14),
-        child: InkWell(
+      child: GlassSurface(
+        radius: 14,
+        padding: .zero,
+        child: Material(
+          color: AppColors.transparent,
           borderRadius: BorderRadius.circular(14),
-          onHighlightChanged: (value) => setState(() => _pressed = value),
-          onTap: () => item.routeName != null
-              ? context.pushNamed(item.routeName!)
-              : AppToastsUtils.showInfoTop(
-                  context,
-                  '${item.label} — coming soon',
-                ),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: Responsive.value<double>(
-                context,
-                phone: 12,
-                tablet: 14,
-                ipad: 16,
-              ),
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: context.border),
-            ),
-            child: Row(
-              children: [
-                _GlowingIcon(icon: item.icon, color: item.color),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      Text(
-                        item.label,
-                        style: context.titleSmall.copyWith(
-                          fontWeight: .w600,
-                          color: context.textPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        item.subtitle,
-                        style: context.bodySmall.copyWith(
-                          color: context.textSecondary,
-                        ),
-                        maxLines: 1,
-                        overflow: .ellipsis,
-                      ),
-                    ],
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onHighlightChanged: (value) => setState(() => _pressed = value),
+            onTap: () => item.routeName != null
+                ? context.pushNamed(item.routeName!)
+                : AppToastsUtils.showInfoTop(
+                    context,
+                    '${item.label} — coming soon',
                   ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: Responsive.value<double>(
+                  context,
+                  phone: 12,
+                  tablet: 14,
+                  ipad: 16,
                 ),
-                Icon(
-                  Iconsax.arrow_right_3,
-                  size: 18,
-                  color: context.textSecondary,
-                ),
-              ],
+              ),
+              child: Row(
+                children: [
+                  _GlowingIcon(icon: item.icon, color: item.color),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        Text(
+                          item.label,
+                          style: context.titleSmall.copyWith(
+                            fontWeight: .w600,
+                            color: context.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          item.subtitle,
+                          style: context.bodySmall.copyWith(
+                            color: context.textSecondary,
+                          ),
+                          maxLines: 1,
+                          overflow: .ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    Iconsax.arrow_right_3,
+                    size: 18,
+                    color: context.textSecondary,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -343,34 +345,11 @@ class _SystemTileState extends State<_SystemTile> {
   }
 }
 
-class _GlowingIcon extends StatefulWidget {
+class _GlowingIcon extends StatelessWidget {
   final IconData icon;
   final Color color;
 
   const _GlowingIcon({required this.icon, required this.color});
-
-  @override
-  State<_GlowingIcon> createState() => _GlowingIconState();
-}
-
-class _GlowingIconState extends State<_GlowingIcon>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1800),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -380,29 +359,23 @@ class _GlowingIconState extends State<_GlowingIcon>
       tablet: 48,
       ipad: 52,
     );
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        final t = Curves.easeInOut.transform(_controller.value);
-        return Container(
-          width: size,
-          height: size,
-          alignment: .center,
-          decoration: BoxDecoration(
-            color: widget.color.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: widget.color.withValues(alpha: 0.15 + t * 0.2),
-                blurRadius: 6 + t * 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Transform.scale(scale: 1 + t * 0.06, child: child),
-        );
-      },
-      child: Icon(widget.icon, color: widget.color, size: 22),
+    return Container(
+      width: size,
+      height: size,
+      alignment: .center,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: context.isDark
+            ? RadialGradient(
+                colors: [
+                  color.withValues(alpha: 0.28),
+                  color.withValues(alpha: 0.06),
+                ],
+              )
+            : null,
+        color: context.isDark ? null : color.withValues(alpha: 0.12),
+      ),
+      child: Icon(icon, color: color, size: 22),
     );
   }
 }

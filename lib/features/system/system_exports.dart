@@ -20,3 +20,7 @@ export 'presentation/users/blocs/security_bloc.dart';
 export 'presentation/users/blocs/security_event.dart';
 export 'presentation/users/blocs/security_state.dart';
 export 'presentation/users/views/users_view.dart';
+export 'presentation/users/views/new_user_view.dart';
+
+// Presentation — roles screen
+export 'presentation/roles/views/roles_view.dart';

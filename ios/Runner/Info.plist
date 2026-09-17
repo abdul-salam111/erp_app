@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>This app uses the camera to capture documents and photos for business records.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app uses your location to tag business records with location context and support logistics features.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app uses your location to tag business records with location context and support logistics features.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -256,7 +256,7 @@ class _QuickActionCard extends StatelessWidget {
           style: context.labelSmall.copyWith(
             color: context.isDark ? context.textPrimary : item.color,
             fontWeight: .w600,
-            fontSize: 11,
+            fontSize: 14,
           ),
           textAlign: .center,
           maxLines: 1,

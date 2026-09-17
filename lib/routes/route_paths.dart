@@ -15,6 +15,8 @@ class RoutePaths {
   static const String production = '/production';
   static const String analytics = '/analytics';
   static const String users = '/users';
+  static const String new_user = '/users/new';
+  static const String roles = '/roles';
 
   static const String account_ledger = '/account_ledger';
   static const String organizationSelection = '/organization-selection';
