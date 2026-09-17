@@ -286,18 +286,9 @@ class _OrderRowState extends State<_OrderRow> {
                             GestureDetector(
                               onTap: widget.onView,
                               child: Icon(
-                                Iconsax.eye,
+                                Iconsax.edit,
                                 size: 20,
                                 color: context.primary,
-                              ),
-                            ),
-                            const SizedBox(width: 14),
-                            GestureDetector(
-                              onTap: widget.onDelete,
-                              child: Icon(
-                                Iconsax.trash,
-                                size: 20,
-                                color: AppColors.errorBright,
                               ),
                             ),
                           ],

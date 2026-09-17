@@ -245,15 +245,13 @@ class _TopFields extends StatelessWidget {
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: SearchableDropdown(
-                items: partyNames,
-                controller: supplierController,
-                label: AppConstants.supplierLabel,
-                isRequired: true,
-                hintText: AppConstants.supplierLabel,
-                onChanged: (value) => onSupplierChanged?.call(value),
-                fieldHeight: 40,
-                isShowIcon: false,
+              child: CustomTextFormField(
+                controller: refDocNbrController,
+                label: 'Ref Doc Nbr',
+                fieldHeight: 37,
+                hintText: 'Ref Doc Nbr',
+                labelFontSize: 12,
+                fillColor: context.isDark ? context.navyIconBg : null,
                 borderColor: Colors.transparent,
               ),
             ),
@@ -264,13 +262,15 @@ class _TopFields extends StatelessWidget {
           crossAxisAlignment: .start,
           children: [
             Expanded(
-              child: CustomTextFormField(
-                controller: refDocNbrController,
-                label: 'Ref Doc Nbr',
-                fieldHeight: 37,
-                hintText: 'Ref Doc Nbr',
-                labelFontSize: 12,
-                fillColor: context.isDark ? context.navyIconBg : null,
+              child: SearchableDropdown(
+                items: partyNames,
+                controller: supplierController,
+                label: AppConstants.supplierLabel,
+                isRequired: true,
+                hintText: AppConstants.supplierLabel,
+                onChanged: (value) => onSupplierChanged?.call(value),
+                fieldHeight: 40,
+                isShowIcon: false,
                 borderColor: Colors.transparent,
               ),
             ),
