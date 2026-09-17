@@ -37,13 +37,26 @@ class _UsersBody extends StatefulWidget {
 class _UsersBodyState extends State<_UsersBody> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: context.background,
-      appBar: CustomAppBar(title: 'Users'),
-      body: const _UsersContent(),
-      floatingActionButton: _GradientFab(
-        label: 'New User',
-        onTap: () => context.pushNamed(RouteNames.new_user),
+    return BlocListener<UsersBloc, UsersState>(
+      listenWhen: (p, c) => p.deleteStatus != c.deleteStatus,
+      listener: (context, state) {
+        if (state.deleteStatus == ApiStatus.SUCCESS) {
+          AppToastsUtils.showInfoTop(context, 'User deleted');
+        } else if (state.deleteStatus == ApiStatus.FAILURE) {
+          AppToastsUtils.showInfoTop(
+            context,
+            state.message ?? 'Failed to delete user',
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: context.background,
+        appBar: CustomAppBar(title: 'Users'),
+        body: const _UsersContent(),
+        floatingActionButton: _GradientFab(
+          label: 'New User',
+          onTap: () => context.pushNamed(RouteNames.new_user),
+        ),
       ),
     );
   }
@@ -224,22 +237,43 @@ class _UsersContentState extends State<_UsersContent> {
                       .where((u) => !u.isArchived)
                       .toList(),
                 );
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: rows.isEmpty
-                      ? Center(
-                          key: const ValueKey('empty'),
-                          child: Text(
-                            'No users found',
-                            style: context.bodyMedium.copyWith(
-                              color: context.textSecondary,
-                            ),
-                          ),
-                        )
-                      : _UsersTableCard(key: ValueKey(_query), rows: rows)
-                          .animate()
-                          .fadeIn(delay: 200.ms, duration: 450.ms)
-                          .slideY(begin: 0.10, curve: Curves.easeOutCubic),
+                Future<void> onRefresh() async {
+                  final bloc = context.read<UsersBloc>();
+                  bloc.add(const UsersListFetched());
+                  await bloc.stream.firstWhere(
+                    (s) => s.apiStatus != ApiStatus.LOADING,
+                  );
+                }
+
+                return RefreshIndicator(
+                  onRefresh: onRefresh,
+                  color: context.primary,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    child: rows.isEmpty
+                        ? ListView(
+                            key: const ValueKey('empty'),
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.sizeOf(context).height * 0.5,
+                                child: Center(
+                                  child: Text(
+                                    'No users found',
+                                    style: context.bodyMedium.copyWith(
+                                      color: context.textSecondary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : _UsersTableCard(key: ValueKey(_query), rows: rows)
+                            .animate()
+                            .fadeIn(delay: 200.ms, duration: 450.ms)
+                            .slideY(begin: 0.10, curve: Curves.easeOutCubic),
+                  ),
                 );
               },
             ),
@@ -439,6 +473,7 @@ class _UsersTableCard extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               padding: .zero,
+              physics: const AlwaysScrollableScrollPhysics(),
               itemCount: rows.length,
               separatorBuilder: (_, __) => Divider(
                 height: 1,
@@ -491,6 +526,16 @@ class _UserTableRow extends StatefulWidget {
 
 class _UserTableRowState extends State<_UserTableRow> {
   bool _expanded = false;
+
+  Future<void> _confirmDelete(BuildContext context, SystemUserEntity user) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => _DeleteConfirmDialog(userName: user.name),
+    );
+    if (confirmed != true) return;
+    if (!context.mounted) return;
+    context.read<UsersBloc>().add(UserDeleteRequested(user.id));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -706,10 +751,7 @@ class _UserTableRowState extends State<_UserTableRow> {
                                   _MiniAction(
                                     icon: Iconsax.trash,
                                     color: AppColors.errorBright,
-                                    onTap: () => AppToastsUtils.showInfoTop(
-                                      context,
-                                      'Delete — coming soon',
-                                    ),
+                                    onTap: () => _confirmDelete(context, user),
                                   ),
                                 ],
                               ),
@@ -840,6 +882,138 @@ class _UserAvatar extends StatelessWidget {
           color: color,
           fontWeight: .w800,
           fontSize: 11,
+        ),
+      ),
+    );
+  }
+}
+
+class _DeleteConfirmDialog extends StatelessWidget {
+  final String userName;
+
+  const _DeleteConfirmDialog({required this.userName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: AppColors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+      child: GlassSurface(
+        radius: 16,
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+        child: Column(
+          mainAxisSize: .min,
+          crossAxisAlignment: .stretch,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  alignment: .center,
+                  decoration: BoxDecoration(
+                    shape: .circle,
+                    gradient: context.isDark
+                        ? RadialGradient(
+                            colors: [
+                              AppColors.errorBright.withValues(alpha: 0.28),
+                              AppColors.errorBright.withValues(alpha: 0.06),
+                            ],
+                          )
+                        : null,
+                    color: context.isDark
+                        ? null
+                        : AppColors.errorBright.withValues(alpha: 0.12),
+                  ),
+                  child: Icon(
+                    Iconsax.trash,
+                    color: AppColors.errorBright,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Delete user?',
+                    style: context.titleSmall.copyWith(
+                      fontWeight: .w700,
+                      color: context.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Text.rich(
+              TextSpan(
+                style: context.bodySmall.copyWith(
+                  color: context.textSecondary,
+                  fontSize: 13,
+                ),
+                children: [
+                  const TextSpan(text: 'Are you sure you want to delete '),
+                  TextSpan(
+                    text: userName.isEmpty ? 'this user' : userName,
+                    style: TextStyle(
+                      color: context.textPrimary,
+                      fontWeight: .w700,
+                    ),
+                  ),
+                  const TextSpan(text: '? This action cannot be undone.'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      side: BorderSide(
+                        color: context.isDark
+                            ? context.navyBorder
+                            : context.border,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: context.labelMedium.copyWith(
+                        color: context.textPrimary,
+                        fontWeight: .w600,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      backgroundColor: AppColors.errorBright,
+                      foregroundColor: AppColors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      'Delete',
+                      style: context.labelMedium.copyWith(
+                        color: AppColors.white,
+                        fontWeight: .w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

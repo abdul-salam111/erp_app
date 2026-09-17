@@ -46,7 +46,8 @@ extension UserDetailModelX on UserDetailModel {
     return SystemUserDetailEntity(
       id: id ?? 0,
       misUserId: misUserId,
-      personId: null,
+      personId: person?.id ?? personId,
+      contactId: person?.contact?.id,
       firstName: person?.firstName ?? '',
       lastName: person?.lastName ?? '',
       fullName: (person?.fullName ?? name ?? '').trim(),
@@ -61,6 +62,8 @@ extension UserDetailModelX on UserDetailModel {
       landingPageName: landingPageFeature?.name,
       isDashboardLandingPage: flgDashboardLandingPage ?? false,
       isArchived: archived ?? false,
+      openDaysPast: openDaysPast,
+      openDaysFuture: openDaysFuture,
       roles: (roles ?? const [])
           .map((r) => r.toEntity())
           .where((r) => r.name.isNotEmpty)
@@ -72,6 +75,7 @@ extension UserDetailModelX on UserDetailModel {
 
 extension UserDetailRoleModelX on UserDetailRoleModel {
   SystemUserRoleEntity toEntity() => SystemUserRoleEntity(
+        id: id,
         roleId: roleId,
         name: roleName ?? '',
         key: roleKey,
@@ -127,5 +131,6 @@ extension RoleModelX on RoleModel {
         description: description,
         isSystemRole: flgSystem ?? false,
         totalUsers: totalUsers ?? 0,
+        organizationId: misOrganizationId,
       );
 }

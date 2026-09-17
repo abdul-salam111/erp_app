@@ -49,13 +49,36 @@ class GetBranchListUsecase implements Usecase<List<BranchEntity>, int> {
   }
 }
 
-class GetRoleListUsecase implements Usecase<List<RoleEntity>, NoParams> {
+class GetRoleListUsecase implements Usecase<List<RoleEntity>, int?> {
   final SystemRepository repository;
 
   GetRoleListUsecase({required this.repository});
 
   @override
-  Future<Result<List<RoleEntity>>> call(NoParams params) {
-    return repository.getRoleList();
+  Future<Result<List<RoleEntity>>> call(int? organizationId) {
+    return repository.getRoleList(organizationId: organizationId);
+  }
+}
+
+class SaveUserUsecase
+    implements Usecase<SystemUserDetailEntity, Map<String, dynamic>> {
+  final SystemRepository repository;
+
+  SaveUserUsecase({required this.repository});
+
+  @override
+  Future<Result<SystemUserDetailEntity>> call(Map<String, dynamic> payload) {
+    return repository.saveUser(payload);
+  }
+}
+
+class DeleteUserUsecase implements Usecase<bool, int> {
+  final SystemRepository repository;
+
+  DeleteUserUsecase({required this.repository});
+
+  @override
+  Future<Result<bool>> call(int id) {
+    return repository.deleteUser(id);
   }
 }

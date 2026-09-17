@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDetailModel {
 
-@JsonKey(name: 'Id') int? get id;@JsonKey(name: 'MisUserId') int? get misUserId;@JsonKey(name: 'Name') String? get name;@JsonKey(name: 'Email') String? get email;@JsonKey(name: 'Designation') String? get designation;@JsonKey(name: 'ActiveStatus') String? get activeStatus;@JsonKey(name: 'FlgDashboardLandingPage') bool? get flgDashboardLandingPage;@JsonKey(name: 'Archived') bool? get archived;@JsonKey(name: 'PersonInfo') UserDetailPersonInfoModel? get personInfo;@JsonKey(name: 'Language') UserDetailLanguageModel? get language;@JsonKey(name: 'LandingPageFeature') UserDetailLandingPageFeatureModel? get landingPageFeature;@JsonKey(name: 'LandingPageFeatureId') int? get landingPageFeatureId;@JsonKey(name: 'Roles') List<UserDetailRoleModel>? get roles;
+@JsonKey(name: 'Id') int? get id;@JsonKey(name: 'MisUserId') int? get misUserId;@JsonKey(name: 'Name') String? get name;@JsonKey(name: 'Email') String? get email;@JsonKey(name: 'Designation') String? get designation;@JsonKey(name: 'ActiveStatus') String? get activeStatus;@JsonKey(name: 'FlgDashboardLandingPage') bool? get flgDashboardLandingPage;@JsonKey(name: 'Archived') bool? get archived;@JsonKey(name: 'PersonInfo') UserDetailPersonInfoModel? get personInfo;@JsonKey(name: 'Language') UserDetailLanguageModel? get language;@JsonKey(name: 'LandingPageFeature') UserDetailLandingPageFeatureModel? get landingPageFeature;@JsonKey(name: 'LandingPageFeatureId') int? get landingPageFeatureId;@JsonKey(name: 'OpenDaysPast') int? get openDaysPast;@JsonKey(name: 'OpenDaysFuture') int? get openDaysFuture;@JsonKey(name: 'PersonId') int? get personId;@JsonKey(name: 'Roles') List<UserDetailRoleModel>? get roles;
 /// Create a copy of UserDetailModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserDetailModelCopyWith<UserDetailModel> get copyWith => _$UserDetailModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.misUserId, misUserId) || other.misUserId == misUserId)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.activeStatus, activeStatus) || other.activeStatus == activeStatus)&&(identical(other.flgDashboardLandingPage, flgDashboardLandingPage) || other.flgDashboardLandingPage == flgDashboardLandingPage)&&(identical(other.archived, archived) || other.archived == archived)&&(identical(other.personInfo, personInfo) || other.personInfo == personInfo)&&(identical(other.language, language) || other.language == language)&&(identical(other.landingPageFeature, landingPageFeature) || other.landingPageFeature == landingPageFeature)&&(identical(other.landingPageFeatureId, landingPageFeatureId) || other.landingPageFeatureId == landingPageFeatureId)&&const DeepCollectionEquality().equals(other.roles, roles));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.misUserId, misUserId) || other.misUserId == misUserId)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.activeStatus, activeStatus) || other.activeStatus == activeStatus)&&(identical(other.flgDashboardLandingPage, flgDashboardLandingPage) || other.flgDashboardLandingPage == flgDashboardLandingPage)&&(identical(other.archived, archived) || other.archived == archived)&&(identical(other.personInfo, personInfo) || other.personInfo == personInfo)&&(identical(other.language, language) || other.language == language)&&(identical(other.landingPageFeature, landingPageFeature) || other.landingPageFeature == landingPageFeature)&&(identical(other.landingPageFeatureId, landingPageFeatureId) || other.landingPageFeatureId == landingPageFeatureId)&&(identical(other.openDaysPast, openDaysPast) || other.openDaysPast == openDaysPast)&&(identical(other.openDaysFuture, openDaysFuture) || other.openDaysFuture == openDaysFuture)&&(identical(other.personId, personId) || other.personId == personId)&&const DeepCollectionEquality().equals(other.roles, roles));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,misUserId,name,email,designation,activeStatus,flgDashboardLandingPage,archived,personInfo,language,landingPageFeature,landingPageFeatureId,const DeepCollectionEquality().hash(roles));
+int get hashCode => Object.hash(runtimeType,id,misUserId,name,email,designation,activeStatus,flgDashboardLandingPage,archived,personInfo,language,landingPageFeature,landingPageFeatureId,openDaysPast,openDaysFuture,personId,const DeepCollectionEquality().hash(roles));
 
 @override
 String toString() {
-  return 'UserDetailModel(id: $id, misUserId: $misUserId, name: $name, email: $email, designation: $designation, activeStatus: $activeStatus, flgDashboardLandingPage: $flgDashboardLandingPage, archived: $archived, personInfo: $personInfo, language: $language, landingPageFeature: $landingPageFeature, landingPageFeatureId: $landingPageFeatureId, roles: $roles)';
+  return 'UserDetailModel(id: $id, misUserId: $misUserId, name: $name, email: $email, designation: $designation, activeStatus: $activeStatus, flgDashboardLandingPage: $flgDashboardLandingPage, archived: $archived, personInfo: $personInfo, language: $language, landingPageFeature: $landingPageFeature, landingPageFeatureId: $landingPageFeatureId, openDaysPast: $openDaysPast, openDaysFuture: $openDaysFuture, personId: $personId, roles: $roles)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserDetailModelCopyWith<$Res>  {
   factory $UserDetailModelCopyWith(UserDetailModel value, $Res Function(UserDetailModel) _then) = _$UserDetailModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'Id') int? id,@JsonKey(name: 'MisUserId') int? misUserId,@JsonKey(name: 'Name') String? name,@JsonKey(name: 'Email') String? email,@JsonKey(name: 'Designation') String? designation,@JsonKey(name: 'ActiveStatus') String? activeStatus,@JsonKey(name: 'FlgDashboardLandingPage') bool? flgDashboardLandingPage,@JsonKey(name: 'Archived') bool? archived,@JsonKey(name: 'PersonInfo') UserDetailPersonInfoModel? personInfo,@JsonKey(name: 'Language') UserDetailLanguageModel? language,@JsonKey(name: 'LandingPageFeature') UserDetailLandingPageFeatureModel? landingPageFeature,@JsonKey(name: 'LandingPageFeatureId') int? landingPageFeatureId,@JsonKey(name: 'Roles') List<UserDetailRoleModel>? roles
+@JsonKey(name: 'Id') int? id,@JsonKey(name: 'MisUserId') int? misUserId,@JsonKey(name: 'Name') String? name,@JsonKey(name: 'Email') String? email,@JsonKey(name: 'Designation') String? designation,@JsonKey(name: 'ActiveStatus') String? activeStatus,@JsonKey(name: 'FlgDashboardLandingPage') bool? flgDashboardLandingPage,@JsonKey(name: 'Archived') bool? archived,@JsonKey(name: 'PersonInfo') UserDetailPersonInfoModel? personInfo,@JsonKey(name: 'Language') UserDetailLanguageModel? language,@JsonKey(name: 'LandingPageFeature') UserDetailLandingPageFeatureModel? landingPageFeature,@JsonKey(name: 'LandingPageFeatureId') int? landingPageFeatureId,@JsonKey(name: 'OpenDaysPast') int? openDaysPast,@JsonKey(name: 'OpenDaysFuture') int? openDaysFuture,@JsonKey(name: 'PersonId') int? personId,@JsonKey(name: 'Roles') List<UserDetailRoleModel>? roles
 });
 
 
@@ -65,7 +65,7 @@ class _$UserDetailModelCopyWithImpl<$Res>
 
 /// Create a copy of UserDetailModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? misUserId = freezed,Object? name = freezed,Object? email = freezed,Object? designation = freezed,Object? activeStatus = freezed,Object? flgDashboardLandingPage = freezed,Object? archived = freezed,Object? personInfo = freezed,Object? language = freezed,Object? landingPageFeature = freezed,Object? landingPageFeatureId = freezed,Object? roles = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? misUserId = freezed,Object? name = freezed,Object? email = freezed,Object? designation = freezed,Object? activeStatus = freezed,Object? flgDashboardLandingPage = freezed,Object? archived = freezed,Object? personInfo = freezed,Object? language = freezed,Object? landingPageFeature = freezed,Object? landingPageFeatureId = freezed,Object? openDaysPast = freezed,Object? openDaysFuture = freezed,Object? personId = freezed,Object? roles = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,misUserId: freezed == misUserId ? _self.misUserId : misUserId // ignore: cast_nullable_to_non_nullable
@@ -79,6 +79,9 @@ as bool?,personInfo: freezed == personInfo ? _self.personInfo : personInfo // ig
 as UserDetailPersonInfoModel?,language: freezed == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
 as UserDetailLanguageModel?,landingPageFeature: freezed == landingPageFeature ? _self.landingPageFeature : landingPageFeature // ignore: cast_nullable_to_non_nullable
 as UserDetailLandingPageFeatureModel?,landingPageFeatureId: freezed == landingPageFeatureId ? _self.landingPageFeatureId : landingPageFeatureId // ignore: cast_nullable_to_non_nullable
+as int?,openDaysPast: freezed == openDaysPast ? _self.openDaysPast : openDaysPast // ignore: cast_nullable_to_non_nullable
+as int?,openDaysFuture: freezed == openDaysFuture ? _self.openDaysFuture : openDaysFuture // ignore: cast_nullable_to_non_nullable
+as int?,personId: freezed == personId ? _self.personId : personId // ignore: cast_nullable_to_non_nullable
 as int?,roles: freezed == roles ? _self.roles : roles // ignore: cast_nullable_to_non_nullable
 as List<UserDetailRoleModel>?,
   ));
@@ -201,10 +204,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'MisUserId')  int? misUserId, @JsonKey(name: 'Name')  String? name, @JsonKey(name: 'Email')  String? email, @JsonKey(name: 'Designation')  String? designation, @JsonKey(name: 'ActiveStatus')  String? activeStatus, @JsonKey(name: 'FlgDashboardLandingPage')  bool? flgDashboardLandingPage, @JsonKey(name: 'Archived')  bool? archived, @JsonKey(name: 'PersonInfo')  UserDetailPersonInfoModel? personInfo, @JsonKey(name: 'Language')  UserDetailLanguageModel? language, @JsonKey(name: 'LandingPageFeature')  UserDetailLandingPageFeatureModel? landingPageFeature, @JsonKey(name: 'LandingPageFeatureId')  int? landingPageFeatureId, @JsonKey(name: 'Roles')  List<UserDetailRoleModel>? roles)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'MisUserId')  int? misUserId, @JsonKey(name: 'Name')  String? name, @JsonKey(name: 'Email')  String? email, @JsonKey(name: 'Designation')  String? designation, @JsonKey(name: 'ActiveStatus')  String? activeStatus, @JsonKey(name: 'FlgDashboardLandingPage')  bool? flgDashboardLandingPage, @JsonKey(name: 'Archived')  bool? archived, @JsonKey(name: 'PersonInfo')  UserDetailPersonInfoModel? personInfo, @JsonKey(name: 'Language')  UserDetailLanguageModel? language, @JsonKey(name: 'LandingPageFeature')  UserDetailLandingPageFeatureModel? landingPageFeature, @JsonKey(name: 'LandingPageFeatureId')  int? landingPageFeatureId, @JsonKey(name: 'OpenDaysPast')  int? openDaysPast, @JsonKey(name: 'OpenDaysFuture')  int? openDaysFuture, @JsonKey(name: 'PersonId')  int? personId, @JsonKey(name: 'Roles')  List<UserDetailRoleModel>? roles)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDetailModel() when $default != null:
-return $default(_that.id,_that.misUserId,_that.name,_that.email,_that.designation,_that.activeStatus,_that.flgDashboardLandingPage,_that.archived,_that.personInfo,_that.language,_that.landingPageFeature,_that.landingPageFeatureId,_that.roles);case _:
+return $default(_that.id,_that.misUserId,_that.name,_that.email,_that.designation,_that.activeStatus,_that.flgDashboardLandingPage,_that.archived,_that.personInfo,_that.language,_that.landingPageFeature,_that.landingPageFeatureId,_that.openDaysPast,_that.openDaysFuture,_that.personId,_that.roles);case _:
   return orElse();
 
 }
@@ -222,10 +225,10 @@ return $default(_that.id,_that.misUserId,_that.name,_that.email,_that.designatio
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'MisUserId')  int? misUserId, @JsonKey(name: 'Name')  String? name, @JsonKey(name: 'Email')  String? email, @JsonKey(name: 'Designation')  String? designation, @JsonKey(name: 'ActiveStatus')  String? activeStatus, @JsonKey(name: 'FlgDashboardLandingPage')  bool? flgDashboardLandingPage, @JsonKey(name: 'Archived')  bool? archived, @JsonKey(name: 'PersonInfo')  UserDetailPersonInfoModel? personInfo, @JsonKey(name: 'Language')  UserDetailLanguageModel? language, @JsonKey(name: 'LandingPageFeature')  UserDetailLandingPageFeatureModel? landingPageFeature, @JsonKey(name: 'LandingPageFeatureId')  int? landingPageFeatureId, @JsonKey(name: 'Roles')  List<UserDetailRoleModel>? roles)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'MisUserId')  int? misUserId, @JsonKey(name: 'Name')  String? name, @JsonKey(name: 'Email')  String? email, @JsonKey(name: 'Designation')  String? designation, @JsonKey(name: 'ActiveStatus')  String? activeStatus, @JsonKey(name: 'FlgDashboardLandingPage')  bool? flgDashboardLandingPage, @JsonKey(name: 'Archived')  bool? archived, @JsonKey(name: 'PersonInfo')  UserDetailPersonInfoModel? personInfo, @JsonKey(name: 'Language')  UserDetailLanguageModel? language, @JsonKey(name: 'LandingPageFeature')  UserDetailLandingPageFeatureModel? landingPageFeature, @JsonKey(name: 'LandingPageFeatureId')  int? landingPageFeatureId, @JsonKey(name: 'OpenDaysPast')  int? openDaysPast, @JsonKey(name: 'OpenDaysFuture')  int? openDaysFuture, @JsonKey(name: 'PersonId')  int? personId, @JsonKey(name: 'Roles')  List<UserDetailRoleModel>? roles)  $default,) {final _that = this;
 switch (_that) {
 case _UserDetailModel():
-return $default(_that.id,_that.misUserId,_that.name,_that.email,_that.designation,_that.activeStatus,_that.flgDashboardLandingPage,_that.archived,_that.personInfo,_that.language,_that.landingPageFeature,_that.landingPageFeatureId,_that.roles);case _:
+return $default(_that.id,_that.misUserId,_that.name,_that.email,_that.designation,_that.activeStatus,_that.flgDashboardLandingPage,_that.archived,_that.personInfo,_that.language,_that.landingPageFeature,_that.landingPageFeatureId,_that.openDaysPast,_that.openDaysFuture,_that.personId,_that.roles);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -242,10 +245,10 @@ return $default(_that.id,_that.misUserId,_that.name,_that.email,_that.designatio
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'MisUserId')  int? misUserId, @JsonKey(name: 'Name')  String? name, @JsonKey(name: 'Email')  String? email, @JsonKey(name: 'Designation')  String? designation, @JsonKey(name: 'ActiveStatus')  String? activeStatus, @JsonKey(name: 'FlgDashboardLandingPage')  bool? flgDashboardLandingPage, @JsonKey(name: 'Archived')  bool? archived, @JsonKey(name: 'PersonInfo')  UserDetailPersonInfoModel? personInfo, @JsonKey(name: 'Language')  UserDetailLanguageModel? language, @JsonKey(name: 'LandingPageFeature')  UserDetailLandingPageFeatureModel? landingPageFeature, @JsonKey(name: 'LandingPageFeatureId')  int? landingPageFeatureId, @JsonKey(name: 'Roles')  List<UserDetailRoleModel>? roles)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'MisUserId')  int? misUserId, @JsonKey(name: 'Name')  String? name, @JsonKey(name: 'Email')  String? email, @JsonKey(name: 'Designation')  String? designation, @JsonKey(name: 'ActiveStatus')  String? activeStatus, @JsonKey(name: 'FlgDashboardLandingPage')  bool? flgDashboardLandingPage, @JsonKey(name: 'Archived')  bool? archived, @JsonKey(name: 'PersonInfo')  UserDetailPersonInfoModel? personInfo, @JsonKey(name: 'Language')  UserDetailLanguageModel? language, @JsonKey(name: 'LandingPageFeature')  UserDetailLandingPageFeatureModel? landingPageFeature, @JsonKey(name: 'LandingPageFeatureId')  int? landingPageFeatureId, @JsonKey(name: 'OpenDaysPast')  int? openDaysPast, @JsonKey(name: 'OpenDaysFuture')  int? openDaysFuture, @JsonKey(name: 'PersonId')  int? personId, @JsonKey(name: 'Roles')  List<UserDetailRoleModel>? roles)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDetailModel() when $default != null:
-return $default(_that.id,_that.misUserId,_that.name,_that.email,_that.designation,_that.activeStatus,_that.flgDashboardLandingPage,_that.archived,_that.personInfo,_that.language,_that.landingPageFeature,_that.landingPageFeatureId,_that.roles);case _:
+return $default(_that.id,_that.misUserId,_that.name,_that.email,_that.designation,_that.activeStatus,_that.flgDashboardLandingPage,_that.archived,_that.personInfo,_that.language,_that.landingPageFeature,_that.landingPageFeatureId,_that.openDaysPast,_that.openDaysFuture,_that.personId,_that.roles);case _:
   return null;
 
 }
@@ -257,7 +260,7 @@ return $default(_that.id,_that.misUserId,_that.name,_that.email,_that.designatio
 @JsonSerializable()
 
 class _UserDetailModel implements UserDetailModel {
-  const _UserDetailModel({@JsonKey(name: 'Id') this.id, @JsonKey(name: 'MisUserId') this.misUserId, @JsonKey(name: 'Name') this.name, @JsonKey(name: 'Email') this.email, @JsonKey(name: 'Designation') this.designation, @JsonKey(name: 'ActiveStatus') this.activeStatus, @JsonKey(name: 'FlgDashboardLandingPage') this.flgDashboardLandingPage, @JsonKey(name: 'Archived') this.archived, @JsonKey(name: 'PersonInfo') this.personInfo, @JsonKey(name: 'Language') this.language, @JsonKey(name: 'LandingPageFeature') this.landingPageFeature, @JsonKey(name: 'LandingPageFeatureId') this.landingPageFeatureId, @JsonKey(name: 'Roles') final  List<UserDetailRoleModel>? roles}): _roles = roles;
+  const _UserDetailModel({@JsonKey(name: 'Id') this.id, @JsonKey(name: 'MisUserId') this.misUserId, @JsonKey(name: 'Name') this.name, @JsonKey(name: 'Email') this.email, @JsonKey(name: 'Designation') this.designation, @JsonKey(name: 'ActiveStatus') this.activeStatus, @JsonKey(name: 'FlgDashboardLandingPage') this.flgDashboardLandingPage, @JsonKey(name: 'Archived') this.archived, @JsonKey(name: 'PersonInfo') this.personInfo, @JsonKey(name: 'Language') this.language, @JsonKey(name: 'LandingPageFeature') this.landingPageFeature, @JsonKey(name: 'LandingPageFeatureId') this.landingPageFeatureId, @JsonKey(name: 'OpenDaysPast') this.openDaysPast, @JsonKey(name: 'OpenDaysFuture') this.openDaysFuture, @JsonKey(name: 'PersonId') this.personId, @JsonKey(name: 'Roles') final  List<UserDetailRoleModel>? roles}): _roles = roles;
   factory _UserDetailModel.fromJson(Map<String, dynamic> json) => _$UserDetailModelFromJson(json);
 
 @override@JsonKey(name: 'Id') final  int? id;
@@ -272,6 +275,9 @@ class _UserDetailModel implements UserDetailModel {
 @override@JsonKey(name: 'Language') final  UserDetailLanguageModel? language;
 @override@JsonKey(name: 'LandingPageFeature') final  UserDetailLandingPageFeatureModel? landingPageFeature;
 @override@JsonKey(name: 'LandingPageFeatureId') final  int? landingPageFeatureId;
+@override@JsonKey(name: 'OpenDaysPast') final  int? openDaysPast;
+@override@JsonKey(name: 'OpenDaysFuture') final  int? openDaysFuture;
+@override@JsonKey(name: 'PersonId') final  int? personId;
  final  List<UserDetailRoleModel>? _roles;
 @override@JsonKey(name: 'Roles') List<UserDetailRoleModel>? get roles {
   final value = _roles;
@@ -295,16 +301,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.misUserId, misUserId) || other.misUserId == misUserId)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.activeStatus, activeStatus) || other.activeStatus == activeStatus)&&(identical(other.flgDashboardLandingPage, flgDashboardLandingPage) || other.flgDashboardLandingPage == flgDashboardLandingPage)&&(identical(other.archived, archived) || other.archived == archived)&&(identical(other.personInfo, personInfo) || other.personInfo == personInfo)&&(identical(other.language, language) || other.language == language)&&(identical(other.landingPageFeature, landingPageFeature) || other.landingPageFeature == landingPageFeature)&&(identical(other.landingPageFeatureId, landingPageFeatureId) || other.landingPageFeatureId == landingPageFeatureId)&&const DeepCollectionEquality().equals(other._roles, _roles));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDetailModel&&(identical(other.id, id) || other.id == id)&&(identical(other.misUserId, misUserId) || other.misUserId == misUserId)&&(identical(other.name, name) || other.name == name)&&(identical(other.email, email) || other.email == email)&&(identical(other.designation, designation) || other.designation == designation)&&(identical(other.activeStatus, activeStatus) || other.activeStatus == activeStatus)&&(identical(other.flgDashboardLandingPage, flgDashboardLandingPage) || other.flgDashboardLandingPage == flgDashboardLandingPage)&&(identical(other.archived, archived) || other.archived == archived)&&(identical(other.personInfo, personInfo) || other.personInfo == personInfo)&&(identical(other.language, language) || other.language == language)&&(identical(other.landingPageFeature, landingPageFeature) || other.landingPageFeature == landingPageFeature)&&(identical(other.landingPageFeatureId, landingPageFeatureId) || other.landingPageFeatureId == landingPageFeatureId)&&(identical(other.openDaysPast, openDaysPast) || other.openDaysPast == openDaysPast)&&(identical(other.openDaysFuture, openDaysFuture) || other.openDaysFuture == openDaysFuture)&&(identical(other.personId, personId) || other.personId == personId)&&const DeepCollectionEquality().equals(other._roles, _roles));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,misUserId,name,email,designation,activeStatus,flgDashboardLandingPage,archived,personInfo,language,landingPageFeature,landingPageFeatureId,const DeepCollectionEquality().hash(_roles));
+int get hashCode => Object.hash(runtimeType,id,misUserId,name,email,designation,activeStatus,flgDashboardLandingPage,archived,personInfo,language,landingPageFeature,landingPageFeatureId,openDaysPast,openDaysFuture,personId,const DeepCollectionEquality().hash(_roles));
 
 @override
 String toString() {
-  return 'UserDetailModel(id: $id, misUserId: $misUserId, name: $name, email: $email, designation: $designation, activeStatus: $activeStatus, flgDashboardLandingPage: $flgDashboardLandingPage, archived: $archived, personInfo: $personInfo, language: $language, landingPageFeature: $landingPageFeature, landingPageFeatureId: $landingPageFeatureId, roles: $roles)';
+  return 'UserDetailModel(id: $id, misUserId: $misUserId, name: $name, email: $email, designation: $designation, activeStatus: $activeStatus, flgDashboardLandingPage: $flgDashboardLandingPage, archived: $archived, personInfo: $personInfo, language: $language, landingPageFeature: $landingPageFeature, landingPageFeatureId: $landingPageFeatureId, openDaysPast: $openDaysPast, openDaysFuture: $openDaysFuture, personId: $personId, roles: $roles)';
 }
 
 
@@ -315,7 +321,7 @@ abstract mixin class _$UserDetailModelCopyWith<$Res> implements $UserDetailModel
   factory _$UserDetailModelCopyWith(_UserDetailModel value, $Res Function(_UserDetailModel) _then) = __$UserDetailModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'Id') int? id,@JsonKey(name: 'MisUserId') int? misUserId,@JsonKey(name: 'Name') String? name,@JsonKey(name: 'Email') String? email,@JsonKey(name: 'Designation') String? designation,@JsonKey(name: 'ActiveStatus') String? activeStatus,@JsonKey(name: 'FlgDashboardLandingPage') bool? flgDashboardLandingPage,@JsonKey(name: 'Archived') bool? archived,@JsonKey(name: 'PersonInfo') UserDetailPersonInfoModel? personInfo,@JsonKey(name: 'Language') UserDetailLanguageModel? language,@JsonKey(name: 'LandingPageFeature') UserDetailLandingPageFeatureModel? landingPageFeature,@JsonKey(name: 'LandingPageFeatureId') int? landingPageFeatureId,@JsonKey(name: 'Roles') List<UserDetailRoleModel>? roles
+@JsonKey(name: 'Id') int? id,@JsonKey(name: 'MisUserId') int? misUserId,@JsonKey(name: 'Name') String? name,@JsonKey(name: 'Email') String? email,@JsonKey(name: 'Designation') String? designation,@JsonKey(name: 'ActiveStatus') String? activeStatus,@JsonKey(name: 'FlgDashboardLandingPage') bool? flgDashboardLandingPage,@JsonKey(name: 'Archived') bool? archived,@JsonKey(name: 'PersonInfo') UserDetailPersonInfoModel? personInfo,@JsonKey(name: 'Language') UserDetailLanguageModel? language,@JsonKey(name: 'LandingPageFeature') UserDetailLandingPageFeatureModel? landingPageFeature,@JsonKey(name: 'LandingPageFeatureId') int? landingPageFeatureId,@JsonKey(name: 'OpenDaysPast') int? openDaysPast,@JsonKey(name: 'OpenDaysFuture') int? openDaysFuture,@JsonKey(name: 'PersonId') int? personId,@JsonKey(name: 'Roles') List<UserDetailRoleModel>? roles
 });
 
 
@@ -332,7 +338,7 @@ class __$UserDetailModelCopyWithImpl<$Res>
 
 /// Create a copy of UserDetailModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? misUserId = freezed,Object? name = freezed,Object? email = freezed,Object? designation = freezed,Object? activeStatus = freezed,Object? flgDashboardLandingPage = freezed,Object? archived = freezed,Object? personInfo = freezed,Object? language = freezed,Object? landingPageFeature = freezed,Object? landingPageFeatureId = freezed,Object? roles = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? misUserId = freezed,Object? name = freezed,Object? email = freezed,Object? designation = freezed,Object? activeStatus = freezed,Object? flgDashboardLandingPage = freezed,Object? archived = freezed,Object? personInfo = freezed,Object? language = freezed,Object? landingPageFeature = freezed,Object? landingPageFeatureId = freezed,Object? openDaysPast = freezed,Object? openDaysFuture = freezed,Object? personId = freezed,Object? roles = freezed,}) {
   return _then(_UserDetailModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,misUserId: freezed == misUserId ? _self.misUserId : misUserId // ignore: cast_nullable_to_non_nullable
@@ -346,6 +352,9 @@ as bool?,personInfo: freezed == personInfo ? _self.personInfo : personInfo // ig
 as UserDetailPersonInfoModel?,language: freezed == language ? _self.language : language // ignore: cast_nullable_to_non_nullable
 as UserDetailLanguageModel?,landingPageFeature: freezed == landingPageFeature ? _self.landingPageFeature : landingPageFeature // ignore: cast_nullable_to_non_nullable
 as UserDetailLandingPageFeatureModel?,landingPageFeatureId: freezed == landingPageFeatureId ? _self.landingPageFeatureId : landingPageFeatureId // ignore: cast_nullable_to_non_nullable
+as int?,openDaysPast: freezed == openDaysPast ? _self.openDaysPast : openDaysPast // ignore: cast_nullable_to_non_nullable
+as int?,openDaysFuture: freezed == openDaysFuture ? _self.openDaysFuture : openDaysFuture // ignore: cast_nullable_to_non_nullable
+as int?,personId: freezed == personId ? _self.personId : personId // ignore: cast_nullable_to_non_nullable
 as int?,roles: freezed == roles ? _self._roles : roles // ignore: cast_nullable_to_non_nullable
 as List<UserDetailRoleModel>?,
   ));
@@ -394,7 +403,7 @@ $UserDetailLandingPageFeatureModelCopyWith<$Res>? get landingPageFeature {
 /// @nodoc
 mixin _$UserDetailPersonInfoModel {
 
-@JsonKey(name: 'FirstName') String? get firstName;@JsonKey(name: 'LastName') String? get lastName;@JsonKey(name: 'FullName') String? get fullName;@JsonKey(name: 'Gender') String? get gender;@JsonKey(name: 'Contact') UserDetailContactModel? get contact;
+@JsonKey(name: 'Id') int? get id;@JsonKey(name: 'FirstName') String? get firstName;@JsonKey(name: 'LastName') String? get lastName;@JsonKey(name: 'FullName') String? get fullName;@JsonKey(name: 'Gender') String? get gender;@JsonKey(name: 'Contact') UserDetailContactModel? get contact;
 /// Create a copy of UserDetailPersonInfoModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -407,16 +416,16 @@ $UserDetailPersonInfoModelCopyWith<UserDetailPersonInfoModel> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDetailPersonInfoModel&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.contact, contact) || other.contact == contact));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDetailPersonInfoModel&&(identical(other.id, id) || other.id == id)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.contact, contact) || other.contact == contact));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,firstName,lastName,fullName,gender,contact);
+int get hashCode => Object.hash(runtimeType,id,firstName,lastName,fullName,gender,contact);
 
 @override
 String toString() {
-  return 'UserDetailPersonInfoModel(firstName: $firstName, lastName: $lastName, fullName: $fullName, gender: $gender, contact: $contact)';
+  return 'UserDetailPersonInfoModel(id: $id, firstName: $firstName, lastName: $lastName, fullName: $fullName, gender: $gender, contact: $contact)';
 }
 
 
@@ -427,7 +436,7 @@ abstract mixin class $UserDetailPersonInfoModelCopyWith<$Res>  {
   factory $UserDetailPersonInfoModelCopyWith(UserDetailPersonInfoModel value, $Res Function(UserDetailPersonInfoModel) _then) = _$UserDetailPersonInfoModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'FirstName') String? firstName,@JsonKey(name: 'LastName') String? lastName,@JsonKey(name: 'FullName') String? fullName,@JsonKey(name: 'Gender') String? gender,@JsonKey(name: 'Contact') UserDetailContactModel? contact
+@JsonKey(name: 'Id') int? id,@JsonKey(name: 'FirstName') String? firstName,@JsonKey(name: 'LastName') String? lastName,@JsonKey(name: 'FullName') String? fullName,@JsonKey(name: 'Gender') String? gender,@JsonKey(name: 'Contact') UserDetailContactModel? contact
 });
 
 
@@ -444,9 +453,10 @@ class _$UserDetailPersonInfoModelCopyWithImpl<$Res>
 
 /// Create a copy of UserDetailPersonInfoModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? firstName = freezed,Object? lastName = freezed,Object? fullName = freezed,Object? gender = freezed,Object? contact = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? fullName = freezed,Object? gender = freezed,Object? contact = freezed,}) {
   return _then(_self.copyWith(
-firstName: freezed == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,firstName: freezed == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String?,lastName: freezed == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
 as String?,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
@@ -548,10 +558,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'FirstName')  String? firstName, @JsonKey(name: 'LastName')  String? lastName, @JsonKey(name: 'FullName')  String? fullName, @JsonKey(name: 'Gender')  String? gender, @JsonKey(name: 'Contact')  UserDetailContactModel? contact)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'FirstName')  String? firstName, @JsonKey(name: 'LastName')  String? lastName, @JsonKey(name: 'FullName')  String? fullName, @JsonKey(name: 'Gender')  String? gender, @JsonKey(name: 'Contact')  UserDetailContactModel? contact)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDetailPersonInfoModel() when $default != null:
-return $default(_that.firstName,_that.lastName,_that.fullName,_that.gender,_that.contact);case _:
+return $default(_that.id,_that.firstName,_that.lastName,_that.fullName,_that.gender,_that.contact);case _:
   return orElse();
 
 }
@@ -569,10 +579,10 @@ return $default(_that.firstName,_that.lastName,_that.fullName,_that.gender,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'FirstName')  String? firstName, @JsonKey(name: 'LastName')  String? lastName, @JsonKey(name: 'FullName')  String? fullName, @JsonKey(name: 'Gender')  String? gender, @JsonKey(name: 'Contact')  UserDetailContactModel? contact)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'FirstName')  String? firstName, @JsonKey(name: 'LastName')  String? lastName, @JsonKey(name: 'FullName')  String? fullName, @JsonKey(name: 'Gender')  String? gender, @JsonKey(name: 'Contact')  UserDetailContactModel? contact)  $default,) {final _that = this;
 switch (_that) {
 case _UserDetailPersonInfoModel():
-return $default(_that.firstName,_that.lastName,_that.fullName,_that.gender,_that.contact);case _:
+return $default(_that.id,_that.firstName,_that.lastName,_that.fullName,_that.gender,_that.contact);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -589,10 +599,10 @@ return $default(_that.firstName,_that.lastName,_that.fullName,_that.gender,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'FirstName')  String? firstName, @JsonKey(name: 'LastName')  String? lastName, @JsonKey(name: 'FullName')  String? fullName, @JsonKey(name: 'Gender')  String? gender, @JsonKey(name: 'Contact')  UserDetailContactModel? contact)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'FirstName')  String? firstName, @JsonKey(name: 'LastName')  String? lastName, @JsonKey(name: 'FullName')  String? fullName, @JsonKey(name: 'Gender')  String? gender, @JsonKey(name: 'Contact')  UserDetailContactModel? contact)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDetailPersonInfoModel() when $default != null:
-return $default(_that.firstName,_that.lastName,_that.fullName,_that.gender,_that.contact);case _:
+return $default(_that.id,_that.firstName,_that.lastName,_that.fullName,_that.gender,_that.contact);case _:
   return null;
 
 }
@@ -604,9 +614,10 @@ return $default(_that.firstName,_that.lastName,_that.fullName,_that.gender,_that
 @JsonSerializable()
 
 class _UserDetailPersonInfoModel implements UserDetailPersonInfoModel {
-  const _UserDetailPersonInfoModel({@JsonKey(name: 'FirstName') this.firstName, @JsonKey(name: 'LastName') this.lastName, @JsonKey(name: 'FullName') this.fullName, @JsonKey(name: 'Gender') this.gender, @JsonKey(name: 'Contact') this.contact});
+  const _UserDetailPersonInfoModel({@JsonKey(name: 'Id') this.id, @JsonKey(name: 'FirstName') this.firstName, @JsonKey(name: 'LastName') this.lastName, @JsonKey(name: 'FullName') this.fullName, @JsonKey(name: 'Gender') this.gender, @JsonKey(name: 'Contact') this.contact});
   factory _UserDetailPersonInfoModel.fromJson(Map<String, dynamic> json) => _$UserDetailPersonInfoModelFromJson(json);
 
+@override@JsonKey(name: 'Id') final  int? id;
 @override@JsonKey(name: 'FirstName') final  String? firstName;
 @override@JsonKey(name: 'LastName') final  String? lastName;
 @override@JsonKey(name: 'FullName') final  String? fullName;
@@ -626,16 +637,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDetailPersonInfoModel&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.contact, contact) || other.contact == contact));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDetailPersonInfoModel&&(identical(other.id, id) || other.id == id)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.gender, gender) || other.gender == gender)&&(identical(other.contact, contact) || other.contact == contact));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,firstName,lastName,fullName,gender,contact);
+int get hashCode => Object.hash(runtimeType,id,firstName,lastName,fullName,gender,contact);
 
 @override
 String toString() {
-  return 'UserDetailPersonInfoModel(firstName: $firstName, lastName: $lastName, fullName: $fullName, gender: $gender, contact: $contact)';
+  return 'UserDetailPersonInfoModel(id: $id, firstName: $firstName, lastName: $lastName, fullName: $fullName, gender: $gender, contact: $contact)';
 }
 
 
@@ -646,7 +657,7 @@ abstract mixin class _$UserDetailPersonInfoModelCopyWith<$Res> implements $UserD
   factory _$UserDetailPersonInfoModelCopyWith(_UserDetailPersonInfoModel value, $Res Function(_UserDetailPersonInfoModel) _then) = __$UserDetailPersonInfoModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'FirstName') String? firstName,@JsonKey(name: 'LastName') String? lastName,@JsonKey(name: 'FullName') String? fullName,@JsonKey(name: 'Gender') String? gender,@JsonKey(name: 'Contact') UserDetailContactModel? contact
+@JsonKey(name: 'Id') int? id,@JsonKey(name: 'FirstName') String? firstName,@JsonKey(name: 'LastName') String? lastName,@JsonKey(name: 'FullName') String? fullName,@JsonKey(name: 'Gender') String? gender,@JsonKey(name: 'Contact') UserDetailContactModel? contact
 });
 
 
@@ -663,9 +674,10 @@ class __$UserDetailPersonInfoModelCopyWithImpl<$Res>
 
 /// Create a copy of UserDetailPersonInfoModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? firstName = freezed,Object? lastName = freezed,Object? fullName = freezed,Object? gender = freezed,Object? contact = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? fullName = freezed,Object? gender = freezed,Object? contact = freezed,}) {
   return _then(_UserDetailPersonInfoModel(
-firstName: freezed == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,firstName: freezed == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String?,lastName: freezed == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
 as String?,fullName: freezed == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String?,gender: freezed == gender ? _self.gender : gender // ignore: cast_nullable_to_non_nullable
@@ -693,7 +705,7 @@ $UserDetailContactModelCopyWith<$Res>? get contact {
 /// @nodoc
 mixin _$UserDetailContactModel {
 
-@JsonKey(name: 'Numbers') List<UserDetailContactNumberModel>? get numbers;
+@JsonKey(name: 'Id') int? get id;@JsonKey(name: 'Numbers') List<UserDetailContactNumberModel>? get numbers;
 /// Create a copy of UserDetailContactModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -706,16 +718,16 @@ $UserDetailContactModelCopyWith<UserDetailContactModel> get copyWith => _$UserDe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDetailContactModel&&const DeepCollectionEquality().equals(other.numbers, numbers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserDetailContactModel&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other.numbers, numbers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(numbers));
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(numbers));
 
 @override
 String toString() {
-  return 'UserDetailContactModel(numbers: $numbers)';
+  return 'UserDetailContactModel(id: $id, numbers: $numbers)';
 }
 
 
@@ -726,7 +738,7 @@ abstract mixin class $UserDetailContactModelCopyWith<$Res>  {
   factory $UserDetailContactModelCopyWith(UserDetailContactModel value, $Res Function(UserDetailContactModel) _then) = _$UserDetailContactModelCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'Numbers') List<UserDetailContactNumberModel>? numbers
+@JsonKey(name: 'Id') int? id,@JsonKey(name: 'Numbers') List<UserDetailContactNumberModel>? numbers
 });
 
 
@@ -743,9 +755,10 @@ class _$UserDetailContactModelCopyWithImpl<$Res>
 
 /// Create a copy of UserDetailContactModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? numbers = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? numbers = freezed,}) {
   return _then(_self.copyWith(
-numbers: freezed == numbers ? _self.numbers : numbers // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,numbers: freezed == numbers ? _self.numbers : numbers // ignore: cast_nullable_to_non_nullable
 as List<UserDetailContactNumberModel>?,
   ));
 }
@@ -831,10 +844,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Numbers')  List<UserDetailContactNumberModel>? numbers)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'Numbers')  List<UserDetailContactNumberModel>? numbers)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDetailContactModel() when $default != null:
-return $default(_that.numbers);case _:
+return $default(_that.id,_that.numbers);case _:
   return orElse();
 
 }
@@ -852,10 +865,10 @@ return $default(_that.numbers);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Numbers')  List<UserDetailContactNumberModel>? numbers)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'Numbers')  List<UserDetailContactNumberModel>? numbers)  $default,) {final _that = this;
 switch (_that) {
 case _UserDetailContactModel():
-return $default(_that.numbers);case _:
+return $default(_that.id,_that.numbers);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -872,10 +885,10 @@ return $default(_that.numbers);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Numbers')  List<UserDetailContactNumberModel>? numbers)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'Id')  int? id, @JsonKey(name: 'Numbers')  List<UserDetailContactNumberModel>? numbers)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDetailContactModel() when $default != null:
-return $default(_that.numbers);case _:
+return $default(_that.id,_that.numbers);case _:
   return null;
 
 }
@@ -887,9 +900,10 @@ return $default(_that.numbers);case _:
 @JsonSerializable()
 
 class _UserDetailContactModel implements UserDetailContactModel {
-  const _UserDetailContactModel({@JsonKey(name: 'Numbers') final  List<UserDetailContactNumberModel>? numbers}): _numbers = numbers;
+  const _UserDetailContactModel({@JsonKey(name: 'Id') this.id, @JsonKey(name: 'Numbers') final  List<UserDetailContactNumberModel>? numbers}): _numbers = numbers;
   factory _UserDetailContactModel.fromJson(Map<String, dynamic> json) => _$UserDetailContactModelFromJson(json);
 
+@override@JsonKey(name: 'Id') final  int? id;
  final  List<UserDetailContactNumberModel>? _numbers;
 @override@JsonKey(name: 'Numbers') List<UserDetailContactNumberModel>? get numbers {
   final value = _numbers;
@@ -913,16 +927,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDetailContactModel&&const DeepCollectionEquality().equals(other._numbers, _numbers));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserDetailContactModel&&(identical(other.id, id) || other.id == id)&&const DeepCollectionEquality().equals(other._numbers, _numbers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_numbers));
+int get hashCode => Object.hash(runtimeType,id,const DeepCollectionEquality().hash(_numbers));
 
 @override
 String toString() {
-  return 'UserDetailContactModel(numbers: $numbers)';
+  return 'UserDetailContactModel(id: $id, numbers: $numbers)';
 }
 
 
@@ -933,7 +947,7 @@ abstract mixin class _$UserDetailContactModelCopyWith<$Res> implements $UserDeta
   factory _$UserDetailContactModelCopyWith(_UserDetailContactModel value, $Res Function(_UserDetailContactModel) _then) = __$UserDetailContactModelCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'Numbers') List<UserDetailContactNumberModel>? numbers
+@JsonKey(name: 'Id') int? id,@JsonKey(name: 'Numbers') List<UserDetailContactNumberModel>? numbers
 });
 
 
@@ -950,9 +964,10 @@ class __$UserDetailContactModelCopyWithImpl<$Res>
 
 /// Create a copy of UserDetailContactModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? numbers = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? numbers = freezed,}) {
   return _then(_UserDetailContactModel(
-numbers: freezed == numbers ? _self._numbers : numbers // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,numbers: freezed == numbers ? _self._numbers : numbers // ignore: cast_nullable_to_non_nullable
 as List<UserDetailContactNumberModel>?,
   ));
 }

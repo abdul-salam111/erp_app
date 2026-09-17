@@ -208,6 +208,8 @@ final class _Security {
 
   String get usersList => '$_base/user/getList';
   String userById(int id) => '$_base/user/GetById/$id';
+  String get userInsertOrUpdate => '$_base/user/insertOrUpdate';
+  String userDelete(int id) => '$_base/user/delete/$id';
 }
 
 // ─── BackOffice (org-level: branches, roles, landing pages) ────────────────

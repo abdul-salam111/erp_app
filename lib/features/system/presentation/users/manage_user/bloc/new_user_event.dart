@@ -18,3 +18,12 @@ class NewUserFormLoaded extends NewUserEvent {
   @override
   List<Object?> get props => [userId, tenantId];
 }
+
+class NewUserSubmitted extends NewUserEvent {
+  final Map<String, dynamic> payload;
+
+  const NewUserSubmitted(this.payload);
+
+  @override
+  List<Object?> get props => [payload];
+}

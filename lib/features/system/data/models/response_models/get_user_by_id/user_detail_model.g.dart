@@ -32,6 +32,9 @@ _UserDetailModel _$UserDetailModelFromJson(Map<String, dynamic> json) =>
               json['LandingPageFeature'] as Map<String, dynamic>,
             ),
       landingPageFeatureId: (json['LandingPageFeatureId'] as num?)?.toInt(),
+      openDaysPast: (json['OpenDaysPast'] as num?)?.toInt(),
+      openDaysFuture: (json['OpenDaysFuture'] as num?)?.toInt(),
+      personId: (json['PersonId'] as num?)?.toInt(),
       roles: (json['Roles'] as List<dynamic>?)
           ?.map((e) => UserDetailRoleModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -51,12 +54,16 @@ Map<String, dynamic> _$UserDetailModelToJson(_UserDetailModel instance) =>
       'Language': instance.language,
       'LandingPageFeature': instance.landingPageFeature,
       'LandingPageFeatureId': instance.landingPageFeatureId,
+      'OpenDaysPast': instance.openDaysPast,
+      'OpenDaysFuture': instance.openDaysFuture,
+      'PersonId': instance.personId,
       'Roles': instance.roles,
     };
 
 _UserDetailPersonInfoModel _$UserDetailPersonInfoModelFromJson(
   Map<String, dynamic> json,
 ) => _UserDetailPersonInfoModel(
+  id: (json['Id'] as num?)?.toInt(),
   firstName: json['FirstName'] as String?,
   lastName: json['LastName'] as String?,
   fullName: json['FullName'] as String?,
@@ -71,6 +78,7 @@ _UserDetailPersonInfoModel _$UserDetailPersonInfoModelFromJson(
 Map<String, dynamic> _$UserDetailPersonInfoModelToJson(
   _UserDetailPersonInfoModel instance,
 ) => <String, dynamic>{
+  'Id': instance.id,
   'FirstName': instance.firstName,
   'LastName': instance.lastName,
   'FullName': instance.fullName,
@@ -81,6 +89,7 @@ Map<String, dynamic> _$UserDetailPersonInfoModelToJson(
 _UserDetailContactModel _$UserDetailContactModelFromJson(
   Map<String, dynamic> json,
 ) => _UserDetailContactModel(
+  id: (json['Id'] as num?)?.toInt(),
   numbers: (json['Numbers'] as List<dynamic>?)
       ?.map(
         (e) => UserDetailContactNumberModel.fromJson(e as Map<String, dynamic>),
@@ -90,7 +99,7 @@ _UserDetailContactModel _$UserDetailContactModelFromJson(
 
 Map<String, dynamic> _$UserDetailContactModelToJson(
   _UserDetailContactModel instance,
-) => <String, dynamic>{'Numbers': instance.numbers};
+) => <String, dynamic>{'Id': instance.id, 'Numbers': instance.numbers};
 
 _UserDetailContactNumberModel _$UserDetailContactNumberModelFromJson(
   Map<String, dynamic> json,

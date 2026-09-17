@@ -12,7 +12,9 @@ abstract interface class IRemoteSystemDataSource {
   Future<UserDetailModel> getUserById(int id);
   Future<List<LandingPageFeatureModel>> getLandingPageFeatures();
   Future<List<BranchModel>> getBranchList({required int tenantId});
-  Future<List<RoleModel>> getRoleList();
+  Future<List<RoleModel>> getRoleList({int? organizationId});
+  Future<UserDetailModel> saveUser(Map<String, dynamic> payload);
+  Future<bool> deleteUser(int id);
 }
 
 class RemoteSystemDataSourceImpl extends BaseRemoteDatasource
@@ -62,12 +64,31 @@ class RemoteSystemDataSourceImpl extends BaseRemoteDatasource
   }
 
   @override
-  Future<List<RoleModel>> getRoleList() {
+  Future<List<RoleModel>> getRoleList({int? organizationId}) {
     return postList<RoleModel>(
       url: ApiEndPoints.backOffice.roleList,
-      body: const {},
+      body: organizationId == null ? const {} : {'MisOrganizationId': organizationId},
       authToken: _token,
       parser: (json) => RoleModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<UserDetailModel> saveUser(Map<String, dynamic> payload) {
+    return post<UserDetailModel>(
+      url: ApiEndPoints.security.userInsertOrUpdate,
+      body: payload,
+      authToken: _token,
+      parser: (json) => UserDetailModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<bool> deleteUser(int id) {
+    return delete<bool>(
+      url: ApiEndPoints.security.userDelete(id),
+      authToken: _token,
+      parser: (json) => json == true,
     );
   }
 }

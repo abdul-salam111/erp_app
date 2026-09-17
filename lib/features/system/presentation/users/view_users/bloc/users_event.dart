@@ -10,3 +10,12 @@ abstract class UsersEvent extends Equatable {
 class UsersListFetched extends UsersEvent {
   const UsersListFetched();
 }
+
+class UserDeleteRequested extends UsersEvent {
+  final int id;
+
+  const UserDeleteRequested(this.id);
+
+  @override
+  List<Object> get props => [id];
+}

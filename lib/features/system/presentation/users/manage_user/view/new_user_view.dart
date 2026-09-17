@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,8 +66,27 @@ class _NewUserFormBodyState extends State<_NewUserFormBody> {
   _Gender _gender = _Gender.male;
   _LandingChoice _landing = _LandingChoice.dashboard;
   int? _selectedLandingPageId;
-  final Set<int> _selectedRoleIds = <int>{};
+  final Map<int, Set<int>> _selectedRolesByBranch = <int, Set<int>>{};
   bool _prefilled = false;
+
+  int get _totalSelectedRoles => _selectedRolesByBranch.values.fold<int>(
+        0,
+        (sum, s) => sum + s.length,
+      );
+
+  Set<int> _rolesFor(int branchId) =>
+      _selectedRolesByBranch.putIfAbsent(branchId, () => <int>{});
+
+  void _toggleRole(int branchId, int roleId) {
+    final set = _rolesFor(branchId);
+    setState(() {
+      if (set.contains(roleId)) {
+        set.remove(roleId);
+      } else {
+        set.add(roleId);
+      }
+    });
+  }
 
   bool get _readOnly => widget.mode == UserFormMode.view;
 
@@ -127,12 +147,13 @@ class _NewUserFormBodyState extends State<_NewUserFormBody> {
         ? _LandingChoice.dashboard
         : _LandingChoice.custom;
     _selectedLandingPageId = u.landingPageFeatureId;
-    _selectedRoleIds
-      ..clear()
-      ..addAll(u.roles
-          .map((r) => r.roleId)
-          .where((id) => id != null)
-          .cast<int>());
+    _selectedRolesByBranch.clear();
+    for (final r in u.roles) {
+      final branchId = r.misBranchId;
+      final roleId = r.roleId;
+      if (branchId == null || roleId == null) continue;
+      _selectedRolesByBranch.putIfAbsent(branchId, () => <int>{}).add(roleId);
+    }
     _prefilled = true;
     setState(() {});
   }
@@ -161,17 +182,190 @@ class _NewUserFormBodyState extends State<_NewUserFormBody> {
       AppToastsUtils.showInfoTop(context, 'Passwords do not match');
       return;
     }
-    AppToastsUtils.showInfoTop(context, 'User saved — coming soon');
+    final bloc = context.read<NewUserBloc>();
+    final payload = _buildPayload(bloc.state);
+    bloc.add(NewUserSubmitted(payload));
+  }
+
+  Map<String, dynamic> _buildPayload(NewUserState state) {
+    final user = state.userDetail;
+    final isCreate = widget.mode == UserFormMode.create;
+    final phone = _phoneCtrl.text.trim();
+    final isDashboard = _landing == _LandingChoice.dashboard;
+
+    return {
+      'Id': user?.id ?? 0,
+      'MisUserId': user?.misUserId ?? 0,
+      'Email': _emailCtrl.text.trim(),
+      'Password': _passwordCtrl.text.isEmpty ? null : _passwordCtrl.text,
+      'ConfirmPassword':
+          _confirmPasswordCtrl.text.isEmpty ? null : _confirmPasswordCtrl.text,
+      'Archived': false,
+      'Designation': _designationCtrl.text.trim(),
+      'FlgDashboardLandingPage': isDashboard,
+      'LandingPageFeature': _buildLandingPageFeature(state, isDashboard),
+      'LandingPageFeatureId': _resolveLandingPageId(state, isDashboard),
+      'LandingPageFeatureSysKey': null,
+      'LanguageId': user?.languageId ?? 0,
+      'OpenDaysFuture': user?.openDaysFuture ?? 1000,
+      'OpenDaysPast': user?.openDaysPast ?? 1000,
+      'PersonInfo': {
+        'Id': isCreate ? 0 : (user?.personId ?? 0),
+        'FirstName': _firstNameCtrl.text.trim(),
+        'LastName': _lastNameCtrl.text.trim(),
+        'Gender': _gender == _Gender.female ? 'F' : 'M',
+        'Avatar': null,
+        'Contact': _buildContact(user, phone, isCreate),
+      },
+      'Roles': _buildRolesPayload(state),
+      'landingPageMode': isDashboard ? 'dashboard' : 'custom',
+    };
+  }
+
+  Map<String, dynamic>? _buildLandingPageFeature(
+    NewUserState state,
+    bool isDashboard,
+  ) {
+    if (isDashboard) {
+      final user = state.userDetail;
+      if (user?.landingPageFeatureId != null) {
+        return {
+          'Id': user!.landingPageFeatureId,
+          'Name': user.landingPageName ?? 'Main Dashboard',
+          'SysKey': 'erp_main_dashboard',
+          'FinDisplayOrder': 0,
+          'FlgLandingPage': false,
+          'StockDisplayOrder': 0,
+        };
+      }
+      return null;
+    }
+    if (_selectedLandingPageId == null) return null;
+    final match = state.landingPages
+        .where((p) => p.id == _selectedLandingPageId)
+        .toList();
+    if (match.isEmpty) return null;
+    final page = match.first;
+    return {
+      'Id': page.id,
+      'Name': page.name,
+      'SysKey': page.sysKey,
+      'FinDisplayOrder': 0,
+      'FlgLandingPage': true,
+      'StockDisplayOrder': 0,
+    };
+  }
+
+  int? _resolveLandingPageId(NewUserState state, bool isDashboard) {
+    if (isDashboard) return state.userDetail?.landingPageFeatureId;
+    return _selectedLandingPageId;
+  }
+
+  Map<String, dynamic> _buildContact(
+    SystemUserDetailEntity? user,
+    String phone,
+    bool isCreate,
+  ) {
+    final existing = user?.contactNumbers.isNotEmpty == true
+        ? user!.contactNumbers.first
+        : null;
+    final numbers = <Map<String, dynamic>>[];
+    String contactNumbersJson = '[]';
+    if (phone.isNotEmpty) {
+      final e164 = phone.replaceAll(RegExp(r'\s+'), '');
+      numbers.add({
+        'ContactId': 0,
+        'Type': 'MOBILE',
+        'International': phone,
+        'E164': existing?.e164 ?? e164,
+        'National': existing?.national ?? e164,
+        'RegionCode': existing?.regionCode ?? 'PK',
+        'CountryCode': existing?.countryCode ?? '92',
+        'FlgWhatsApp': existing?.isWhatsApp ?? false,
+        'FlgWork': existing?.isWork ?? false,
+        'FlgEmergency': false,
+        'FlgMobile': existing?.isMobile ?? true,
+        'Archived': false,
+        'Id': existing?.id ?? 0,
+      });
+      contactNumbersJson = jsonEncode([
+        {
+          'Id': existing?.id ?? 0,
+          'E164': existing?.e164 ?? e164,
+          'National': existing?.national ?? e164,
+          'FlgMobile': existing?.isMobile ?? true,
+          'FlgWork': existing?.isWork ?? false,
+          'FlgWhatsApp': existing?.isWhatsApp ?? false,
+        }
+      ]);
+    }
+    return {
+      'Id': isCreate ? 0 : (user?.contactId ?? 0),
+      'Numbers': numbers,
+      'Addresses': [],
+      'ContactNumbers': contactNumbersJson,
+      'FlgBusiness': false,
+      'FlgEmail1Verified': false,
+      'FlgEmail2Verified': false,
+      'Archived': false,
+    };
+  }
+
+  List<Map<String, dynamic>> _buildRolesPayload(NewUserState state) {
+    final assignedRoles = state.userDetail?.roles ?? const [];
+    final availableById = {for (final r in state.availableRoles) r.id: r};
+    final results = <Map<String, dynamic>>[];
+    _selectedRolesByBranch.forEach((branchId, roleIds) {
+      for (final roleId in roleIds) {
+        final existing = assignedRoles.firstWhere(
+          (r) => r.roleId == roleId && r.misBranchId == branchId,
+          orElse: () => const SystemUserRoleEntity(name: ''),
+        );
+        final roleName = availableById[roleId]?.name ??
+            (existing.name.isNotEmpty ? existing.name : '');
+        results.add({
+          'Id': existing.id ?? 0,
+          'UserId': 0,
+          'MisUserId': 0,
+          'RoleId': roleId,
+          'Role': {'Id': roleId, 'Name': roleName},
+          'MisBranchId': branchId,
+        });
+      }
+    });
+    return results;
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<NewUserBloc, NewUserState>(
       listenWhen: (p, c) =>
-          p.userDetail != c.userDetail && c.userDetail != null && !_prefilled,
-      listener: (context, state) => _prefill(state.userDetail!),
+          (p.userDetail != c.userDetail &&
+              c.userDetail != null &&
+              !_prefilled) ||
+          p.saveStatus != c.saveStatus,
+      listener: (context, state) {
+        if (state.userDetail != null && !_prefilled) {
+          _prefill(state.userDetail!);
+        }
+        if (state.saveStatus == ApiStatus.SUCCESS) {
+          AppToastsUtils.showInfoTop(
+            context,
+            widget.mode == UserFormMode.create
+                ? 'User created'
+                : 'User updated',
+          );
+          context.pop(true);
+        } else if (state.saveStatus == ApiStatus.FAILURE) {
+          AppToastsUtils.showInfoTop(
+            context,
+            state.message ?? 'Failed to save user',
+          );
+        }
+      },
       builder: (context, state) {
         final isLoading = state.apiStatus == ApiStatus.LOADING;
+        final isSaving = state.saveStatus == ApiStatus.LOADING;
         final showForm = state.apiStatus == ApiStatus.SUCCESS ||
             state.apiStatus == ApiStatus.INITIAL;
         return Scaffold(
@@ -204,9 +398,10 @@ class _NewUserFormBodyState extends State<_NewUserFormBody> {
           bottomNavigationBar: _readOnly
               ? null
               : _BottomBar(
-                  onCancel: () => context.pop(),
-                  onSave: _save,
+                  onCancel: isSaving ? () {} : () => context.pop(),
+                  onSave: isSaving ? () {} : _save,
                   saveLabel: _saveLabel,
+                  isSaving: isSaving,
                 ),
         );
       },
@@ -446,62 +641,150 @@ class _NewUserFormBodyState extends State<_NewUserFormBody> {
           iconColor: AppColors.orange,
           title: 'Role & Access',
           trailing: Text(
-            '${_selectedRoleIds.length} selected',
+            '$_totalSelectedRoles selected',
             style: context.labelSmall.copyWith(
               color: context.textSecondary,
               fontWeight: .w600,
               fontSize: 11,
             ),
           ),
-          child: Column(
-            crossAxisAlignment: .stretch,
-            children: [
-              _MainDivider(label: 'Main'),
-              const SizedBox(height: 8),
-              if (state.availableRoles.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Center(
-                    child: Text(
-                      'No roles available',
-                      style: context.bodySmall.copyWith(
-                        color: context.textSecondary,
-                      ),
-                    ),
-                  ),
-                )
-              else
-                for (int i = 0; i < state.availableRoles.length; i++) ...[
-                  _RoleTile(
-                    role: state.availableRoles[i],
-                    selected:
-                        _selectedRoleIds.contains(state.availableRoles[i].id),
-                    onTap: _readOnly
-                        ? null
-                        : () => setState(() {
-                              final id = state.availableRoles[i].id;
-                              if (_selectedRoleIds.contains(id)) {
-                                _selectedRoleIds.remove(id);
-                              } else {
-                                _selectedRoleIds.add(id);
-                              }
-                            }),
-                  ),
-                  if (i < state.availableRoles.length - 1)
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: context.divider.withValues(alpha: 0.5),
-                    ),
-                ],
-            ],
-          ),
+          child: _buildRolesByBranch(context, state),
         )
             .animate()
             .fadeIn(delay: 400.ms, duration: 400.ms)
             .slideY(begin: 0.15, curve: Curves.easeOutCubic),
       ],
     );
+  }
+
+  Widget _buildRolesByBranch(BuildContext context, NewUserState state) {
+    final assignedRoles = state.userDetail?.roles ?? const [];
+    if (state.availableRoles.isEmpty && assignedRoles.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Center(
+          child: Text(
+            'No roles available',
+            style: context.bodySmall.copyWith(color: context.textSecondary),
+          ),
+        ),
+      );
+    }
+
+    final branchList = state.branches.isEmpty
+        ? const <BranchEntity>[BranchEntity(id: 0, name: 'Main')]
+        : state.branches;
+
+    final groups = <String, List<BranchEntity>>{};
+    for (final b in branchList) {
+      groups.putIfAbsent(b.name, () => []).add(b);
+    }
+    final groupEntries = groups.entries.toList();
+
+    return Column(
+      crossAxisAlignment: .stretch,
+      children: [
+        for (int g = 0; g < groupEntries.length; g++) ...[
+          if (g > 0) const SizedBox(height: 8),
+          _MainDivider(label: groupEntries[g].key),
+          const SizedBox(height: 8),
+          ..._buildBranchGroupTiles(
+            context,
+            group: groupEntries[g].value,
+            availableRoles: state.availableRoles,
+            assignedRoles: assignedRoles,
+          ),
+        ],
+      ],
+    );
+  }
+
+  List<Widget> _buildBranchGroupTiles(
+    BuildContext context, {
+    required List<BranchEntity> group,
+    required List<RoleEntity> availableRoles,
+    required List<SystemUserRoleEntity> assignedRoles,
+  }) {
+    final primaryBranchId = group.first.id;
+    final groupBranchIds = group.map((b) => b.id).toSet();
+    final groupOrgIds =
+        group.map((b) => b.organizationId).whereType<int>().toSet();
+
+    final matchingRoles = availableRoles
+        .where((r) =>
+            r.organizationId != null && groupOrgIds.contains(r.organizationId))
+        .toList();
+    final matchingRoleIds = matchingRoles.map((r) => r.id).toSet();
+
+    final extras = <SystemUserRoleEntity>[];
+    final seen = <String>{};
+    for (final r in assignedRoles) {
+      final branchId = r.misBranchId;
+      final roleId = r.roleId;
+      if (branchId == null || roleId == null) continue;
+      if (!groupBranchIds.contains(branchId)) continue;
+      if (matchingRoleIds.contains(roleId)) continue;
+      final key = '$branchId-$roleId';
+      if (seen.add(key)) extras.add(r);
+    }
+
+    final tiles = <Widget>[];
+    for (int i = 0; i < matchingRoles.length; i++) {
+      final role = matchingRoles[i];
+      final selected =
+          groupBranchIds.any((bid) => _rolesFor(bid).contains(role.id));
+      tiles.add(_RoleTile(
+        role: role,
+        selected: selected,
+        onTap: _readOnly
+            ? null
+            : () => _toggleGroupRole(groupBranchIds, primaryBranchId, role.id),
+      ));
+      if (i < matchingRoles.length - 1 || extras.isNotEmpty) {
+        tiles.add(Divider(
+          height: 1,
+          thickness: 1,
+          color: context.divider.withValues(alpha: 0.5),
+        ));
+      }
+    }
+    for (int i = 0; i < extras.length; i++) {
+      final r = extras[i];
+      final branchId = r.misBranchId!;
+      final roleId = r.roleId!;
+      final selected = _rolesFor(branchId).contains(roleId);
+      tiles.add(_RoleTile(
+        role: RoleEntity(id: roleId, name: r.name),
+        selected: selected,
+        onTap: _readOnly ? null : () => _toggleRole(branchId, roleId),
+      ));
+      if (i < extras.length - 1) {
+        tiles.add(Divider(
+          height: 1,
+          thickness: 1,
+          color: context.divider.withValues(alpha: 0.5),
+        ));
+      }
+    }
+    return tiles;
+  }
+
+  void _toggleGroupRole(
+    Set<int> groupBranchIds,
+    int primaryBranchId,
+    int roleId,
+  ) {
+    final anySelected =
+        groupBranchIds.any((bid) => _rolesFor(bid).contains(roleId));
+    setState(() {
+      if (anySelected) {
+        for (final bid in groupBranchIds) {
+          _rolesFor(bid).remove(roleId);
+        }
+      } else {
+        _rolesFor(primaryBranchId).add(roleId);
+      }
+    });
   }
 }
 
@@ -1309,11 +1592,13 @@ class _BottomBar extends StatelessWidget {
   final VoidCallback onCancel;
   final VoidCallback onSave;
   final String saveLabel;
+  final bool isSaving;
 
   const _BottomBar({
     required this.onCancel,
     required this.onSave,
     required this.saveLabel,
+    this.isSaving = false,
   });
 
   @override
@@ -1326,7 +1611,7 @@ class _BottomBar extends StatelessWidget {
           children: [
             Expanded(
               child: OutlinedButton(
-                onPressed: onCancel,
+                onPressed: isSaving ? null : onCancel,
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size.fromHeight(48),
                   side: BorderSide(
@@ -1349,7 +1634,7 @@ class _BottomBar extends StatelessWidget {
             Expanded(
               flex: 2,
               child: ElevatedButton(
-                onPressed: onSave,
+                onPressed: isSaving ? null : onSave,
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(48),
                   backgroundColor: context.primary,
@@ -1359,20 +1644,30 @@ class _BottomBar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Row(
-                  mainAxisSize: .min,
-                  children: [
-                    const Icon(Iconsax.tick_circle, size: 18),
-                    const SizedBox(width: 8),
-                    Text(
-                      saveLabel,
-                      style: context.labelMedium.copyWith(
-                        color: AppColors.white,
-                        fontWeight: .w700,
+                child: isSaving
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(AppColors.white),
+                        ),
+                      )
+                    : Row(
+                        mainAxisSize: .min,
+                        children: [
+                          const Icon(Iconsax.tick_circle, size: 18),
+                          const SizedBox(width: 8),
+                          Text(
+                            saveLabel,
+                            style: context.labelMedium.copyWith(
+                              color: AppColors.white,
+                              fontWeight: .w700,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
               ),
             ),
           ],

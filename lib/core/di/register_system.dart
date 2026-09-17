@@ -34,19 +34,30 @@ Future<void> registerSystem() async {
   sl.registerLazySingleton<GetRoleListUsecase>(
     () => GetRoleListUsecase(repository: sl()),
   );
+  sl.registerLazySingleton<SaveUserUsecase>(
+    () => SaveUserUsecase(repository: sl()),
+  );
+  sl.registerLazySingleton<DeleteUserUsecase>(
+    () => DeleteUserUsecase(repository: sl()),
+  );
 
   // BLoCs
   sl.registerFactory<SystemBloc>(
     () => SystemBloc(),
   );
   sl.registerFactory<UsersBloc>(
-    () => UsersBloc(getUsersListUsecase: sl()),
+    () => UsersBloc(
+      getUsersListUsecase: sl(),
+      deleteUserUsecase: sl(),
+    ),
   );
   sl.registerFactory<NewUserBloc>(
     () => NewUserBloc(
       getUserByIdUsecase: sl(),
       getLandingPageFeaturesUsecase: sl(),
       getRoleListUsecase: sl(),
+      getBranchListUsecase: sl(),
+      saveUserUsecase: sl(),
     ),
   );
 }

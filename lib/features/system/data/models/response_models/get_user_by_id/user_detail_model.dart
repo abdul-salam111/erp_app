@@ -19,6 +19,9 @@ abstract class UserDetailModel with _$UserDetailModel {
     @JsonKey(name: 'LandingPageFeature')
     UserDetailLandingPageFeatureModel? landingPageFeature,
     @JsonKey(name: 'LandingPageFeatureId') int? landingPageFeatureId,
+    @JsonKey(name: 'OpenDaysPast') int? openDaysPast,
+    @JsonKey(name: 'OpenDaysFuture') int? openDaysFuture,
+    @JsonKey(name: 'PersonId') int? personId,
     @JsonKey(name: 'Roles') List<UserDetailRoleModel>? roles,
   }) = _UserDetailModel;
 
@@ -29,6 +32,7 @@ abstract class UserDetailModel with _$UserDetailModel {
 @freezed
 abstract class UserDetailPersonInfoModel with _$UserDetailPersonInfoModel {
   const factory UserDetailPersonInfoModel({
+    @JsonKey(name: 'Id') int? id,
     @JsonKey(name: 'FirstName') String? firstName,
     @JsonKey(name: 'LastName') String? lastName,
     @JsonKey(name: 'FullName') String? fullName,
@@ -43,6 +47,7 @@ abstract class UserDetailPersonInfoModel with _$UserDetailPersonInfoModel {
 @freezed
 abstract class UserDetailContactModel with _$UserDetailContactModel {
   const factory UserDetailContactModel({
+    @JsonKey(name: 'Id') int? id,
     @JsonKey(name: 'Numbers') List<UserDetailContactNumberModel>? numbers,
   }) = _UserDetailContactModel;
 

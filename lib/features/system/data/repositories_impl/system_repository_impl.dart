@@ -51,12 +51,32 @@ class SystemRepositoryImpl extends BaseRepository implements SystemRepository {
   }
 
   @override
-  Future<Result<List<RoleEntity>>> getRoleList() {
+  Future<Result<List<RoleEntity>>> getRoleList({int? organizationId}) {
     return execute(
       call: () async {
-        final models = await dataSource.getRoleList();
+        final models =
+            await dataSource.getRoleList(organizationId: organizationId);
         return models.map((m) => m.toEntity()).toList();
       },
+    );
+  }
+
+  @override
+  Future<Result<SystemUserDetailEntity>> saveUser(
+    Map<String, dynamic> payload,
+  ) {
+    return execute(
+      call: () async {
+        final model = await dataSource.saveUser(payload);
+        return model.toEntity();
+      },
+    );
+  }
+
+  @override
+  Future<Result<bool>> deleteUser(int id) {
+    return execute(
+      call: () async => dataSource.deleteUser(id),
     );
   }
 }

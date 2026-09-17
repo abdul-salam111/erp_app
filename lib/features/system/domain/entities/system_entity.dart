@@ -47,6 +47,7 @@ class SystemUserEntity extends Equatable {
 }
 
 class SystemUserRoleEntity extends Equatable {
+  final int? id;
   final int? roleId;
   final String name;
   final String? key;
@@ -55,6 +56,7 @@ class SystemUserRoleEntity extends Equatable {
 
   const SystemUserRoleEntity({
     required this.name,
+    this.id,
     this.roleId,
     this.key,
     this.branchName,
@@ -62,7 +64,7 @@ class SystemUserRoleEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [roleId, name, key, branchName, misBranchId];
+  List<Object?> get props => [id, roleId, name, key, branchName, misBranchId];
 }
 
 // ─── User detail (GetById) ────────────────────────────────────────────────
@@ -71,6 +73,7 @@ class SystemUserDetailEntity extends Equatable {
   final int id;
   final int? misUserId;
   final int? personId;
+  final int? contactId;
   final String firstName;
   final String lastName;
   final String fullName;
@@ -84,6 +87,8 @@ class SystemUserDetailEntity extends Equatable {
   final String? landingPageName;
   final bool isDashboardLandingPage;
   final bool isArchived;
+  final int? openDaysPast;
+  final int? openDaysFuture;
   final List<SystemUserRoleEntity> roles;
   final List<UserContactNumberEntity> contactNumbers;
 
@@ -96,6 +101,7 @@ class SystemUserDetailEntity extends Equatable {
     required this.designation,
     this.misUserId,
     this.personId,
+    this.contactId,
     this.gender,
     this.activeStatus,
     this.languageId,
@@ -104,6 +110,8 @@ class SystemUserDetailEntity extends Equatable {
     this.landingPageName,
     this.isDashboardLandingPage = false,
     this.isArchived = false,
+    this.openDaysPast,
+    this.openDaysFuture,
     this.roles = const [],
     this.contactNumbers = const [],
   });
@@ -113,6 +121,7 @@ class SystemUserDetailEntity extends Equatable {
         id,
         misUserId,
         personId,
+        contactId,
         firstName,
         lastName,
         fullName,
@@ -126,6 +135,8 @@ class SystemUserDetailEntity extends Equatable {
         landingPageName,
         isDashboardLandingPage,
         isArchived,
+        openDaysPast,
+        openDaysFuture,
         roles,
         contactNumbers,
       ];
@@ -218,6 +229,7 @@ class RoleEntity extends Equatable {
   final String? description;
   final bool isSystemRole;
   final int totalUsers;
+  final int? organizationId;
 
   const RoleEntity({
     required this.id,
@@ -226,9 +238,17 @@ class RoleEntity extends Equatable {
     this.description,
     this.isSystemRole = false,
     this.totalUsers = 0,
+    this.organizationId,
   });
 
   @override
-  List<Object?> get props =>
-      [id, name, sysKey, description, isSystemRole, totalUsers];
+  List<Object?> get props => [
+        id,
+        name,
+        sysKey,
+        description,
+        isSystemRole,
+        totalUsers,
+        organizationId,
+      ];
 }
