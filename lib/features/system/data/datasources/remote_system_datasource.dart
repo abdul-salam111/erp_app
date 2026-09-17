@@ -13,6 +13,8 @@ abstract interface class IRemoteSystemDataSource {
   Future<List<LandingPageFeatureModel>> getLandingPageFeatures();
   Future<List<BranchModel>> getBranchList({required int tenantId});
   Future<List<RoleModel>> getRoleList({int? organizationId});
+  Future<RoleModel> getRoleById(int id);
+  Future<RoleModel> saveRole(Map<String, dynamic> payload);
   Future<UserDetailModel> saveUser(Map<String, dynamic> payload);
   Future<bool> deleteUser(int id);
 }
@@ -68,6 +70,25 @@ class RemoteSystemDataSourceImpl extends BaseRemoteDatasource
     return postList<RoleModel>(
       url: ApiEndPoints.backOffice.roleList,
       body: organizationId == null ? const {} : {'MisOrganizationId': organizationId},
+      authToken: _token,
+      parser: (json) => RoleModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<RoleModel> getRoleById(int id) {
+    return get<RoleModel>(
+      url: ApiEndPoints.backOffice.roleById(id),
+      authToken: _token,
+      parser: (json) => RoleModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
+  @override
+  Future<RoleModel> saveRole(Map<String, dynamic> payload) {
+    return post<RoleModel>(
+      url: ApiEndPoints.backOffice.roleInsertOrUpdate,
+      body: payload,
       authToken: _token,
       parser: (json) => RoleModel.fromJson(json as Map<String, dynamic>),
     );

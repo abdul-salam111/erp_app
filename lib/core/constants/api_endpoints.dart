@@ -223,4 +223,6 @@ final class _BackOffice {
       '$_base/Organization/GetLandingPageFeatures';
   String get branchList => '$_base/Branch/GetList';
   String get roleList => '$_base/security/role/getList';
+  String roleById(int id) => '$_base/security/role/GetById/$id';
+  String get roleInsertOrUpdate => '$_base/security/role/insertOrUpdate';
 }

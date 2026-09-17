@@ -60,6 +60,28 @@ class GetRoleListUsecase implements Usecase<List<RoleEntity>, int?> {
   }
 }
 
+class GetRoleByIdUsecase implements Usecase<RoleEntity, int> {
+  final SystemRepository repository;
+
+  GetRoleByIdUsecase({required this.repository});
+
+  @override
+  Future<Result<RoleEntity>> call(int id) {
+    return repository.getRoleById(id);
+  }
+}
+
+class SaveRoleUsecase implements Usecase<RoleEntity, Map<String, dynamic>> {
+  final SystemRepository repository;
+
+  SaveRoleUsecase({required this.repository});
+
+  @override
+  Future<Result<RoleEntity>> call(Map<String, dynamic> payload) {
+    return repository.saveRole(payload);
+  }
+}
+
 class SaveUserUsecase
     implements Usecase<SystemUserDetailEntity, Map<String, dynamic>> {
   final SystemRepository repository;

@@ -2,6 +2,7 @@ import '../../features/system/data/datasources/remote_system_datasource.dart';
 import '../../features/system/data/repositories_impl/system_repository_impl.dart';
 import '../../features/system/domain/repositories/system_repository.dart';
 import '../../features/system/domain/usecases/system_usecase.dart';
+import '../../features/system/presentation/roles/bloc/new_role_bloc.dart';
 import '../../features/system/presentation/roles/bloc/roles_bloc.dart';
 import '../../features/system/presentation/system/blocs/system_bloc.dart';
 import '../../features/system/presentation/users/manage_user/bloc/new_user_bloc.dart';
@@ -35,6 +36,12 @@ Future<void> registerSystem() async {
   sl.registerLazySingleton<GetRoleListUsecase>(
     () => GetRoleListUsecase(repository: sl()),
   );
+  sl.registerLazySingleton<GetRoleByIdUsecase>(
+    () => GetRoleByIdUsecase(repository: sl()),
+  );
+  sl.registerLazySingleton<SaveRoleUsecase>(
+    () => SaveRoleUsecase(repository: sl()),
+  );
   sl.registerLazySingleton<SaveUserUsecase>(
     () => SaveUserUsecase(repository: sl()),
   );
@@ -63,5 +70,11 @@ Future<void> registerSystem() async {
   );
   sl.registerFactory<RolesBloc>(
     () => RolesBloc(getRoleListUsecase: sl()),
+  );
+  sl.registerFactory<NewRoleBloc>(
+    () => NewRoleBloc(
+      getRoleByIdUsecase: sl(),
+      saveRoleUsecase: sl(),
+    ),
   );
 }

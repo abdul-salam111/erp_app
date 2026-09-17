@@ -49,7 +49,10 @@ class _RolesBodyState extends State<_RolesBody> {
     super.dispose();
   }
 
-  bool _canManage(RoleEntity role) => !role.isSystemRole;
+  bool _canManage(RoleEntity role) {
+    final key = role.sysKey?.toLowerCase();
+    return key != 'admin' && key != 'mis_cp_admin';
+  }
 
   List<RoleEntity> _filtered(List<RoleEntity> all) {
     return all.where((role) {
@@ -67,7 +70,13 @@ class _RolesBodyState extends State<_RolesBody> {
       backgroundColor: context.background,
       appBar: CustomAppBar(title: 'Roles'),
       floatingActionButton: _NewRoleFab(
-        onTap: () => context.pushNamed(RouteNames.new_role),
+        onTap: () async {
+          final result = await context.pushNamed(RouteNames.new_role);
+          if (!context.mounted) return;
+          if (result == true) {
+            context.read<RolesBloc>().add(const RolesListFetched());
+          }
+        },
       ),
       body: Column(
         crossAxisAlignment: .stretch,
@@ -639,10 +648,16 @@ class _RoleTableRow extends StatelessWidget {
             _MiniAction(
               icon: Iconsax.edit_2,
               color: context.primary,
-              onTap: () => AppToastsUtils.showInfoTop(
-                context,
-                'Edit — coming soon',
-              ),
+              onTap: () async {
+                final result = await context.pushNamed(
+                  RouteNames.edit_role,
+                  pathParameters: {'id': role.id.toString()},
+                );
+                if (!context.mounted) return;
+                if (result == true) {
+                  context.read<RolesBloc>().add(const RolesListFetched());
+                }
+              },
             ),
             const SizedBox(width: 6),
             _MiniAction(

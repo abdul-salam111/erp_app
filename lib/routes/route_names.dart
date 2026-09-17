@@ -21,6 +21,7 @@ class RouteNames {
   static const String edit_user = 'edit_user';
   static const String roles = 'roles';
   static const String new_role = 'new_role';
+  static const String edit_role = 'edit_role';
   static const String account_ledger = 'account_ledger';
   static const String organizationSelection = 'organizationSelection';
   static const String party_ledger = 'party_ledger';

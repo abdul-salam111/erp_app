@@ -344,7 +344,6 @@ class _UsersTableShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showAllColumns = !context.isPhone;
     return GlassSurface(
       radius: 12,
       clipBehavior: .hardEdge,
@@ -368,11 +367,20 @@ class _UsersTableShimmer extends StatelessWidget {
                 _HeaderCell('Name', flex: 4),
                 const SizedBox(width: 12),
                 _HeaderCell('Designation', flex: 2),
-                if (showAllColumns) ...[
-                  const SizedBox(width: 12),
-                  _HeaderCell('Role', flex: 2),
-                ],
-                const SizedBox(width: 20),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 66,
+                  child: Text(
+                    'ACTIONS',
+                    textAlign: .center,
+                    style: context.labelSmall.copyWith(
+                      color: context.primary,
+                      fontWeight: .w700,
+                      fontSize: 10.5,
+                      letterSpacing: 0.7,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -406,15 +414,18 @@ class _UsersTableShimmer extends StatelessWidget {
                     flex: 2,
                     child: ShimmerBox(height: 12, radius: 4),
                   ),
-                  if (showAllColumns) ...[
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      flex: 2,
-                      child: ShimmerBox(height: 12, radius: 4),
+                  const SizedBox(width: 10),
+                  const SizedBox(
+                    width: 66,
+                    child: Row(
+                      mainAxisAlignment: .center,
+                      children: [
+                        ShimmerBox(width: 30, height: 30, radius: 8),
+                        SizedBox(width: 6),
+                        ShimmerBox(width: 30, height: 30, radius: 8),
+                      ],
                     ),
-                  ],
-                  const SizedBox(width: 8),
-                  const SizedBox(width: 20),
+                  ),
                 ],
               ),
             ),
@@ -438,7 +449,6 @@ class _UsersTableCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showAllColumns = !context.isPhone;
     return GlassSurface(
       radius: 12,
       clipBehavior: .hardEdge,
@@ -462,11 +472,20 @@ class _UsersTableCard extends StatelessWidget {
                 _HeaderCell('Name', flex: 4),
                 const SizedBox(width: 12),
                 _HeaderCell('Designation', flex: 2),
-                if (showAllColumns) ...[
-                  const SizedBox(width: 12),
-                  _HeaderCell('Role', flex: 2),
-                ],
-                const SizedBox(width: 20),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 66,
+                  child: Text(
+                    'ACTIONS',
+                    textAlign: .center,
+                    style: context.labelSmall.copyWith(
+                      color: context.primary,
+                      fontWeight: .w700,
+                      fontSize: 10.5,
+                      letterSpacing: 0.7,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -514,20 +533,13 @@ class _HeaderCell extends StatelessWidget {
   }
 }
 
-class _UserTableRow extends StatefulWidget {
+class _UserTableRow extends StatelessWidget {
   final SystemUserEntity user;
   final int index;
 
   const _UserTableRow({required this.user, required this.index});
 
-  @override
-  State<_UserTableRow> createState() => _UserTableRowState();
-}
-
-class _UserTableRowState extends State<_UserTableRow> {
-  bool _expanded = false;
-
-  Future<void> _confirmDelete(BuildContext context, SystemUserEntity user) async {
+  Future<void> _confirmDelete(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => _DeleteConfirmDialog(userName: user.name),
@@ -539,13 +551,9 @@ class _UserTableRowState extends State<_UserTableRow> {
 
   @override
   Widget build(BuildContext context) {
-    final user = widget.user;
-    final showAllColumns = !context.isPhone;
-    final primaryRoleName =
-        user.roles.isNotEmpty ? user.roles.first.name : '—';
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
-      duration: Duration(milliseconds: 300 + (widget.index * 40).clamp(0, 400)),
+      duration: Duration(milliseconds: 300 + (index * 40).clamp(0, 400)),
       curve: Curves.easeOutCubic,
       builder: (context, value, child) => Opacity(
         opacity: value,
@@ -554,250 +562,90 @@ class _UserTableRowState extends State<_UserTableRow> {
           child: child,
         ),
       ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: _expanded
-              ? context.primary.withValues(alpha: context.isDark ? 0.08 : 0.05)
-              : context.transparent,
-          border: _expanded
-              ? Border(
-                  bottom: BorderSide(
-                    color: context.primary.withValues(alpha: 0.55),
-                    width: 2,
-                  ),
-                )
-              : null,
-        ),
-        child: Column(
-          crossAxisAlignment: .stretch,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        child: Row(
           children: [
-            InkWell(
-              onTap: () => setState(() => _expanded = !_expanded),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 12,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: Row(
-                        children: [
-                          _UserAvatar(
-                            name: user.name.isNotEmpty ? user.name : user.email,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: .start,
-                              mainAxisSize: .min,
-                              children: [
-                                if (user.name.isNotEmpty)
-                                  Text(
-                                    user.name,
-                                    style: context.bodySmall.copyWith(
-                                      color: context.textPrimary,
-                                      fontWeight: .w600,
-                                      fontSize: 12.5,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: .ellipsis,
-                                  ),
-                                Text(
-                                  user.email,
-                                  style: context.labelSmall.copyWith(
-                                    color: context.primary,
-                                    fontSize: 11,
-                                    fontWeight: .w500,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: .ellipsis,
-                                ),
-                              ],
+            Expanded(
+              flex: 4,
+              child: Row(
+                children: [
+                  _UserAvatar(
+                    name: user.name.isNotEmpty ? user.name : user.email,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      mainAxisSize: .min,
+                      children: [
+                        if (user.name.isNotEmpty)
+                          Text(
+                            user.name,
+                            style: context.bodySmall.copyWith(
+                              color: context.textPrimary,
+                              fontWeight: .w600,
+                              fontSize: 12.5,
                             ),
+                            maxLines: 1,
+                            overflow: .ellipsis,
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        user.designation.isEmpty ? '—' : user.designation,
-                        style: context.bodySmall.copyWith(
-                          color: context.textPrimary,
-                          fontSize: 12,
-                        ),
-                        maxLines: 1,
-                        overflow: .ellipsis,
-                      ),
-                    ),
-                    if (showAllColumns) ...[
-                      const SizedBox(width: 12),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          primaryRoleName,
-                          style: context.bodySmall.copyWith(
-                            color: context.textPrimary,
-                            fontSize: 12,
+                        Text(
+                          user.email,
+                          style: context.labelSmall.copyWith(
+                            color: context.primary,
+                            fontSize: 11,
+                            fontWeight: .w500,
                           ),
                           maxLines: 1,
                           overflow: .ellipsis,
                         ),
-                      ),
-                    ],
-                    const SizedBox(width: 8),
-                    SizedBox(
-                      width: 20,
-                      child: AnimatedRotation(
-                        turns: _expanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          size: 18,
-                          color: context.textSecondary,
-                        ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            AnimatedSize(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeInOut,
-              alignment: .topCenter,
-              child: _expanded
-                  ? Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          top: BorderSide(
-                            color: context.primary.withValues(alpha: 0.20),
-                          ),
-                        ),
-                      ),
-                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
-                      child: Row(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Expanded(
-                            child: _DetailColumn(
-                              label: 'Roles',
-                              alignment: .start,
-                              value: Text(
-                                user.roles.isEmpty
-                                    ? '—'
-                                    : user.roles
-                                        .map((r) => r.name)
-                                        .join(', '),
-                                style: context.bodySmall.copyWith(
-                                  color: context.textPrimary,
-                                  fontSize: 12,
-                                  fontWeight: .w600,
-                                ),
-                                maxLines: 2,
-                                overflow: .ellipsis,
-                              ),
-                            ),
-                          ),
-                          // Expanded(
-                          //   child: _DetailColumn(
-                          //     label: 'Token',
-                          //     alignment: .center,
-                          //     value: _MiniAction(
-                          //       icon: Iconsax.key,
-                          //       color: AppColors.teal,
-                          //       onTap: () => AppToastsUtils.showInfoTop(
-                          //         context,
-                          //         'Tokens — coming soon',
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-                          // Expanded(
-                          //   child: _DetailColumn(
-                          //     label: 'Fin Year',
-                          //     alignment: .center,
-                          //     value: _MiniAction(
-                          //       icon: Iconsax.calendar_1,
-                          //       color: AppColors.purple,
-                          //       onTap: () => AppToastsUtils.showInfoTop(
-                          //         context,
-                          //         'Fin Years — coming soon',
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-                          Expanded(
-                            child: _DetailColumn(
-                              label: 'Actions',
-                              alignment: .end,
-                              value: Row(
-                                mainAxisSize: .min,
-                                children: [
-                                  _MiniAction(
-                                    icon: Iconsax.edit_2,
-                                    color: context.primary,
-                                    onTap: () => context.pushNamed(
-                                      RouteNames.edit_user,
-                                      pathParameters: {
-                                        'id': user.id.toString(),
-                                      },
-                                    ),
-                                  ),
-                                  const SizedBox(width: 6),
-                                  _MiniAction(
-                                    icon: Iconsax.trash,
-                                    color: AppColors.errorBright,
-                                    onTap: () => _confirmDelete(context, user),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 2,
+              child: Text(
+                user.designation.isEmpty ? '—' : user.designation,
+                style: context.bodySmall.copyWith(
+                  color: context.textPrimary,
+                  fontSize: 12,
+                ),
+                maxLines: 1,
+                overflow: .ellipsis,
+              ),
+            ),
+            const SizedBox(width: 10),
+            SizedBox(
+              width: 66,
+              child: Row(
+                mainAxisSize: .min,
+                mainAxisAlignment: .center,
+                children: [
+                  _MiniAction(
+                    icon: Iconsax.edit_2,
+                    color: context.primary,
+                    onTap: () => context.pushNamed(
+                      RouteNames.edit_user,
+                      pathParameters: {'id': user.id.toString()},
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  _MiniAction(
+                    icon: Iconsax.trash,
+                    color: AppColors.errorBright,
+                    onTap: () => _confirmDelete(context),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _DetailColumn extends StatelessWidget {
-  final String label;
-  final Widget value;
-  final CrossAxisAlignment alignment;
-
-  const _DetailColumn({
-    required this.label,
-    required this.value,
-    this.alignment = CrossAxisAlignment.start,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: alignment,
-      mainAxisSize: .min,
-      children: [
-        Text(
-          label.toUpperCase(),
-          style: context.labelSmall.copyWith(
-            color: context.primary,
-            fontWeight: .w700,
-            fontSize: 9.5,
-            letterSpacing: 0.6,
-          ),
-        ),
-        const SizedBox(height: 8),
-        value,
-      ],
     );
   }
 }

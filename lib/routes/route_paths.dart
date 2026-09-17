@@ -20,6 +20,7 @@ class RoutePaths {
   static const String edit_user = '/users/:id/edit';
   static const String roles = '/roles';
   static const String new_role = '/roles/new';
+  static const String edit_role = '/roles/:id/edit';
 
   static const String account_ledger = '/account_ledger';
   static const String organizationSelection = '/organization-selection';
