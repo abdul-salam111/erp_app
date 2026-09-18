@@ -3,6 +3,7 @@ import '../../../../core/utils/result.dart';
 import '../../domain/entities/daily_stats_entity.dart';
 import '../../domain/entities/monthly_stats_detail_entity.dart';
 import '../../domain/entities/monthly_stats_entity.dart';
+import '../../domain/entities/receipt_entity.dart';
 import '../../domain/entities/sale_order_summary_entity.dart';
 import '../../domain/repositories/dashboard_repository.dart';
 import '../datasources/remote_dashboard_datasource.dart';
@@ -10,6 +11,7 @@ import '../models/response_models/get_daily_stats/daily_stats_model_mapper.dart'
 import '../models/response_models/get_monthly_stats/monthly_stats_model_mapper.dart';
 import '../models/response_models/get_monthly_stats_detail/monthly_stats_detail_model_mapper.dart';
 import '../models/response_models/get_sale_order_summary_by_party/sale_order_summary_mapper.dart';
+import '../models/response_models/get_today_receipts/receipt_mapper.dart';
 
 class DashboardRepositoryImpl extends BaseRepository
     implements DashboardRepository {
@@ -48,6 +50,15 @@ class DashboardRepositoryImpl extends BaseRepository
     return execute(
       call: () async =>
           (await dataSource.getSalesOrderSummaryByParty(fromDate: fromDate, toDate: toDate)).toEntity(),
+    );
+  }
+
+  @override
+  Future<Result<List<ReceiptEntity>>> getTodayReceipts({required String dateType}) {
+    return execute(
+      call: () async => (await dataSource.getTodayReceipts(dateType: dateType))
+          .map((m) => m.toEntity())
+          .toList(),
     );
   }
 }

@@ -17,6 +17,7 @@ Future<void> registerDashboard() async {
   sl.registerLazySingleton(() => GetMonthlyStatsUsecase(repository: sl()));
   sl.registerLazySingleton(() => GetMonthlyStatsDetailUsecase(repository: sl()));
   sl.registerLazySingleton(() => GetSaleOrderSummaryUsecase(repository: sl()));
+  sl.registerLazySingleton(() => GetTodayReceiptsUsecase(repository: sl()));
 
   // BLoC
   sl.registerFactory<AdminDashboardBloc>(
@@ -25,6 +26,7 @@ Future<void> registerDashboard() async {
       getMonthlyStats:        sl(),
       getMonthlyStatsDetail:  sl(),
       getSaleOrderSummary:    sl(),
+      getTodayReceipts:       sl(),
     ),
   );
 }

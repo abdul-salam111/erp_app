@@ -36,6 +36,11 @@ final class AdminDashboardState extends Equatable {
   final SaleOrderSummaryEntity? saleOrderSummary;
   final String                  saleOrderSummaryError;
 
+  // ── Today receipts (chart) ────────────────────────────────────────────────
+  final ApiStatus           todayReceiptsStatus;
+  final List<ReceiptEntity> todayReceipts;
+  final String               todayReceiptsError;
+
   const AdminDashboardState({
     required this.saleOrderFromDate,
     required this.saleOrderToDate,
@@ -54,6 +59,9 @@ final class AdminDashboardState extends Equatable {
     required this.saleOrderSummaryStatus,
     this.saleOrderSummary,
     this.saleOrderSummaryError = '',
+    required this.todayReceiptsStatus,
+    this.todayReceipts = const [],
+    this.todayReceiptsError = '',
   });
 
   AdminDashboardState copyWith({
@@ -74,6 +82,9 @@ final class AdminDashboardState extends Equatable {
     ApiStatus?                   saleOrderSummaryStatus,
     Object?                      saleOrderSummary = _unset,
     String?                      saleOrderSummaryError,
+    ApiStatus?                   todayReceiptsStatus,
+    List<ReceiptEntity>?         todayReceipts,
+    String?                      todayReceiptsError,
   }) {
     return AdminDashboardState(
       saleOrderFromDate:        saleOrderFromDate        ?? this.saleOrderFromDate,
@@ -93,6 +104,9 @@ final class AdminDashboardState extends Equatable {
       saleOrderSummaryStatus:   saleOrderSummaryStatus   ?? this.saleOrderSummaryStatus,
       saleOrderSummary:         saleOrderSummary == _unset ? this.saleOrderSummary : saleOrderSummary as SaleOrderSummaryEntity?,
       saleOrderSummaryError:    saleOrderSummaryError    ?? this.saleOrderSummaryError,
+      todayReceiptsStatus:      todayReceiptsStatus      ?? this.todayReceiptsStatus,
+      todayReceipts:            todayReceipts            ?? this.todayReceipts,
+      todayReceiptsError:       todayReceiptsError       ?? this.todayReceiptsError,
     );
   }
 
@@ -104,5 +118,6 @@ final class AdminDashboardState extends Equatable {
     monthlyStatsStatus, monthlyStats, monthlyStatsError,
     monthlyStatsDetailStatus, monthlyStatsDetail, monthlyStatsDetailError,
     saleOrderSummaryStatus, saleOrderSummary, saleOrderSummaryError,
+    todayReceiptsStatus, todayReceipts, todayReceiptsError,
   ];
 }
