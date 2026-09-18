@@ -155,9 +155,9 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                   builder: (context) {
                     final ratio = Responsive.value<double>(
                       context,
-                      phone: 3.2,
-                      tablet: 3.4,
-                      ipad: 3.8,
+                      phone: 2.6,
+                      tablet: 2.8,
+                      ipad: 3.1,
                     );
                     return isLoading
                         ? _StatsShimmer(
@@ -237,6 +237,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
         value: (m?.currentMonthExpense ?? 0)
             .toCompact(decimals: 1)
             .let((v) => '$sym $v'),
+        expandedValue: (m?.currentMonthExpense ?? 0).formatPrice(symbol: sym),
         pct: m?.expensePercentage ?? 0,
         color: AppColors.errorBright,
         trendColor: AppColors.errorBright,
@@ -260,6 +261,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
         value: (m?.currentMonthSales ?? 0)
             .toCompact(decimals: 1)
             .let((v) => '$sym $v'),
+        expandedValue: (m?.currentMonthSales ?? 0).formatPrice(symbol: sym),
         pct: m?.salesPercentage ?? 0,
         color: AppColors.orange,
         trendColor: AppColors.greenDark,
@@ -269,6 +271,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
         value: (m?.currentMonthPurchases ?? 0)
             .toCompact(decimals: 1)
             .let((v) => '$sym $v'),
+        expandedValue: (m?.currentMonthPurchases ?? 0).formatPrice(symbol: sym),
         pct: m?.purchasesPercentage ?? 0,
         color: AppColors.purple,
         trendColor: AppColors.errorBright,
@@ -278,6 +281,9 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
         value: (m?.currentMonthRecoveries ?? 0)
             .toCompact(decimals: 1)
             .let((v) => '$sym $v'),
+        expandedValue: (m?.currentMonthRecoveries ?? 0).formatPrice(
+          symbol: sym,
+        ),
         pct: m?.recoveriesPercentage ?? 0,
         color: AppColors.cyan,
         trendColor: AppColors.greenDark,
@@ -436,9 +442,10 @@ class _StatsShimmer extends StatelessWidget {
 
 // ─── Month stat card ──────────────────────────────────────────────────────────
 
-class _MonthStatCard extends StatelessWidget {
+class _MonthStatCard extends StatefulWidget {
   final String label;
   final String value;
+  final String? expandedValue;
   final double pct;
   final Color color;
   final Color trendColor;
@@ -446,17 +453,30 @@ class _MonthStatCard extends StatelessWidget {
   const _MonthStatCard({
     required this.label,
     required this.value,
+    this.expandedValue,
     required this.pct,
     required this.color,
     required this.trendColor,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final changeColor = trendColor;
-    final pctLabel = '${pct.abs().toStringAsFixed(1)}%';
+  State<_MonthStatCard> createState() => _MonthStatCardState();
+}
 
-    return Container(
+class _MonthStatCardState extends State<_MonthStatCard> {
+  bool _expanded = false;
+
+  bool get _canToggle => widget.expandedValue != null;
+
+  @override
+  Widget build(BuildContext context) {
+    final changeColor = widget.trendColor;
+    final pctLabel = '${widget.pct.abs().toStringAsFixed(1)}%';
+    final displayValue = _expanded && widget.expandedValue != null
+        ? widget.expandedValue!
+        : widget.value;
+
+    final card = Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
         color: context.isDark
@@ -480,7 +500,7 @@ class _MonthStatCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: .stretch,
         children: [
-          Container(width: 4, color: color),
+          Container(width: 4, color: widget.color),
           Expanded(
             child: Padding(
               padding: .symmetric(horizontal: 10, vertical: 9),
@@ -492,18 +512,26 @@ class _MonthStatCard extends StatelessWidget {
                     crossAxisAlignment: .start,
                     children: [
                       Expanded(
-                        child: Text(
-                          value,
-                          style: context.bodyMedium.copyWith(
-                            fontWeight: .w700,
-                            color: context.textPrimary,
-                            fontSize: 15,
-                            height: 1,
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 180),
+                          child: FittedBox(
+                            key: ValueKey(displayValue),
+                            fit: BoxFit.scaleDown,
+                            alignment: .centerLeft,
+                            child: Text(
+                              displayValue,
+                              style: context.bodyMedium.copyWith(
+                                fontWeight: .w700,
+                                color: context.textPrimary,
+                                fontSize: 15,
+                                height: 1,
+                              ),
+                              maxLines: 1,
+                            ),
                           ),
-                          maxLines: 1,
-                          overflow: .ellipsis,
                         ),
                       ),
+                      const SizedBox(width: 4),
                       Row(
                         mainAxisSize: .min,
                         children: [
@@ -521,13 +549,25 @@ class _MonthStatCard extends StatelessWidget {
                               color: changeColor,
                             ),
                           ),
+                          if (_canToggle) ...[
+                            const SizedBox(width: 2),
+                            Icon(
+                              _expanded
+                                  ? Icons.expand_less_rounded
+                                  : Icons.expand_more_rounded,
+                              size: 13,
+                              color: context.textSecondary.withValues(
+                                alpha: 0.7,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    label,
+                    widget.label,
                     style: context.labelSmall.copyWith(
                       color: context.textSecondary,
                       fontSize: 10,
@@ -541,6 +581,18 @@ class _MonthStatCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+
+    if (!_canToggle) return card;
+
+    return Material(
+      color: AppColors.transparent,
+      borderRadius: .circular(10),
+      child: InkWell(
+        borderRadius: .circular(10),
+        onTap: () => setState(() => _expanded = !_expanded),
+        child: card,
       ),
     );
   }
@@ -664,11 +716,7 @@ class _MonthPill extends StatelessWidget {
       child: Row(
         mainAxisSize: .min,
         children: [
-          Icon(
-            Icons.calendar_month_rounded,
-            size: 13,
-            color: context.primary,
-          ),
+          Icon(Icons.calendar_month_rounded, size: 13, color: context.primary),
           const SizedBox(width: 5),
           Text(
             label,

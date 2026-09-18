@@ -257,6 +257,7 @@ class _LoginCardState extends State<_LoginCard> {
                       AutofillHints.username,
                       AutofillHints.email,
                     ],
+                    textInputAction: TextInputAction.next,
                     onChanged: (email) {
                       context.read<SignInBloc>().add(EmailChangedEvent(email));
                     },
@@ -280,6 +281,12 @@ class _LoginCardState extends State<_LoginCard> {
                     keyboardType: TextInputType.visiblePassword,
                     validator: Validator.validatePassword,
                     autofillHints: const [AutofillHints.password],
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) {
+                      if (widget.formKey.currentState!.validate()) {
+                        context.read<SignInBloc>().add(SignInSubmitted());
+                      }
+                    },
                   );
                 },
               ),

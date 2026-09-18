@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 import '../theme/theme_utils.dart';
 
-class OverviewStatCard extends StatelessWidget {
+class OverviewStatCard extends StatefulWidget {
   final String label;
   final String value;
+  final String? expandedValue;
   final IconData icon;
   final Color color;
   final bool showBorder;
@@ -16,6 +17,7 @@ class OverviewStatCard extends StatelessWidget {
     super.key,
     required this.label,
     required this.value,
+    this.expandedValue,
     required this.icon,
     required this.color,
     this.showBorder = false,
@@ -23,17 +25,32 @@ class OverviewStatCard extends StatelessWidget {
   });
 
   @override
+  State<OverviewStatCard> createState() => _OverviewStatCardState();
+}
+
+class _OverviewStatCardState extends State<OverviewStatCard> {
+  bool _expanded = false;
+
+  bool get _canToggle => widget.expandedValue != null;
+
+  void _handleTap() {
+    if (_canToggle) setState(() => _expanded = !_expanded);
+    widget.onTap?.call();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final tappable = _canToggle || widget.onTap != null;
     final card = context.isDark ? _glassCard(context) : _solidCard(context);
     return IntrinsicHeight(
-      child: onTap == null
+      child: !tappable
           ? card
           : Material(
               color: AppColors.transparent,
               borderRadius: BorderRadius.circular(10),
               child: InkWell(
                 borderRadius: BorderRadius.circular(10),
-                onTap: onTap,
+                onTap: _handleTap,
                 child: card,
               ),
             ),
@@ -96,6 +113,11 @@ class OverviewStatCard extends StatelessWidget {
   }
 
   Widget _body(BuildContext context) {
+    final displayValue = _expanded && widget.expandedValue != null
+        ? widget.expandedValue!
+        : widget.value;
+    final color = widget.color;
+
     return Stack(
       alignment: .centerLeft,
       children: [
@@ -155,7 +177,7 @@ class OverviewStatCard extends StatelessWidget {
                             ? null
                             : color.withValues(alpha: 0.10),
                       ),
-                      child: Icon(icon, color: color, size: 16),
+                      child: Icon(widget.icon, color: color, size: 16),
                     ),
                     const SizedBox(width: 9),
                     Expanded(
@@ -163,20 +185,27 @@ class OverviewStatCard extends StatelessWidget {
                         crossAxisAlignment: .start,
                         mainAxisAlignment: .center,
                         children: [
-                          Text(
-                            value,
-                            style: context.bodyMedium.copyWith(
-                              fontWeight: .w700,
-                              color: context.textPrimary,
-                              fontSize: 17,
-                              height: 1,
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 180),
+                            child: FittedBox(
+                              key: ValueKey(displayValue),
+                              fit: BoxFit.scaleDown,
+                              alignment: .centerLeft,
+                              child: Text(
+                                displayValue,
+                                style: context.bodyMedium.copyWith(
+                                  fontWeight: .w700,
+                                  color: context.textPrimary,
+                                  fontSize: 17,
+                                  height: 1,
+                                ),
+                                maxLines: 1,
+                              ),
                             ),
-                            maxLines: 1,
-                            overflow: .ellipsis,
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            label,
+                            widget.label,
                             style: context.labelSmall.copyWith(
                               color: context.textSecondary,
                               fontSize: 12,
@@ -188,7 +217,16 @@ class OverviewStatCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (onTap != null) ...[
+                    if (_canToggle) ...[
+                      const SizedBox(width: 4),
+                      Icon(
+                        _expanded
+                            ? Icons.expand_less_rounded
+                            : Icons.expand_more_rounded,
+                        size: 18,
+                        color: context.textSecondary.withValues(alpha: 0.7),
+                      ),
+                    ] else if (widget.onTap != null) ...[
                       const SizedBox(width: 4),
                       Icon(
                         Icons.chevron_right_rounded,

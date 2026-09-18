@@ -25,6 +25,8 @@ class CustomTextFormField extends StatefulWidget {
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? hintStyle;
   final Iterable<String>? autofillHints;
+  final TextInputAction? textInputAction;
+  final void Function(String)? onFieldSubmitted;
 
   const CustomTextFormField({
     super.key,
@@ -49,6 +51,8 @@ class CustomTextFormField extends StatefulWidget {
     this.contentPadding,
     this.hintStyle,
     this.autofillHints,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -118,6 +122,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             obscureText: isObscure,
             keyboardType: widget.keyboardType,
             autofillHints: widget.autofillHints,
+            textInputAction: widget.textInputAction,
+            onFieldSubmitted: widget.onFieldSubmitted,
             maxLines: widget.obscureText ? 1 : widget.maxLines,
             decoration: InputDecoration(
               hintText: widget.hintText,
