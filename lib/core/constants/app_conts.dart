@@ -104,7 +104,6 @@ class AppConstants {
   static const String totalPurchasesLabel = 'Total Purchases';
   static const String recoveriesLabel = 'Recoveries';
   static const String monthOverview = 'Month Overview';
-  static const String receiptsOverviewLabel = 'Receipts Overview';
   static const String quickActionsTitle = 'Quick Actions';
   static const String menu1Label = 'Menu 1';
   static const String menu2Label = 'Menu 2';

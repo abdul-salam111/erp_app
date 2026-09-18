@@ -5,14 +5,12 @@ export 'domain/entities/daily_stats_entity.dart';
 export 'domain/entities/order_entity.dart';
 export 'domain/entities/monthly_stats_entity.dart';
 export 'domain/entities/monthly_stats_detail_entity.dart';
-export 'domain/entities/receipt_entity.dart';
 export 'domain/entities/sale_order_summary_entity.dart';
 export 'domain/repositories/dashboard_repository.dart';
 export 'domain/usecases/get_daily_stats_usecase.dart';
 export 'domain/usecases/get_monthly_stats_usecase.dart';
 export 'domain/usecases/get_monthly_stats_detail_usecase.dart';
 export 'domain/usecases/get_sale_order_summary_usecase.dart';
-export 'domain/usecases/get_today_receipts_usecase.dart';
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 export 'data/datasources/remote_dashboard_datasource.dart';
@@ -22,8 +20,6 @@ export 'data/models/response_models/get_daily_stats/daily_stats_model_mapper.dar
 export 'data/models/response_models/get_monthly_stats/monthly_stats_model.dart';
 export 'data/models/response_models/get_monthly_stats/monthly_stats_model_mapper.dart';
 export 'data/models/response_models/get_sale_order_summary_by_party/sale_order_summary_mapper.dart';
-export 'data/models/response_models/get_today_receipts/receipt_model.dart';
-export 'data/models/response_models/get_today_receipts/receipt_mapper.dart';
 
 // ── Presentation — BLoC ───────────────────────────────────────────────────────
 export 'presentation/admin_dashboard/bloc/admin_dashboard_bloc.dart';
@@ -45,7 +41,6 @@ export 'presentation/widgets/greeting_banner.dart';
 export 'presentation/widgets/month_overview_section.dart';
 export 'presentation/widgets/new_orders_section.dart';
 export 'presentation/widgets/quick_actions_section.dart';
-export 'presentation/widgets/receipts_chart_section.dart';
 export 'presentation/widgets/sale_orders_section.dart';
 export 'presentation/widgets/section_header.dart';
 export 'presentation/widgets/today_overview_section.dart';

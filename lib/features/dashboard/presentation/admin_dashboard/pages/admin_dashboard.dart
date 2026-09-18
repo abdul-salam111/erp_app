@@ -175,8 +175,6 @@ class AdminDashboard extends StatelessWidget {
                     const MonthOverviewSection(),
                     const SizedBox(height: 20),
                   ],
-                  const ReceiptsChartSection(),
-                  const SizedBox(height: 20),
                   if (featureAccess.has(
                     SystemPermissionKeys.dashboardSaleOrderStatus,
                   )) ...[

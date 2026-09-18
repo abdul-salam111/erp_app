@@ -5,13 +5,11 @@ import 'package:mantic_erp_app/core/constants/app_enums.dart';
 import '../../../domain/entities/daily_stats_entity.dart';
 import '../../../domain/entities/monthly_stats_detail_entity.dart';
 import '../../../domain/entities/monthly_stats_entity.dart';
-import '../../../domain/entities/receipt_entity.dart';
 import '../../../domain/entities/sale_order_summary_entity.dart';
 import '../../../domain/usecases/get_daily_stats_usecase.dart' show GetDailyStatsUsecase, DailyStatsParams;
 import '../../../domain/usecases/get_monthly_stats_detail_usecase.dart';
 import '../../../domain/usecases/get_monthly_stats_usecase.dart';
 import '../../../domain/usecases/get_sale_order_summary_usecase.dart' show GetSaleOrderSummaryUsecase, SaleOrderSummaryParams;
-import '../../../domain/usecases/get_today_receipts_usecase.dart' show GetTodayReceiptsUsecase, TodayReceiptsParams;
 
 part 'admin_dashboard_event.dart';
 part 'admin_dashboard_state.dart';
@@ -21,19 +19,16 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
   final GetMonthlyStatsUsecase         _getMonthlyStats;
   final GetMonthlyStatsDetailUsecase   _getMonthlyStatsDetail;
   final GetSaleOrderSummaryUsecase     _getSaleOrderSummary;
-  final GetTodayReceiptsUsecase        _getTodayReceipts;
 
   AdminDashboardBloc({
     required GetDailyStatsUsecase          getDailyStats,
     required GetMonthlyStatsUsecase        getMonthlyStats,
     required GetMonthlyStatsDetailUsecase  getMonthlyStatsDetail,
     required GetSaleOrderSummaryUsecase    getSaleOrderSummary,
-    required GetTodayReceiptsUsecase       getTodayReceipts,
   })  : _getDailyStats          = getDailyStats,
         _getMonthlyStats        = getMonthlyStats,
         _getMonthlyStatsDetail  = getMonthlyStatsDetail,
         _getSaleOrderSummary    = getSaleOrderSummary,
-        _getTodayReceipts       = getTodayReceipts,
         super(AdminDashboardState(
           saleOrderFromDate:        DateTime.now().subtract(const Duration(days: 30)),
           saleOrderToDate:          DateTime.now(),
@@ -44,7 +39,6 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
           monthlyStatsStatus:       ApiStatus.INITIAL,
           monthlyStatsDetailStatus: ApiStatus.INITIAL,
           saleOrderSummaryStatus:   ApiStatus.INITIAL,
-          todayReceiptsStatus:      ApiStatus.INITIAL,
         )) {
     on<DashboardDataRequested>(_onDashboardDataRequested, transformer: droppable());
     on<SaleOrderDateRangeChanged>(_onSaleOrderDateRangeChanged, transformer: restartable());
@@ -68,7 +62,6 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
       monthlyStatsStatus:       ApiStatus.LOADING,
       monthlyStatsDetailStatus: ApiStatus.LOADING,
       saleOrderSummaryStatus:   ApiStatus.LOADING,
-      todayReceiptsStatus:      ApiStatus.LOADING,
     ));
 
     final dailyDateStr  = _toDateStr(state.selectedDailyDate);
@@ -104,13 +97,6 @@ class AdminDashboardBloc extends Bloc<AdminDashboardEvent, AdminDashboardState> 
         result.when(
           failure: (f) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.FAILURE, saleOrderSummaryError: f.message)),
           success: (d) => emit(state.copyWith(saleOrderSummaryStatus: ApiStatus.SUCCESS, saleOrderSummary: d)),
-        );
-      }),
-      _getTodayReceipts(const TodayReceiptsParams(dateType: 'month')).then((result) {
-        if (emit.isDone) return;
-        result.when(
-          failure: (f) => emit(state.copyWith(todayReceiptsStatus: ApiStatus.FAILURE, todayReceiptsError: f.message)),
-          success: (d) => emit(state.copyWith(todayReceiptsStatus: ApiStatus.SUCCESS, todayReceipts: d)),
         );
       }),
     ]);

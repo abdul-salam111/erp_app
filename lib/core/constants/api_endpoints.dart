@@ -47,9 +47,6 @@ final class _Dashboard {
   String get stockReceived => '$_base/GetStockReceived';
   String get currentStock => '$_base/GetCurrentStock';
   String get cashAndBankBalance => '$_base/GetCashAndBankBalance';
-
-  // Lives under `core/Dashboard`, not `ExecutiveApp/dashboard` like the rest.
-  String get todayReceipts => '${ApiEndPoints._base}/core/Dashboard/TodayReceipts';
 }
 
 // ─── Accounts / Party ───────────────────────────────────────────────────────
