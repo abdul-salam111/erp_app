@@ -18,7 +18,7 @@ class AppColors {
   /// Accent blue — used for blue text accents (links, labels, dates) and
   /// chip/badge fills. Distinct from [primary], which stays the CTA/button
   /// blue.
-  static const Color accentBlue = Color(0xFF4280F5);
+  static const Color accentBlue = Color(0xFF387CC9);
 
   /// Secondary brand color - Accents, highlights
   static const Color secondary = Color(0xff0036F8);
@@ -208,7 +208,7 @@ class AppColors {
   // CHART COLORS
   // ============================================
 
-  static const Color chartPrimary = Color(0xFF6366F1);
+  static const Color chartPrimary = accentBlue;
   static const Color chartSecondary = Color(0xFFC62828);
   static const Color chartBg = Color(0xFFEEEEFF);
 

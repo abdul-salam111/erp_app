@@ -375,7 +375,7 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
             maxY: maxY,
             lineTouchData: LineTouchData(
               touchTooltipData: LineTouchTooltipData(
-                getTooltipColor: (_) => context.primary.withValues(alpha: 0.85),
+                getTooltipColor: (_) => context.accentBlue.withValues(alpha: 0.85),
                 getTooltipItems: (spots) => spots
                     .map(
                       (s) => LineTooltipItem(
@@ -394,12 +394,12 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
               LineChartBarData(
                 spots: animSpots,
                 isCurved: true,
-                color: context.primary,
+                color: context.accentBlue,
                 barWidth: 2.2,
                 dotData: const FlDotData(show: false),
                 belowBarData: BarAreaData(
                   show: true,
-                  color: context.primary.withValues(alpha: 0.10),
+                  color: context.accentBlue.withValues(alpha: 0.10),
                   applyCutOffY: true,
                   cutOffY: 0,
                 ),

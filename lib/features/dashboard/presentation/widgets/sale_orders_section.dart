@@ -125,21 +125,21 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                       child: context.isDark
                           ? GlassIconButton(
                               onPressed: _openDateRangePopup,
-                              size: 32,
-                              iconSize: 16,
+                              size: 26,
+                              iconSize: 14,
                               shape: GlassIconButtonShape.roundedSquare,
                               borderRadius: 8,
                               icon: Icon(
                                 Iconsax.calendar_1,
-                                size: 16,
+                                size: 14,
                                 color: context.accentBlue,
                               ),
                             )
                           : GestureDetector(
                               onTap: _openDateRangePopup,
                               child: Container(
-                                width: 32,
-                                height: 32,
+                                width: 26,
+                                height: 26,
                                 decoration: BoxDecoration(
                                   color: context.accentBlue.withValues(alpha: 0.10),
                                   borderRadius: .circular(8),
@@ -149,7 +149,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                                 ),
                                 child: Icon(
                                   Iconsax.calendar_1,
-                                  size: 16,
+                                  size: 14,
                                   color: context.accentBlue,
                                 ),
                               ),
@@ -164,10 +164,11 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                               shape: const LiquidRoundedSuperellipse(
                                 borderRadius: 8,
                               ),
-                              child: Padding(
+                              child: Container(
+                                height: 26,
+                                alignment: .center,
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
-                                  vertical: 6,
                                 ),
                                 child: Text(
                                   _showDetails
@@ -185,7 +186,11 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                             onTap: () =>
                                 setState(() => _showDetails = !_showDetails),
                             child: Container(
-                              padding: .symmetric(horizontal: 12, vertical: 6),
+                              height: 26,
+                              alignment: .center,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                              ),
                               decoration: BoxDecoration(
                                 color: context.primary,
                                 borderRadius: .circular(8),

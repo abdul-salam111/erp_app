@@ -521,7 +521,7 @@ class _RecoveryFilterBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Text(
         label,
         textAlign: .center,
@@ -716,7 +716,7 @@ class _ShowDetailsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Row(
         mainAxisSize: .min,
         children: [
@@ -725,13 +725,14 @@ class _ShowDetailsButton extends StatelessWidget {
             style: context.labelMedium.copyWith(
               color: context.accentBlue,
               fontWeight: .w600,
+              fontSize: 11,
             ),
           ),
-          const SizedBox(width: 2),
+          const SizedBox(width: 1),
           Icon(
             Icons.chevron_right_rounded,
             color: context.accentBlue,
-            size: 18,
+            size: 16,
           ),
         ],
       ),

@@ -280,7 +280,7 @@ class _PageDot extends StatelessWidget {
       width: active ? 16 : 6,
       height: 6,
       decoration: BoxDecoration(
-        color: active ? context.primary : context.grey300,
+        color: active ? context.accentBlue : context.grey300,
         borderRadius: BorderRadius.circular(3),
       ),
     );

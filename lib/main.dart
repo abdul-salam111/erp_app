@@ -25,7 +25,7 @@ void main() async {
     setupLocator(),
     LiquidGlassWidgets.initialize(),
   ]);
-
+  
   runApp(
     LiquidGlassWidgets.wrap(
       brightnessResolver: Theme.maybeBrightnessOf,

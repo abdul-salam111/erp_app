@@ -84,7 +84,7 @@ class _ChartBody extends StatelessWidget {
         .fold(0.0, (a, b) => a > b ? a : b);
     final chartMaxY = maxY == 0 ? 1000.0 : (maxY * 1.25).ceilToDouble();
     final yInterval = (chartMaxY / 4).ceilToDouble();
-    final lineColor = context.primary;
+    final lineColor = context.accentBlue;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
