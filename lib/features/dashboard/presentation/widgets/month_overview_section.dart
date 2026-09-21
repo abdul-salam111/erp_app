@@ -760,7 +760,7 @@ class _MonthPill extends StatelessWidget {
   }
 }
 
-// ─── Panel chip (glass in dark when unselected, primary when selected) ───────
+// ─── Panel chip (card background when unselected, accent fill when selected) ─
 
 class _PanelChip extends StatelessWidget {
   final String label;
@@ -799,24 +799,20 @@ class _PanelChip extends StatelessWidget {
       );
     }
 
-    if (context.isDark) {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: GlassContainer(
-          shape: const LiquidRoundedSuperellipse(borderRadius: 20),
-          child: text,
-        ),
-      );
-    }
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: context.accentBlue.withValues(alpha: 0.07),
+          color: context.isDark
+              ? AppColors.navyIconBgDark
+              : context.surfaceElevated,
           borderRadius: .circular(20),
-          border: Border.all(color: context.accentBlue.withValues(alpha: 0.25)),
+          border: Border.all(
+            color: context.isDark
+                ? AppColors.white.withValues(alpha: 0.06)
+                : AppColors.black.withValues(alpha: 0.06),
+            width: 0.5,
+          ),
         ),
         child: text,
       ),
