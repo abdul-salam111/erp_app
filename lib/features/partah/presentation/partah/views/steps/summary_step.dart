@@ -33,7 +33,7 @@ class SummaryStep extends StatelessWidget {
               _MetricCard(
                 label: 'Sale price / $bag Kg',
                 value: calculator.saleAmountPer100.asAmount,
-                valueColor: context.primary,
+                valueColor: context.accentBlue,
               ).expanded(),
               widthBox(10),
               _MetricCard(

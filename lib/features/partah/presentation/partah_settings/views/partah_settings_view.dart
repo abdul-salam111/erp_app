@@ -149,14 +149,14 @@ class _BaseWeightOption extends StatelessWidget {
           Icon(
             isSelected ? Icons.radio_button_checked_rounded : Icons.radio_button_off_rounded,
             size: 20,
-            color: isSelected ? context.primary : context.textDisabled,
+            color: isSelected ? context.accentBlue : context.textDisabled,
           ),
           widthBox(12),
           Text(option.label, style: context.bodyMedium.copyWith(fontWeight: .w600)).expanded(),
           Text(
             '${option.displayKgLabel} kg',
             style: context.bodyMedium.copyWith(
-              color: isSelected ? context.primary : context.textSecondary,
+              color: isSelected ? context.accentBlue : context.textSecondary,
               fontWeight: .w700,
             ),
           ),

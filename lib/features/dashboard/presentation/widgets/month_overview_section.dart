@@ -716,12 +716,12 @@ class _MonthPill extends StatelessWidget {
       child: Row(
         mainAxisSize: .min,
         children: [
-          Icon(Icons.calendar_month_rounded, size: 13, color: context.primary),
+          Icon(Icons.calendar_month_rounded, size: 13, color: context.accentBlue),
           const SizedBox(width: 5),
           Text(
             label,
             style: context.labelSmall.copyWith(
-              color: context.primary,
+              color: context.accentBlue,
               fontWeight: .w600,
               fontSize: 10,
             ),
@@ -730,7 +730,7 @@ class _MonthPill extends StatelessWidget {
           Icon(
             Icons.keyboard_arrow_down_rounded,
             size: 14,
-            color: context.primary,
+            color: context.accentBlue,
           ),
         ],
       ),
@@ -750,9 +750,9 @@ class _MonthPill extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: context.primary.withValues(alpha: 0.07),
+          color: context.accentBlue.withValues(alpha: 0.07),
           borderRadius: .circular(20),
-          border: Border.all(color: context.primary.withValues(alpha: 0.25)),
+          border: Border.all(color: context.accentBlue.withValues(alpha: 0.25)),
         ),
         child: row,
       ),
@@ -779,7 +779,7 @@ class _PanelChip extends StatelessWidget {
       child: Text(
         label,
         style: context.labelSmall.copyWith(
-          color: selected ? context.white : context.primary,
+          color: selected ? context.white : context.accentBlue,
           fontWeight: selected ? .w600 : .w500,
           fontSize: 10,
         ),
@@ -791,7 +791,7 @@ class _PanelChip extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: context.primary,
+            color: context.accentBlue,
             borderRadius: .circular(20),
           ),
           child: text,
@@ -814,9 +814,9 @@ class _PanelChip extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: context.primary.withValues(alpha: 0.07),
+          color: context.accentBlue.withValues(alpha: 0.07),
           borderRadius: .circular(20),
-          border: Border.all(color: context.primary.withValues(alpha: 0.25)),
+          border: Border.all(color: context.accentBlue.withValues(alpha: 0.25)),
         ),
         child: text,
       ),

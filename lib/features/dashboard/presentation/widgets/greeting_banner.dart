@@ -151,7 +151,9 @@ class DashboardHeader extends StatelessWidget {
                             Text(
                               _greeting,
                               style: context.labelMedium.copyWith(
-                                color: AppColors.white.withValues(alpha: 0.80),
+                                color: AppColors.white.withValues(
+                                  alpha: 0.80,
+                                ),
                                 fontWeight: .w500,
                               ),
                             ),

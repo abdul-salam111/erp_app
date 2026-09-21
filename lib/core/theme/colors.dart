@@ -15,6 +15,11 @@ class AppColors {
   static const Color primaryDark = Color(0xFF074DBF);
   static const Color primaryLight = Color.fromARGB(255, 88, 188, 255);
 
+  /// Accent blue — used for blue text accents (links, labels, dates) and
+  /// chip/badge fills. Distinct from [primary], which stays the CTA/button
+  /// blue.
+  static const Color accentBlue = Color(0xFF4280F5);
+
   /// Secondary brand color - Accents, highlights
   static const Color secondary = Color(0xff0036F8);
   static const Color secondaryDark = Color(0xFF031BB9);
@@ -32,6 +37,10 @@ class AppColors {
   /// Pure colors
   static const Color white = Color(0xFFFFFFFF);
   static const Color black = Color(0xFF000000);
+
+  /// Off-white for text in dark mode — avoids pure white, which reads too
+  /// stark/harsh against dark surfaces.
+  static const Color whiteDark = Color(0xFFE8E8E8);
 
   /// Grey scale - Light to Dark
   static const Color grey50 = Color(0xFFF2F2F2); // Lightest
@@ -219,6 +228,11 @@ class AppColors {
   static const Color navyIconBgDark = Color(0xFF0F172A);
   static const Color navyIconColorDark = Color(0xFF3F7DC8);
   static  Color navyBorderDark = Color(0xFF4A7FC7).withAlpha(80); // 50% opacity
+
+  /// Glass card tint — base color for the frosted-glass gradient on
+  /// dark-mode overview/stat cards (replaces a plain white tint so the
+  /// glass reads as navy-tinted rather than grey).
+  static const Color glassTintDark = Color(0xFF202938);
 
   static const Color surfaceHeader = Color(0xFFF5F5F5);
   static const Color surfaceHeaderDark = Color(0xFF2A3B54);

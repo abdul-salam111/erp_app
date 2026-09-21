@@ -267,7 +267,7 @@ class _DateRangeDialogState extends State<_DateRangeDialog> {
       children: [
         Row(
           children: [
-            Icon(Iconsax.calendar, color: context.primary, size: 18),
+            Icon(Iconsax.calendar, color: context.accentBlue, size: 18),
             const SizedBox(width: 8),
             Text(
               AppConstants.selectDateRangeLabel,

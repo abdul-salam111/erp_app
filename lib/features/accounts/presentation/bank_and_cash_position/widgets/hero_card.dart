@@ -208,7 +208,7 @@ class _ScrollHintChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accent = context.primary;
+    final accent = context.accentBlue;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(

@@ -243,7 +243,7 @@ class _TableRow extends StatelessWidget {
             flex: 3,
             child: Text(
               record.month.shortMonthYear,
-              style: context.bodySmall.copyWith(color: AppColors.primary),
+              style: context.bodySmall.copyWith(color: AppColors.accentBlue),
             ),
           ),
           Expanded(

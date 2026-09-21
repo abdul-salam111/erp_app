@@ -214,12 +214,12 @@ class RecoveryInvoiceList extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: context.isDark
                       ? AppColors.white.withValues(alpha: 0.05)
-                      : context.primary.withValues(alpha: 0.06),
+                      : context.accentBlue.withValues(alpha: 0.06),
                   borderRadius: .circular(20),
                   border: Border.all(
                     color: context.isDark
                         ? AppColors.white.withValues(alpha: 0.08)
-                        : context.primary.withValues(alpha: 0.15),
+                        : context.accentBlue.withValues(alpha: 0.15),
                   ),
                 ),
                 child: Row(
@@ -364,10 +364,10 @@ class _PageChip extends StatelessWidget {
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: isSelected ? context.primary : AppColors.transparent,
+          color: isSelected ? context.accentBlue : AppColors.transparent,
           borderRadius: .circular(8),
           border: Border.all(
-            color: isSelected ? context.primary : context.border,
+            color: isSelected ? context.accentBlue : context.border,
             width: isSelected ? 0 : 1,
           ),
         ),
@@ -375,7 +375,7 @@ class _PageChip extends StatelessWidget {
           child: Text(
             '${page + 1}',
             style: context.labelSmall.copyWith(
-              color: isSelected ? AppColors.white : context.textSecondary,
+              color: isSelected ? context.whiteText : context.textSecondary,
               fontWeight: isSelected ? .w700 : .w500,
             ),
           ),
@@ -467,8 +467,8 @@ class _CustomerTile extends StatelessWidget {
                   shape: .circle,
                   gradient: RadialGradient(
                     colors: [
-                      context.primary.withValues(alpha: 0.32),
-                      context.primary.withValues(alpha: 0.08),
+                      context.accentBlue.withValues(alpha: 0.32),
+                      context.accentBlue.withValues(alpha: 0.08),
                     ],
                   ),
                 ),
@@ -476,7 +476,7 @@ class _CustomerTile extends StatelessWidget {
                 child: Text(
                   invoice.initials,
                   style: context.labelMedium.copyWith(
-                    color: context.primary,
+                    color: context.accentBlue,
                     fontWeight: .w700,
                     fontSize: 14,
                   ),
@@ -552,7 +552,7 @@ class _CustomerTile extends StatelessWidget {
                             Icon(
                               Icons.receipt_long_outlined,
                               size: 16,
-                              color: context.primary,
+                              color: context.accentBlue,
                             ),
                             const SizedBox(width: 8),
                             Text(
@@ -601,7 +601,7 @@ class _CustomerTile extends StatelessWidget {
                   Text(
                     invoice.docNbr,
                     style: context.labelSmall.copyWith(
-                      color: context.primary,
+                      color: context.accentBlue,
                       fontWeight: .w600,
                       fontSize: 11,
                     ),
@@ -623,7 +623,7 @@ class _CustomerTile extends StatelessWidget {
                   Text(
                     'Rs ${remaining.formatPrice()}',
                     style: context.labelMedium.copyWith(
-                      color: context.primary,
+                      color: context.accentBlue,
                       fontWeight: .w700,
                       fontSize: 15,
                     ),

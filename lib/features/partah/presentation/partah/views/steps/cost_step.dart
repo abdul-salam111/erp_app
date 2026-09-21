@@ -23,7 +23,7 @@ class CostsStep extends StatelessWidget {
               children: [
                 _StepHeader(
                   icon: Icons.tune_rounded,
-                  iconColor: context.primary,
+                  iconColor: context.accentBlue,
                   title: 'Operational Costs',
                   subtitle: 'Variable and fixed costs per $bag Kg',
                 ),

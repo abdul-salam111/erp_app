@@ -219,7 +219,7 @@ class _CompactDateBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Iconsax.calendar_1, size: 15, color: context.primary),
+            Icon(Iconsax.calendar_1, size: 15, color: context.accentBlue),
             const SizedBox(width: 8),
             Expanded(
               child: Text(

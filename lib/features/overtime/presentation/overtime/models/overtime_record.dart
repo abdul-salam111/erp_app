@@ -25,7 +25,7 @@ extension OvertimeStatusX on OvertimeStatus {
         OvertimeStatus.pending  => AppColors.amber,
         OvertimeStatus.approved => AppColors.creditGreen,
         OvertimeStatus.rejected => AppColors.debitRed,
-        OvertimeStatus.paid     => AppColors.primary,
+        OvertimeStatus.paid     => AppColors.accentBlue,
       };
 
   Color bgColor(BuildContext context) => switch (this) {

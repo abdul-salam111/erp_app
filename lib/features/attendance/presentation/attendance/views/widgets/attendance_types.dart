@@ -13,7 +13,7 @@ extension AttendanceStatusExt on AttendanceStatus {
       };
 
   Color get color => switch (this) {
-        AttendanceStatus.present => AppColors.primary,
+        AttendanceStatus.present => AppColors.accentBlue,
         AttendanceStatus.leave   => AppColors.purple,
         AttendanceStatus.absent  => AppColors.errorBright,
         AttendanceStatus.late    => AppColors.teal,

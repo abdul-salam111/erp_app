@@ -117,7 +117,7 @@ class _OrgInitialsChip extends StatelessWidget {
       child: Text(
         initials.characters.map((l) => l).join(),
         style: context.labelSmall.copyWith(
-          color: AppColors.white,
+          color: context.whiteText,
           fontWeight: .bold,
           fontSize: 11,
           letterSpacing: 1.2,

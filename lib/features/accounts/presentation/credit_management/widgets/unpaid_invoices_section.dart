@@ -38,18 +38,18 @@ class UnpaidInvoicesSection extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: context.primary.withValues(alpha: 0.10),
+                color: context.accentBlue.withValues(alpha: 0.10),
                 borderRadius: .circular(6),
               ),
               child: Row(
                 mainAxisSize: .min,
                 children: [
-                  Icon(Iconsax.sms, size: 13, color: context.primary),
+                  Icon(Iconsax.sms, size: 13, color: context.accentBlue),
                   const SizedBox(width: 4),
                   Text(
                     'Send Unpaid Invoice',
                     style: context.labelSmall.copyWith(
-                      color: context.primary,
+                      color: context.accentBlue,
                       fontSize: 11,
                       fontWeight: .w600,
                     ),

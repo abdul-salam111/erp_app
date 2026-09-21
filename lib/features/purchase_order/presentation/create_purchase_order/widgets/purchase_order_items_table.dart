@@ -104,12 +104,12 @@ class _AddRowFooter extends StatelessWidget {
           child: Row(
             mainAxisAlignment: .center,
             children: [
-              Icon(Icons.add_rounded, size: 18, color: context.primary),
+              Icon(Icons.add_rounded, size: 18, color: context.accentBlue),
               const SizedBox(width: 6),
               Text(
                 'Add Row',
                 style: context.bodySmall.copyWith(
-                  color: context.primary,
+                  color: context.accentBlue,
                   fontWeight: .w600,
                   fontSize: 13,
                 ),
@@ -130,7 +130,7 @@ class _TableHeader extends StatelessWidget {
     final headerColor = context.isDark
         ? AppColors.surfaceHeaderDark
         : context.primary;
-    final labelColor = context.isDark ? context.primary : context.white;
+    final labelColor = context.isDark ? context.accentBlue : context.white;
     final cellStyle = TextStyle(
       color: labelColor,
       fontWeight: .w700,
@@ -880,13 +880,13 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                     decoration: BoxDecoration(
                       color: context.isDark
                           ? AppColors.navyIconBgDark
-                          : context.primary.withValues(alpha: 0.10),
+                          : context.accentBlue.withValues(alpha: 0.10),
                       borderRadius: .circular(10),
                     ),
                     child: Icon(
                       _isEdit ? Iconsax.edit : Iconsax.add_square,
                       size: 18,
-                      color: context.primary,
+                      color: context.accentBlue,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -1164,12 +1164,12 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 15, color: context.primary),
+        Icon(icon, size: 15, color: context.accentBlue),
         const SizedBox(width: 8),
         Text(
           label.toUpperCase(),
           style: context.labelSmall.copyWith(
-            color: context.primary,
+            color: context.accentBlue,
             fontWeight: .w700,
             fontSize: 11,
             letterSpacing: 1.0,
@@ -1214,7 +1214,7 @@ class _TotalCard extends StatelessWidget {
             child: Icon(
               Iconsax.wallet_3,
               size: 16,
-              color: context.primary,
+              color: context.accentBlue,
             ),
           ),
           const SizedBox(width: 12),
@@ -1235,7 +1235,7 @@ class _TotalCard extends StatelessWidget {
                 Text(
                   total.asPrice,
                   style: context.titleSmall.copyWith(
-                    color: context.primary,
+                    color: context.accentBlue,
                     fontWeight: .w700,
                     fontSize: 17,
                     height: 1.1,

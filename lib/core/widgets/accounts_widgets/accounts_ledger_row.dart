@@ -47,7 +47,7 @@ class AccountsLedgerRow extends StatelessWidget {
       iconColor = creditFg;
       iconData = Icons.arrow_downward_rounded;
     } else {
-      iconColor = context.primary;
+      iconColor = context.accentBlue;
       iconData = Icons.swap_horiz_rounded;
     }
 

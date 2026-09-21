@@ -322,7 +322,7 @@ class _DropdownList extends StatelessWidget {
                       label,
                       style: context.bodyMedium.copyWith(
                         color:
-                            isSelected ? context.primary : context.textPrimary,
+                            isSelected ? context.accentBlue : context.textPrimary,
                         fontWeight: isSelected ? .w600 : .normal,
                         fontSize: 13,
                       ),
@@ -337,7 +337,7 @@ class _DropdownList extends StatelessWidget {
                           )
                         : null,
                     trailing: isSelected
-                        ? Icon(Icons.check, color: context.primary, size: 18)
+                        ? Icon(Icons.check, color: context.accentBlue, size: 18)
                         : null,
                     onTap: () => onSelect(label),
                   );

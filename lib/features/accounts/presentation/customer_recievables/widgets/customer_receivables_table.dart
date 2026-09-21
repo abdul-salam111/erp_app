@@ -73,7 +73,7 @@ class _HeaderText extends StatelessWidget {
       maxLines: 1,
       overflow: .ellipsis,
       style: context.labelSmall.copyWith(
-        color: context.primary,
+        color: context.accentBlue,
         fontWeight: .w600,
         fontSize: 12,
       ),

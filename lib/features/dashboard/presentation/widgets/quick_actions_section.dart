@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
@@ -27,7 +29,7 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
     _MenuItem(
       label: AppConstants.accountsLabel,
       icon: Iconsax.dollar_circle,
-      color: AppColors.primary,
+      color: AppColors.accentBlue,
       routeName: RouteNames.accounts,
     ),
     _MenuItem(
@@ -168,7 +170,40 @@ class _QuickActionCard extends StatelessWidget {
         ? () => context.pushNamed(item.routeName!)
         : null;
     final content = _body(context);
-    return _solid(context, content, onTap);
+    return context.isDark ? _glass(context, content, onTap) : _solid(context, content, onTap);
+  }
+
+  Widget _glass(BuildContext context, Widget child, VoidCallback? onTap) {
+    return RepaintBoundary(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              gradient: LinearGradient(
+                begin: .topLeft,
+                end: .bottomRight,
+                colors: [
+                  AppColors.glassTintDark.withValues(alpha: 0.72),
+                  AppColors.glassTintDark.withValues(alpha: 0.50),
+                ],
+              ),
+              border: Border.all(
+                color: AppColors.white.withValues(alpha: 0.10),
+                width: 1,
+              ),
+            ),
+            child: InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(10),
+              child: child,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _solid(BuildContext context, Widget child, VoidCallback? onTap) {

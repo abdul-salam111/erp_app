@@ -179,7 +179,7 @@ class _FormHeader extends StatelessWidget {
                 Text(
                   'Show More',
                   style: context.labelSmall.copyWith(
-                    color: context.primary,
+                    color: context.accentBlue,
                     fontWeight: .w600,
                     fontSize: 12,
                   ),
@@ -188,7 +188,7 @@ class _FormHeader extends StatelessWidget {
                 Icon(
                   Icons.open_in_new_rounded,
                   size: 14,
-                  color: context.primary,
+                  color: context.accentBlue,
                 ),
               ],
             ),

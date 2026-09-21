@@ -166,13 +166,13 @@ class _CardHeader extends StatelessWidget {
           Container(
             padding: .all(7),
             decoration: BoxDecoration(
-              color: context.primary.withValues(alpha: 0.10),
+              color: context.accentBlue.withValues(alpha: 0.10),
               borderRadius: .circular(8),
             ),
             child: Icon(
               Icons.calendar_today_rounded,
               size: 16,
-              color: context.primary,
+              color: context.accentBlue,
             ),
           ),
           const SizedBox(width: 8),
@@ -304,8 +304,8 @@ class _StatusChip extends StatelessWidget {
           alignment: .center,
           child: Text(
             status.code,
-            style: const TextStyle(
-              color: AppColors.white,
+            style: TextStyle(
+              color: context.whiteText,
               fontSize: 10,
               fontWeight: .w700,
             ),

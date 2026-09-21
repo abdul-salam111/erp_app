@@ -423,7 +423,7 @@ class _NewUserFormBodyState extends State<_NewUserFormBody> {
         const SizedBox(height: 14),
         _SectionCard(
           icon: Iconsax.user,
-          iconColor: context.primary,
+          iconColor: context.accentBlue,
           title: 'Personal Info',
           child: Column(
             crossAxisAlignment: .stretch,
@@ -883,7 +883,7 @@ class _AvatarPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = gender == _Gender.male ? context.primary : AppColors.purple;
+    final color = gender == _Gender.male ? context.accentBlue : AppColors.purple;
     return Stack(
       clipBehavior: .none,
       alignment: .center,
@@ -966,7 +966,7 @@ class _GenderToggle extends StatelessWidget {
           _GenderPill(
             label: 'Male',
             icon: Iconsax.user,
-            color: context.primary,
+            color: context.accentBlue,
             selected: gender == _Gender.male,
             onTap: enabled ? () => onChanged(_Gender.male) : null,
           ),
@@ -1024,7 +1024,7 @@ class _GenderPill extends StatelessWidget {
                 Text(
                   label,
                   style: context.labelMedium.copyWith(
-                    color: selected ? AppColors.white : context.textSecondary,
+                    color: selected ? context.whiteText : context.textSecondary,
                     fontWeight: selected ? .w700 : .w500,
                     fontSize: 13,
                   ),
@@ -1194,7 +1194,7 @@ class _LandingCard extends StatelessWidget {
                         style: context.bodySmall.copyWith(
                           fontWeight: .w700,
                           color: selected
-                              ? context.primary
+                              ? context.accentBlue
                               : context.textPrimary,
                           fontSize: 12.5,
                         ),
@@ -1416,7 +1416,7 @@ class _LandingPagesDropdown extends StatelessWidget {
                               ),
                         trailing: p.id == selectedId
                             ? Icon(Iconsax.tick_circle,
-                                size: 16, color: context.primary)
+                                size: 16, color: context.accentBlue)
                             : null,
                       );
                     },
@@ -1451,7 +1451,7 @@ class _MainDivider extends StatelessWidget {
           child: Text(
             label.toUpperCase(),
             style: context.labelSmall.copyWith(
-              color: context.primary,
+              color: context.accentBlue,
               fontWeight: .w700,
               fontSize: 10,
               letterSpacing: 1,
@@ -1491,7 +1491,7 @@ class _RoleTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color =
-        _paletteFor(role.id, context.primary);
+        _paletteFor(role.id, context.accentBlue);
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -1545,7 +1545,7 @@ class _RoleTile extends StatelessWidget {
 
   static Color _paletteFor(int id, Color fallback) {
     const palette = [
-      AppColors.primary,
+      AppColors.accentBlue,
       AppColors.teal,
       AppColors.purple,
       AppColors.orange,
@@ -1662,7 +1662,7 @@ class _BottomBar extends StatelessWidget {
                           Text(
                             saveLabel,
                             style: context.labelMedium.copyWith(
-                              color: AppColors.white,
+                              color: context.whiteText,
                               fontWeight: .w700,
                             ),
                           ),

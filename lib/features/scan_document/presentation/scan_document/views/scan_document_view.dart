@@ -180,7 +180,7 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
                     onPressed: _exitSelectionMode,
                     child: Text(
                       'Cancel',
-                      style: TextStyle(color: context.primary),
+                      style: TextStyle(color: context.accentBlue),
                     ),
                   ),
                   leadingWidth: 80,
@@ -198,7 +198,7 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
                           : () => _selectAll(allDocs),
                       child: Text(
                         allSelected ? 'Deselect All' : 'Select All',
-                        style: TextStyle(color: context.primary),
+                        style: TextStyle(color: context.accentBlue),
                       ),
                     ),
                   ],

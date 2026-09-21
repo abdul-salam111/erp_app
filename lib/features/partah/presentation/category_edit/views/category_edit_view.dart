@@ -93,7 +93,7 @@ class _CategoryEditBodyState extends State<_CategoryEditBody> {
                   label: Text(
                     'Save',
                     style: context.titleSmall.copyWith(
-                      color: AppColors.white,
+                      color: context.whiteText,
                       fontWeight: .w700,
                     ),
                   ),

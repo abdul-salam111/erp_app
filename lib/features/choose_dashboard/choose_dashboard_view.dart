@@ -12,7 +12,7 @@ class ChooseDashboardView extends StatelessWidget {
   const ChooseDashboardView({super.key});
 
   static const _roleColors = [
-    AppColors.primary,
+    AppColors.accentBlue,
     AppColors.creditGreen,
     AppColors.deepPurple,
     AppColors.teal,
@@ -119,7 +119,9 @@ class _Header extends StatelessWidget {
                             Text(
                               'Welcome, $userName',
                               style: context.bodyMedium.copyWith(
-                                color: AppColors.white.withValues(alpha: 0.8),
+                                color: context.whiteText.withValues(
+                                  alpha: 0.8,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -127,7 +129,7 @@ class _Header extends StatelessWidget {
                           Text(
                             'Choose Dashboard',
                             style: context.headlineSmall.copyWith(
-                              color: AppColors.white,
+                              color: context.whiteText,
                               fontWeight: .w700,
                             ),
                           ),
@@ -140,7 +142,7 @@ class _Header extends StatelessWidget {
                 Text(
                   'Select the workspace you want to open',
                   style: context.bodySmall.copyWith(
-                    color: AppColors.white.withValues(alpha: 0.7),
+                    color: context.whiteText.withValues(alpha: 0.7),
                   ),
                 ),
               ],

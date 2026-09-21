@@ -39,7 +39,7 @@ class _InventoryBodyState extends State<_InventoryBody> {
 
   static const _avatarColors = <Color>[
     AppColors.orange,
-    AppColors.primary,
+    AppColors.accentBlue,
     AppColors.errorBright,
     AppColors.purple,
     AppColors.cyan,
@@ -474,7 +474,7 @@ class _ColumnHeaderRow extends StatelessWidget {
                     child: Text(
                       AppConstants.productLabel,
                       style: context.labelSmall.copyWith(
-                        color: context.primary,
+                        color: context.accentBlue,
                         fontWeight: .w700,
                       ),
                     ),
@@ -485,7 +485,7 @@ class _ColumnHeaderRow extends StatelessWidget {
                       AppConstants.qtyWeight,
                       textAlign: .center,
                       style: context.labelSmall.copyWith(
-                        color: context.primary,
+                        color: context.accentBlue,
                         fontWeight: .w700,
                       ),
                     ),
@@ -496,7 +496,7 @@ class _ColumnHeaderRow extends StatelessWidget {
                       AppConstants.total,
                       textAlign: .end,
                       style: context.labelSmall.copyWith(
-                        color: context.primary,
+                        color: context.accentBlue,
                         fontWeight: .w700,
                       ),
                     ),

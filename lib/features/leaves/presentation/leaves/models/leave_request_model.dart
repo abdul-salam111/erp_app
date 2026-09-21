@@ -13,7 +13,7 @@ extension LeaveStatusExt on LeaveStatus {
       };
 
   Color get color => switch (this) {
-        LeaveStatus.accepted => AppColors.primary,
+        LeaveStatus.accepted => AppColors.accentBlue,
         LeaveStatus.pending  => AppColors.orange,
         LeaveStatus.rejected => AppColors.errorBright,
       };

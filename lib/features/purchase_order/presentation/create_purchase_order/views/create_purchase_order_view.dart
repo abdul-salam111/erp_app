@@ -457,13 +457,13 @@ class _EmptyItemsHint extends StatelessWidget {
           const SizedBox(height: 14),
           OutlinedButton.icon(
             onPressed: onAddRow,
-            icon: Icon(Icons.add_rounded, size: 18, color: context.primary),
+            icon: Icon(Icons.add_rounded, size: 18, color: context.accentBlue),
             label: Text(
               'Add Row',
               style: context.bodySmall.copyWith(
                 fontWeight: .w600,
                 fontSize: 13,
-                color: context.primary,
+                color: context.accentBlue,
               ),
             ),
             style: OutlinedButton.styleFrom(
@@ -643,7 +643,7 @@ class _OrderSummarySection extends StatelessWidget {
                   style: context.bodySmall.copyWith(
                     fontWeight: .w700,
                     fontSize: 13,
-                    color: context.primary,
+                    color: context.accentBlue,
                   ),
                 ),
                 Text(
@@ -651,7 +651,7 @@ class _OrderSummarySection extends StatelessWidget {
                   style: context.bodySmall.copyWith(
                     fontWeight: .w700,
                     fontSize: 14,
-                    color: context.primary,
+                    color: context.accentBlue,
                   ),
                 ),
               ],

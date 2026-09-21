@@ -405,7 +405,7 @@ class _LoanDetailSheet extends StatelessWidget {
               _AmountCard(
                 label: 'Principal',
                 amount: record.principal,
-                color: context.primary,
+                color: context.accentBlue,
               ),
               const SizedBox(width: 10),
               _AmountCard(
@@ -555,10 +555,10 @@ class _DetailRow extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: context.primary.withValues(alpha: 0.08),
+            color: context.accentBlue.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 18, color: context.primary),
+          child: Icon(icon, size: 18, color: context.accentBlue),
         ),
         const SizedBox(width: 12),
         Expanded(

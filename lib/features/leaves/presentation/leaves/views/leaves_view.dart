@@ -292,7 +292,7 @@ class _StatsCardState extends State<_StatsCard> {
                           overflow: .ellipsis,
                           style: context.labelSmall.copyWith(
                             color: isSelected
-                                ? context.primary
+                                ? context.accentBlue
                                 : context.textSecondary,
                             fontWeight: isSelected ? .w600 : .w400,
                             fontSize: 11,
@@ -305,7 +305,7 @@ class _StatsCardState extends State<_StatsCard> {
                             horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? context.primary
+                              ? context.accentBlue
                               : context.surface,
                           borderRadius: .circular(10),
                           border: isSelected

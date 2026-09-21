@@ -38,6 +38,10 @@ extension AppColorExtension on BuildContext {
   Color get primaryDark => AppColors.primaryDark;
   Color get primaryLight => AppColors.primaryLight;
 
+  // Accent blue — blue text accents (links, labels, dates) and chip/badge
+  // fills. Distinct from [primary], which stays the CTA/button blue.
+  Color get accentBlue => AppColors.accentBlue;
+
   Color get secondary => AppColors.secondary;
   Color get secondaryDark => AppColors.secondaryDark;
   Color get secondaryLight => AppColors.secondaryLight;
@@ -116,6 +120,8 @@ extension AppColorExtension on BuildContext {
 
   // Utilities
   Color get white => AppColors.white;
+  // Text-only white — tiny grey instead of pure white in dark mode.
+  Color get whiteText => isDark ? AppColors.whiteDark : AppColors.white;
   Color get black => AppColors.black;
   Color get transparent => AppColors.transparent;
   Color get overlay => isDark ? AppColors.overlayDark : AppColors.overlayLight;

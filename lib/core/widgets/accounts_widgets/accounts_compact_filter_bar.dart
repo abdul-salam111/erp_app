@@ -37,7 +37,7 @@ class AccountsCompactFilterBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Iconsax.setting_4, size: 15, color: context.primary),
+            Icon(Iconsax.setting_4, size: 15, color: context.accentBlue),
             const SizedBox(width: 8),
             Expanded(
               child: Text(

@@ -88,7 +88,7 @@ class MonthNavigator extends StatelessWidget {
           child: Row(
             mainAxisSize: .min,
             children: [
-              Icon(Icons.calendar_month_rounded, size: 16, color: context.primary),
+              Icon(Icons.calendar_month_rounded, size: 16, color: context.accentBlue),
               const SizedBox(width: 6),
               Text(
                 '${_kMonthNames[month.month - 1]} ${month.year}',
@@ -181,14 +181,14 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
                     duration: const Duration(milliseconds: 150),
                     decoration: BoxDecoration(
                       color: selected
-                          ? context.primary
+                          ? context.accentBlue
                           : selectable
                           ? context.surface
                           : context.transparent,
                       borderRadius: .circular(8),
                       border: Border.all(
                         color: selected
-                            ? context.primary
+                            ? context.accentBlue
                             : context.border.withValues(alpha: selectable ? 1.0 : 0.3),
                       ),
                     ),
@@ -198,7 +198,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
                       style: context.labelMedium.copyWith(
                         fontWeight: .w600,
                         color: selected
-                            ? AppColors.white
+                            ? context.whiteText
                             : selectable
                             ? context.textPrimary
                             : context.textSecondary.withValues(alpha: 0.35),
@@ -239,7 +239,7 @@ class _MonthYearPickerDialogState extends State<MonthYearPickerDialog> {
                     child: Text(
                       'Select',
                       style: context.labelMedium.copyWith(
-                        color: AppColors.white,
+                        color: context.whiteText,
                         fontWeight: .w600,
                       ),
                     ),

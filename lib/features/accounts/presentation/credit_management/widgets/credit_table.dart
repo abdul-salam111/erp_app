@@ -68,7 +68,7 @@ class _TableHeader extends StatelessWidget {
             child: Text(
               'CUSTOMER',
               style: context.labelSmall.copyWith(
-                color: context.primary,
+                color: context.accentBlue,
                 fontWeight: .w600,
                 fontSize: 12,
               ),
@@ -82,7 +82,7 @@ class _TableHeader extends StatelessWidget {
             child: Text(
               'BALANCE',
               style: context.labelSmall.copyWith(
-                color: context.primary,
+                color: context.accentBlue,
                 fontWeight: .w600,
                 fontSize: 12,
               ),

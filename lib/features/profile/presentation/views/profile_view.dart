@@ -584,7 +584,7 @@ class _SectionCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: context.isDark
                         ? AppColors.navyIconBgDark
-                        : context.primary.withValues(alpha: 0.10),
+                        : context.accentBlue.withValues(alpha: 0.10),
                     borderRadius: .circular(8),
                   ),
                   child: Icon(
@@ -592,7 +592,7 @@ class _SectionCard extends StatelessWidget {
                     size: 15,
                     color: context.isDark
                         ? AppColors.navyIconColorDark
-                        : context.primary,
+                        : context.accentBlue,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -749,7 +749,7 @@ class _AppearanceCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: context.isDark
                       ? AppColors.navyIconBgDark
-                      : context.primary.withValues(alpha: 0.10),
+                      : context.accentBlue.withValues(alpha: 0.10),
                   borderRadius: .circular(12),
                 ),
                 child: Icon(
@@ -757,7 +757,7 @@ class _AppearanceCard extends StatelessWidget {
                   size: 18,
                   color: context.isDark
                       ? AppColors.navyIconColorDark
-                      : context.primary,
+                      : context.accentBlue,
                 ),
               ),
               const SizedBox(width: 14),
@@ -882,10 +882,10 @@ class _ActionsCard extends StatelessWidget {
               subtitle: AppConstants.changeToADifferentOrganization,
               iconColor: context.isDark
                   ? AppColors.navyIconColorDark
-                  : context.primary,
+                  : context.accentBlue,
               iconBg: context.isDark
                   ? AppColors.navyIconBgDark
-                  : context.primary.withValues(alpha: 0.10),
+                  : context.accentBlue.withValues(alpha: 0.10),
               onTap: () => context.pushNamed(RouteNames.organizationSelection),
             ),
             Divider(

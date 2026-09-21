@@ -359,14 +359,14 @@ class _RecoveryListSheet extends StatelessWidget {
                       begin: .topLeft,
                       end: .bottomRight,
                       colors: [
-                        context.primary.withValues(alpha: 0.28),
-                        context.primary.withValues(alpha: 0.10),
+                        context.accentBlue.withValues(alpha: 0.28),
+                        context.accentBlue.withValues(alpha: 0.10),
                       ],
                     ),
                   ),
                   child: Icon(
                     Icons.receipt_long_outlined,
-                    color: context.primary,
+                    color: context.accentBlue,
                     size: 22,
                   ),
                 ),
@@ -526,7 +526,7 @@ class _RecoveryFilterBadge extends StatelessWidget {
         label,
         textAlign: .center,
         style: context.labelSmall.copyWith(
-          color: selected ? AppColors.white : context.textSecondary,
+          color: selected ? context.whiteText : context.textSecondary,
           fontWeight: .w600,
         ),
       ),
@@ -537,9 +537,9 @@ class _RecoveryFilterBadge extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: context.primary,
+            color: context.accentBlue,
             borderRadius: .circular(20),
-            border: Border.all(color: context.primary),
+            border: Border.all(color: context.accentBlue),
           ),
           child: text,
         ),
@@ -723,14 +723,14 @@ class _ShowDetailsButton extends StatelessWidget {
           Text(
             AppConstants.showDetails,
             style: context.labelMedium.copyWith(
-              color: context.primary,
+              color: context.accentBlue,
               fontWeight: .w600,
             ),
           ),
           const SizedBox(width: 2),
           Icon(
             Icons.chevron_right_rounded,
-            color: context.primary,
+            color: context.accentBlue,
             size: 18,
           ),
         ],

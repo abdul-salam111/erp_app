@@ -374,7 +374,7 @@ class _UsersTableShimmer extends StatelessWidget {
                     'ACTIONS',
                     textAlign: .center,
                     style: context.labelSmall.copyWith(
-                      color: context.primary,
+                      color: context.accentBlue,
                       fontWeight: .w700,
                       fontSize: 10.5,
                       letterSpacing: 0.7,
@@ -479,7 +479,7 @@ class _UsersTableCard extends StatelessWidget {
                     'ACTIONS',
                     textAlign: .center,
                     style: context.labelSmall.copyWith(
-                      color: context.primary,
+                      color: context.accentBlue,
                       fontWeight: .w700,
                       fontSize: 10.5,
                       letterSpacing: 0.7,
@@ -523,7 +523,7 @@ class _HeaderCell extends StatelessWidget {
       child: Text(
         text.toUpperCase(),
         style: context.labelSmall.copyWith(
-          color: context.primary,
+          color: context.accentBlue,
           fontWeight: .w700,
           fontSize: 10.5,
           letterSpacing: 0.7,
@@ -593,7 +593,7 @@ class _UserTableRow extends StatelessWidget {
                         Text(
                           user.email,
                           style: context.labelSmall.copyWith(
-                            color: context.primary,
+                            color: context.accentBlue,
                             fontSize: 11,
                             fontWeight: .w500,
                           ),
@@ -628,7 +628,7 @@ class _UserTableRow extends StatelessWidget {
                 children: [
                   _MiniAction(
                     icon: Iconsax.edit_2,
-                    color: context.primary,
+                    color: context.accentBlue,
                     onTap: () => context.pushNamed(
                       RouteNames.edit_user,
                       pathParameters: {'id': user.id.toString()},
@@ -685,7 +685,7 @@ class _UserAvatar extends StatelessWidget {
   final String name;
 
   static const _palette = [
-    AppColors.primary,
+    AppColors.accentBlue,
     AppColors.teal,
     AppColors.purple,
     AppColors.orange,

@@ -60,7 +60,7 @@ class _TableHeader extends StatelessWidget {
     final headerColor = context.isDark
         ? AppColors.surfaceHeaderDark
         : context.primary;
-    final labelColor = context.isDark ? context.primary : context.white;
+    final labelColor = context.isDark ? context.accentBlue : context.white;
     final labelStyle = context.labelSmall.copyWith(
       color: labelColor,
       fontWeight: .w700,

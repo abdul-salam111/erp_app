@@ -132,7 +132,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                               icon: Icon(
                                 Iconsax.calendar_1,
                                 size: 16,
-                                color: context.primary,
+                                color: context.accentBlue,
                               ),
                             )
                           : GestureDetector(
@@ -141,16 +141,16 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                                 width: 32,
                                 height: 32,
                                 decoration: BoxDecoration(
-                                  color: context.primary.withValues(alpha: 0.10),
+                                  color: context.accentBlue.withValues(alpha: 0.10),
                                   borderRadius: .circular(8),
                                   border: Border.all(
-                                    color: context.primary.withValues(alpha: 0.25),
+                                    color: context.accentBlue.withValues(alpha: 0.25),
                                   ),
                                 ),
                                 child: Icon(
                                   Iconsax.calendar_1,
                                   size: 16,
-                                  color: context.primary,
+                                  color: context.accentBlue,
                                 ),
                               ),
                             ),
@@ -174,7 +174,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                                       ? AppConstants.hideDetails
                                       : AppConstants.showDetails,
                                   style: context.labelSmall.copyWith(
-                                    color: context.primary,
+                                    color: context.accentBlue,
                                     fontWeight: .w600,
                                   ),
                                 ),
@@ -241,7 +241,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                                       label: AppConstants.totalOrdersLabel,
                                       value: '$total',
                                       icon: Iconsax.bag_2,
-                                      color: AppColors.primary,
+                                      color: AppColors.accentBlue,
                                     ),
                                   ),
                                   VerticalDivider(
@@ -351,7 +351,7 @@ class _DateButton extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Iconsax.calendar_1, size: 14, color: context.primary),
+            Icon(Iconsax.calendar_1, size: 14, color: context.accentBlue),
             const SizedBox(width: 6),
             Column(
               crossAxisAlignment: .start,
@@ -507,7 +507,7 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                           child: Text(
                             AppConstants.applyBtn,
                             style: context.labelSmall.copyWith(
-                              color: context.primary,
+                              color: context.accentBlue,
                               fontWeight: .w700,
                             ),
                           ),

@@ -120,7 +120,7 @@ class _HeaderCell extends StatelessWidget {
       child: Text(
         text.toUpperCase(),
         style: context.labelSmall.copyWith(
-          color: context.primary,
+          color: context.accentBlue,
           fontWeight: .w700,
           fontSize: 10.5,
           letterSpacing: 0.7,

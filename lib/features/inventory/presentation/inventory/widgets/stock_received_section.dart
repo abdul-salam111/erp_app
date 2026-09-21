@@ -72,14 +72,14 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
                   borderRadius: .circular(10),
                   gradient: RadialGradient(
                     colors: [
-                      context.primary.withValues(alpha: 0.28),
-                      context.primary.withValues(alpha: 0.06),
+                      context.accentBlue.withValues(alpha: 0.28),
+                      context.accentBlue.withValues(alpha: 0.06),
                     ],
                   ),
                 ),
                 child: Icon(
                   Icons.inventory_2_outlined,
-                  color: context.primary,
+                  color: context.accentBlue,
                   size: 18,
                 ),
               ),
@@ -148,12 +148,12 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
                             ),
                             decoration: BoxDecoration(
                               color: sel
-                                  ? context.primary.withValues(alpha: 0.10)
+                                  ? context.accentBlue.withValues(alpha: 0.10)
                                   : AppColors.transparent,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
                                 color: sel
-                                    ? context.primary.withValues(alpha: 0.30)
+                                    ? context.accentBlue.withValues(alpha: 0.30)
                                     : (context.isDark
                                           ? context.navyBorder
                                           : context.border),
@@ -163,7 +163,7 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
                               _filters[i],
                               style: context.labelSmall.copyWith(
                                 color: sel
-                                    ? context.primary
+                                    ? context.accentBlue
                                     : context.textSecondary,
                                 fontWeight: sel ? .w600 : .w500,
                               ),
@@ -193,12 +193,12 @@ class _StockReceivedSectionState extends State<StockReceivedSection> {
                                   shape: .circle,
                                   color: context.isDark
                                       ? AppColors.navyIconBgDark
-                                      : context.primary.withValues(alpha: 0.08),
+                                      : context.accentBlue.withValues(alpha: 0.08),
                                 ),
                                 child: Icon(
                                   Icons.inbox_outlined,
                                   size: 26,
-                                  color: context.primary,
+                                  color: context.accentBlue,
                                 ),
                               ),
                               const SizedBox(height: 10),
@@ -346,13 +346,13 @@ class _StockReceivedTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: context.primary.withValues(alpha: 0.08),
+                color: context.accentBlue.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 row.itemCount!,
                 style: context.labelSmall.copyWith(
-                  color: context.primary,
+                  color: context.accentBlue,
                   fontWeight: .w600,
                 ),
               ),

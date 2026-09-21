@@ -28,7 +28,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.dashboardLabel,
             icon: Iconsax.home_2,
-            color: AppColors.primary,
+            color: AppColors.accentBlue,
             routeName: RouteNames.dashboard,
           ),
           DrawerItem.tile(
@@ -60,7 +60,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.accountsLabel,
             icon: Iconsax.dollar_circle,
-            color: AppColors.primary,
+            color: AppColors.accentBlue,
             children: [
               DrawerItem.tile(
                 label: AppConstants.accountStatementsLabel,

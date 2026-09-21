@@ -62,7 +62,7 @@ class _TableHeader extends StatelessWidget {
     final headerColor = context.isDark
         ? AppColors.surfaceHeaderDark
         : context.primary;
-    final labelColor = context.isDark ? context.primary : context.white;
+    final labelColor = context.isDark ? context.accentBlue : context.white;
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
@@ -182,7 +182,7 @@ class _OrderRowState extends State<_OrderRow> {
                         Text(
                           order.docNumber,
                           style: context.labelSmall.copyWith(
-                            color: context.primary,
+                            color: context.accentBlue,
                             fontSize: 11,
                             fontWeight: .w500,
                           ),

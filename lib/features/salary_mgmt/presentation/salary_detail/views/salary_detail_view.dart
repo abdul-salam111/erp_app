@@ -188,7 +188,7 @@ class _ReceiptCard extends StatelessWidget {
                   Text(
                     record.netPay.asPKR,
                     style: context.headlineMedium.copyWith(
-                      color: AppColors.primary,
+                      color: AppColors.accentBlue,
                       fontWeight: .w800,
                       letterSpacing: -0.5,
                     ),

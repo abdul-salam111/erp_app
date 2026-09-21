@@ -46,7 +46,7 @@ const _meta = <_CardMeta>[
   _CardMeta(
     label: AppConstants.salesTodayLabel,
     icon: Icons.shopping_cart_outlined,
-    color: AppColors.primary,
+    color: AppColors.accentBlue,
   ),
   _CardMeta(
     label: AppConstants.newOrdersLabel,
@@ -133,14 +133,14 @@ class TodayOverviewSection extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.calendar_today_outlined,
-                          color: context.primary,
+                          color: context.accentBlue,
                           size: 13,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           _formatDate(state.selectedDailyDate),
                           style: context.labelMedium.copyWith(
-                            color: context.primary,
+                            color: context.accentBlue,
                             fontWeight: .w600,
                           ),
                         ),
@@ -167,13 +167,13 @@ class TodayOverviewSection extends StatelessWidget {
                           Text(
                             AppConstants.showMore,
                             style: context.labelMedium.copyWith(
-                              color: context.primary,
+                              color: context.accentBlue,
                               fontWeight: .w600,
                             ),
                           ),
                           Icon(
                             Icons.chevron_right_rounded,
-                            color: context.primary,
+                            color: context.accentBlue,
                             size: 18,
                           ),
                         ],

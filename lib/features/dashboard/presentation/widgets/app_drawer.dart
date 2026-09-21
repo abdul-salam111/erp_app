@@ -245,7 +245,7 @@ class _DrawerTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
         child: Row(
           children: [
-            _IconBox(icon: item.icon!, color: item.color ?? context.primary),
+            _IconBox(icon: item.icon!, color: item.color ?? context.accentBlue),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -353,8 +353,8 @@ class _ExpandableTileState extends State<_ExpandableTile>
                   _IconBox(
                     icon: widget.item.icon!,
                     color: _expanded
-                        ? context.primary
-                        : (widget.item.color ?? context.primary),
+                        ? context.accentBlue
+                        : (widget.item.color ?? context.accentBlue),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -364,7 +364,7 @@ class _ExpandableTileState extends State<_ExpandableTile>
                         fontWeight: .w600,
                         fontSize: 13,
                         color: _expanded
-                            ? context.primary
+                            ? context.accentBlue
                             : context.textPrimary,
                       ),
                     ),
@@ -377,7 +377,7 @@ class _ExpandableTileState extends State<_ExpandableTile>
                       Icons.keyboard_arrow_down_rounded,
                       size: 18,
                       color: _expanded
-                          ? context.primary
+                          ? context.accentBlue
                           : context.textSecondary,
                     ),
                   ),

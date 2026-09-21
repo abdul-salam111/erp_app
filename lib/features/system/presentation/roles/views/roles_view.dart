@@ -385,7 +385,7 @@ class _FilterChip extends StatelessWidget {
         child: Row(
           mainAxisSize: .min,
           children: [
-            Icon(Iconsax.filter, size: 14, color: context.primary),
+            Icon(Iconsax.filter, size: 14, color: context.accentBlue),
             const SizedBox(width: 6),
             Text(
               value,
@@ -457,7 +457,7 @@ class _FilterChip extends StatelessWidget {
                           : Iconsax.record_circle,
                       size: 16,
                       color: o == value
-                          ? context.primary
+                          ? context.accentBlue
                           : context.textSecondary,
                     ),
                     title: Text(
@@ -560,7 +560,7 @@ class _RolesTableCard extends StatelessWidget {
   }
 
   TextStyle _headerStyle(BuildContext context) => context.labelSmall.copyWith(
-        color: context.primary,
+        color: context.accentBlue,
         fontWeight: .w700,
         fontSize: 10.5,
         letterSpacing: 0.7,
@@ -579,7 +579,7 @@ class _RoleTableRow extends StatelessWidget {
   });
 
   static const _palette = [
-    AppColors.primary,
+    AppColors.accentBlue,
     AppColors.teal,
     AppColors.purple,
     AppColors.orange,
@@ -647,7 +647,7 @@ class _RoleTableRow extends StatelessWidget {
             const SizedBox(width: 10),
             _MiniAction(
               icon: Iconsax.edit_2,
-              color: context.primary,
+              color: context.accentBlue,
               onTap: () async {
                 final result = await context.pushNamed(
                   RouteNames.edit_role,
@@ -726,7 +726,7 @@ class _PermissionBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = context.primary;
+    final color = context.accentBlue;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -823,7 +823,7 @@ class _RolesTableShimmer extends StatelessWidget {
                   child: Text(
                     'ROLE',
                     style: context.labelSmall.copyWith(
-                      color: context.primary,
+                      color: context.accentBlue,
                       fontWeight: .w700,
                       fontSize: 10.5,
                       letterSpacing: 0.7,
@@ -837,7 +837,7 @@ class _RolesTableShimmer extends StatelessWidget {
                     'PERMISSIONS',
                     textAlign: .center,
                     style: context.labelSmall.copyWith(
-                      color: context.primary,
+                      color: context.accentBlue,
                       fontWeight: .w700,
                       fontSize: 10.5,
                       letterSpacing: 0.7,
@@ -851,7 +851,7 @@ class _RolesTableShimmer extends StatelessWidget {
                     'ACTIONS',
                     textAlign: .center,
                     style: context.labelSmall.copyWith(
-                      color: context.primary,
+                      color: context.accentBlue,
                       fontWeight: .w700,
                       fontSize: 10.5,
                       letterSpacing: 0.7,

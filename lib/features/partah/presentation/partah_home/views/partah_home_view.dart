@@ -58,7 +58,7 @@ class PartahHomeView extends StatelessWidget {
                         width: 4,
                         height: 18,
                         decoration: BoxDecoration(
-                          color: context.primary,
+                          color: context.accentBlue,
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),

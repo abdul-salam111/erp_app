@@ -80,7 +80,7 @@ class DocCard extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: context.primary,
+                        color: context.accentBlue,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(

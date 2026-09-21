@@ -45,7 +45,7 @@ class AccountsLedgerDetailDialog extends StatelessWidget {
       accentColor = AppColors.creditGreen;
       directionIcon = Icons.arrow_downward_rounded;
     } else {
-      accentColor = context.primary;
+      accentColor = context.accentBlue;
       directionIcon = Icons.swap_horiz_rounded;
     }
 

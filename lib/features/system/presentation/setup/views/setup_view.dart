@@ -168,14 +168,14 @@ class _SectionSidebar extends StatelessWidget {
                   Icon(
                     section.icon,
                     size: 18,
-                    color: selected ? context.primary : context.textSecondary,
+                    color: selected ? context.accentBlue : context.textSecondary,
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       section.title,
                       style: context.bodyMedium.copyWith(
-                        color: selected ? context.primary : context.textPrimary,
+                        color: selected ? context.accentBlue : context.textPrimary,
                         fontWeight: selected ? .w600 : .w400,
                       ),
                       
@@ -227,8 +227,8 @@ class _SectionChips extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: selected
-                        ? context.primary
-                        : context.primary.withValues(alpha: 0.06),
+                        ? context.accentBlue
+                        : context.accentBlue.withValues(alpha: 0.06),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -237,13 +237,13 @@ class _SectionChips extends StatelessWidget {
                       Icon(
                         section.icon,
                         size: 15,
-                        color: selected ? AppColors.white : context.primary,
+                        color: selected ? AppColors.white : context.accentBlue,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         section.title,
                         style: context.labelMedium.copyWith(
-                          color: selected ? AppColors.white : context.primary,
+                          color: selected ? AppColors.white : context.accentBlue,
                           fontWeight: .w600,
                         ),
                       ),
@@ -518,7 +518,7 @@ class _TableRow extends StatelessWidget {
                 TextSpan(
                   text: row.name,
                   style: context.bodySmall.copyWith(
-                    color: context.primary,
+                    color: context.accentBlue,
                     fontWeight: .w500,
                   ),
                   children: [

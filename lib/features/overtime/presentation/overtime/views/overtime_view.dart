@@ -149,7 +149,7 @@ class _SummaryContentState extends State<_SummaryContent>
                   label: 'Total Hours',
                   value: '${totalHours.toStringAsFixed(1)}h',
                   icon: Icons.access_time_rounded,
-                  color: AppColors.primary,
+                  color: context.accentBlue,
                 ),
                 const SizedBox(width: 8),
                 _SummaryCard(
@@ -599,7 +599,7 @@ class _OvertimeDetailSheet extends StatelessWidget {
                 label: 'Hours Worked',
                 value: '${record.hours}h',
                 icon: Icons.access_time_rounded,
-                color: AppColors.primary,
+                color: context.accentBlue,
               ),
               const SizedBox(width: 10),
               _AmountCard(
@@ -728,10 +728,10 @@ class _DetailRow extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: context.primary.withValues(alpha: 0.08),
+            color: context.accentBlue.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 18, color: context.primary),
+          child: Icon(icon, size: 18, color: context.accentBlue),
         ),
         const SizedBox(width: 12),
         Expanded(

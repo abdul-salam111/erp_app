@@ -261,7 +261,7 @@ class _StepDot extends StatelessWidget {
           label,
           style: context.labelSmall.copyWith(
             fontSize: 9,
-            color: isActive ? context.primary : context.textSecondary,
+            color: isActive ? context.accentBlue : context.textSecondary,
             fontWeight: isActive ? .w700 : .w500,
           ),
         ),

@@ -37,19 +37,19 @@ class SaleStep extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: context.primary.withAlpha(14),
+                  color: context.accentBlue.withAlpha(14),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: context.primary.withAlpha(50)),
+                  border: Border.all(color: context.accentBlue.withAlpha(50)),
                 ),
                 child: Row(
                   mainAxisSize: .min,
                   children: [
-                    Icon(Icons.edit_outlined, size: 12, color: context.primary),
+                    Icon(Icons.edit_outlined, size: 12, color: context.accentBlue),
                     widthBox(5),
                     Text(
                       'Edit Categories',
                       style: context.labelSmall.copyWith(
-                        color: context.primary,
+                        color: context.accentBlue,
                         fontWeight: .w700,
                         fontSize: 11,
                       ),
@@ -216,7 +216,7 @@ class _TableHeader extends StatelessWidget {
           Text(
             'CATEGORY',
             style: context.labelSmall.copyWith(
-              color: context.primary,
+              color: context.accentBlue,
               fontWeight: .w800,
               letterSpacing: 0.6,
               fontSize: 10,
@@ -229,7 +229,7 @@ class _TableHeader extends StatelessWidget {
               'RATE',
               textAlign: .center,
               style: context.labelSmall.copyWith(
-                color: context.primary.withAlpha(180),
+                color: context.accentBlue.withAlpha(180),
                 fontWeight: .w700,
                 letterSpacing: 0.5,
                 fontSize: 10,
@@ -257,7 +257,7 @@ class _TableHeader extends StatelessWidget {
                       key: const ValueKey('yield_hdr'),
                       textAlign: .center,
                       style: context.labelSmall.copyWith(
-                        color: context.primary.withAlpha(180),
+                        color: context.accentBlue.withAlpha(180),
                         fontWeight: .w700,
                         letterSpacing: 0.5,
                         fontSize: 10,
@@ -272,7 +272,7 @@ class _TableHeader extends StatelessWidget {
               'AMOUNT',
               textAlign: .right,
               style: context.labelSmall.copyWith(
-                color: context.primary.withAlpha(180),
+                color: context.accentBlue.withAlpha(180),
                 fontWeight: .w700,
                 letterSpacing: 0.5,
                 fontSize: 10,
@@ -363,7 +363,7 @@ class _SummaryRow extends StatelessWidget {
               TextSpan(
                 text: 'Total Sale ',
                 style: context.labelMedium.copyWith(
-                  color: context.primary,
+                  color: context.accentBlue,
                   fontWeight: .w800,
                   fontSize: 15,
                 ),

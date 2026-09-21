@@ -204,7 +204,7 @@ class _CategoryRow extends StatelessWidget {
             Text(
               category.isRawMaterial ? 'Raw material' : 'Output',
               style: context.bodySmall.copyWith(
-                color: category.isRawMaterial ? context.primary : context.textSecondary,
+                color: category.isRawMaterial ? context.accentBlue : context.textSecondary,
                 fontWeight: category.isRawMaterial ? .w700 : .w400,
               ),
             ).expanded(flex: 2),

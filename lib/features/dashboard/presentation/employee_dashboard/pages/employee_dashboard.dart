@@ -28,7 +28,7 @@ class EmployeeDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.dashboardLabel,
             icon: Iconsax.home_2,
-            color: AppColors.primary,
+            color: AppColors.accentBlue,
             routeName: RouteNames.employee_dashboard,
           ),
           DrawerItem.tile(
@@ -71,7 +71,7 @@ class EmployeeDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.salaryLabel,
             icon: Iconsax.wallet_money,
-            color: AppColors.primary,
+            color: AppColors.accentBlue,
             routeName: RouteNames.salary_mgmt,
           ),
           DrawerItem.tile(
@@ -549,7 +549,7 @@ class _MonthlySnapshotSection extends StatelessWidget {
       label: AppConstants.attendanceRateLabel,
       value: '96%',
       icon: Iconsax.tick_circle,
-      color: AppColors.primary,
+      color: AppColors.accentBlue,
     ),
     _StatMeta(
       label: AppConstants.overtimeMonthLabel,
@@ -734,7 +734,7 @@ class _WorkspaceMenuSection extends StatelessWidget {
       label: AppConstants.salaryLabel,
       subtitle: AppConstants.salarySubtitle,
       icon: Iconsax.wallet_money,
-      color: AppColors.primary,
+      color: AppColors.accentBlue,
       routeName: RouteNames.salary_mgmt,
     ),
     _MenuMeta(
@@ -902,7 +902,7 @@ class _NoticeBoardSection extends StatelessWidget {
       title: 'Salary Disbursement Update',
       snippet: 'July salaries will be credited by the 1st of next month.',
       date: 'Jul 15',
-      color: AppColors.primary,
+      color: AppColors.accentBlue,
     ),
     _NoticeMeta(
       title: 'Biometric Attendance Policy',
@@ -927,13 +927,13 @@ class _NoticeBoardSection extends StatelessWidget {
                 Text(
                   AppConstants.viewAll,
                   style: context.labelMedium.copyWith(
-                    color: context.primary,
+                    color: context.accentBlue,
                     fontWeight: .w600,
                   ),
                 ),
                 Icon(
                   Icons.keyboard_arrow_right_rounded,
-                  color: context.primary,
+                  color: context.accentBlue,
                   size: 18,
                 ),
               ],
