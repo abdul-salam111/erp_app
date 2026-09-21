@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 import '../theme/theme_utils.dart';
@@ -58,38 +56,24 @@ class _OverviewStatCardState extends State<OverviewStatCard> {
   }
 
   Widget _glassCard(BuildContext context) {
-    return RepaintBoundary(
-      child: ClipRRect(
+    return Container(
+      clipBehavior: .hardEdge,
+      decoration: BoxDecoration(
+        color: AppColors.flatCardBgDark,
         borderRadius: .circular(10),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: .circular(10),
-              gradient: LinearGradient(
-                begin: .topLeft,
-                end: .bottomRight,
-                colors: [
-                  AppColors.glassTintDark.withValues(alpha: 0.72),
-                  AppColors.glassTintDark.withValues(alpha: 0.50),
-                ],
-              ),
-              border: Border.all(
-                color: AppColors.white.withValues(alpha: 0.10),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.08),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: _body(context),
-          ),
+        border: Border.all(
+          color: AppColors.white.withValues(alpha: 0.10),
+          width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
+      child: _body(context),
     );
   }
 

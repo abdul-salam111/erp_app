@@ -229,10 +229,10 @@ class AppColors {
   static const Color navyIconColorDark = Color(0xFF3F7DC8);
   static  Color navyBorderDark = Color(0xFF4A7FC7).withAlpha(80); // 50% opacity
 
-  /// Glass card tint — base color for the frosted-glass gradient on
-  /// dark-mode overview/stat cards (replaces a plain white tint so the
-  /// glass reads as navy-tinted rather than grey).
-  static const Color glassTintDark = Color(0xFF202938);
+  /// Solid dark-mode card background — replaces the old frosted-glass
+  /// (blur + gradient) look across GlassSurface, quick-action cards and
+  /// the Today's Overview stat cards. Flat color, no blur.
+  static const Color flatCardBgDark = Color(0xFF202938);
 
   static const Color surfaceHeader = Color(0xFFF5F5F5);
   static const Color surfaceHeaderDark = Color(0xFF2A3B54);
