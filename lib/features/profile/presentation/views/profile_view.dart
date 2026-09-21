@@ -4,7 +4,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../core/debug/cubit/api_debug_state.dart';
@@ -723,13 +722,25 @@ class _InfoRow extends StatelessWidget {
 class _AppearanceCard extends StatelessWidget {
   const _AppearanceCard();
 
+  static IconData _iconFor(ThemeMode mode) => switch (mode) {
+    ThemeMode.light => Icons.light_mode_rounded,
+    ThemeMode.dark => Icons.dark_mode_rounded,
+    ThemeMode.system => Icons.brightness_auto_rounded,
+  };
+
+  static String _labelFor(ThemeMode mode) => switch (mode) {
+    ThemeMode.light => AppConstants.appearanceLight,
+    ThemeMode.dark => AppConstants.appearanceDark,
+    ThemeMode.system => AppConstants.appearanceSystem,
+  };
+
   @override
   Widget build(BuildContext context) {
     return _CardContainer(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
-          final isDark = themeState.isDarkMode;
+          final mode = themeState.themeMode;
           return Row(
             children: [
               Container(
@@ -742,7 +753,7 @@ class _AppearanceCard extends StatelessWidget {
                   borderRadius: .circular(12),
                 ),
                 child: Icon(
-                  isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                  _iconFor(mode),
                   size: 18,
                   color: context.isDark
                       ? AppColors.navyIconColorDark
@@ -755,7 +766,7 @@ class _AppearanceCard extends StatelessWidget {
                   crossAxisAlignment: .start,
                   children: [
                     Text(
-                      AppConstants.darkModeLabel,
+                      AppConstants.appearanceLabel,
                       style: context.bodySmall.copyWith(
                         fontWeight: .w700,
                         color: context.textPrimary,
@@ -764,9 +775,7 @@ class _AppearanceCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      isDark
-                          ? AppConstants.darkModeEnabled
-                          : AppConstants.darkModeDisabled,
+                      _labelFor(mode),
                       style: context.labelSmall.copyWith(
                         color: context.textSecondary,
                         fontSize: 11,
@@ -775,15 +784,80 @@ class _AppearanceCard extends StatelessWidget {
                   ],
                 ),
               ),
-              GlassSwitch(
-                value: isDark,
-                useOwnLayer: true,
-                activeColor: context.primary,
-                onChanged: (_) => context.read<ThemeBloc>().add(ToggleTheme()),
-              ),
+              const SizedBox(width: 12),
+              _AppearanceSegmentedControl(mode: mode),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _AppearanceSegmentedControl extends StatelessWidget {
+  final ThemeMode mode;
+
+  const _AppearanceSegmentedControl({required this.mode});
+
+  static const _options = [
+    (ThemeMode.system, Icons.brightness_auto_rounded),
+    (ThemeMode.light, Icons.light_mode_rounded),
+    (ThemeMode.dark, Icons.dark_mode_rounded),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: context.isDark ? AppColors.navyIconBgDark : context.grey100,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: .min,
+        children: [
+          for (final option in _options)
+            _SegmentButton(
+              icon: option.$2,
+              selected: mode == option.$1,
+              onTap: () => context.read<ThemeBloc>().add(SetTheme(option.$1)),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SegmentButton extends StatelessWidget {
+  final IconData icon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _SegmentButton({
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        width: 32,
+        height: 32,
+        alignment: .center,
+        decoration: BoxDecoration(
+          color: selected ? context.primary : AppColors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          icon,
+          size: 16,
+          color: selected ? AppColors.white : context.textSecondary,
+        ),
       ),
     );
   }

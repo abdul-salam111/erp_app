@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 import '../theme/theme_utils.dart';
@@ -41,7 +39,7 @@ class _OverviewStatCardState extends State<OverviewStatCard> {
   @override
   Widget build(BuildContext context) {
     final tappable = _canToggle || widget.onTap != null;
-    final card = context.isDark ? _glassCard(context) : _solidCard(context);
+    final card = _solidCard(context);
     return IntrinsicHeight(
       child: !tappable
           ? card
@@ -54,42 +52,6 @@ class _OverviewStatCardState extends State<OverviewStatCard> {
                 child: card,
               ),
             ),
-    );
-  }
-
-  Widget _glassCard(BuildContext context) {
-    return RepaintBoundary(
-      child: ClipRRect(
-        borderRadius: .circular(10),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: .circular(10),
-              gradient: LinearGradient(
-                begin: .topLeft,
-                end: .bottomRight,
-                colors: [
-                  AppColors.white.withValues(alpha: 0.06),
-                  AppColors.white.withValues(alpha: 0.02),
-                ],
-              ),
-              border: Border.all(
-                color: AppColors.white.withValues(alpha: 0.10),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.08),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: _body(context),
-          ),
-        ),
-      ),
     );
   }
 

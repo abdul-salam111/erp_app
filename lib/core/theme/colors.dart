@@ -77,7 +77,7 @@ class AppColors {
   // ============================================
 
   static const Color backgroundLight = white;
-  static const Color backgroundDark = Color(0xFF071121);
+  static const Color backgroundDark = Color(0xFF020914);
 
   /// Surface colors for cards, sheets
   static const Color surfaceLight = grey50;
@@ -97,7 +97,7 @@ class AppColors {
   static const Color textDisabledLight = grey300;
 
   /// Dark theme text
-  static const Color textPrimaryDark = white;
+  static const Color textPrimaryDark = Color(0xFFE5E5E5);
   static const Color textSecondaryDark = grey300;
   static const Color textDisabledDark = grey600;
 

@@ -1,12 +1,12 @@
 // lib/core/theme/bloc/theme_event.dart
+import 'package:flutter/material.dart';
+
 abstract class ThemeEvent {}
 
 class LoadTheme extends ThemeEvent {}
 
-class ToggleTheme extends ThemeEvent {}
-
 class SetTheme extends ThemeEvent {
-  final bool isDark;
+  final ThemeMode themeMode;
 
-  SetTheme(this.isDark);
+  SetTheme(this.themeMode);
 }

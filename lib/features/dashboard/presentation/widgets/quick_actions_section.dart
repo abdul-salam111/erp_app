@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
@@ -170,40 +168,7 @@ class _QuickActionCard extends StatelessWidget {
         ? () => context.pushNamed(item.routeName!)
         : null;
     final content = _body(context);
-    return context.isDark ? _glass(context, content, onTap) : _solid(context, content, onTap);
-  }
-
-  Widget _glass(BuildContext context, Widget child, VoidCallback? onTap) {
-    return RepaintBoundary(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              gradient: LinearGradient(
-                begin: .topLeft,
-                end: .bottomRight,
-                colors: [
-                  AppColors.white.withValues(alpha: 0.06),
-                  AppColors.white.withValues(alpha: 0.02),
-                ],
-              ),
-              border: Border.all(
-                color: AppColors.white.withValues(alpha: 0.10),
-                width: 1,
-              ),
-            ),
-            child: InkWell(
-              onTap: onTap,
-              borderRadius: BorderRadius.circular(10),
-              child: child,
-            ),
-          ),
-        ),
-      ),
-    );
+    return _solid(context, content, onTap);
   }
 
   Widget _solid(BuildContext context, Widget child, VoidCallback? onTap) {

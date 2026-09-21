@@ -195,7 +195,7 @@ class _SaleOrdersSectionState extends State<SaleOrdersSection>
                                     ? AppConstants.hideDetails
                                     : AppConstants.showDetails,
                                 style: context.labelSmall.copyWith(
-                                  color: AppColors.white,
+                                  color: context.textPrimary,
                                   fontWeight: .w600,
                                 ),
                               ),
@@ -526,7 +526,7 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                         child: Text(
                           AppConstants.applyBtn,
                           style: context.labelSmall.copyWith(
-                            color: AppColors.white,
+                            color: context.textPrimary,
                             fontWeight: .w700,
                           ),
                         ),

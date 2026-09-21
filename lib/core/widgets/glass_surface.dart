@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 import '../theme/theme_utils.dart';
@@ -21,44 +19,7 @@ class GlassSurface extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final body = padding != null ? Padding(padding: padding!, child: child) : child;
-    return context.isDark ? _glass(body) : _solid(context, body);
-  }
-
-  Widget _glass(Widget body) {
-    return RepaintBoundary(
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(radius),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            clipBehavior: clipBehavior,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(radius),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.white.withValues(alpha: 0.06),
-                  AppColors.white.withValues(alpha: 0.02),
-                ],
-              ),
-              border: Border.all(
-                color: AppColors.white.withValues(alpha: 0.10),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.black.withValues(alpha: 0.08),
-                  blurRadius: 14,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: body,
-          ),
-        ),
-      ),
-    );
+    return _solid(context, body);
   }
 
   Widget _solid(BuildContext context, Widget body) {

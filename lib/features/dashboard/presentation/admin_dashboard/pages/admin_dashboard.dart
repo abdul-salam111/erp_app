@@ -274,7 +274,7 @@ class _AdminSliverAppBar extends StatelessWidget {
                   height: 38,
                   child: GlassIconButton(
                     onPressed: () => context.pushNamed(RouteNames.profile),
-                    icon: const Icon(
+                    icon: Icon(
                       Iconsax.profile_circle,
                       color: AppColors.white,
                       size: 20,
@@ -286,7 +286,7 @@ class _AdminSliverAppBar extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 19,
                     backgroundColor: AppColors.white.withValues(alpha: 0.15),
-                    child: const Icon(
+                    child: Icon(
                       Iconsax.profile_circle,
                       color: AppColors.white,
                       size: 20,
@@ -516,7 +516,11 @@ class _AdminHeaderChip extends StatelessWidget {
     return Row(
       mainAxisSize: .min,
       children: [
-        Icon(icon, color: AppColors.white.withValues(alpha: 0.85), size: 11),
+        Icon(
+          icon,
+          color: AppColors.white.withValues(alpha: 0.85),
+          size: 11,
+        ),
         const SizedBox(width: 4),
         Flexible(
           child: Text(

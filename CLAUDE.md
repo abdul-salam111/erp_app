@@ -87,7 +87,7 @@ context.bodySmall      // TextStyle
 Every screen and widget — existing or new — must look correct in **both** light and dark mode. Never hardcode a color that only works in one theme; always go through `context.*` / `AppColors.*Dark` tokens.
 
 - **Never use raw black/near-black or raw white as a screen or card background.** Use the theme tokens below, not `Colors.black`, `Color(0xFF000000)`, hex literals, etc.
-- **Screen background** — `context.background` (dark: `AppColors.backgroundDark`, a deep navy `#071121`, not pure black).
+- **Screen background** — `context.background` (dark: `AppColors.backgroundDark`, a deep navy `#020914`, not pure black).
 - **Cards / elevated surfaces (default)** — `context.surfaceElevated`.
 - **Cards / elevated surfaces (accent look — headers, stat cards, drawers, icon chips)** — use the reusable **navy accent family** in `theme_utils.dart`, added specifically so this dark styling can be reused anywhere instead of re-deriving it per screen:
   ```dart

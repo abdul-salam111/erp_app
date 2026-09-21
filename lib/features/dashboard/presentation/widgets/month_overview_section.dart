@@ -380,8 +380,8 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                     .map(
                       (s) => LineTooltipItem(
                         '${currentUser.org.currencySymbol} ${s.y.toStringAsFixed(0)}',
-                        const TextStyle(
-                          color: AppColors.white,
+                        TextStyle(
+                          color: context.textPrimary,
                           fontSize: 11,
                           fontWeight: .w600,
                         ),

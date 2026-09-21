@@ -420,7 +420,7 @@ class _DayCell extends StatelessWidget {
     final textColor = isDisabled
         ? context.textSecondary.withValues(alpha: 0.4)
         : isSelected
-        ? (context.isDark ? AppColors.white : Theme.of(context).colorScheme.onPrimary)
+        ? (context.isDark ? context.textPrimary : Theme.of(context).colorScheme.onPrimary)
         : context.textPrimary;
 
     final label = Text(
@@ -497,7 +497,7 @@ class _YearCell extends StatelessWidget {
         fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
         color: isSelected
             ? (context.isDark
-                  ? AppColors.white
+                  ? context.textPrimary
                   : Theme.of(context).colorScheme.onPrimary)
             : context.textPrimary,
       ),

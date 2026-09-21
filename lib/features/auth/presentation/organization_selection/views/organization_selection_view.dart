@@ -177,9 +177,9 @@ class _Header extends StatelessWidget {
                         color: AppColors.white.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.arrow_back_ios_new_rounded,
-                        color: AppColors.white,
+                        color: context.textPrimary,
                         size: 18,
                       ),
                     ),
@@ -194,9 +194,9 @@ class _Header extends StatelessWidget {
                         color: AppColors.white.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Iconsax.buildings,
-                        color: AppColors.white,
+                        color: context.textPrimary,
                         size: 28,
                       ),
                     ),
@@ -209,7 +209,9 @@ class _Header extends StatelessWidget {
                             Text(
                               'Welcome, $userName',
                               style: context.bodyMedium.copyWith(
-                                color: AppColors.white.withValues(alpha: 0.8),
+                                color: context.textPrimary.withValues(
+                                  alpha: 0.8,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -217,7 +219,7 @@ class _Header extends StatelessWidget {
                           Text(
                             AppConstants.selectOrganization,
                             style: context.headlineSmall.copyWith(
-                              color: AppColors.white,
+                              color: context.textPrimary,
                               fontWeight: .w700,
                             ),
                           ),
@@ -230,7 +232,7 @@ class _Header extends StatelessWidget {
                 Text(
                   AppConstants.chooseTheOrganizationYouWant,
                   style: context.bodySmall.copyWith(
-                    color: AppColors.white.withValues(alpha: 0.7),
+                    color: context.textPrimary.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -357,7 +359,7 @@ class _OrganizationCard extends StatelessWidget {
                                       child: Text(
                                         _initials,
                                         style: context.titleMedium.copyWith(
-                                          color: AppColors.white,
+                                          color: context.textPrimary,
                                           fontWeight: .w700,
                                         ),
                                       ),

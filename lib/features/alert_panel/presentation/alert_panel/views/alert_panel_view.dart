@@ -237,8 +237,8 @@ class _SummaryCard extends StatelessWidget {
                   ),
                   child: Text(
                     '$totalCount',
-                    style: const TextStyle(
-                      color: AppColors.white,
+                    style: TextStyle(
+                      color: context.textPrimary,
                       fontSize: 10,
                       fontWeight: .w700,
                       height: 1,

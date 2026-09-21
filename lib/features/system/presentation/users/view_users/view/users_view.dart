@@ -121,17 +121,17 @@ class _GradientFabState extends State<_GradientFab> {
                       shape: .circle,
                       color: AppColors.white.withValues(alpha: 0.22),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.add_rounded,
                       size: 14,
-                      color: AppColors.white,
+                      color: context.textPrimary,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Text(
                     widget.label,
                     style: context.labelMedium.copyWith(
-                      color: AppColors.white,
+                      color: context.textPrimary,
                       fontWeight: .w700,
                       fontSize: 13,
                       letterSpacing: 0.3,
@@ -844,7 +844,7 @@ class _DeleteConfirmDialog extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(44),
                       backgroundColor: AppColors.errorBright,
-                      foregroundColor: AppColors.white,
+                      foregroundColor: context.textPrimary,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -853,7 +853,7 @@ class _DeleteConfirmDialog extends StatelessWidget {
                     child: Text(
                       'Delete',
                       style: context.labelMedium.copyWith(
-                        color: AppColors.white,
+                        color: context.textPrimary,
                         fontWeight: .w700,
                       ),
                     ),

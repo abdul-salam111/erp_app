@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../../../core/theme/colors.dart';
 import '../../../../../../core/theme/theme_utils.dart';
 import 'attendance_types.dart';
 
@@ -130,8 +129,8 @@ class _CalendarCell extends StatelessWidget {
               alignment: .center,
               child: Text(
                 dayData!.status.code,
-                style: const TextStyle(
-                  color: AppColors.white,
+                style: TextStyle(
+                  color: context.textPrimary,
                   fontSize: 10,
                   fontWeight: .w700,
                 ),
