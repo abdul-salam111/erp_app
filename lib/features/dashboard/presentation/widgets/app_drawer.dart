@@ -16,6 +16,7 @@ class DrawerItem {
   final String? label;
   final IconData? icon;
   final String? iconAsset;
+  final bool tintIconAsset;
   final String? routeName;
   final Color? color;
   final List<DrawerItem> children;
@@ -26,6 +27,7 @@ class DrawerItem {
     required this.label,
     required this.icon,
     this.iconAsset,
+    this.tintIconAsset = true,
     this.routeName,
     this.color,
     this.permissionKey,
@@ -40,6 +42,7 @@ class DrawerItem {
     this.color,
   }) : _type = _DrawerItemType.expandable,
        iconAsset = null,
+       tintIconAsset = true,
        routeName = null,
        permissionKey = null,
        badgeCount = null;
@@ -48,6 +51,7 @@ class DrawerItem {
     : _type = _DrawerItemType.category,
       icon = null,
       iconAsset = null,
+      tintIconAsset = true,
       routeName = null,
       color = null,
       children = const [],
@@ -59,6 +63,7 @@ class DrawerItem {
       label = null,
       icon = null,
       iconAsset = null,
+      tintIconAsset = true,
       routeName = null,
       color = null,
       children = const [],
@@ -260,6 +265,7 @@ class _DrawerTile extends StatelessWidget {
             _IconBox(
               icon: item.icon!,
               iconAsset: item.iconAsset,
+              tintIconAsset: item.tintIconAsset,
               color: item.color ?? context.accentBlue,
             ),
             const SizedBox(width: 12),
@@ -294,9 +300,15 @@ class _DrawerTile extends StatelessWidget {
 class _IconBox extends StatelessWidget {
   final IconData icon;
   final String? iconAsset;
+  final bool tintIconAsset;
   final Color color;
 
-  const _IconBox({required this.icon, this.iconAsset, required this.color});
+  const _IconBox({
+    required this.icon,
+    this.iconAsset,
+    this.tintIconAsset = true,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -312,7 +324,10 @@ class _IconBox extends StatelessWidget {
       child: iconAsset != null
           ? Padding(
               padding: const EdgeInsets.all(8),
-              child: Image.asset(iconAsset!, color: color),
+              child: Image.asset(
+                iconAsset!,
+                color: tintIconAsset ? color : null,
+              ),
             )
           : Icon(icon, size: 17, color: color),
     );

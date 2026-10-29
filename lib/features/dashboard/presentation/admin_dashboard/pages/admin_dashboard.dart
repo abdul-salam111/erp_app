@@ -56,6 +56,8 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.partahLabel,
             icon: Iconsax.document,
+            iconAsset: AppIcons.partahLogo,
+            tintIconAsset: false,
             color: AppColors.deepPurple,
             routeName: RouteNames.partah_home,
           ),
