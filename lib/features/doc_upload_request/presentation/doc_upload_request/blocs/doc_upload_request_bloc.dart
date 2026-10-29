@@ -19,7 +19,10 @@ class DocUploadRequestBloc
     DocUploadRequestsFetched event,
     Emitter<DocUploadRequestState> emit,
   ) async {
-    emit(state.copyWith(apiStatus: ApiStatus.LOADING));
+    emit(state.copyWith(
+      apiStatus: ApiStatus.LOADING,
+      flgCompleted: event.flgCompleted,
+    ));
 
     final result = await getDocUploadRequestsUsecase(
       GetDocUploadRequestsParams(

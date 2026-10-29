@@ -25,10 +25,10 @@ class ScanDocumentView extends StatelessWidget {
         BlocProvider(
           create: (_) => sl<ScannerBloc>()..add(const DocumentsLoaded()),
         ),
-        BlocProvider(
-          create: (_) => sl<DocUploadRequestBloc>()
-            ..add(const DocUploadRequestsFetched(flgCompleted: false)),
-        ),
+        // Singleton — already populated by the dashboard in most cases, so
+        // reuse it here instead of refetching. PendingDocRequestsSection
+        // triggers a fetch itself only if nothing has been loaded yet.
+        BlocProvider.value(value: sl<DocUploadRequestBloc>()),
         BlocProvider(create: (_) => sl<DocumentUploadBloc>()),
       ],
       child: const _ScanDocumentBody(),

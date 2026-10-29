@@ -21,7 +21,11 @@ Future<void> registerDocUploadRequest() async {
   );
 
   // BLoCs
-  sl.registerFactory<DocUploadRequestBloc>(
+  // Singleton: the pending/completed request list is shared app-wide (e.g.
+  // the dashboard drawer badge and the Scan Document screen both read it)
+  // so a screen that opens after the first fetch can reuse the cached
+  // result instead of re-querying the API.
+  sl.registerLazySingleton<DocUploadRequestBloc>(
     () => DocUploadRequestBloc(getDocUploadRequestsUsecase: sl()),
   );
   sl.registerFactory<DocumentUploadBloc>(

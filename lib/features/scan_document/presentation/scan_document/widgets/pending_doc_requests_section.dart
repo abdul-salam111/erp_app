@@ -19,12 +19,33 @@ class _PendingDocRequestsSectionState
   int? _uploadingId;
   bool _showCompleted = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // The bloc is a shared singleton — if it's already holding a pending
+    // list (e.g. fetched by the dashboard badge), reuse it instead of
+    // firing a redundant request.
+    final bloc = context.read<DocUploadRequestBloc>();
+    final alreadyHasPending =
+        bloc.state.apiStatus != .INITIAL && !bloc.state.flgCompleted;
+    if (!alreadyHasPending) {
+      bloc.add(const DocUploadRequestsFetched(flgCompleted: false));
+    }
+  }
+
   void _switchTab(bool completed) {
     if (_showCompleted == completed) return;
     setState(() => _showCompleted = completed);
     context
         .read<DocUploadRequestBloc>()
         .add(DocUploadRequestsFetched(flgCompleted: completed));
+  }
+
+  Future<void> _onRefresh() {
+    final bloc = context.read<DocUploadRequestBloc>();
+    final done = bloc.stream.firstWhere((s) => s.apiStatus != .LOADING);
+    bloc.add(DocUploadRequestsFetched(flgCompleted: _showCompleted));
+    return done;
   }
 
   Future<void> _pickAndUpload(DocUploadRequestEntity request) async {
@@ -40,6 +61,13 @@ class _PendingDocRequestsSectionState
           DocumentUploadSubmitted(id: request.id, filePath: path),
         );
   }
+
+  double _panelHeight(BuildContext context) => Responsive.value<double>(
+        context,
+        phone: 230,
+        tablet: 270,
+        ipad: 300,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -60,92 +88,113 @@ class _PendingDocRequestsSectionState
               onChanged: _switchTab,
             ),
             SizedBox(height: context.gridSpacing),
-            BlocBuilder<DocUploadRequestBloc, DocUploadRequestState>(
-              builder: (context, state) {
-                if (state.apiStatus == .LOADING && state.requests.isEmpty) {
-                  return _InlineStatusRow(
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 14,
-                          height: 14,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: context.accentBlue,
+            SizedBox(
+              height: _panelHeight(context),
+              child: RefreshIndicator(
+                onRefresh: _onRefresh,
+                color: context.accentBlue,
+                child: BlocBuilder<DocUploadRequestBloc, DocUploadRequestState>(
+                  builder: (context, state) {
+                    if (state.apiStatus == .LOADING &&
+                        state.requests.isEmpty) {
+                      return _FillerPanel(
+                        height: _panelHeight(context),
+                        child: Center(
+                          child: Row(
+                            mainAxisSize: .min,
+                            children: [
+                              SizedBox(
+                                width: 14,
+                                height: 14,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: context.accentBlue,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Loading requests…',
+                                style: context.bodySmall.copyWith(
+                                  color: context.textSecondary,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Loading requests…',
-                          style: context.bodySmall.copyWith(
-                            color: context.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
+                      );
+                    }
 
-                if (state.apiStatus == .FAILURE && state.requests.isEmpty) {
-                  return _InlineStatusRow(
-                    child: InkWell(
-                      onTap: () => context.read<DocUploadRequestBloc>().add(
-                            DocUploadRequestsFetched(
-                              flgCompleted: _showCompleted,
-                            ),
-                          ),
-                      borderRadius: BorderRadius.circular(8),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Iconsax.warning_2,
-                            size: 16,
-                            color: context.textSecondary,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              "Couldn't load requests · Tap to retry",
-                              style: context.bodySmall.copyWith(
-                                color: context.textSecondary,
+                    if (state.apiStatus == .FAILURE &&
+                        state.requests.isEmpty) {
+                      return _FillerPanel(
+                        height: _panelHeight(context),
+                        child: Center(
+                          child: InkWell(
+                            onTap: () =>
+                                context.read<DocUploadRequestBloc>().add(
+                                      DocUploadRequestsFetched(
+                                        flgCompleted: _showCompleted,
+                                      ),
+                                    ),
+                            borderRadius: BorderRadius.circular(8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                mainAxisSize: .min,
+                                children: [
+                                  Icon(
+                                    Iconsax.warning_2,
+                                    size: 16,
+                                    color: context.textSecondary,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "Couldn't load requests · Tap to retry",
+                                    style: context.bodySmall.copyWith(
+                                      color: context.textSecondary,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                }
+                        ),
+                      );
+                    }
 
-                if (state.requests.isEmpty) {
-                  return _InlineStatusRow(
-                    child: Text(
-                      _showCompleted
-                          ? 'No completed requests yet'
-                          : "No pending requests · you're all caught up",
-                      style: context.bodySmall.copyWith(
-                        color: context.textSecondary,
-                      ),
-                    ),
-                  );
-                }
+                    if (state.requests.isEmpty) {
+                      return _FillerPanel(
+                        height: _panelHeight(context),
+                        child: Center(
+                          child: Text(
+                            _showCompleted
+                                ? 'No completed requests yet'
+                                : "No pending requests · you're all caught up",
+                            style: context.bodySmall.copyWith(
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
 
-                return ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.requests.length,
-                  separatorBuilder: (_, __) =>
-                      SizedBox(height: context.gridSpacing),
-                  itemBuilder: (context, index) {
-                    final request = state.requests[index];
-                    return _PendingRequestCard(
-                      request: request,
-                      isUploading: _uploadingId == request.id,
-                      onUpload: () => _pickAndUpload(request),
+                    return ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: state.requests.length,
+                      separatorBuilder: (_, __) =>
+                          SizedBox(height: context.gridSpacing),
+                      itemBuilder: (context, index) {
+                        final request = state.requests[index];
+                        return _PendingRequestCard(
+                          request: request,
+                          isUploading: _uploadingId == request.id,
+                          onUpload: () => _pickAndUpload(request),
+                        );
+                      },
                     );
                   },
-                );
-              },
+                ),
+              ),
             ),
           ],
         ),
@@ -154,16 +203,19 @@ class _PendingDocRequestsSectionState
   }
 }
 
-class _InlineStatusRow extends StatelessWidget {
+/// A single-child, always-scrollable filler so [RefreshIndicator] keeps
+/// working (pull gesture needs a Scrollable) even for non-list states.
+class _FillerPanel extends StatelessWidget {
+  final double height;
   final Widget child;
 
-  const _InlineStatusRow({required this.child});
+  const _FillerPanel({required this.height, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: child,
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [SizedBox(height: height, child: child)],
     );
   }
 }
