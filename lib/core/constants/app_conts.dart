@@ -40,7 +40,7 @@ class AppConstants {
   static const String viewAll = 'View all';
   static const String administrator = 'Administrator';
   static const String dashboardLabel = 'Dashboard';
-  static const String scanDocumentLabel = 'Scan Document';
+  static const String scanDocumentLabel = 'Upload Documents';
   static const String modules = 'Modules';
   static const String accountsLabel = 'Accounts';
   static const String accountLedgerLabel = 'Account Ledger';
@@ -53,7 +53,7 @@ class AppConstants {
   static const String securityLabel = 'Security';
   static const String systemLabel = 'System';
   static const String assetsLabel = 'Assets';
-  static const String partahLabel = 'Partah';
+  static const String partahLabel = 'Mantic Partah';
   static const String logout = 'Logout';
   // ─── Employee Dashboard ────────────────────────────────
   static const String employeeDashboardTitle = 'Employee Dashboard';
