@@ -475,7 +475,7 @@ class _PendingRequestCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Uploaded ${request.completedOn!.displayDate}',
+                        'Uploaded ${request.completedOn!.toLocal().fullFormat}',
                         style: context.labelSmall.copyWith(
                           color: context.textSecondary,
                         ),
