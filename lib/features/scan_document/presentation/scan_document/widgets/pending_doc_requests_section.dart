@@ -62,13 +62,6 @@ class _PendingDocRequestsSectionState
         );
   }
 
-  double _panelHeight(BuildContext context) => Responsive.value<double>(
-        context,
-        phone: 230,
-        tablet: 270,
-        ipad: 300,
-      );
-
   @override
   Widget build(BuildContext context) {
     return BlocListener<DocumentUploadBloc, DocumentUploadState>(
@@ -78,144 +71,169 @@ class _PendingDocRequestsSectionState
       listener: (context, state) {
         if (mounted) setState(() => _uploadingId = null);
       },
-      child: Padding(
-        padding: context.pagePadding.copyWith(bottom: 4),
-        child: Column(
-          crossAxisAlignment: .start,
-          children: [
-            _RequestTabBar(
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          Padding(
+            padding: context.pagePadding.copyWith(bottom: 4),
+            child: _RequestTabBar(
               showCompleted: _showCompleted,
               onChanged: _switchTab,
             ),
-            SizedBox(height: context.gridSpacing),
-            SizedBox(
-              height: _panelHeight(context),
-              child: RefreshIndicator(
-                onRefresh: _onRefresh,
-                color: context.accentBlue,
-                child: BlocBuilder<DocUploadRequestBloc, DocUploadRequestState>(
-                  builder: (context, state) {
-                    if (state.apiStatus == .LOADING &&
-                        state.requests.isEmpty) {
-                      return _FillerPanel(
-                        height: _panelHeight(context),
-                        child: Center(
-                          child: Row(
-                            mainAxisSize: .min,
-                            children: [
-                              SizedBox(
-                                width: 14,
-                                height: 14,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: context.accentBlue,
-                                ),
+          ),
+          SizedBox(height: context.gridSpacing),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _onRefresh,
+              color: context.accentBlue,
+              child: BlocBuilder<DocUploadRequestBloc, DocUploadRequestState>(
+                builder: (context, state) {
+                  if (state.apiStatus == .LOADING && state.requests.isEmpty) {
+                    return _FillerPanel(
+                      child: Center(
+                        child: Row(
+                          mainAxisSize: .min,
+                          children: [
+                            SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: context.accentBlue,
                               ),
-                              const SizedBox(width: 10),
-                              Text(
-                                'Loading requests…',
-                                style: context.bodySmall.copyWith(
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Loading requests…',
+                              style: context.bodySmall.copyWith(
+                                color: context.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (state.apiStatus == .FAILURE && state.requests.isEmpty) {
+                    return _FillerPanel(
+                      child: Center(
+                        child: InkWell(
+                          onTap: () =>
+                              context.read<DocUploadRequestBloc>().add(
+                                    DocUploadRequestsFetched(
+                                      flgCompleted: _showCompleted,
+                                    ),
+                                  ),
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisSize: .min,
+                              children: [
+                                Icon(
+                                  Iconsax.warning_2,
+                                  size: 16,
                                   color: context.textSecondary,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-
-                    if (state.apiStatus == .FAILURE &&
-                        state.requests.isEmpty) {
-                      return _FillerPanel(
-                        height: _panelHeight(context),
-                        child: Center(
-                          child: InkWell(
-                            onTap: () =>
-                                context.read<DocUploadRequestBloc>().add(
-                                      DocUploadRequestsFetched(
-                                        flgCompleted: _showCompleted,
-                                      ),
-                                    ),
-                            borderRadius: BorderRadius.circular(8),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Row(
-                                mainAxisSize: .min,
-                                children: [
-                                  Icon(
-                                    Iconsax.warning_2,
-                                    size: 16,
+                                const SizedBox(width: 8),
+                                Text(
+                                  "Couldn't load requests · Tap to retry",
+                                  style: context.bodySmall.copyWith(
                                     color: context.textSecondary,
                                   ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "Couldn't load requests · Tap to retry",
-                                    style: context.bodySmall.copyWith(
-                                      color: context.textSecondary,
-                                    ),
-                                  ),
-                                ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (state.requests.isEmpty) {
+                    return _FillerPanel(
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: .min,
+                          children: [
+                            Container(
+                              width: 88,
+                              height: 88,
+                              decoration: BoxDecoration(
+                                color: context.navyIconBg,
+                                shape: .circle,
+                              ),
+                              child: Icon(
+                                _showCompleted
+                                    ? Iconsax.tick_circle
+                                    : Iconsax.document_upload,
+                                color: context.navyIconColor,
+                                size: 38,
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    }
-
-                    if (state.requests.isEmpty) {
-                      return _FillerPanel(
-                        height: _panelHeight(context),
-                        child: Center(
-                          child: Text(
-                            _showCompleted
-                                ? 'No completed requests yet'
-                                : "No pending requests · you're all caught up",
-                            style: context.bodySmall.copyWith(
-                              color: context.textSecondary,
+                            const SizedBox(height: 20),
+                            Text(
+                              _showCompleted
+                                  ? 'No completed requests'
+                                  : 'No pending requests',
+                              style: context.titleMedium.copyWith(
+                                color: context.textPrimary,
+                                fontWeight: .w600,
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _showCompleted
+                                  ? 'Completed uploads will show up here'
+                                  : "You're all caught up — nothing to upload",
+                              style: context.bodySmall.copyWith(
+                                color: context.textSecondary,
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    }
-
-                    return ListView.separated(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: state.requests.length,
-                      separatorBuilder: (_, __) =>
-                          SizedBox(height: context.gridSpacing),
-                      itemBuilder: (context, index) {
-                        final request = state.requests[index];
-                        return _PendingRequestCard(
-                          request: request,
-                          isUploading: _uploadingId == request.id,
-                          onUpload: () => _pickAndUpload(request),
-                        );
-                      },
+                      ),
                     );
-                  },
-                ),
+                  }
+
+                  return ListView.separated(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: context.pagePadding.copyWith(top: 0),
+                    itemCount: state.requests.length,
+                    separatorBuilder: (_, __) =>
+                        SizedBox(height: context.gridSpacing),
+                    itemBuilder: (context, index) {
+                      final request = state.requests[index];
+                      return _PendingRequestCard(
+                        request: request,
+                        isUploading: _uploadingId == request.id,
+                        onUpload: () => _pickAndUpload(request),
+                      );
+                    },
+                  );
+                },
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// A single-child, always-scrollable filler so [RefreshIndicator] keeps
-/// working (pull gesture needs a Scrollable) even for non-list states.
+/// An always-scrollable filler so [RefreshIndicator] keeps working (pull
+/// gesture needs a Scrollable) even for non-list states.
 class _FillerPanel extends StatelessWidget {
-  final double height;
   final Widget child;
 
-  const _FillerPanel({required this.height, required this.child});
+  const _FillerPanel({required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      children: [SizedBox(height: height, child: child)],
+      slivers: [SliverFillRemaining(hasScrollBody: false, child: child)],
     );
   }
 }
