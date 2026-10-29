@@ -471,32 +471,14 @@ class _PendingRequestCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 10),
-          completed
-              ? _CompletedBadge(color: statusColor)
-              : _UploadButton(isUploading: isUploading, onTap: onUpload),
+          // Completed already has its checkmark on the leading icon chip —
+          // no need for a second one trailing the card.
+          if (!completed) ...[
+            const SizedBox(width: 10),
+            _UploadButton(isUploading: isUploading, onTap: onUpload),
+          ],
         ],
       ),
-    );
-  }
-}
-
-class _CompletedBadge extends StatelessWidget {
-  final Color color;
-
-  const _CompletedBadge({required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    // Icon only — a "Done" label next to a checkmark is redundant.
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: context.isDark ? 0.14 : 0.10),
-        shape: .circle,
-        border: Border.all(color: color.withValues(alpha: 0.35)),
-      ),
-      child: Icon(Iconsax.tick_circle, size: 18, color: color),
     );
   }
 }
