@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
+import '../../../../doc_upload_request/doc_upload_request_exports.dart';
 import '../blocs/scan_document_bloc.dart';
 import '../blocs/scan_document_event.dart';
 import '../blocs/scan_document_state.dart';
 import '../../../domain/entities/scanned_document.dart';
 import '../widgets/doc_card.dart';
 import '../widgets/name_document_sheet.dart';
+import '../widgets/pending_doc_requests_section.dart';
 import 'document_view_page.dart';
 
 class ScanDocumentView extends StatelessWidget {
@@ -17,8 +20,17 @@ class ScanDocumentView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<ScannerBloc>()..add(const DocumentsLoaded()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => sl<ScannerBloc>()..add(const DocumentsLoaded()),
+        ),
+        BlocProvider(
+          create: (_) => sl<DocUploadRequestBloc>()
+            ..add(const DocUploadRequestsFetched(flgCompleted: false)),
+        ),
+        BlocProvider(create: (_) => sl<DocumentUploadBloc>()),
+      ],
       child: const _ScanDocumentBody(),
     );
   }
@@ -121,6 +133,30 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocListener<DocumentUploadBloc, DocumentUploadState>(
+      listenWhen: (previous, current) =>
+          previous.apiStatus != current.apiStatus,
+      listener: (context, state) {
+        if (state.apiStatus == ApiStatus.SUCCESS) {
+          AppToastsUtils.showSuccessTop(context, 'Document uploaded');
+          context
+              .read<DocUploadRequestBloc>()
+              .add(const DocUploadRequestsFetched(flgCompleted: false));
+          context.read<DocumentUploadBloc>().add(const DocumentUploadReset());
+        }
+        if (state.apiStatus == ApiStatus.FAILURE) {
+          AppToastsUtils.showErrorTop(
+            context,
+            state.message ?? 'Upload failed',
+          );
+          context.read<DocumentUploadBloc>().add(const DocumentUploadReset());
+        }
+      },
+      child: _buildScannerBody(context),
+    );
+  }
+
+  Widget _buildScannerBody(BuildContext context) {
     return BlocConsumer<ScannerBloc, ScannerState>(
       listener: (context, state) async {
         if (state is ScannerError) {
@@ -237,6 +273,7 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
               : null,
           body: Column(
             children: [
+              if (!_isSelecting) const PendingDocRequestsSection(),
               if (!_isSelecting && allDocs.isNotEmpty)
                 Padding(
                   padding: context.pagePadding.copyWith(bottom: 4),
