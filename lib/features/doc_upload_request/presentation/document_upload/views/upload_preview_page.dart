@@ -227,24 +227,19 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
                 ],
               ),
             ),
-            body: Stack(
+            body: Column(
               children: [
-                Column(
-                  children: [
-                    if (hasPages) _ReorderHintBar(pageCount: pages.length),
-                    Expanded(
-                      child: pages == null
-                          ? const _PreparingPages()
-                          : _PageGrid(
-                              pages: pages,
-                              onReorder: _onReorder,
-                              onDelete: _deleteAt,
-                              onTap: _openFullScreen,
-                            ),
-                    ),
-                  ],
+                if (hasPages) _ReorderHintBar(pageCount: pages.length),
+                Expanded(
+                  child: pages == null
+                      ? const _PreparingPages()
+                      : _PageGrid(
+                          pages: pages,
+                          onReorder: _onReorder,
+                          onDelete: _deleteAt,
+                          onTap: _openFullScreen,
+                        ),
                 ),
-                if (isUploading) const _UploadingOverlay(),
               ],
             ),
             bottomNavigationBar: pages == null
@@ -257,44 +252,6 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
           ),
         );
       },
-    );
-  }
-}
-
-class _UploadingOverlay extends StatelessWidget {
-  const _UploadingOverlay();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: AbsorbPointer(
-        child: Container(
-          color: AppColors.black.withValues(alpha: 0.45),
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
-              decoration: BoxDecoration(
-                color: context.surfaceElevated,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Column(
-                mainAxisSize: .min,
-                children: [
-                  CircularProgressIndicator(color: context.accentBlue),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Uploading…',
-                    style: context.bodyMedium.copyWith(
-                      color: context.textPrimary,
-                      fontWeight: .w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -562,11 +519,18 @@ class _UploadBar extends StatelessWidget {
       ),
       child: SizedBox(
         width: double.infinity,
-        // Busy state is communicated by the full-screen overlay, not a
-        // spinner on the button — the button just goes disabled.
         child: FilledButton.icon(
           onPressed: disabled ? null : onUpload,
-          icon: const Icon(Iconsax.export_1, size: 18),
+          icon: isBusy
+              ? SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: context.white,
+                  ),
+                )
+              : const Icon(Iconsax.export_1, size: 18),
           label: Text(
             isBusy
                 ? 'Uploading…'
