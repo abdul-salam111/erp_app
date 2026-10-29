@@ -10,7 +10,7 @@ import '../theme_exports.dart';
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   final String _key = StorageKeys.themeMode;
 
-  ThemeBloc() : super(const ThemeState(themeMode: ThemeMode.system)) {
+  ThemeBloc() : super(const ThemeState(themeMode: ThemeMode.light)) {
     on<LoadTheme>(_onLoadTheme, transformer: droppable());
     on<SetTheme>(_onSetTheme, transformer: droppable());
   }
@@ -30,17 +30,21 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     _updateSystemUIOverlay(event.themeMode);
   }
 
+  // No saved preference yet (fresh install, or a value we don't recognize)
+  // defaults to light — the app no longer follows the OS theme by default.
   ThemeMode _themeModeFromStorage(String? value) {
     return switch (value) {
       'light' => ThemeMode.light,
       'dark' => ThemeMode.dark,
-      _ => ThemeMode.system,
+      'system' => ThemeMode.system,
+      _ => ThemeMode.light,
     };
   }
 
   // Update system UI overlay style
   void _updateSystemUIOverlay(ThemeMode mode) {
-    final isDark = mode == ThemeMode.dark ||
+    final isDark =
+        mode == ThemeMode.dark ||
         (mode == ThemeMode.system &&
             WidgetsBinding.instance.platformDispatcher.platformBrightness ==
                 Brightness.dark);

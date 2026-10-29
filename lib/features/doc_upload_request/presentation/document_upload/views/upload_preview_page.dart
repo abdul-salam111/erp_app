@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
@@ -179,14 +180,21 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
             ),
             body: Stack(
               children: [
-                pages == null
-                    ? const _PreparingPages()
-                    : _PageGrid(
-                        pages: pages,
-                        onReorder: _onReorder,
-                        onDelete: _deleteAt,
-                        onTap: _openFullScreen,
-                      ),
+                Column(
+                  children: [
+                    if (hasPages) _ReorderHintBar(pageCount: pages.length),
+                    Expanded(
+                      child: pages == null
+                          ? const _PreparingPages()
+                          : _PageGrid(
+                              pages: pages,
+                              onReorder: _onReorder,
+                              onDelete: _deleteAt,
+                              onTap: _openFullScreen,
+                            ),
+                    ),
+                  ],
+                ),
                 if (isUploading) const _UploadingOverlay(),
               ],
             ),
@@ -236,6 +244,50 @@ class _UploadingOverlay extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _ReorderHintBar extends StatelessWidget {
+  final int pageCount;
+
+  const _ReorderHintBar({required this.pageCount});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(
+        context.pagePadding.left,
+        10,
+        context.pagePadding.right,
+        2,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+      decoration: BoxDecoration(
+        color: context.navyIconBg,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Iconsax.arrange_square_2,
+            size: 15,
+            color: context.navyIconColor,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              '$pageCount ${pageCount == 1 ? 'page' : 'pages'} · hold & drag a page to reorder',
+              style: context.labelSmall.copyWith(
+                color: context.textSecondary,
+                fontWeight: .w600,
+              ),
+              maxLines: 1,
+              overflow: .ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -296,6 +348,31 @@ class _PageGrid extends StatelessWidget {
       ),
       itemCount: pages.length,
       onReorder: onReorder,
+      onDragStart: (_) => HapticFeedback.mediumImpact(),
+      // Lift the tile — scale up, tilt slightly, deepen the shadow — so
+      // picking a page up reads as physically grabbing a tile, CamScanner
+      // style, instead of just silently following the finger.
+      dragWidgetBuilderV2: DragWidgetBuilderV2(
+        builder: (index, child, screenshot) => Transform.rotate(
+          angle: 0.035,
+          child: Transform.scale(
+            scale: 1.07,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.black.withValues(alpha: 0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
+              ),
+              child: child,
+            ),
+          ),
+        ),
+      ),
       itemBuilder: (context, index) {
         final page = pages[index];
         return _PageThumbnail(
@@ -328,62 +405,80 @@ class _PageThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Stack(
-        fit: .expand,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Container(
-              color: context.surfaceElevated,
-              child: Image.file(
-                File(page.imagePath),
-                fit: .cover,
-                errorBuilder: (_, __, ___) => Icon(
-                  Icons.broken_image_outlined,
-                  color: context.textDisabled,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            left: 6,
-            bottom: 6,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-              decoration: BoxDecoration(
-                color: AppColors.black.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                '$pageNumber',
-                style: context.labelSmall.copyWith(
-                  color: AppColors.white,
-                  fontWeight: .w700,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            right: 4,
-            top: 4,
-            child: Material(
-              color: AppColors.black.withValues(alpha: 0.5),
-              shape: const CircleBorder(),
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: onDelete,
-                child: const Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Icon(
-                    Icons.close_rounded,
-                    size: 16,
-                    color: AppColors.white,
+      child: Container(
+        // A soft shadow (or a border in dark mode, where shadows read as
+        // muddy) reads each page as a liftable tile — reinforcing that it
+        // can be picked up and dragged, not just a static photo in a list.
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: context.isDark ? Border.all(color: context.navyBorder) : null,
+          boxShadow: context.isDark
+              ? null
+              : [
+                  BoxShadow(
+                    color: AppColors.black.withValues(alpha: 0.14),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+        ),
+        child: Stack(
+          fit: .expand,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                color: context.surfaceElevated,
+                child: Image.file(
+                  File(page.imagePath),
+                  fit: .cover,
+                  errorBuilder: (_, __, ___) => Icon(
+                    Icons.broken_image_outlined,
+                    color: context.textDisabled,
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+            Positioned(
+              left: 6,
+              bottom: 6,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.black.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  '$pageNumber',
+                  style: context.labelSmall.copyWith(
+                    color: AppColors.white,
+                    fontWeight: .w700,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              right: 4,
+              top: 4,
+              child: Material(
+                color: AppColors.black.withValues(alpha: 0.5),
+                shape: const CircleBorder(),
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: onDelete,
+                  child: const Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 16,
+                      color: AppColors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
