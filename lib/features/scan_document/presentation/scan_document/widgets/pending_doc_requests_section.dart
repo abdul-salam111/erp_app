@@ -177,64 +177,28 @@ class _RequestTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 46,
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         color: context.navyCard,
-        borderRadius: BorderRadius.circular(13),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: context.navyBorder),
       ),
-      child: Stack(
+      child: Row(
         children: [
-          AnimatedAlign(
-            duration: const Duration(milliseconds: 260),
-            curve: Curves.easeOutCubic,
-            alignment: showCompleted ? .centerRight : .centerLeft,
-            child: FractionallySizedBox(
-              widthFactor: 0.5,
-              heightFactor: 1,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      context.accentBlue,
-                      context.accentBlue.withValues(alpha: 0.80),
-                    ],
-                    begin: .topLeft,
-                    end: .bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: context.accentBlue.withValues(alpha: 0.35),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-              ),
+          Expanded(
+            child: _TabChip(
+              label: 'Pending',
+              icon: Iconsax.timer_1,
+              selected: !showCompleted,
+              onTap: () => onChanged(false),
             ),
           ),
-          Positioned.fill(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _TabChip(
-                    label: 'Pending',
-                    icon: Iconsax.timer_1,
-                    selected: !showCompleted,
-                    onTap: () => onChanged(false),
-                  ),
-                ),
-                Expanded(
-                  child: _TabChip(
-                    label: 'Completed',
-                    icon: Iconsax.tick_circle,
-                    selected: showCompleted,
-                    onTap: () => onChanged(true),
-                  ),
-                ),
-              ],
+          Expanded(
+            child: _TabChip(
+              label: 'Completed',
+              icon: Iconsax.tick_circle,
+              selected: showCompleted,
+              onTap: () => onChanged(true),
             ),
           ),
         ],
@@ -259,31 +223,29 @@ class _TabChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.transparent,
-      borderRadius: BorderRadius.circular(10),
+      color: selected ? context.accentBlue : AppColors.transparent,
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 200),
-          style: context.labelSmall.copyWith(
-            color: selected ? context.white : context.textSecondary,
-            fontWeight: .w700,
-          ),
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 9),
           child: Row(
             mainAxisAlignment: .center,
             children: [
-              AnimatedScale(
-                duration: const Duration(milliseconds: 200),
-                scale: selected ? 1.0 : 0.92,
-                child: Icon(
-                  icon,
-                  size: 15,
-                  color: selected ? context.white : context.textSecondary,
-                ),
+              Icon(
+                icon,
+                size: 15,
+                color: selected ? context.white : context.textSecondary,
               ),
               const SizedBox(width: 6),
-              Text(label),
+              Text(
+                label,
+                style: context.labelSmall.copyWith(
+                  color: selected ? context.white : context.textSecondary,
+                  fontWeight: .w700,
+                ),
+              ),
             ],
           ),
         ),
