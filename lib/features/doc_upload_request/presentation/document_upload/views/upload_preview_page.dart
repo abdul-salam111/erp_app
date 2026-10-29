@@ -82,11 +82,49 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
     );
   }
 
+  Future<bool> _confirmDiscard() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: ctx.surfaceElevated,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        title: Text(
+          'Discard these pages?',
+          style: ctx.titleMedium.copyWith(
+            color: ctx.textPrimary,
+            fontWeight: .w600,
+          ),
+        ),
+        content: Text(
+          'Going back now will lose the pages you scanned/picked here — they haven\'t been uploaded yet.',
+          style: ctx.bodySmall.copyWith(color: ctx.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text('Cancel', style: TextStyle(color: ctx.textSecondary)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: ctx.error,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text('Discard', style: TextStyle(color: ctx.white)),
+          ),
+        ],
+      ),
+    );
+    return result ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final pages = _pages;
 
-    return BlocListener<DocumentUploadBloc, DocumentUploadState>(
+    return BlocConsumer<DocumentUploadBloc, DocumentUploadState>(
       listenWhen: (previous, current) =>
           previous.apiStatus != current.apiStatus,
       listener: (context, state) {
@@ -94,42 +132,110 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
           Navigator.of(context).pop();
         }
       },
-      child: Scaffold(
-        backgroundColor: context.surface,
-        appBar: AppBar(
-          backgroundColor: context.background,
-          foregroundColor: context.textPrimary,
-          elevation: 0,
-          surfaceTintColor: context.background,
-          title: Column(
-            crossAxisAlignment: .start,
-            mainAxisSize: .min,
-            children: [
-              Text(
-                'Preview & Upload',
-                style: context.titleMedium.copyWith(
-                  color: context.textPrimary,
-                  fontWeight: .w600,
-                ),
+      builder: (context, uploadState) {
+        final isUploading = uploadState.apiStatus == ApiStatus.LOADING;
+        final hasPages = pages != null && pages.isNotEmpty;
+
+        return PopScope(
+          canPop: !hasPages,
+          onPopInvokedWithResult: (didPop, result) async {
+            if (didPop) return;
+            if (isUploading) {
+              AppToastsUtils.showErrorTop(
+                context,
+                'Please wait for the upload to finish',
+              );
+              return;
+            }
+            final confirmed = await _confirmDiscard();
+            if (confirmed && context.mounted) Navigator.of(context).pop();
+          },
+          child: Scaffold(
+            backgroundColor: context.surface,
+            appBar: AppBar(
+              backgroundColor: context.background,
+              foregroundColor: context.textPrimary,
+              elevation: 0,
+              surfaceTintColor: context.background,
+              title: Column(
+                crossAxisAlignment: .start,
+                mainAxisSize: .min,
+                children: [
+                  Text(
+                    'Preview & Upload',
+                    style: context.titleMedium.copyWith(
+                      color: context.textPrimary,
+                      fontWeight: .w600,
+                    ),
+                  ),
+                  Text(
+                    widget.request.purpose,
+                    style: context.bodySmall.copyWith(
+                      color: context.textSecondary,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                widget.request.purpose,
-                style: context.bodySmall.copyWith(color: context.textSecondary),
+            ),
+            body: Stack(
+              children: [
+                pages == null
+                    ? const _PreparingPages()
+                    : _PageGrid(
+                        pages: pages,
+                        onReorder: _onReorder,
+                        onDelete: _deleteAt,
+                        onTap: _openFullScreen,
+                      ),
+                if (isUploading) const _UploadingOverlay(),
+              ],
+            ),
+            bottomNavigationBar: pages == null
+                ? null
+                : _UploadBar(
+                    hasPages: pages.isNotEmpty,
+                    onUpload: _handleUpload,
+                  ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _UploadingOverlay extends StatelessWidget {
+  const _UploadingOverlay();
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: AbsorbPointer(
+        child: Container(
+          color: AppColors.black.withValues(alpha: 0.45),
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 24),
+              decoration: BoxDecoration(
+                color: context.surfaceElevated,
+                borderRadius: BorderRadius.circular(14),
               ),
-            ],
+              child: Column(
+                mainAxisSize: .min,
+                children: [
+                  CircularProgressIndicator(color: context.accentBlue),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Uploading…',
+                    style: context.bodyMedium.copyWith(
+                      color: context.textPrimary,
+                      fontWeight: .w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
-        body: pages == null
-            ? const _PreparingPages()
-            : _PageGrid(
-                pages: pages,
-                onReorder: _onReorder,
-                onDelete: _deleteAt,
-                onTap: _openFullScreen,
-              ),
-        bottomNavigationBar: pages == null
-            ? null
-            : _UploadBar(hasPages: pages.isNotEmpty, onUpload: _handleUpload),
       ),
     );
   }
