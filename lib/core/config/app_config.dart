@@ -26,9 +26,9 @@ class AppConfig {
 
   Future<void> initialize() async {
     final saved = await _storage.read(key: _envStorageKey);
-    if (saved == AppEnvironment.production.name) {
-      _environment = AppEnvironment.production;
-    }
+    _environment = saved == AppEnvironment.staging.name
+        ? AppEnvironment.staging
+        : AppEnvironment.production;
 
     final rc = FirebaseRemoteConfig.instance;
     await rc.setDefaults({
