@@ -12,6 +12,7 @@ import '../blocs/document_upload_bloc.dart';
 import '../blocs/document_upload_event.dart';
 import '../blocs/document_upload_state.dart';
 import '../models/upload_page.dart';
+import '../utils/pdf_merge.dart';
 import '../utils/pdf_pages.dart';
 import 'full_screen_page_viewer.dart';
 
@@ -34,6 +35,7 @@ class UploadPreviewPage extends StatefulWidget {
 
 class _UploadPreviewPageState extends State<UploadPreviewPage> {
   List<UploadPage>? _pages;
+  bool _isPreparingUpload = false;
 
   @override
   void initState() {
@@ -71,16 +73,58 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
     );
   }
 
-  void _handleUpload() {
+  Future<void> _handleUpload() async {
     final pages = _pages;
     if (pages == null || pages.isEmpty) return;
 
-    context.read<DocumentUploadBloc>().add(
-      DocumentUploadSubmitted(
-        id: widget.request.id,
-        filePaths: pages.map((p) => p.imagePath).toList(),
-      ),
+    final bloc = context.read<DocumentUploadBloc>();
+
+    setState(() => _isPreparingUpload = true);
+    List<String> filePaths;
+    try {
+      filePaths = await _resolveUploadFiles(pages);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isPreparingUpload = false);
+      AppToastsUtils.showErrorTop(context, 'Failed to prepare upload: $e');
+      return;
+    }
+    if (!mounted) return;
+    setState(() => _isPreparingUpload = false);
+
+    bloc.add(
+      DocumentUploadSubmitted(id: widget.request.id, filePaths: filePaths),
     );
+  }
+
+  /// If every current page still traces back to the same single original
+  /// PDF, untouched (same pages, same order) — send that original file.
+  /// If it's that same PDF but reordered/with pages removed — rebuild a
+  /// PDF from the edited pages. Otherwise (plain images, or a mix) — send
+  /// each page as its own file in the upload array.
+  Future<List<String>> _resolveUploadFiles(List<UploadPage> pages) async {
+    final sourcePdfPaths = pages.map((p) => p.sourcePdfPath).toSet();
+    final fromSinglePdf =
+        sourcePdfPaths.length == 1 && sourcePdfPaths.first != null;
+
+    if (fromSinglePdf) {
+      final pdfPath = sourcePdfPaths.first!;
+      final originalCount = pages.first.sourcePdfPageCount!;
+      final unmodified =
+          pages.length == originalCount &&
+          pages.indexed.every(
+            (entry) => entry.$2.sourcePdfPageIndex == entry.$1,
+          );
+
+      if (unmodified) return [pdfPath];
+
+      final rebuilt = await mergeImagesToPdf(
+        pages.map((p) => p.imagePath).toList(),
+      );
+      return [rebuilt];
+    }
+
+    return pages.map((p) => p.imagePath).toList();
   }
 
   Future<bool> _confirmDiscard() async {
@@ -134,8 +178,12 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
         }
       },
       builder: (context, uploadState) {
-        final isUploading = uploadState.apiStatus == ApiStatus.LOADING;
+        final isUploading =
+            _isPreparingUpload || uploadState.apiStatus == ApiStatus.LOADING;
         final hasPages = pages != null && pages.isNotEmpty;
+        final headerColor = context.isDark
+            ? AppColors.navyHeaderDark
+            : context.primary;
 
         return PopScope(
           canPop: !hasPages,
@@ -154,10 +202,11 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
           child: Scaffold(
             backgroundColor: context.surface,
             appBar: AppBar(
-              backgroundColor: context.background,
-              foregroundColor: context.textPrimary,
+              backgroundColor: headerColor,
+              foregroundColor: AppColors.white,
+              iconTheme: const IconThemeData(color: AppColors.white),
               elevation: 0,
-              surfaceTintColor: context.background,
+              surfaceTintColor: headerColor,
               title: Column(
                 crossAxisAlignment: .start,
                 mainAxisSize: .min,
@@ -165,14 +214,14 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
                   Text(
                     'Preview & Upload',
                     style: context.titleMedium.copyWith(
-                      color: context.textPrimary,
+                      color: AppColors.white,
                       fontWeight: .w600,
                     ),
                   ),
                   Text(
                     widget.request.purpose,
                     style: context.bodySmall.copyWith(
-                      color: context.textSecondary,
+                      color: AppColors.white.withValues(alpha: 0.85),
                     ),
                   ),
                 ],
@@ -202,6 +251,7 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
                 ? null
                 : _UploadBar(
                     hasPages: pages.isNotEmpty,
+                    isBusy: isUploading,
                     onUpload: _handleUpload,
                   ),
           ),
@@ -486,61 +536,54 @@ class _PageThumbnail extends StatelessWidget {
 
 class _UploadBar extends StatelessWidget {
   final bool hasPages;
+  final bool isBusy;
   final VoidCallback onUpload;
 
-  const _UploadBar({required this.hasPages, required this.onUpload});
+  const _UploadBar({
+    required this.hasPages,
+    required this.isBusy,
+    required this.onUpload,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DocumentUploadBloc, DocumentUploadState>(
-      builder: (context, state) {
-        final busy = state.apiStatus == ApiStatus.LOADING;
-        final disabled = busy || !hasPages;
+    final disabled = isBusy || !hasPages;
 
-        return Container(
-          decoration: BoxDecoration(
-            color: context.surfaceElevated,
-            border: Border(top: BorderSide(color: context.border)),
+    return Container(
+      decoration: BoxDecoration(
+        color: context.surfaceElevated,
+        border: Border(top: BorderSide(color: context.border)),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        20,
+        12,
+        20,
+        12 + MediaQuery.of(context).padding.bottom,
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        // Busy state is communicated by the full-screen overlay, not a
+        // spinner on the button — the button just goes disabled.
+        child: FilledButton.icon(
+          onPressed: disabled ? null : onUpload,
+          icon: const Icon(Iconsax.export_1, size: 18),
+          label: Text(
+            isBusy
+                ? 'Uploading…'
+                : (hasPages ? 'Upload' : 'No pages to upload'),
           ),
-          padding: EdgeInsets.fromLTRB(
-            20,
-            12,
-            20,
-            12 + MediaQuery.of(context).padding.bottom,
-          ),
-          child: SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: disabled ? null : onUpload,
-              icon: busy
-                  ? SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: context.white,
-                      ),
-                    )
-                  : const Icon(Iconsax.export_1, size: 18),
-              label: Text(
-                busy
-                    ? 'Uploading…'
-                    : (hasPages ? 'Upload' : 'No pages to upload'),
-              ),
-              style: FilledButton.styleFrom(
-                backgroundColor: context.accentBlue,
-                foregroundColor: context.white,
-                disabledBackgroundColor: context.grey200,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                textStyle: context.bodyMedium.copyWith(fontWeight: .w700),
-              ),
+          style: FilledButton.styleFrom(
+            backgroundColor: context.accentBlue,
+            foregroundColor: context.white,
+            disabledBackgroundColor: context.grey200,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
             ),
+            textStyle: context.bodyMedium.copyWith(fontWeight: .w700),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

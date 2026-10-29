@@ -14,8 +14,16 @@ Future<List<UploadPage>> buildUploadPages(List<String> sourcePaths) async {
   for (final path in sourcePaths) {
     if (path.toLowerCase().endsWith('.pdf')) {
       final images = await _explodePdfToImages(path);
-      for (final imagePath in images) {
-        pages.add(UploadPage(id: 'page_${seq++}', imagePath: imagePath));
+      for (var i = 0; i < images.length; i++) {
+        pages.add(
+          UploadPage(
+            id: 'page_${seq++}',
+            imagePath: images[i],
+            sourcePdfPath: path,
+            sourcePdfPageIndex: i,
+            sourcePdfPageCount: images.length,
+          ),
+        );
       }
     } else {
       pages.add(UploadPage(id: 'page_${seq++}', imagePath: path));
