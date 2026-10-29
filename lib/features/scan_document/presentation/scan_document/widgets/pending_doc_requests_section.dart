@@ -215,25 +215,27 @@ class _RequestTabBar extends StatelessWidget {
               ),
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: _TabChip(
-                  label: 'Pending',
-                  icon: Iconsax.timer_1,
-                  selected: !showCompleted,
-                  onTap: () => onChanged(false),
+          Positioned.fill(
+            child: Row(
+              children: [
+                Expanded(
+                  child: _TabChip(
+                    label: 'Pending',
+                    icon: Iconsax.timer_1,
+                    selected: !showCompleted,
+                    onTap: () => onChanged(false),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: _TabChip(
-                  label: 'Completed',
-                  icon: Iconsax.tick_circle,
-                  selected: showCompleted,
-                  onTap: () => onChanged(true),
+                Expanded(
+                  child: _TabChip(
+                    label: 'Completed',
+                    icon: Iconsax.tick_circle,
+                    selected: showCompleted,
+                    onTap: () => onChanged(true),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
