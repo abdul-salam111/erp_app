@@ -29,5 +29,7 @@ class AppIcons {
 
   static const String riceMill = 'assets/icons/rice-mill.png';
 
+  static const String dashboardIcon = 'assets/icons/dashboard-icon.png';
+
   static const String flourMills = 'assets/icons/flour-mills.png';
 }

@@ -36,6 +36,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.dashboardLabel,
             icon: Iconsax.home_2,
+            iconAsset: AppIcons.dashboardIcon,
             color: AppColors.accentBlue,
             routeName: RouteNames.dashboard,
           ),
@@ -330,9 +331,7 @@ class _AdminSliverAppBar extends StatelessWidget {
                       begin: .topLeft,
                       end: .bottomRight,
                     ),
-              borderRadius: .vertical(
-                bottom: .circular(28 * t),
-              ),
+              borderRadius: .vertical(bottom: .circular(28 * t)),
             ),
             child: Stack(
               children: [
@@ -525,11 +524,7 @@ class _AdminHeaderChip extends StatelessWidget {
     return Row(
       mainAxisSize: .min,
       children: [
-        Icon(
-          icon,
-          color: AppColors.white.withValues(alpha: 0.85),
-          size: 11,
-        ),
+        Icon(icon, color: AppColors.white.withValues(alpha: 0.85), size: 11),
         const SizedBox(width: 4),
         Flexible(
           child: Text(

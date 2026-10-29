@@ -6,6 +6,7 @@ import 'package:mantic_erp_app/core/constants/app_conts.dart';
 import 'package:mantic_erp_app/core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/routes/route_exports.dart';
 import '../../../../../core/services/current_user.dart';
+import '../../../../../core/constants/app_icons.dart';
 import '../../../../../core/constants/system_permission_keys.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
@@ -28,6 +29,7 @@ class EmployeeDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.dashboardLabel,
             icon: Iconsax.home_2,
+            iconAsset: AppIcons.dashboardIcon,
             color: AppColors.accentBlue,
             routeName: RouteNames.employee_dashboard,
           ),
@@ -124,7 +126,8 @@ class _EmployeeSliverAppBar extends StatelessWidget {
 
   String get _initials {
     final parts = currentUser.fullName.trim().split(' ');
-    if (parts.length >= 2) return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+    if (parts.length >= 2)
+      return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
     return parts.first.isNotEmpty ? parts.first[0].toUpperCase() : '?';
   }
 
@@ -199,8 +202,10 @@ class _EmployeeSliverAppBar extends StatelessWidget {
         builder: (context, constraints) {
           final minH = top + kToolbarHeight;
           final maxH = top + _expandedHeight;
-          final t = ((constraints.maxHeight - minH) / (maxH - minH))
-              .clamp(0.0, 1.0);
+          final t = ((constraints.maxHeight - minH) / (maxH - minH)).clamp(
+            0.0,
+            1.0,
+          );
           // Expanded content fades out early; compact title fades in late —
           // the two never fully overlap mid-collapse.
           final expandedOpacity = ((t - 0.4) / 0.6).clamp(0.0, 1.0);
@@ -318,7 +323,9 @@ class _EmployeeSliverAppBar extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 26,
-                              backgroundColor: AppColors.white.withValues(alpha: 0.20),
+                              backgroundColor: AppColors.white.withValues(
+                                alpha: 0.20,
+                              ),
                               child: Text(
                                 _initials,
                                 style: context.titleSmall.copyWith(
@@ -532,7 +539,6 @@ class _HeaderIconBtn extends StatelessWidget {
   }
 }
 
-
 // ─── Monthly snapshot ─────────────────────────────────────────────────────────
 
 class _MonthlySnapshotSection extends StatelessWidget {
@@ -588,7 +594,9 @@ class _MonthlySnapshotSection extends StatelessWidget {
           child: Column(
             children: List.generate((_stats.length / 2).ceil(), (row) {
               final left = _stats[row * 2];
-              final right = row * 2 + 1 < _stats.length ? _stats[row * 2 + 1] : null;
+              final right = row * 2 + 1 < _stats.length
+                  ? _stats[row * 2 + 1]
+                  : null;
               return Column(
                 children: [
                   if (row > 0)
@@ -764,7 +772,9 @@ class _WorkspaceMenuSection extends StatelessWidget {
     );
 
     final visibleItems = _items
-        .where((i) => i.permissionKey == null || featureAccess.has(i.permissionKey!))
+        .where(
+          (i) => i.permissionKey == null || featureAccess.has(i.permissionKey!),
+        )
         .toList();
 
     return Column(
@@ -853,11 +863,7 @@ class _WorkspaceCard extends StatelessWidget {
                       overflow: .ellipsis,
                     ),
                   ),
-                  Icon(
-                    Iconsax.arrow_right_3,
-                    size: 11,
-                    color: item.color,
-                  ),
+                  Icon(Iconsax.arrow_right_3, size: 11, color: item.color),
                 ],
               ),
             ],
@@ -894,7 +900,8 @@ class _NoticeBoardSection extends StatelessWidget {
   static const _notices = <_NoticeMeta>[
     _NoticeMeta(
       title: 'Eid Holidays Announcement',
-      snippet: 'Office will remain closed from 27th to 30th. Plan handovers accordingly.',
+      snippet:
+          'Office will remain closed from 27th to 30th. Plan handovers accordingly.',
       date: 'Jul 18',
       color: AppColors.green,
     ),
@@ -906,7 +913,8 @@ class _NoticeBoardSection extends StatelessWidget {
     ),
     _NoticeMeta(
       title: 'Biometric Attendance Policy',
-      snippet: 'All employees must mark attendance via the biometric device from Aug 1.',
+      snippet:
+          'All employees must mark attendance via the biometric device from Aug 1.',
       date: 'Jul 12',
       color: AppColors.orange,
     ),

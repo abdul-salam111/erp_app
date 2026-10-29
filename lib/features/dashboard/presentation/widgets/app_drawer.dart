@@ -15,6 +15,7 @@ class DrawerItem {
   final _DrawerItemType _type;
   final String? label;
   final IconData? icon;
+  final String? iconAsset;
   final String? routeName;
   final Color? color;
   final List<DrawerItem> children;
@@ -24,6 +25,7 @@ class DrawerItem {
   const DrawerItem.tile({
     required this.label,
     required this.icon,
+    this.iconAsset,
     this.routeName,
     this.color,
     this.permissionKey,
@@ -37,6 +39,7 @@ class DrawerItem {
     required this.children,
     this.color,
   }) : _type = _DrawerItemType.expandable,
+       iconAsset = null,
        routeName = null,
        permissionKey = null,
        badgeCount = null;
@@ -44,6 +47,7 @@ class DrawerItem {
   const DrawerItem.category(this.label)
     : _type = _DrawerItemType.category,
       icon = null,
+      iconAsset = null,
       routeName = null,
       color = null,
       children = const [],
@@ -54,6 +58,7 @@ class DrawerItem {
     : _type = _DrawerItemType.divider,
       label = null,
       icon = null,
+      iconAsset = null,
       routeName = null,
       color = null,
       children = const [],
@@ -252,7 +257,11 @@ class _DrawerTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
         child: Row(
           children: [
-            _IconBox(icon: item.icon!, color: item.color ?? context.accentBlue),
+            _IconBox(
+              icon: item.icon!,
+              iconAsset: item.iconAsset,
+              color: item.color ?? context.accentBlue,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -284,9 +293,10 @@ class _DrawerTile extends StatelessWidget {
 
 class _IconBox extends StatelessWidget {
   final IconData icon;
+  final String? iconAsset;
   final Color color;
 
-  const _IconBox({required this.icon, required this.color});
+  const _IconBox({required this.icon, this.iconAsset, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +309,12 @@ class _IconBox extends StatelessWidget {
             : color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Icon(icon, size: 17, color: color),
+      child: iconAsset != null
+          ? Padding(
+              padding: const EdgeInsets.all(8),
+              child: Image.asset(iconAsset!, color: color),
+            )
+          : Icon(icon, size: 17, color: color),
     );
   }
 }
