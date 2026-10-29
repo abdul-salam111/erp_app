@@ -13,9 +13,13 @@ class AppIcons {
 
   static const String documentIcon = 'assets/icons/document-icon.png';
 
+  static const String walletIcon = 'assets/icons/wallet-icon.png';
+
   static const String petrofy = 'assets/icons/petrofy.png';
 
   static const String mars = 'assets/icons/mars.png';
+
+  static const String purchase = 'assets/icons/purchase.png';
 
   static const String empty = 'assets/icons/empty.png';
 

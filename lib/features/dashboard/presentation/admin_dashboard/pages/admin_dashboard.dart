@@ -66,6 +66,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.expandable(
             label: AppConstants.accountsLabel,
             icon: Iconsax.dollar_circle,
+            iconAsset: AppIcons.walletIcon,
             color: AppColors.accentBlue,
             children: [
               DrawerItem.tile(
@@ -128,6 +129,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.purchaseLabel,
             icon: Iconsax.shopping_bag,
+            iconAsset: AppIcons.purchase,
             color: AppColors.purple,
             routeName: RouteNames.purchase_order,
           ),

@@ -39,10 +39,10 @@ class DrawerItem {
     required this.label,
     required this.icon,
     required this.children,
+    this.iconAsset,
+    this.tintIconAsset = true,
     this.color,
   }) : _type = _DrawerItemType.expandable,
-       iconAsset = null,
-       tintIconAsset = true,
        routeName = null,
        permissionKey = null,
        badgeCount = null;
@@ -424,6 +424,8 @@ class _ExpandableTileState extends State<_ExpandableTile>
                 children: [
                   _IconBox(
                     icon: widget.item.icon!,
+                    iconAsset: widget.item.iconAsset,
+                    tintIconAsset: widget.item.tintIconAsset,
                     color: _expanded
                         ? context.accentBlue
                         : (widget.item.color ?? context.accentBlue),
