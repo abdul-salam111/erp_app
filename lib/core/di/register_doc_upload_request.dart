@@ -31,4 +31,7 @@ Future<void> registerDocUploadRequest() async {
   sl.registerFactory<DocumentUploadBloc>(
     () => DocumentUploadBloc(uploadDocumentUsecase: sl()),
   );
+
+  // Factory: one fresh scan per upload attempt.
+  sl.registerFactory<ScannerBloc>(() => ScannerBloc());
 }

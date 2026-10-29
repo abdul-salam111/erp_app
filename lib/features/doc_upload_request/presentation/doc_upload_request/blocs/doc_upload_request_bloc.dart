@@ -11,7 +11,7 @@ class DocUploadRequestBloc
   final GetDocUploadRequestsUsecase getDocUploadRequestsUsecase;
 
   DocUploadRequestBloc({required this.getDocUploadRequestsUsecase})
-      : super(const DocUploadRequestState()) {
+    : super(const DocUploadRequestState()) {
     on<DocUploadRequestsFetched>(_onFetched, transformer: restartable());
   }
 
@@ -19,10 +19,12 @@ class DocUploadRequestBloc
     DocUploadRequestsFetched event,
     Emitter<DocUploadRequestState> emit,
   ) async {
-    emit(state.copyWith(
-      apiStatus: ApiStatus.LOADING,
-      flgCompleted: event.flgCompleted,
-    ));
+    emit(
+      state.copyWith(
+        apiStatus: ApiStatus.LOADING,
+        flgCompleted: event.flgCompleted,
+      ),
+    );
 
     final result = await getDocUploadRequestsUsecase(
       GetDocUploadRequestsParams(
@@ -35,17 +37,18 @@ class DocUploadRequestBloc
     result.when(
       failure: (failure) {
         debugPrint('[DocUploadRequest] _onFetched FAILURE: ${failure.message}');
-        emit(state.copyWith(
-          apiStatus: ApiStatus.FAILURE,
-          message: failure.message,
-        ));
+        emit(
+          state.copyWith(
+            apiStatus: ApiStatus.FAILURE,
+            message: failure.message,
+          ),
+        );
       },
       success: (requests) {
-        debugPrint('[DocUploadRequest] _onFetched SUCCESS: ${requests.length} request(s)');
-        emit(state.copyWith(
-          apiStatus: ApiStatus.SUCCESS,
-          requests: requests,
-        ));
+        debugPrint(
+          '[DocUploadRequest] _onFetched SUCCESS: ${requests.length} request(s)',
+        );
+        emit(state.copyWith(apiStatus: ApiStatus.SUCCESS, requests: requests));
       },
     );
   }

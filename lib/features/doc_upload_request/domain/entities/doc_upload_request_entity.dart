@@ -23,13 +23,13 @@ class DocUploadRequestEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        purpose,
-        hostFeatureId,
-        hostEntityId,
-        flgCompleted,
-        hostFeatureName,
-        hostFeatureKey,
-        completedOn,
-      ];
+    id,
+    purpose,
+    hostFeatureId,
+    hostEntityId,
+    flgCompleted,
+    hostFeatureName,
+    hostFeatureKey,
+    completedOn,
+  ];
 }

@@ -8,7 +8,7 @@ import '../features/profile/profile_exports.dart';
 import '../features/alert_panel/alert_panel_exports.dart';
 import '../features/purchase_order/purchase_order_exports.dart';
 import '../features/sale_order/sale_order_exports.dart';
-import '../features/scan_document/scan_document_exports.dart';
+import '../features/doc_upload_request/doc_upload_request_exports.dart';
 import '../features/accounts/accounts_exports.dart';
 import '../features/accounts/presentation/credit_management/views/credit_management_details_view.dart';
 import '../features/inventory/inventory_exports.dart';
@@ -23,7 +23,6 @@ import '../features/loan_and_advance/loan_and_advance_exports.dart';
 import '../features/overtime/overtime_exports.dart';
 import '../features/choose_dashboard/choose_dashboard_view.dart';
 import '../features/partah/partah_exports.dart';
-
 
 class AppRoutes {
   static final navigatorKey = GlobalKey<NavigatorState>();
@@ -59,10 +58,16 @@ class AppRoutes {
           reverseTransitionDuration: const Duration(milliseconds: 400),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             // Signin rises from below and fades in
-            final slide = Tween<Offset>(
-              begin: const Offset(0, 0.07),
-              end: Offset.zero,
-            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+            final slide =
+                Tween<Offset>(
+                  begin: const Offset(0, 0.07),
+                  end: Offset.zero,
+                ).animate(
+                  CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutCubic,
+                  ),
+                );
 
             final scale = Tween<double>(begin: 0.96, end: 1.0).animate(
               CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
@@ -72,16 +77,23 @@ class AppRoutes {
             final secondaryScale = Tween<double>(begin: 1.0, end: 0.95).animate(
               CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
             );
-            final secondaryOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
-              CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeIn),
-            );
+            final secondaryOpacity = Tween<double>(begin: 1.0, end: 0.0)
+                .animate(
+                  CurvedAnimation(
+                    parent: secondaryAnimation,
+                    curve: Curves.easeIn,
+                  ),
+                );
 
             return FadeTransition(
               opacity: secondaryOpacity,
               child: ScaleTransition(
                 scale: secondaryScale,
                 child: FadeTransition(
-                  opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                  opacity: CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOut,
+                  ),
                   child: SlideTransition(
                     position: slide,
                     child: ScaleTransition(scale: scale, child: child),
@@ -130,7 +142,10 @@ class AppRoutes {
               CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
             );
             return FadeTransition(
-              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              ),
               child: ScaleTransition(scale: scale, child: child),
             );
           },
@@ -148,7 +163,10 @@ class AppRoutes {
               CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
             );
             return FadeTransition(
-              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              ),
               child: ScaleTransition(scale: scale, child: child),
             );
           },
@@ -238,9 +256,8 @@ class AppRoutes {
       GoRoute(
         path: RoutePaths.edit_role,
         name: RouteNames.edit_role,
-        builder: (context, state) => NewRoleView(
-          roleId: int.tryParse(state.pathParameters['id'] ?? ''),
-        ),
+        builder: (context, state) =>
+            NewRoleView(roleId: int.tryParse(state.pathParameters['id'] ?? '')),
       ),
       GoRoute(
         path: RoutePaths.account_ledger,
@@ -250,7 +267,8 @@ class AppRoutes {
       GoRoute(
         path: RoutePaths.employee_account_ledger,
         name: RouteNames.employee_account_ledger,
-        builder: (context, state) => const AccountLedgerView(isEmployeeMode: true),
+        builder: (context, state) =>
+            const AccountLedgerView(isEmployeeMode: true),
       ),
       GoRoute(
         path: RoutePaths.organizationSelection,
@@ -392,7 +410,10 @@ class AppRoutes {
               CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
             );
             return FadeTransition(
-              opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOut,
+              ),
               child: ScaleTransition(scale: scale, child: child),
             );
           },

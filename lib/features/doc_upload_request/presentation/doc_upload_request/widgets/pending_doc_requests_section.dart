@@ -5,8 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
-import '../../../../doc_upload_request/doc_upload_request_exports.dart';
-import '../../../scan_document_exports.dart';
+import '../../../doc_upload_request_exports.dart';
 
 class PendingDocRequestsSection extends StatefulWidget {
   const PendingDocRequestsSection({super.key});
@@ -83,7 +82,7 @@ class _PendingDocRequestsSectionState extends State<PendingDocRequestsSection> {
     bloc.add(const ScanStarted());
     final state = await bloc.stream.firstWhere((s) => s is! ScannerScanning);
 
-    if (state is ScannerNamingDocument) return state.imagePaths;
+    if (state is ScannerScanned) return state.imagePaths;
     if (state is ScannerError && mounted) {
       AppToastsUtils.showErrorTop(context, state.message);
     }

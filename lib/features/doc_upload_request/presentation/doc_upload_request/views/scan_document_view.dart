@@ -5,7 +5,7 @@ import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
-import '../../../../doc_upload_request/doc_upload_request_exports.dart';
+import '../../../doc_upload_request_exports.dart';
 import '../widgets/pending_doc_requests_section.dart';
 
 class ScanDocumentView extends StatelessWidget {
@@ -37,9 +37,9 @@ class _ScanDocumentBody extends StatelessWidget {
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
           AppToastsUtils.showSuccessTop(context, 'Document uploaded');
-          context
-              .read<DocUploadRequestBloc>()
-              .add(const DocUploadRequestsFetched(flgCompleted: false));
+          context.read<DocUploadRequestBloc>().add(
+            const DocUploadRequestsFetched(flgCompleted: false),
+          );
           context.read<DocumentUploadBloc>().add(const DocumentUploadReset());
         }
         if (state.apiStatus == ApiStatus.FAILURE) {

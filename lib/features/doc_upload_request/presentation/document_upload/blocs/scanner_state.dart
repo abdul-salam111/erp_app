@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import '../../../domain/entities/scanned_document.dart';
 
 abstract class ScannerState extends Equatable {
   const ScannerState();
@@ -16,22 +15,15 @@ class ScannerScanning extends ScannerState {
   const ScannerScanning();
 }
 
-class ScannerNamingDocument extends ScannerState {
+/// Scan finished — these image paths are not persisted anywhere, they're
+/// handed straight to the upload-preview flow.
+class ScannerScanned extends ScannerState {
   final List<String> imagePaths;
 
-  const ScannerNamingDocument(this.imagePaths);
+  const ScannerScanned(this.imagePaths);
 
   @override
   List<Object?> get props => [imagePaths];
-}
-
-class ScannerLoaded extends ScannerState {
-  final List<ScannedDocument> documents;
-
-  const ScannerLoaded(this.documents);
-
-  @override
-  List<Object?> get props => [documents];
 }
 
 class ScannerError extends ScannerState {

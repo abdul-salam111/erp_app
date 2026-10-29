@@ -6,7 +6,6 @@ import 'register_profile.dart';
 import 'register_alert_panel.dart';
 import 'register_purchase_order.dart';
 import 'register_sale_order.dart';
-import 'register_scan_document.dart';
 import 'register_accounts.dart';
 import 'register_inventory.dart';
 import 'register_production.dart';
@@ -21,7 +20,6 @@ import 'register_overtime.dart';
 import 'register_partah.dart';
 import 'register_doc_upload_request.dart';
 
-
 /// Global service locator instance.
 /// Import this file wherever [sl] or [setupLocator] is needed.
 final sl = GetIt.instance;
@@ -35,7 +33,6 @@ Future<void> setupLocator() async {
   await registerAlertPanel();
   await registerPurchaseOrder();
   await registerSaleOrder();
-  await registerScanDocument();
   await registerAccounts();
   await registerInventory();
   await registerProduction();
