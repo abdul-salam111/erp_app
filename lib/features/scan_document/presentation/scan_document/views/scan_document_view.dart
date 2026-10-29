@@ -191,7 +191,6 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
       builder: (context, state) {
         final allDocs =
             state is ScannerLoaded ? state.documents : <ScannedDocument>[];
-        final isScanning = state is ScannerScanning;
 
         final docs = _query.isEmpty
             ? allDocs
@@ -240,31 +239,6 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody> {
                   ],
                 )
               : CustomAppBar(title: 'Documents'),
-          floatingActionButton: _isSelecting
-              ? null
-              : FloatingActionButton.extended(
-                  onPressed: isScanning
-                      ? null
-                      : () =>
-                          context.read<ScannerBloc>().add(const ScanStarted()),
-                  backgroundColor: context.primary,
-                  label: isScanning
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
-                          ),
-                        )
-                      : Row(
-                          children: [
-                            Icon(Icons.document_scanner, color: context.white),
-                            const SizedBox(width: 8),
-                            Text('Scan', style: TextStyle(color: context.white)),
-                          ],
-                        ),
-                ),
           bottomNavigationBar: _isSelecting
               ? _SelectionActionBar(
                   selectedCount: selectedCount,
