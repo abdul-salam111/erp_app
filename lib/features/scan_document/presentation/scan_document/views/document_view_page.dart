@@ -123,11 +123,11 @@ class _DocumentViewPageState extends State<DocumentViewPage> {
             filled: true,
             fillColor: ctx.surface,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: .circular(8),
               borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: .circular(8),
               borderSide: BorderSide(color: ctx.primary),
             ),
             hintText: 'Document name',
