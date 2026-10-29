@@ -19,6 +19,7 @@ class DrawerItem {
   final Color? color;
   final List<DrawerItem> children;
   final String? permissionKey;
+  final int? badgeCount;
 
   const DrawerItem.tile({
     required this.label,
@@ -26,6 +27,7 @@ class DrawerItem {
     this.routeName,
     this.color,
     this.permissionKey,
+    this.badgeCount,
   }) : _type = _DrawerItemType.tile,
        children = const [];
 
@@ -36,7 +38,8 @@ class DrawerItem {
     this.color,
   }) : _type = _DrawerItemType.expandable,
        routeName = null,
-       permissionKey = null;
+       permissionKey = null,
+       badgeCount = null;
 
   const DrawerItem.category(this.label)
     : _type = _DrawerItemType.category,
@@ -44,7 +47,8 @@ class DrawerItem {
       routeName = null,
       color = null,
       children = const [],
-      permissionKey = null;
+      permissionKey = null,
+      badgeCount = null;
 
   const DrawerItem.divider()
     : _type = _DrawerItemType.divider,
@@ -53,7 +57,8 @@ class DrawerItem {
       routeName = null,
       color = null,
       children = const [],
-      permissionKey = null;
+      permissionKey = null,
+      badgeCount = null;
 }
 
 // ─── Permission helpers ─────────────────────────────────────────────────────
@@ -257,6 +262,10 @@ class _DrawerTile extends StatelessWidget {
                 ),
               ),
             ),
+            if ((item.badgeCount ?? 0) > 0) ...[
+              _CountBadge(count: item.badgeCount!),
+              const SizedBox(width: 8),
+            ],
             Icon(
               Icons.chevron_right_rounded,
               size: 16,
@@ -289,6 +298,37 @@ class _IconBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Icon(icon, size: 17, color: color),
+    );
+  }
+}
+
+// ─── Count badge ──────────────────────────────────────────────────────────────
+
+class _CountBadge extends StatelessWidget {
+  final int count;
+
+  const _CountBadge({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: AppColors.errorBright,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      alignment: .center,
+      child: Text(
+        count > 99 ? '99+' : '$count',
+        textAlign: .center,
+        style: context.labelSmall.copyWith(
+          color: AppColors.white,
+          fontWeight: .w700,
+          fontSize: 11,
+          height: 1,
+        ),
+      ),
     );
   }
 }

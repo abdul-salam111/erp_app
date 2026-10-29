@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
@@ -9,6 +10,7 @@ import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/services/current_user.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
+import '../../../../doc_upload_request/doc_upload_request_exports.dart';
 import '../../widgets/dashboard_widgets.dart';
 
 class AdminDashboard extends StatelessWidget {
@@ -16,6 +18,12 @@ class AdminDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pendingDocRequestCount = context
+        .watch<DocUploadRequestBloc>()
+        .state
+        .requests
+        .length;
+
     return Scaffold(
       drawer: AppDrawer(
         userName: currentUser.fullName,
@@ -48,6 +56,7 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.scan,
             color: AppColors.blueGrey,
             routeName: RouteNames.scan_document,
+            badgeCount: pendingDocRequestCount,
           ),
           DrawerItem.tile(
             label: AppConstants.partahLabel,

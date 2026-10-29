@@ -3,6 +3,7 @@
 /* -------------------------------------------------------------------------- */
 
 
+import 'package:dio/dio.dart';
 import '../../networks/network_exports.dart';
 
 abstract class BaseRemoteDatasource {
@@ -177,6 +178,34 @@ abstract class BaseRemoteDatasource {
         isAuthRequired: authToken != null,
       );
       return List<T>.from(response.map((json) => parser(json)));
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException(e.toString());
+    }
+  }
+
+  /// POST multipart request uploading a single file, with single object response
+  Future<T> uploadFile<T>({
+    required String url,
+    required String fieldName,
+    required String filePath,
+    required T Function(dynamic response) parser,
+    Map<String, dynamic>? additionalFields,
+    String? authToken,
+    ProgressCallback? onSendProgress,
+  }) async {
+    try {
+      final response = await dioHelper.uploadSingleFile(
+        url: url,
+        fieldName: fieldName,
+        filePath: filePath,
+        additionalFields: additionalFields,
+        authToken: authToken,
+        isAuthRequired: authToken != null,
+        onSendProgress: onSendProgress,
+      );
+      return parser(response);
     } on AppException {
       rethrow;
     } catch (e) {

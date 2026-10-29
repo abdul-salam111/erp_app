@@ -18,6 +18,7 @@ class ApiEndPoints {
   static const partah = _Partah();
   static const security = _Security();
   static const backOffice = _BackOffice();
+  static const docUploadRequest = _DocUploadRequest();
 }
 
 // ─── Auth ───────────────────────────────────────────────────────────────────
@@ -210,6 +211,18 @@ final class _Security {
   String userById(int id) => '$_base/user/GetById/$id';
   String get userInsertOrUpdate => '$_base/user/insertOrUpdate';
   String userDelete(int id) => '$_base/user/delete/$id';
+}
+
+// ─── Document Upload Requests ───────────────────────────────────────────────
+
+final class _DocUploadRequest {
+  const _DocUploadRequest();
+
+  static String get _base =>
+      '${ApiEndPoints._base}/ExecutiveApp/docUploadRequest';
+
+  String get getList => '$_base/GetList';
+  String get upload => '$_base/Upload';
 }
 
 // ─── BackOffice (org-level: branches, roles, landing pages) ────────────────
