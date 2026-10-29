@@ -444,17 +444,21 @@ class _PendingRequestCard extends StatelessWidget {
                   overflow: .ellipsis,
                 ),
                 const SizedBox(height: 4),
+                // Completed: feature name + upload time share one line (not
+                // two) to keep the card compact. Pending: feature name only.
                 Row(
                   children: [
                     Icon(
-                      Iconsax.briefcase,
+                      completed ? Iconsax.calendar_tick : Iconsax.briefcase,
                       size: 12,
                       color: context.textSecondary,
                     ),
                     const SizedBox(width: 4),
                     Flexible(
                       child: Text(
-                        request.hostFeatureName,
+                        completed && request.completedOn != null
+                            ? '${request.hostFeatureName} · ${request.completedOn!.toLocal().fullFormat}'
+                            : request.hostFeatureName,
                         style: context.labelSmall.copyWith(
                           color: context.textSecondary,
                         ),
@@ -464,25 +468,6 @@ class _PendingRequestCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (completed && request.completedOn != null) ...[
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Iconsax.calendar_tick,
-                        size: 12,
-                        color: context.textSecondary,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Uploaded ${request.completedOn!.toLocal().fullFormat}',
-                        style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
               ],
             ),
           ),
@@ -503,24 +488,15 @@ class _CompletedBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Icon only — a "Done" label next to a checkmark is redundant.
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: color.withValues(alpha: context.isDark ? 0.14 : 0.10),
-        borderRadius: BorderRadius.circular(20),
+        shape: .circle,
         border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
-      child: Row(
-        mainAxisSize: .min,
-        children: [
-          Icon(Iconsax.tick_circle, size: 14, color: color),
-          const SizedBox(width: 5),
-          Text(
-            'Done',
-            style: context.labelSmall.copyWith(color: color, fontWeight: .w700),
-          ),
-        ],
-      ),
+      child: Icon(Iconsax.tick_circle, size: 18, color: color),
     );
   }
 }
