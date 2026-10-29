@@ -52,43 +52,62 @@ class MyApp extends StatelessWidget {
             builder: (context, child) {
               final mediaQuery = MediaQuery.of(context);
 
-              // Many Android phones (including Tecno/Infinix HiOS devices)
-              // report a logical width around the 360dp Android baseline,
-              // noticeably narrower than the ~393-430pt iOS devices these
-              // screens were designed against - so fixed font sizes read
-              // visibly larger/tighter there even with no accessibility
-              // text-size change at all. Scale text down to match screen
-              // width, on top of (not instead of) clamping whatever system
-              // font-size preference the OS itself reports.
+              // Designed and pixel-matched against ~393pt iOS screens
+              // (iPhone 14/15 Pro). Many Android phones - Tecno/Infinix
+              // HiOS devices included - report a narrower ~360dp logical
+              // width, so every fixed-dp value (fonts, icon sizes,
+              // padding, gaps) reads proportionally bigger there even
+              // though none of it changes per platform in code. Scaling
+              // text alone isn't enough: icons and padding stay full-size
+              // while only the font shrinks, so spacing still looks off.
+              // Scale the whole rendered UI down uniformly instead, via
+              // Transform, so text/icons/padding/gaps all shrink together
+              // and stay in proportion - exactly as this package-free
+              // approach does in the archivist-mobile-app project.
               const referenceWidth = 393.0;
-              final widthRatio = (mediaQuery.size.width / referenceWidth).clamp(
-                0.0,
+              // Clamped to a max of 1.0, never scaled up: devices at or
+              // above the reference width (all target iPhones, tablets,
+              // iPads) render at their native, already-correct size.
+              final uiScale = (mediaQuery.size.width / referenceWidth).clamp(
+                0.75,
                 1.0,
               );
-              // Squared, not linear: a straight width ratio (e.g. 360/393 =
-              // 0.92) undershoots how much smaller text actually needs to
-              // be, because fixed-dp paddings/icons/pills don't shrink at
-              // all - only the font does. Squaring the ratio leans harder
-              // on the font to compensate for that (0.92 -> 0.84), without
-              // having to touch every hardcoded size in the app.
-              final widthFactor = (widthRatio * widthRatio).clamp(0.75, 1.0);
-              // Capped at 1.0, not just clamped down from some higher
-              // ceiling: an OEM's larger default "Font size" accessibility
-              // setting (common on HiOS/EMUI-skinned Android) must never be
-              // allowed to inflate text past the designed size - it can
-              // only ever shrink it, same as the width factor above.
-              final systemScale = mediaQuery.textScaler
-                  .clamp(minScaleFactor: 0.9, maxScaleFactor: 1.0)
-                  .scale(1.0);
-              final responsiveScaler = TextScaler.linear(
-                (systemScale * widthFactor).clamp(0.75, 1.0),
+              // The OS/accessibility font-size preference is capped at the
+              // design's 1.0 baseline - never allowed to inflate text past
+              // it - then shrinks further along with everything else via
+              // uiScale below. An OEM's larger default "Font size" setting
+              // (common on HiOS/EMUI-skinned Android) can only ever shrink
+              // text from here, never grow it.
+              final cappedTextScaler = mediaQuery.textScaler.clamp(
+                maxScaleFactor: 1.0,
               );
+              // Inflate the logical canvas by 1/uiScale before the
+              // Transform.scale shrinks it back down, so widgets still see
+              // "full" screen real-estate to lay out against (no new
+              // overflow) while what's actually painted is scaled down to
+              // uiScale. Safe-area/keyboard insets are scaled the same way
+              // so they still land in the right place post-transform.
+              final scaledSize = mediaQuery.size / uiScale;
 
               return MediaQuery(
-                data: mediaQuery.copyWith(textScaler: responsiveScaler),
-                child: ApiDebugLayer(
-                  child: ForceUpdateGate(
-                    child: child ?? const SizedBox.shrink(),
+                data: mediaQuery.copyWith(
+                  size: scaledSize,
+                  textScaler: cappedTextScaler,
+                  padding: mediaQuery.padding / uiScale,
+                  viewPadding: mediaQuery.viewPadding / uiScale,
+                  viewInsets: mediaQuery.viewInsets / uiScale,
+                ),
+                child: Transform.scale(
+                  scale: uiScale,
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(
+                    width: scaledSize.width,
+                    height: scaledSize.height,
+                    child: ApiDebugLayer(
+                      child: ForceUpdateGate(
+                        child: child ?? const SizedBox.shrink(),
+                      ),
+                    ),
                   ),
                 ),
               );
