@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../../core/constants/app_icons.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
@@ -207,13 +208,19 @@ class _PendingDocRequestsSectionState extends State<PendingDocRequestsSection> {
                               color: context.navyIconBg,
                               shape: .circle,
                             ),
-                            child: Icon(
-                              _showCompleted
-                                  ? Iconsax.tick_circle
-                                  : Iconsax.document_upload,
-                              color: context.navyIconColor,
-                              size: 38,
-                            ),
+                            child: _showCompleted
+                                ? Icon(
+                                    Iconsax.tick_circle,
+                                    color: context.navyIconColor,
+                                    size: 38,
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(22),
+                                    child: Image.asset(
+                                      AppIcons.documentIcon,
+                                      color: context.navyIconColor,
+                                    ),
+                                  ),
                           ),
                           const SizedBox(height: 20),
                           Text(
@@ -423,11 +430,15 @@ class _PendingRequestCard extends StatelessWidget {
               color: context.isDark ? null : chipBg,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(
-              completed ? Iconsax.tick_circle : Iconsax.document_upload,
-              color: statusColor,
-              size: 21,
-            ),
+            child: completed
+                ? Icon(Iconsax.tick_circle, color: statusColor, size: 21)
+                : Padding(
+                    padding: const EdgeInsets.all(11),
+                    child: Image.asset(
+                      AppIcons.documentIcon,
+                      color: statusColor,
+                    ),
+                  ),
           ),
           const SizedBox(width: 12),
           Expanded(

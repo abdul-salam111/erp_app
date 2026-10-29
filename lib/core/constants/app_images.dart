@@ -3,7 +3,7 @@
 // To regenerate, run: mason make asset_generator
 
 /// Contains all image asset paths used in the application.
-/// 
+///
 /// Usage:
 /// ```dart
 /// Image.asset(AppImages.appLogo)
@@ -11,8 +11,7 @@
 class AppImages {
   AppImages._();
 
-  
+  static const String mantic = 'assets/images/mantic.png';
+
   static const String manticLogo = 'assets/images/mantic-logo.png';
-
-
 }

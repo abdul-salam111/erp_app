@@ -3,7 +3,7 @@
 // To regenerate, run: mason make asset_generator
 
 /// Contains all icon asset paths used in the application.
-/// 
+///
 /// Usage:
 /// ```dart
 /// Image.asset(AppIcons.homeIcon)
@@ -11,8 +11,23 @@
 class AppIcons {
   AppIcons._();
 
+  static const String documentIcon = 'assets/icons/document-icon.png';
 
-  
-  // No icons found in assets/icons folder
+  static const String petrofy = 'assets/icons/petrofy.png';
 
+  static const String mars = 'assets/icons/mars.png';
+
+  static const String empty = 'assets/icons/empty.png';
+
+  static const String intellibiz = 'assets/icons/intellibiz.png';
+
+  static const String quickSell = 'assets/icons/quick-sell.png';
+
+  static const String pharmaSuitPlus = 'assets/icons/pharma-suit-plus.png';
+
+  static const String manticBooks = 'assets/icons/mantic-books.png';
+
+  static const String riceMill = 'assets/icons/rice-mill.png';
+
+  static const String flourMills = 'assets/icons/flour-mills.png';
 }

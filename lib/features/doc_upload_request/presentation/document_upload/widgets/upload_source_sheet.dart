@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../../core/constants/app_icons.dart';
 import '../../../../../core/theme/theme_exports.dart';
 
 enum UploadSource { camera, files }
@@ -38,12 +39,25 @@ class _UploadSourceSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              'Upload document',
-              style: context.titleMedium.copyWith(
-                color: context.textPrimary,
-                fontWeight: .w600,
-              ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: Image.asset(
+                    AppIcons.documentIcon,
+                    color: context.accentBlue,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'Upload document',
+                  style: context.titleMedium.copyWith(
+                    color: context.textPrimary,
+                    fontWeight: .w600,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             _SourceOption(
