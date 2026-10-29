@@ -10,11 +10,9 @@ class DocumentUploadBloc
   final UploadDocumentUsecase uploadDocumentUsecase;
 
   DocumentUploadBloc({required this.uploadDocumentUsecase})
-      : super(const DocumentUploadState()) {
+    : super(const DocumentUploadState()) {
     on<DocumentUploadSubmitted>(_onSubmitted, transformer: droppable());
-    on<DocumentUploadReset>(
-      (event, emit) => emit(const DocumentUploadState()),
-    );
+    on<DocumentUploadReset>((event, emit) => emit(const DocumentUploadState()));
   }
 
   Future<void> _onSubmitted(
@@ -28,14 +26,15 @@ class DocumentUploadBloc
     );
 
     result.when(
-      failure: (failure) => emit(state.copyWith(
-        apiStatus: ApiStatus.FAILURE,
-        message: failure.message,
-      )),
-      success: (uploadedRequest) => emit(state.copyWith(
-        apiStatus: ApiStatus.SUCCESS,
-        uploadedRequest: uploadedRequest,
-      )),
+      failure: (failure) => emit(
+        state.copyWith(apiStatus: ApiStatus.FAILURE, message: failure.message),
+      ),
+      success: (uploadedRequest) => emit(
+        state.copyWith(
+          apiStatus: ApiStatus.SUCCESS,
+          uploadedRequest: uploadedRequest,
+        ),
+      ),
     );
   }
 }

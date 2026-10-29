@@ -1,9 +1,9 @@
 // DocUploadRequest feature barrel — public API of this feature.
 // Import this from outside the feature instead of individual file paths.
 //
-// UI is not wired up yet (no views/routes) — only the data/domain/presentation
-// (bloc) layers are implemented. Add views + routes once the screens that
-// surface pending requests and the upload action are designed.
+// The list/badge UI lives on the Documents screen
+// (scan_document/widgets/pending_doc_requests_section.dart); the upload
+// action's bottom sheet + preview page live under presentation/document_upload.
 
 // Domain
 export 'domain/entities/doc_upload_request_entity.dart';
@@ -26,3 +26,8 @@ export 'presentation/doc_upload_request/blocs/doc_upload_request_state.dart';
 export 'presentation/document_upload/blocs/document_upload_bloc.dart';
 export 'presentation/document_upload/blocs/document_upload_event.dart';
 export 'presentation/document_upload/blocs/document_upload_state.dart';
+
+// Presentation — document_upload (upload action) UI
+export 'presentation/document_upload/utils/pdf_merge.dart';
+export 'presentation/document_upload/views/upload_preview_page.dart';
+export 'presentation/document_upload/widgets/upload_source_sheet.dart';

@@ -2,9 +2,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../doc_upload_request/doc_upload_request_exports.dart';
+import '../../../scan_document_exports.dart';
 
 class PendingDocRequestsSection extends StatefulWidget {
   const PendingDocRequestsSection({super.key});
@@ -14,9 +16,8 @@ class PendingDocRequestsSection extends StatefulWidget {
       _PendingDocRequestsSectionState();
 }
 
-class _PendingDocRequestsSectionState
-    extends State<PendingDocRequestsSection> {
-  int? _uploadingId;
+class _PendingDocRequestsSectionState extends State<PendingDocRequestsSection> {
+  int? _pickingId;
   bool _showCompleted = false;
 
   @override
@@ -36,9 +37,9 @@ class _PendingDocRequestsSectionState
   void _switchTab(bool completed) {
     if (_showCompleted == completed) return;
     setState(() => _showCompleted = completed);
-    context
-        .read<DocUploadRequestBloc>()
-        .add(DocUploadRequestsFetched(flgCompleted: completed));
+    context.read<DocUploadRequestBloc>().add(
+      DocUploadRequestsFetched(flgCompleted: completed),
+    );
   }
 
   Future<void> _onRefresh() {
@@ -48,176 +49,218 @@ class _PendingDocRequestsSectionState
     return done;
   }
 
-  Future<void> _pickAndUpload(DocUploadRequestEntity request) async {
+  Future<void> _startUpload(DocUploadRequestEntity request) async {
+    final source = await showUploadSourceSheet(context);
+    if (source == null || !mounted) return;
+
+    setState(() => _pickingId = request.id);
+    List<String>? filePaths;
+    try {
+      filePaths = source == UploadSource.camera
+          ? await _scanWithCamera()
+          : await _pickFiles();
+    } finally {
+      if (mounted) setState(() => _pickingId = null);
+    }
+    if (filePaths == null || filePaths.isEmpty || !mounted) return;
+
+    final documentUploadBloc = context.read<DocumentUploadBloc>();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => BlocProvider.value(
+          value: documentUploadBloc,
+          child: UploadPreviewPage(request: request, filePaths: filePaths!),
+        ),
+      ),
+    );
+  }
+
+  // One-off throwaway bloc per scan — intentionally not closed, since the
+  // handler may still be emitting a follow-up state (e.g. the reload after
+  // an error) when this returns, and closing mid-emit throws.
+  Future<List<String>?> _scanWithCamera() async {
+    final bloc = sl<ScannerBloc>();
+    bloc.add(const ScanStarted());
+    final state = await bloc.stream.firstWhere((s) => s is! ScannerScanning);
+
+    if (state is ScannerNamingDocument) return state.imagePaths;
+    if (state is ScannerError && mounted) {
+      AppToastsUtils.showErrorTop(context, state.message);
+    }
+    return null;
+  }
+
+  Future<List<String>?> _pickFiles() async {
     final result = await FilePicker.platform.pickFiles(
       type: .custom,
       allowedExtensions: const ['jpg', 'jpeg', 'png', 'pdf'],
+      allowMultiple: true,
     );
-    final path = result?.files.single.path;
-    if (path == null || !mounted) return;
+    final paths = result?.files.map((f) => f.path).whereType<String>().toList();
+    if (paths == null || paths.isEmpty) return null;
 
-    setState(() => _uploadingId = request.id);
-    context.read<DocumentUploadBloc>().add(
-          DocumentUploadSubmitted(id: request.id, filePath: path),
+    final pdfCount = paths
+        .where((p) => p.toLowerCase().endsWith('.pdf'))
+        .length;
+    if (pdfCount > 0 && paths.length > 1) {
+      if (mounted) {
+        AppToastsUtils.showErrorTop(
+          context,
+          'Select either multiple images or a single PDF',
         );
+      }
+      return null;
+    }
+    return paths;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<DocumentUploadBloc, DocumentUploadState>(
-      listenWhen: (previous, current) =>
-          previous.apiStatus != current.apiStatus &&
-          current.apiStatus != .LOADING,
-      listener: (context, state) {
-        if (mounted) setState(() => _uploadingId = null);
-      },
-      child: Column(
-        crossAxisAlignment: .start,
-        children: [
-          Padding(
-            padding: context.pagePadding.copyWith(bottom: 4),
-            child: _RequestTabBar(
-              showCompleted: _showCompleted,
-              onChanged: _switchTab,
-            ),
+    return Column(
+      crossAxisAlignment: .start,
+      children: [
+        Padding(
+          padding: context.pagePadding.copyWith(bottom: 4),
+          child: _RequestTabBar(
+            showCompleted: _showCompleted,
+            onChanged: _switchTab,
           ),
-          SizedBox(height: context.gridSpacing),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: _onRefresh,
-              color: context.accentBlue,
-              child: BlocBuilder<DocUploadRequestBloc, DocUploadRequestState>(
-                builder: (context, state) {
-                  if (state.apiStatus == .LOADING && state.requests.isEmpty) {
-                    return _FillerPanel(
-                      child: Center(
-                        child: Row(
-                          mainAxisSize: .min,
-                          children: [
-                            SizedBox(
-                              width: 14,
-                              height: 14,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: context.accentBlue,
-                              ),
+        ),
+        SizedBox(height: context.gridSpacing),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: _onRefresh,
+            color: context.accentBlue,
+            child: BlocBuilder<DocUploadRequestBloc, DocUploadRequestState>(
+              builder: (context, state) {
+                if (state.apiStatus == .LOADING && state.requests.isEmpty) {
+                  return _FillerPanel(
+                    child: Center(
+                      child: Row(
+                        mainAxisSize: .min,
+                        children: [
+                          SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: context.accentBlue,
                             ),
-                            const SizedBox(width: 10),
-                            Text(
-                              'Loading requests…',
-                              style: context.bodySmall.copyWith(
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Loading requests…',
+                            style: context.bodySmall.copyWith(
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                if (state.apiStatus == .FAILURE && state.requests.isEmpty) {
+                  return _FillerPanel(
+                    child: Center(
+                      child: InkWell(
+                        onTap: () => context.read<DocUploadRequestBloc>().add(
+                          DocUploadRequestsFetched(
+                            flgCompleted: _showCompleted,
+                          ),
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Row(
+                            mainAxisSize: .min,
+                            children: [
+                              Icon(
+                                Iconsax.warning_2,
+                                size: 16,
                                 color: context.textSecondary,
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-
-                  if (state.apiStatus == .FAILURE && state.requests.isEmpty) {
-                    return _FillerPanel(
-                      child: Center(
-                        child: InkWell(
-                          onTap: () =>
-                              context.read<DocUploadRequestBloc>().add(
-                                    DocUploadRequestsFetched(
-                                      flgCompleted: _showCompleted,
-                                    ),
-                                  ),
-                          borderRadius: BorderRadius.circular(8),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisSize: .min,
-                              children: [
-                                Icon(
-                                  Iconsax.warning_2,
-                                  size: 16,
+                              const SizedBox(width: 8),
+                              Text(
+                                "Couldn't load requests · Tap to retry",
+                                style: context.bodySmall.copyWith(
                                   color: context.textSecondary,
                                 ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  "Couldn't load requests · Tap to retry",
-                                  style: context.bodySmall.copyWith(
-                                    color: context.textSecondary,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    );
-                  }
-
-                  if (state.requests.isEmpty) {
-                    return _FillerPanel(
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: .min,
-                          children: [
-                            Container(
-                              width: 88,
-                              height: 88,
-                              decoration: BoxDecoration(
-                                color: context.navyIconBg,
-                                shape: .circle,
-                              ),
-                              child: Icon(
-                                _showCompleted
-                                    ? Iconsax.tick_circle
-                                    : Iconsax.document_upload,
-                                color: context.navyIconColor,
-                                size: 38,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              _showCompleted
-                                  ? 'No completed requests'
-                                  : 'No pending requests',
-                              style: context.titleMedium.copyWith(
-                                color: context.textPrimary,
-                                fontWeight: .w600,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              _showCompleted
-                                  ? 'Completed uploads will show up here'
-                                  : "You're all caught up — nothing to upload",
-                              style: context.bodySmall.copyWith(
-                                color: context.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-
-                  return ListView.separated(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: context.pagePadding.copyWith(top: 0),
-                    itemCount: state.requests.length,
-                    separatorBuilder: (_, __) =>
-                        SizedBox(height: context.gridSpacing),
-                    itemBuilder: (context, index) {
-                      final request = state.requests[index];
-                      return _PendingRequestCard(
-                        request: request,
-                        isUploading: _uploadingId == request.id,
-                        onUpload: () => _pickAndUpload(request),
-                      );
-                    },
+                    ),
                   );
-                },
-              ),
+                }
+
+                if (state.requests.isEmpty) {
+                  return _FillerPanel(
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: .min,
+                        children: [
+                          Container(
+                            width: 88,
+                            height: 88,
+                            decoration: BoxDecoration(
+                              color: context.navyIconBg,
+                              shape: .circle,
+                            ),
+                            child: Icon(
+                              _showCompleted
+                                  ? Iconsax.tick_circle
+                                  : Iconsax.document_upload,
+                              color: context.navyIconColor,
+                              size: 38,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            _showCompleted
+                                ? 'No completed requests'
+                                : 'No pending requests',
+                            style: context.titleMedium.copyWith(
+                              color: context.textPrimary,
+                              fontWeight: .w600,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            _showCompleted
+                                ? 'Completed uploads will show up here'
+                                : "You're all caught up — nothing to upload",
+                            style: context.bodySmall.copyWith(
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: context.pagePadding.copyWith(top: 0),
+                  itemCount: state.requests.length,
+                  separatorBuilder: (_, __) =>
+                      SizedBox(height: context.gridSpacing),
+                  itemBuilder: (context, index) {
+                    final request = state.requests[index];
+                    return _PendingRequestCard(
+                      request: request,
+                      isUploading: _pickingId == request.id,
+                      onUpload: () => _startUpload(request),
+                    );
+                  },
+                );
+              },
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -343,8 +386,8 @@ class _PendingRequestCard extends StatelessWidget {
         : context.navyIconColor;
     final chipBg = completed
         ? (context.isDark
-            ? context.navyIconBg
-            : AppColors.success.withValues(alpha: 0.10))
+              ? context.navyIconBg
+              : AppColors.success.withValues(alpha: 0.10))
         : context.navyIconBg;
 
     return Container(
@@ -475,10 +518,7 @@ class _CompletedBadge extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             'Done',
-            style: context.labelSmall.copyWith(
-              color: color,
-              fontWeight: .w700,
-            ),
+            style: context.labelSmall.copyWith(color: color, fontWeight: .w700),
           ),
         ],
       ),
@@ -504,8 +544,8 @@ class _UploadButton extends StatelessWidget {
           color: isUploading
               ? null
               : (context.isDark
-                  ? context.accentBlue.withValues(alpha: 0.16)
-                  : null),
+                    ? context.accentBlue.withValues(alpha: 0.16)
+                    : null),
           gradient: isUploading || context.isDark
               ? null
               : LinearGradient(
