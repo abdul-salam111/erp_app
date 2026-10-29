@@ -173,13 +173,15 @@ class _AppDrawerState extends State<AppDrawer>
         case _DrawerItemType.tile:
           if (!_tileVisible(item)) continue;
           addAnimated(_DrawerTile(item: item));
-          if (nextIsNavItem)
+          if (nextIsNavItem) {
             addAnimated(_tileDivider(context), increment: false);
+          }
         case _DrawerItemType.expandable:
           if (!_expandableVisible(item)) continue;
           addAnimated(_ExpandableTile(item: item));
-          if (nextIsNavItem)
+          if (nextIsNavItem) {
             addAnimated(_tileDivider(context), increment: false);
+          }
         case _DrawerItemType.category:
           addAnimated(_CategoryLabel(label: item.label!));
         case _DrawerItemType.divider:

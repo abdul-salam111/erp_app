@@ -396,8 +396,9 @@ class _ProfileHeader extends StatelessWidget {
 
   static String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));
-    if (parts.length >= 2)
+    if (parts.length >= 2) {
       return '${parts.first[0]}${parts[1][0]}'.toUpperCase();
+    }
     if (name.isNotEmpty) return name[0].toUpperCase();
     return '?';
   }
