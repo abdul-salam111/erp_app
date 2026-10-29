@@ -447,15 +447,6 @@ class _UploadButton extends StatelessWidget {
                   end: .bottomRight,
                 ),
           borderRadius: BorderRadius.circular(20),
-          boxShadow: isUploading || context.isDark
-              ? null
-              : [
-                  BoxShadow(
-                    color: context.accentBlue.withValues(alpha: 0.30),
-                    blurRadius: 10,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
         ),
         child: InkWell(
           onTap: isUploading ? null : onTap,
