@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/foundation.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../domain/usecases/get_doc_upload_requests_usecase.dart';
 import 'doc_upload_request_event.dart';
@@ -29,14 +30,20 @@ class DocUploadRequestBloc
     );
 
     result.when(
-      failure: (failure) => emit(state.copyWith(
-        apiStatus: ApiStatus.FAILURE,
-        message: failure.message,
-      )),
-      success: (requests) => emit(state.copyWith(
-        apiStatus: ApiStatus.SUCCESS,
-        requests: requests,
-      )),
+      failure: (failure) {
+        debugPrint('[DocUploadRequest] _onFetched FAILURE: ${failure.message}');
+        emit(state.copyWith(
+          apiStatus: ApiStatus.FAILURE,
+          message: failure.message,
+        ));
+      },
+      success: (requests) {
+        debugPrint('[DocUploadRequest] _onFetched SUCCESS: ${requests.length} request(s)');
+        emit(state.copyWith(
+          apiStatus: ApiStatus.SUCCESS,
+          requests: requests,
+        ));
+      },
     );
   }
 }
