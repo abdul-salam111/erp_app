@@ -114,6 +114,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
                 apiStatus: ApiStatus.SUCCESS,
                 user: enrichedUser,
                 message: rolesError,
+                clearMessage: rolesError == null,
               ));
             },
           );
