@@ -14,7 +14,7 @@ import 'routes/route_exports.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   Bloc.observer = AppBlocObserver();
@@ -25,7 +25,7 @@ void main() async {
     setupLocator(),
     LiquidGlassWidgets.initialize(),
   ]);
-  
+
   runApp(
     LiquidGlassWidgets.wrap(
       brightnessResolver: Theme.maybeBrightnessOf,
@@ -33,7 +33,6 @@ void main() async {
     ),
   );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -51,8 +50,23 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             routerConfig: AppRoutes.router,
             builder: (context, child) {
-              return ApiDebugLayer(
-                child: ForceUpdateGate(child: child ?? const SizedBox.shrink()),
+              // Some Android OEMs (e.g. Tecno's HiOS) ship with a larger
+              // default system font-size setting than iOS, so the same
+              // logical fontSize renders visibly bigger there. Clamp the
+              // device text scale so layouts look the same across devices
+              // instead of inheriting whatever the OS/user has set.
+              final clampedScaler = MediaQuery.textScalerOf(
+                context,
+              ).clamp(minScaleFactor: 0.9, maxScaleFactor: 1.1);
+              return MediaQuery(
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: clampedScaler),
+                child: ApiDebugLayer(
+                  child: ForceUpdateGate(
+                    child: child ?? const SizedBox.shrink(),
+                  ),
+                ),
               );
             },
           );
