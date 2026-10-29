@@ -51,23 +51,21 @@ class MyApp extends StatelessWidget {
             routerConfig: AppRoutes.router,
             builder: (context, child) {
               final mediaQuery = MediaQuery.of(context);
+              final content = ApiDebugLayer(
+                child: ForceUpdateGate(child: child ?? const SizedBox.shrink()),
+              );
 
               // Designed and pixel-matched against ~393pt iOS screens
               // (iPhone 14/15 Pro). Many Android phones - Tecno/Infinix
               // HiOS devices included - report a narrower ~360dp logical
               // width, so every fixed-dp value (fonts, icon sizes,
               // padding, gaps) reads proportionally bigger there even
-              // though none of it changes per platform in code. Scaling
-              // text alone isn't enough: icons and padding stay full-size
-              // while only the font shrinks, so spacing still looks off.
-              // Scale the whole rendered UI down uniformly instead, via
-              // Transform, so text/icons/padding/gaps all shrink together
-              // and stay in proportion - exactly as this package-free
-              // approach does in the archivist-mobile-app project.
+              // though none of it changes per platform in code.
               const referenceWidth = 393.0;
               // Clamped to a max of 1.0, never scaled up: devices at or
               // above the reference width (all target iPhones, tablets,
-              // iPads) render at their native, already-correct size.
+              // iPads) render at their native, already-correct size - skip
+              // the scaling wrapper for them entirely.
               final uiScale = (mediaQuery.size.width / referenceWidth).clamp(
                 0.75,
                 1.0,
@@ -81,33 +79,42 @@ class MyApp extends StatelessWidget {
               final cappedTextScaler = mediaQuery.textScaler.clamp(
                 maxScaleFactor: 1.0,
               );
-              // Inflate the logical canvas by 1/uiScale before the
-              // Transform.scale shrinks it back down, so widgets still see
-              // "full" screen real-estate to lay out against (no new
-              // overflow) while what's actually painted is scaled down to
-              // uiScale. Safe-area/keyboard insets are scaled the same way
-              // so they still land in the right place post-transform.
-              final scaledSize = mediaQuery.size / uiScale;
+
+              if (uiScale >= 1.0) {
+                return MediaQuery(
+                  data: mediaQuery.copyWith(textScaler: cappedTextScaler),
+                  child: content,
+                );
+              }
+
+              // The root View always forces the app to exactly the real
+              // screen size (tight constraints), so a plain Transform.scale
+              // can't be used here: its child would just get squeezed back
+              // down to the real (already small) size before the transform
+              // ever saw it, scaling an already-correct layout down even
+              // further. FittedBox is built for exactly this: it lays its
+              // child out UNconstrained at its natural/requested size (the
+              // full-size "design canvas" below), then paints/hit-tests
+              // that through a matrix that fits it into the real screen -
+              // so text/icons/padding/gaps all shrink together in
+              // proportion, instead of only text scaling down.
+              final designSize = mediaQuery.size / uiScale;
 
               return MediaQuery(
                 data: mediaQuery.copyWith(
-                  size: scaledSize,
+                  size: designSize,
                   textScaler: cappedTextScaler,
                   padding: mediaQuery.padding / uiScale,
                   viewPadding: mediaQuery.viewPadding / uiScale,
                   viewInsets: mediaQuery.viewInsets / uiScale,
                 ),
-                child: Transform.scale(
-                  scale: uiScale,
+                child: FittedBox(
+                  fit: BoxFit.fill,
                   alignment: Alignment.topLeft,
                   child: SizedBox(
-                    width: scaledSize.width,
-                    height: scaledSize.height,
-                    child: ApiDebugLayer(
-                      child: ForceUpdateGate(
-                        child: child ?? const SizedBox.shrink(),
-                      ),
-                    ),
+                    width: designSize.width,
+                    height: designSize.height,
+                    child: content,
                   ),
                 ),
               );
