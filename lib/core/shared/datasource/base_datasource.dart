@@ -2,7 +2,6 @@
 /*                         Base Remote Datasource                              */
 /* -------------------------------------------------------------------------- */
 
-
 import 'package:dio/dio.dart';
 import '../../networks/network_exports.dart';
 
@@ -200,6 +199,35 @@ abstract class BaseRemoteDatasource {
         url: url,
         fieldName: fieldName,
         filePath: filePath,
+        additionalFields: additionalFields,
+        authToken: authToken,
+        isAuthRequired: authToken != null,
+        onSendProgress: onSendProgress,
+      );
+      return parser(response);
+    } on AppException {
+      rethrow;
+    } catch (e) {
+      throw AppException(e.toString());
+    }
+  }
+
+  /// POST multipart request uploading multiple files under the same field
+  /// name, with single object response
+  Future<T> uploadFiles<T>({
+    required String url,
+    required String fieldName,
+    required List<String> filePaths,
+    required T Function(dynamic response) parser,
+    Map<String, dynamic>? additionalFields,
+    String? authToken,
+    ProgressCallback? onSendProgress,
+  }) async {
+    try {
+      final response = await dioHelper.uploadMultipleFiles(
+        url: url,
+        fieldName: fieldName,
+        filePaths: filePaths,
         additionalFields: additionalFields,
         authToken: authToken,
         isAuthRequired: authToken != null,

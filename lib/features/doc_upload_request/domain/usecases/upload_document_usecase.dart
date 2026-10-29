@@ -5,9 +5,9 @@ import '../repositories/doc_upload_request_repository.dart';
 
 class UploadDocumentParams {
   final int id;
-  final String filePath;
+  final List<String> filePaths;
 
-  const UploadDocumentParams({required this.id, required this.filePath});
+  const UploadDocumentParams({required this.id, required this.filePaths});
 }
 
 class UploadDocumentUsecase
@@ -18,6 +18,9 @@ class UploadDocumentUsecase
 
   @override
   Future<Result<DocUploadRequestEntity>> call(UploadDocumentParams params) {
-    return repository.uploadDocument(id: params.id, filePath: params.filePath);
+    return repository.uploadDocument(
+      id: params.id,
+      filePaths: params.filePaths,
+    );
   }
 }

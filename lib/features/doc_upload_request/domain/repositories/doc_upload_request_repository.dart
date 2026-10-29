@@ -10,6 +10,6 @@ abstract interface class DocUploadRequestRepository {
 
   Future<Result<DocUploadRequestEntity>> uploadDocument({
     required int id,
-    required String filePath,
+    required List<String> filePaths,
   });
 }

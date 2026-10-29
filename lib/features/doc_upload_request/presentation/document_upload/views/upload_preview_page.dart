@@ -11,7 +11,6 @@ import '../blocs/document_upload_bloc.dart';
 import '../blocs/document_upload_event.dart';
 import '../blocs/document_upload_state.dart';
 import '../models/upload_page.dart';
-import '../utils/pdf_merge.dart';
 import '../utils/pdf_pages.dart';
 import 'full_screen_page_viewer.dart';
 
@@ -34,7 +33,6 @@ class UploadPreviewPage extends StatefulWidget {
 
 class _UploadPreviewPageState extends State<UploadPreviewPage> {
   List<UploadPage>? _pages;
-  bool _isPreparingPdf = false;
 
   @override
   void initState() {
@@ -72,33 +70,15 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
     );
   }
 
-  Future<void> _handleUpload() async {
+  void _handleUpload() {
     final pages = _pages;
     if (pages == null || pages.isEmpty) return;
 
-    final bloc = context.read<DocumentUploadBloc>();
-    String finalPath;
-
-    if (pages.length > 1) {
-      setState(() => _isPreparingPdf = true);
-      try {
-        finalPath = await mergeImagesToPdf(
-          pages.map((p) => p.imagePath).toList(),
-        );
-      } catch (e) {
-        if (!mounted) return;
-        setState(() => _isPreparingPdf = false);
-        AppToastsUtils.showErrorTop(context, 'Failed to prepare PDF: $e');
-        return;
-      }
-      if (!mounted) return;
-      setState(() => _isPreparingPdf = false);
-    } else {
-      finalPath = pages.first.imagePath;
-    }
-
-    bloc.add(
-      DocumentUploadSubmitted(id: widget.request.id, filePath: finalPath),
+    context.read<DocumentUploadBloc>().add(
+      DocumentUploadSubmitted(
+        id: widget.request.id,
+        filePaths: pages.map((p) => p.imagePath).toList(),
+      ),
     );
   }
 
@@ -149,11 +129,7 @@ class _UploadPreviewPageState extends State<UploadPreviewPage> {
               ),
         bottomNavigationBar: pages == null
             ? null
-            : _UploadBar(
-                isPreparing: _isPreparingPdf,
-                hasPages: pages.isNotEmpty,
-                onUpload: _handleUpload,
-              ),
+            : _UploadBar(hasPages: pages.isNotEmpty, onUpload: _handleUpload),
       ),
     );
   }
@@ -308,22 +284,16 @@ class _PageThumbnail extends StatelessWidget {
 }
 
 class _UploadBar extends StatelessWidget {
-  final bool isPreparing;
   final bool hasPages;
   final VoidCallback onUpload;
 
-  const _UploadBar({
-    required this.isPreparing,
-    required this.hasPages,
-    required this.onUpload,
-  });
+  const _UploadBar({required this.hasPages, required this.onUpload});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DocumentUploadBloc, DocumentUploadState>(
       builder: (context, state) {
-        final uploading = state.apiStatus == ApiStatus.LOADING;
-        final busy = isPreparing || uploading;
+        final busy = state.apiStatus == ApiStatus.LOADING;
         final disabled = busy || !hasPages;
 
         return Container(
@@ -353,7 +323,7 @@ class _UploadBar extends StatelessWidget {
                   : const Icon(Iconsax.export_1, size: 18),
               label: Text(
                 busy
-                    ? (isPreparing ? 'Preparing…' : 'Uploading…')
+                    ? 'Uploading…'
                     : (hasPages ? 'Upload' : 'No pages to upload'),
               ),
               style: FilledButton.styleFrom(

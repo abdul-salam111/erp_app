@@ -33,6 +33,5 @@ export 'presentation/document_upload/blocs/scanner_event.dart';
 export 'presentation/document_upload/blocs/scanner_state.dart';
 
 // Presentation — document_upload (upload action) UI
-export 'presentation/document_upload/utils/pdf_merge.dart';
 export 'presentation/document_upload/views/upload_preview_page.dart';
 export 'presentation/document_upload/widgets/upload_source_sheet.dart';

@@ -22,7 +22,7 @@ class DocumentUploadBloc
     emit(state.copyWith(apiStatus: ApiStatus.LOADING));
 
     final result = await uploadDocumentUsecase(
-      UploadDocumentParams(id: event.id, filePath: event.filePath),
+      UploadDocumentParams(id: event.id, filePaths: event.filePaths),
     );
 
     result.when(

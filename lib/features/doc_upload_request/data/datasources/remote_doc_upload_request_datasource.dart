@@ -12,7 +12,7 @@ abstract interface class IRemoteDocUploadRequestDataSource {
 
   Future<DocUploadRequestModel> uploadDocument({
     required int id,
-    required String filePath,
+    required List<String> filePaths,
   });
 }
 
@@ -45,12 +45,12 @@ class RemoteDocUploadRequestDataSourceImpl extends BaseRemoteDatasource
   @override
   Future<DocUploadRequestModel> uploadDocument({
     required int id,
-    required String filePath,
+    required List<String> filePaths,
   }) {
-    return uploadFile<DocUploadRequestModel>(
+    return uploadFiles<DocUploadRequestModel>(
       url: '${ApiEndPoints.docUploadRequest.upload}?id=$id',
       fieldName: 'File',
-      filePath: filePath,
+      filePaths: filePaths,
       additionalFields: {'id': id.toString()},
       parser: (json) =>
           DocUploadRequestModel.fromJson(json as Map<String, dynamic>),

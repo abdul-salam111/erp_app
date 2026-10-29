@@ -9,12 +9,12 @@ abstract class DocumentUploadEvent extends Equatable {
 
 class DocumentUploadSubmitted extends DocumentUploadEvent {
   final int id;
-  final String filePath;
+  final List<String> filePaths;
 
-  const DocumentUploadSubmitted({required this.id, required this.filePath});
+  const DocumentUploadSubmitted({required this.id, required this.filePaths});
 
   @override
-  List<Object?> get props => [id, filePath];
+  List<Object?> get props => [id, filePaths];
 }
 
 class DocumentUploadReset extends DocumentUploadEvent {

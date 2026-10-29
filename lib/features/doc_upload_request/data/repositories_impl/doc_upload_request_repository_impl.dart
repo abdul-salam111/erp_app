@@ -30,10 +30,10 @@ class DocUploadRequestRepositoryImpl extends BaseRepository
   @override
   Future<Result<DocUploadRequestEntity>> uploadDocument({
     required int id,
-    required String filePath,
+    required List<String> filePaths,
   }) async {
     final result = await execute(
-      call: () => dataSource.uploadDocument(id: id, filePath: filePath),
+      call: () => dataSource.uploadDocument(id: id, filePaths: filePaths),
     );
     return result.map((model) => model.toEntity());
   }
