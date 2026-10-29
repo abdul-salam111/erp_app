@@ -47,12 +47,6 @@ class AdminDashboard extends StatelessWidget {
             routeName: RouteNames.alert_panel,
           ),
           DrawerItem.tile(
-            label: AppConstants.profileLabel,
-            icon: Iconsax.profile_circle,
-            color: AppColors.tealDark,
-            routeName: RouteNames.profile,
-          ),
-          DrawerItem.tile(
             label: AppConstants.scanDocumentLabel,
             icon: Iconsax.scan,
             color: AppColors.blueGrey,
@@ -152,6 +146,12 @@ class AdminDashboard extends StatelessWidget {
             icon: Iconsax.setting_2,
             color: AppColors.brown,
             routeName: RouteNames.system,
+          ),
+          DrawerItem.tile(
+            label: AppConstants.profileLabel,
+            icon: Iconsax.profile_circle,
+            color: AppColors.tealDark,
+            routeName: RouteNames.profile,
           ),
         ],
       ),

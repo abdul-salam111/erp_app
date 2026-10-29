@@ -33,12 +33,6 @@ class EmployeeDashboard extends StatelessWidget {
             color: AppColors.accentBlue,
             routeName: RouteNames.employee_dashboard,
           ),
-          DrawerItem.tile(
-            label: AppConstants.profileLabel,
-            icon: Iconsax.profile_circle,
-            color: AppColors.tealDark,
-            routeName: RouteNames.profile,
-          ),
           DrawerItem.divider(),
           DrawerItem.category(AppConstants.modules),
           DrawerItem.tile(
@@ -82,6 +76,12 @@ class EmployeeDashboard extends StatelessWidget {
             color: AppColors.blueGrey,
             routeName: RouteNames.employee_account_ledger,
             permissionKey: SystemPermissionKeys.accountLedger,
+          ),
+          DrawerItem.tile(
+            label: AppConstants.profileLabel,
+            icon: Iconsax.profile_circle,
+            color: AppColors.tealDark,
+            routeName: RouteNames.profile,
           ),
         ],
       ),
