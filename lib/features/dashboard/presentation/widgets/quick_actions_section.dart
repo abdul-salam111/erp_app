@@ -7,6 +7,7 @@ import '../../../../core/utils/utils_exports.dart';
 import '../../../../routes/route_exports.dart';
 import 'section_header.dart';
 import 'package:mantic_erp_app/core/constants/app_conts.dart';
+import '../../../../core/constants/app_icons.dart';
 import '../../../../core/constants/system_permission_keys.dart';
 
 class QuickActionsSection extends StatefulWidget {
@@ -27,6 +28,7 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
     _MenuItem(
       label: AppConstants.accountsLabel,
       icon: Iconsax.dollar_circle,
+      iconAsset: AppIcons.walletIcon,
       color: AppColors.accentBlue,
       routeName: RouteNames.accounts,
     ),
@@ -47,6 +49,7 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
     _MenuItem(
       label: AppConstants.purchaseLabel,
       icon: Iconsax.shopping_bag,
+      iconAsset: AppIcons.purchase,
       color: AppColors.purple,
       routeName: RouteNames.purchase_order,
       permissionKey: SystemPermissionKeys.purchaseOrder,
@@ -168,7 +171,9 @@ class _QuickActionCard extends StatelessWidget {
         ? () => context.pushNamed(item.routeName!)
         : null;
     final content = _body(context);
-    return context.isDark ? _glass(context, content, onTap) : _solid(context, content, onTap);
+    return context.isDark
+        ? _glass(context, content, onTap)
+        : _solid(context, content, onTap);
   }
 
   Widget _glass(BuildContext context, Widget child, VoidCallback? onTap) {
@@ -231,7 +236,12 @@ class _QuickActionCard extends StatelessWidget {
                     ),
                   ],
           ),
-          child: Icon(item.icon, color: item.color, size: 20),
+          child: item.iconAsset != null
+              ? Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Image.asset(item.iconAsset!, color: item.color),
+                )
+              : Icon(item.icon, color: item.color, size: 20),
         ),
         const SizedBox(height: 6),
         Text(
@@ -273,6 +283,7 @@ class _PageDot extends StatelessWidget {
 class _MenuItem {
   final String label;
   final IconData icon;
+  final String? iconAsset;
   final Color color;
   final String? routeName;
   final String? permissionKey;
@@ -280,6 +291,7 @@ class _MenuItem {
   const _MenuItem({
     required this.label,
     required this.icon,
+    this.iconAsset,
     required this.color,
     required this.routeName,
     this.permissionKey,
