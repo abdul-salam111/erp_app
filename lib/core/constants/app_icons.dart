@@ -37,6 +37,8 @@ class AppIcons {
 
   static const String pharmaSuitPlus = 'assets/icons/pharma-suit-plus.png';
 
+  static const String insights = 'assets/icons/insights.png';
+
   static const String production = 'assets/icons/production.png';
 
   static const String manticBooks = 'assets/icons/mantic-books.png';
