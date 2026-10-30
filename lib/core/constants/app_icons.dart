@@ -17,6 +17,8 @@ class AppIcons {
 
   static const String petrofy = 'assets/icons/petrofy.png';
 
+  static const String sales = 'assets/icons/sales.png';
+
   static const String mars = 'assets/icons/mars.png';
 
   static const String purchase = 'assets/icons/purchase.png';
