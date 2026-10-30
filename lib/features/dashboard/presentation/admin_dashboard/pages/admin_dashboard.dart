@@ -49,6 +49,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.scanDocumentLabel,
             icon: Iconsax.scan,
+            iconAsset: AppIcons.uploadDocuments,
             color: AppColors.blueGrey,
             routeName: RouteNames.scan_document,
             badgeCount: pendingDocRequestCount,

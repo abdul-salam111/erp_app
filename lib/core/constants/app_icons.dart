@@ -33,6 +33,8 @@ class AppIcons {
 
   static const String cyberSecurity = 'assets/icons/cyber-security.png';
 
+  static const String uploadDocuments = 'assets/icons/upload-documents.png';
+
   static const String creditMngment = 'assets/icons/credit-mngment.png';
 
   static const String pharmaSuitPlus = 'assets/icons/pharma-suit-plus.png';
@@ -46,6 +48,9 @@ class AppIcons {
   static const String systemSettings = 'assets/icons/system-settings.png';
 
   static const String riceMill = 'assets/icons/rice-mill.png';
+
+  static const String manticContinuousWave =
+      'assets/icons/mantic-continuous-wave.gif';
 
   static const String systemAssets = 'assets/icons/system-assets.png';
 
