@@ -29,6 +29,8 @@ class AppIcons {
 
   static const String quickSell = 'assets/icons/quick-sell.png';
 
+  static const String creditMngment = 'assets/icons/credit-mngment.png';
+
   static const String pharmaSuitPlus = 'assets/icons/pharma-suit-plus.png';
 
   static const String manticBooks = 'assets/icons/mantic-books.png';

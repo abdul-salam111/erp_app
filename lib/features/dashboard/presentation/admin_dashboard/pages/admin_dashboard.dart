@@ -100,6 +100,7 @@ class AdminDashboard extends StatelessWidget {
               DrawerItem.tile(
                 label: AppConstants.creditManagementLabel,
                 icon: Iconsax.card,
+                iconAsset: AppIcons.creditMngment,
                 color: AppColors.errorBright,
                 routeName: RouteNames.credit_management,
                 permissionKey: SystemPermissionKeys.creditManagement,
