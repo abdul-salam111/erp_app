@@ -39,7 +39,7 @@ class _OverviewStatCardState extends State<OverviewStatCard> {
   @override
   Widget build(BuildContext context) {
     final tappable = _canToggle || widget.onTap != null;
-    final card = context.isDark ? _glassCard(context) : _solidCard(context);
+    final card = _card(context);
     return IntrinsicHeight(
       child: !tappable
           ? card
@@ -55,42 +55,22 @@ class _OverviewStatCardState extends State<OverviewStatCard> {
     );
   }
 
-  Widget _glassCard(BuildContext context) {
+  Widget _card(BuildContext context) {
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: AppColors.flatCardBgDark,
+        color: context.navyCard,
         borderRadius: .circular(10),
-        border: Border.all(
-          color: AppColors.white.withValues(alpha: 0.10),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.08),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: _body(context),
-    );
-  }
-
-  Widget _solidCard(BuildContext context) {
-    return Container(
-      clipBehavior: .hardEdge,
-      decoration: BoxDecoration(
-        color: context.surfaceElevated,
-        borderRadius: .circular(10),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        border: Border.all(color: context.navyBorder),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.06),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
       ),
       child: _body(context),
     );

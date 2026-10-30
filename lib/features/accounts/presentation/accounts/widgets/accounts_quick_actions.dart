@@ -111,18 +111,19 @@ class _QACard extends StatelessWidget {
         ? () => context.pushNamed(item.routeName!)
         : null;
     final content = _body(context);
-    return context.isDark ? _glass(context, content, onTap) : _solid(context, content, onTap);
+    return context.isDark
+        ? _darkCard(context, content, onTap)
+        : _solid(context, content, onTap);
   }
 
-  Widget _glass(BuildContext context, Widget child, VoidCallback? onTap) {
+  // Flat navy card, matching the rest of the dark theme's card family -
+  // no blur/translucency.
+  Widget _darkCard(BuildContext context, Widget child, VoidCallback? onTap) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: AppColors.flatCardBgDark,
+        color: context.navyCard,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: AppColors.white.withValues(alpha: 0.10),
-          width: 1,
-        ),
+        border: Border.all(color: context.navyBorder),
       ),
       child: InkWell(
         onTap: onTap,

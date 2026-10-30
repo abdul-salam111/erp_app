@@ -18,46 +18,27 @@ class GlassSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = padding != null ? Padding(padding: padding!, child: child) : child;
-    return context.isDark ? _glass(body) : _solid(context, body);
-  }
-
-  Widget _glass(Widget body) {
+    final body = padding != null
+        ? Padding(padding: padding!, child: child)
+        : child;
+    // Flat card, no blur/translucency: navyCard/navyBorder already fall
+    // back to the regular surfaceElevated/border tokens in light mode, so
+    // this one decoration covers both themes with the app's one card look.
     return Container(
       clipBehavior: clipBehavior,
       decoration: BoxDecoration(
-        color: AppColors.flatCardBgDark,
+        color: context.navyCard,
         borderRadius: BorderRadius.circular(radius),
-        border: Border.all(
-          color: AppColors.white.withValues(alpha: 0.10),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.08),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: body,
-    );
-  }
-
-  Widget _solid(BuildContext context, Widget body) {
-    return Container(
-      clipBehavior: clipBehavior,
-      decoration: BoxDecoration(
-        color: context.surfaceElevated,
-        borderRadius: BorderRadius.circular(radius),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.06),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: context.navyBorder),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.06),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: body,
     );
