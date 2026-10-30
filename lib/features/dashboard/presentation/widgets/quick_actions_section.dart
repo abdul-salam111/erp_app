@@ -88,6 +88,7 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
     _MenuItem(
       label: AppConstants.assetsLabel,
       icon: Iconsax.convert_3d_cube,
+      iconAsset: AppIcons.systemAssets,
       color: AppColors.tealDark,
       routeName: null,
     ),
