@@ -145,6 +145,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.securityLabel,
             icon: Iconsax.security_user,
+            iconAsset: AppIcons.cyberSecurity,
             color: AppColors.blueGrey,
             routeName: RouteNames.users,
           ),
