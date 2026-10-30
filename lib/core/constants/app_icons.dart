@@ -19,6 +19,8 @@ class AppIcons {
 
   static const String sales = 'assets/icons/sales.png';
 
+  static const String inventory = 'assets/icons/inventory.png';
+
   static const String mars = 'assets/icons/mars.png';
 
   static const String purchase = 'assets/icons/purchase.png';

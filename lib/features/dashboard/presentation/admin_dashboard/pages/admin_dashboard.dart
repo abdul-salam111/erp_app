@@ -124,6 +124,7 @@ class AdminDashboard extends StatelessWidget {
           DrawerItem.tile(
             label: AppConstants.inventoryLabel,
             icon: Iconsax.element_3,
+            iconAsset: AppIcons.inventory,
             color: AppColors.teal,
             routeName: RouteNames.inventory,
           ),
