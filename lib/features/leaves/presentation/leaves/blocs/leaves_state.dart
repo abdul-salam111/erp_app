@@ -27,8 +27,8 @@ class LeavesState extends Equatable {
   int get sickDays => leaves
       .where((l) => l.type == LeaveType.sick)
       .fold(0, (s, l) => s + l.days);
-  int get otherDays => leaves
-      .where((l) => l.type == LeaveType.other)
+  int get urgentDays => leaves
+      .where((l) => l.type == LeaveType.urgent)
       .fold(0, (s, l) => s + l.days);
 
   LeavesState copyWith({

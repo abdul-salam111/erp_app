@@ -19,12 +19,12 @@ extension LeaveStatusExt on LeaveStatus {
       };
 }
 
-enum LeaveType { sick, other }
+enum LeaveType { sick, urgent }
 
 extension LeaveTypeExt on LeaveType {
   String get label => switch (this) {
-        LeaveType.sick  => 'Sick',
-        LeaveType.other => 'Other',
+        LeaveType.sick   => 'Sick',
+        LeaveType.urgent => 'Urgent',
       };
 }
 
@@ -69,7 +69,7 @@ const _jul2025 = <LeaveRequest>[
     days: 3,
     dateLabel: '12-14 Jul 2025',
     status: LeaveStatus.accepted,
-    type: LeaveType.other,
+    type: LeaveType.urgent,
     requestedBy: 'Employee',
     requestedAt: '10 Jul  09:30',
     detail: 'Family event requiring travel out of city for three days.',
@@ -102,7 +102,7 @@ const _jun2025 = <LeaveRequest>[
     days: 1,
     dateLabel: '20 Jun 2025',
     status: LeaveStatus.rejected,
-    type: LeaveType.other,
+    type: LeaveType.urgent,
     requestedBy: 'Employee',
     requestedAt: '18 Jun  14:00',
     detail: 'Personal errand.',
@@ -125,7 +125,7 @@ const _jul2026 = <LeaveRequest>[
     days: 1,
     dateLabel: '10 Jul 2026',
     status: LeaveStatus.accepted,
-    type: LeaveType.other,
+    type: LeaveType.urgent,
     requestedBy: 'Abdul Salam',
     requestedAt: '08 Jul  11:30',
     detail: 'Personal commitment that requires my presence out of the city.',
@@ -135,7 +135,7 @@ const _jul2026 = <LeaveRequest>[
     days: 3,
     dateLabel: '21-23 Jul 2026',
     status: LeaveStatus.rejected,
-    type: LeaveType.other,
+    type: LeaveType.urgent,
     requestedBy: 'Abdul Salam',
     requestedAt: '19 Jul  14:15',
     detail: "Family event — brother's wedding ceremony and reception.",
@@ -143,9 +143,58 @@ const _jul2026 = <LeaveRequest>[
   ),
 ];
 
+const _monthAbbr = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+
+// Generic mock data for any month not covered by the curated sets above —
+// keeps the screen populated instead of showing the empty state while the
+// real GetLeaves endpoint is wired up.
+List<LeaveRequest> _mockDataFor(DateTime m) {
+  final lastDay = DateTime(m.year, m.month + 1, 0).day;
+  int clamp(int day) => day.clamp(1, lastDay);
+  String label(int day) => '$day ${_monthAbbr[m.month - 1]} ${m.year}';
+  String rangeLabel(int from, int to) =>
+      '$from-$to ${_monthAbbr[m.month - 1]} ${m.year}';
+
+  return [
+    LeaveRequest(
+      days: 1,
+      dateLabel: label(clamp(4)),
+      status: LeaveStatus.accepted,
+      type: LeaveType.sick,
+      requestedBy: 'Employee',
+      requestedAt: '${label(clamp(2))}  09:10',
+      detail: 'Fever and body aches. Took the day off to rest and recover.',
+      fileNames: ['doctor_note.pdf'],
+    ),
+    LeaveRequest(
+      days: 2,
+      dateLabel: rangeLabel(clamp(11), clamp(12)),
+      status: LeaveStatus.pending,
+      type: LeaveType.urgent,
+      requestedBy: 'Employee',
+      requestedAt: '${label(clamp(9))}  14:20',
+      detail: 'Family event out of town — requesting two days off.',
+      fileNames: [],
+    ),
+    LeaveRequest(
+      days: 1,
+      dateLabel: label(clamp(20)),
+      status: LeaveStatus.rejected,
+      type: LeaveType.urgent,
+      requestedBy: 'Employee',
+      requestedAt: '${label(clamp(18))}  11:45',
+      detail: 'Personal errand that conflicted with a scheduled deadline.',
+      fileNames: [],
+    ),
+  ];
+}
+
 List<LeaveRequest> leavesDataFor(DateTime m) {
   if (m.year == 2026 && m.month == 7) return _jul2026;
   if (m.year == 2025 && m.month == 7) return _jul2025;
   if (m.year == 2025 && m.month == 6) return _jun2025;
-  return [];
+  return _mockDataFor(m);
 }

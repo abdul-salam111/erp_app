@@ -99,7 +99,7 @@ class _LeavesBody extends StatelessWidget {
                     leaves: state.leaves,
                     total: state.totalDays,
                     sick: state.sickDays,
-                    other: state.otherDays,
+                    urgent: state.urgentDays,
                   ),
                 ),
               ),
@@ -117,13 +117,13 @@ class _LeavesContent extends StatefulWidget {
   final List<LeaveRequest> leaves;
   final int total;
   final int sick;
-  final int other;
+  final int urgent;
 
   const _LeavesContent({
     required this.leaves,
     required this.total,
     required this.sick,
-    required this.other,
+    required this.urgent,
   });
 
   @override
@@ -205,7 +205,7 @@ class _LeavesContentState extends State<_LeavesContent>
             child: _StatsCard(
               total: widget.total,
               sick: widget.sick,
-              other: widget.other,
+              urgent: widget.urgent,
             ),
           ),
         ),
@@ -224,9 +224,9 @@ class _LeavesContentState extends State<_LeavesContent>
 class _StatsCard extends StatefulWidget {
   final int total;
   final int sick;
-  final int other;
+  final int urgent;
 
-  const _StatsCard({required this.total, required this.sick, required this.other});
+  const _StatsCard({required this.total, required this.sick, required this.urgent});
 
   @override
   State<_StatsCard> createState() => _StatsCardState();
@@ -238,9 +238,9 @@ class _StatsCardState extends State<_StatsCard> {
   @override
   Widget build(BuildContext context) {
     final tabs = [
-      ('Total Leaves', widget.total),
+      ('All Leaves', widget.total),
       ('Sick Leaves', widget.sick),
-      ('Other Leaves', widget.other),
+      ('Urgent Leaves', widget.urgent),
     ];
 
     return Container(

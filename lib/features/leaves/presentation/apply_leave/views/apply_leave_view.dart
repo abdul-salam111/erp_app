@@ -67,7 +67,7 @@ class _ApplyLeaveBodyState extends State<_ApplyLeaveBody>
   final _detailController = TextEditingController();
   final List<PlatformFile> _pickedFiles = [];
 
-  static const _leaveTypes = ['Sick', 'Annual', 'Other'];
+  static const _leaveTypes = ['Sick', 'Annual', 'Urgent'];
   static const _offscreen = Offset(0, 0.06);
   static const _itemCount = 6;
 
