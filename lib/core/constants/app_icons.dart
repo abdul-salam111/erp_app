@@ -43,6 +43,8 @@ class AppIcons {
 
   static const String manticBooks = 'assets/icons/mantic-books.png';
 
+  static const String systemSettings = 'assets/icons/system-settings.png';
+
   static const String riceMill = 'assets/icons/rice-mill.png';
 
   static const String dashboardIcon = 'assets/icons/dashboard-icon.png';
