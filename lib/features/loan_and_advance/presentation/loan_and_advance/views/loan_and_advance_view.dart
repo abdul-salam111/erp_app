@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../../core/constants/const_exports.dart';
@@ -29,10 +28,6 @@ class _LoanAndAdvanceBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final heroColor = context.isDark
-        ? AppColors.navyHeaderDark
-        : context.primary;
-
     return BlocListener<LoanAndAdvanceBloc, LoanAndAdvanceState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
@@ -42,76 +37,28 @@ class _LoanAndAdvanceBody extends StatelessWidget {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
       },
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: const SystemUiOverlayStyle(
-          statusBarBrightness: .dark,
-          statusBarIconBrightness: .light,
-        ),
-        child: Scaffold(
-          backgroundColor: heroColor,
-          bottomNavigationBar: ColoredBox(
-            color: context.background,
-            child: SafeArea(
-              child: Padding(
-                padding: context.pagePadding.copyWith(top: 12, bottom: 15),
-                child: CustomButton(
-                  text: 'Loan Request',
-                  onPressed: () => context.pushNamed(RouteNames.apply_loan),
-                  icon: Icons.add_rounded,
-                  iconSize: 18,
-                  isOutlined: true,
-                  radius: 12,
-                  elevation: 0,
-                  fontsize: 14,
-                  size: const Size(double.infinity, 48),
-                ),
-              ),
+      child: Scaffold(
+        backgroundColor: context.background,
+        appBar: const CustomAppBar(title: 'Loans & Advances'),
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: context.pagePadding.copyWith(top: 12, bottom: 15),
+            child: CustomButton(
+              text: 'Loan Request',
+              onPressed: () => context.pushNamed(RouteNames.apply_loan),
+              icon: Icons.add_rounded,
+              iconSize: 18,
+              isOutlined: true,
+              radius: 12,
+              elevation: 0,
+              fontsize: 14,
+              size: const Size(double.infinity, 48),
             ),
           ),
-          body: Column(
-            children: [
-              // ── Hero header — back button + title on the brand color ──
-              SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 8, 16, 16),
-                  child: Row(
-                    children: [
-                      const GlassBackButton(),
-                      Expanded(
-                        child: Text(
-                          'Loans & Advances',
-                          textAlign: .center,
-                          style: context.titleLarge.copyWith(
-                            color: AppColors.white,
-                            fontWeight: .w700,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 46),
-                    ],
-                  ),
-                ),
-              ),
-              // ── Rounded sheet — rest of the page rises over the header ──
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: context.background,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(28),
-                    ),
-                  ),
-                  child: SingleChildScrollView(
-                    padding: context.pagePadding.copyWith(top: 16, bottom: 24),
-                    child: const _LoanTable(),
-                  ),
-                ),
-              ),
-            ],
-          ),
+        ),
+        body: SingleChildScrollView(
+          padding: context.pagePadding,
+          child: const _LoanTable(),
         ),
       ),
     );
@@ -253,7 +200,9 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.isDark ? context.navyIconBg : context.surfaceHeader,
+      color: context.isDark
+          ? AppColors.surfaceElevatedDark
+          : context.surfaceHeader,
       padding: const .symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [

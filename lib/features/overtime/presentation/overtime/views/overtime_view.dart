@@ -59,7 +59,11 @@ class _OvertimeBody extends StatelessWidget {
           padding: context.pagePadding,
           child: Column(
             crossAxisAlignment: .start,
-            children: const [_SummaryStrip(), SizedBox(height: 16), _OvertimeTable()],
+            children: const [
+              _SummaryStrip(),
+              SizedBox(height: 16),
+              _OvertimeTable(),
+            ],
           ),
         ),
       ),
@@ -103,8 +107,10 @@ class _SummaryContentState extends State<_SummaryContent>
       duration: const Duration(milliseconds: 600),
     );
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
-    _slide = Tween<Offset>(begin: const Offset(0, 0.06), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
+    _slide = Tween<Offset>(
+      begin: const Offset(0, 0.06),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
     _ctrl.forward();
   }
 
@@ -128,13 +134,21 @@ class _SummaryContentState extends State<_SummaryContent>
     final records = widget.records;
     final totalHours = records.fold(0.0, (s, r) => s + r.hours);
     final approvedHours = records
-        .where((r) => r.status == OvertimeStatus.approved || r.status == OvertimeStatus.paid)
+        .where(
+          (r) =>
+              r.status == OvertimeStatus.approved ||
+              r.status == OvertimeStatus.paid,
+        )
         .fold(0.0, (s, r) => s + r.hours);
     final pendingHours = records
         .where((r) => r.status == OvertimeStatus.pending)
         .fold(0.0, (s, r) => s + r.hours);
     final totalEarnings = records
-        .where((r) => r.status == OvertimeStatus.approved || r.status == OvertimeStatus.paid)
+        .where(
+          (r) =>
+              r.status == OvertimeStatus.approved ||
+              r.status == OvertimeStatus.paid,
+        )
         .fold(0.0, (s, r) => s + r.amount);
 
     return FadeTransition(
@@ -156,7 +170,7 @@ class _SummaryContentState extends State<_SummaryContent>
                   label: 'Approved',
                   value: '${approvedHours.toStringAsFixed(1)}h',
                   icon: Icons.check_circle_outline_rounded,
-                  color: AppColors.creditGreen,
+                  color: context.creditColor,
                 ),
               ],
             ),
@@ -204,56 +218,58 @@ class _SummaryCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         decoration: BoxDecoration(
-          color: context.white,
+          color: context.isDark ? context.navyCard : context.surfaceElevated,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: context.border),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadow,
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border.all(
+            color: context.isDark ? context.navyBorder : context.border,
+          ),
+          boxShadow: context.isDark
+              ? null
+              : [
+                  BoxShadow(
+                    color: AppColors.shadow,
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: Row(
-       
           children: [
             Container(
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.10),
+                color: color.withValues(alpha: context.isDark ? 0.16 : 0.10),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Icon(icon, size: 13, color: color),
             ),
-          widthBox(10),
+            widthBox(10),
             Column(
               crossAxisAlignment: .start,
               children: [
-              Text(
-              value,
-              style: context.labelMedium.copyWith(
-                fontWeight: .w700,
-                color: context.textPrimary,
-                fontSize: 11,
-              ),
-              maxLines: 1,
-              overflow: .ellipsis,
-            ),
-            const SizedBox(height: 1),
-            Text(
-              label,
-              style: context.labelSmall.copyWith(
-                color: context.textSecondary,
-                fontSize: 9,
-              ),
-              maxLines: 1,
-              overflow: .ellipsis,
-            ),
+                Text(
+                  value,
+                  style: context.labelMedium.copyWith(
+                    fontWeight: .w700,
+                    color: context.textPrimary,
+                    fontSize: 11,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+                const SizedBox(height: 1),
+                Text(
+                  label,
+                  style: context.labelSmall.copyWith(
+                    color: context.textSecondary,
+                    fontSize: 9,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
               ],
             ),
-           
           ],
         ),
       ),
@@ -304,9 +320,9 @@ class _OvertimeContentState extends State<_OvertimeContent>
   }
 
   Animation<double> _fade(double start, double end) => CurvedAnimation(
-        parent: _ctrl,
-        curve: Interval(start, end, curve: Curves.easeOut),
-      );
+    parent: _ctrl,
+    curve: Interval(start, end, curve: Curves.easeOut),
+  );
 
   Animation<Offset> _slide(double start, double end) =>
       Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
@@ -319,7 +335,10 @@ class _OvertimeContentState extends State<_OvertimeContent>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 750));
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 750),
+    );
     _buildAnimations();
     _ctrl.forward();
   }
@@ -343,13 +362,22 @@ class _OvertimeContentState extends State<_OvertimeContent>
   @override
   Widget build(BuildContext context) {
     return Container(
+      clipBehavior: .antiAlias,
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.isDark ? context.navyCard : context.surfaceElevated,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(color: AppColors.shadow, blurRadius: 8, offset: const Offset(0, 2)),
-        ],
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.shadow,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: .start,
@@ -358,20 +386,7 @@ class _OvertimeContentState extends State<_OvertimeContent>
             opacity: _fades[0],
             child: SlideTransition(
               position: _slides[0],
-              child: Column(
-                crossAxisAlignment: .start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Text(
-                      'Overtime history',
-                      style: context.titleSmall.copyWith(fontWeight: .w600),
-                    ),
-                  ),
-                  const Divider(height: 1, thickness: 1),
-                  const _TableHeader(),
-                ],
-              ),
+              child: const _TableHeader(),
             ),
           ),
           ...List.generate(widget.records.length, (i) {
@@ -379,7 +394,11 @@ class _OvertimeContentState extends State<_OvertimeContent>
               opacity: _fades[i + 1],
               child: SlideTransition(
                 position: _slides[i + 1],
-                child: _TableRow(record: widget.records[i], isAlt: i.isOdd),
+                child: _TableRow(
+                  record: widget.records[i],
+                  isAlt: i.isOdd,
+                  isLast: i == widget.records.length - 1,
+                ),
               ),
             );
           }),
@@ -395,7 +414,9 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.surfaceHeader,
+      color: context.isDark
+          ? AppColors.surfaceElevatedDark
+          : context.surfaceHeader,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
@@ -414,7 +435,7 @@ class _TableHeader extends StatelessWidget {
               style: context.bodySmall.copyWith(fontWeight: .w600),
             ),
           ),
-          Expanded( 
+          Expanded(
             flex: 3,
             child: Text(
               'Type',
@@ -440,13 +461,25 @@ class _TableHeader extends StatelessWidget {
 class _TableRow extends StatelessWidget {
   final OvertimeRecord record;
   final bool isAlt;
+  final bool isLast;
 
-  const _TableRow({required this.record, required this.isAlt});
+  const _TableRow({
+    required this.record,
+    required this.isAlt,
+    required this.isLast,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isAlt ? context.tableRowAlt : context.surfaceElevated,
+      decoration: BoxDecoration(
+        color: context.isDark
+            ? context.transparent
+            : (isAlt ? context.tableRowAlt : context.surfaceElevated),
+        border: context.isDark && !isLast
+            ? Border(bottom: BorderSide(color: context.navyBorder))
+            : null,
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
@@ -478,7 +511,6 @@ class _TableRow extends StatelessWidget {
             child: Align(
               alignment: .center,
               child: _StatusBadge(status: record.status),
-            
             ),
           ),
           SizedBox(
@@ -525,7 +557,7 @@ class _StatusBadge extends StatelessWidget {
         status.label,
         textAlign: .center,
         style: context.labelSmall.copyWith(
-          color: status.color,
+          color: status.textColor(context),
           fontWeight: .w600,
           fontSize: 11,
         ),
@@ -545,7 +577,7 @@ class _OvertimeDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.isDark ? context.navyCard : context.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
@@ -559,7 +591,9 @@ class _OvertimeDetailSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: context.border,
+                color: context.isDark
+                    ? AppColors.white.withValues(alpha: 0.18)
+                    : context.border,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -613,13 +647,16 @@ class _OvertimeDetailSheet extends StatelessWidget {
                 label: 'Total Amount',
                 value: record.amount.asPKR,
                 icon: Icons.account_balance_wallet_outlined,
-                color: AppColors.creditGreen,
+                color: context.creditColor,
               ),
             ],
           ),
           const SizedBox(height: 20),
 
-          Divider(color: context.border, height: 1),
+          Divider(
+            color: context.isDark ? context.navyBorder : context.border,
+            height: 1,
+          ),
           const SizedBox(height: 16),
 
           _DetailRow(
@@ -674,9 +711,11 @@ class _AmountCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
+          color: color.withValues(alpha: context.isDark ? 0.14 : 0.08),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
+          border: Border.all(
+            color: color.withValues(alpha: context.isDark ? 0.4 : 0.2),
+          ),
         ),
         child: Column(
           crossAxisAlignment: .start,
@@ -728,10 +767,16 @@ class _DetailRow extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: context.accentBlue.withValues(alpha: 0.08),
+            color: context.isDark
+                ? context.navyIconBg
+                : context.accentBlue.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 18, color: context.accentBlue),
+          child: Icon(
+            icon,
+            size: 18,
+            color: context.isDark ? context.navyIconColor : context.accentBlue,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(

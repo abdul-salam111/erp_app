@@ -48,16 +48,22 @@ class LeaveDetailView extends StatelessWidget {
             // ── Info card ──
             Container(
               decoration: BoxDecoration(
-                color: context.surfaceElevated,
+                color: context.isDark
+                    ? context.navyCard
+                    : context.surfaceElevated,
                 borderRadius: .circular(12),
-                border: Border.all(color: context.border),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.black.withValues(alpha: 0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                border: Border.all(
+                  color: context.isDark ? context.navyBorder : context.border,
+                ),
+                boxShadow: context.isDark
+                    ? null
+                    : [
+                        BoxShadow(
+                          color: AppColors.black.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
               ),
               child: Column(
                 children: [
@@ -103,9 +109,13 @@ class LeaveDetailView extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: context.surfaceElevated,
+                  color: context.isDark
+                      ? context.navyCard
+                      : context.surfaceElevated,
                   borderRadius: .circular(12),
-                  border: Border.all(color: context.border),
+                  border: Border.all(
+                    color: context.isDark ? context.navyBorder : context.border,
+                  ),
                 ),
                 child: Text(
                   args.detail,
@@ -168,11 +178,7 @@ class _InfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: .center,
         children: [
-          Icon(
-            icon,
-            size: 16,
-            color: iconColor ?? context.textSecondary,
-          ),
+          Icon(icon, size: 16, color: iconColor ?? context.textSecondary),
           const SizedBox(width: 12),
           Expanded(
             child: RichText(
@@ -206,8 +212,11 @@ class _RowDivider extends StatelessWidget {
   const _RowDivider();
 
   @override
-  Widget build(BuildContext context) =>
-      Divider(height: 1, thickness: 1, color: context.border);
+  Widget build(BuildContext context) => Divider(
+    height: 1,
+    thickness: 1,
+    color: context.isDark ? context.navyBorder : context.border,
+  );
 }
 
 // ─── File card ───────────────────────────────────────────────────────────────
@@ -222,11 +231,11 @@ class _FileCard extends StatelessWidget {
   }
 
   Color _extColor(BuildContext context) => switch (_ext) {
-        'PDF'                    => AppColors.errorBright,
-        'PNG' || 'JPG' || 'JPEG' => AppColors.info,
-        'DOC' || 'DOCX'          => AppColors.primaryDark,
-        _                        => context.textSecondary,
-      };
+    'PDF' => AppColors.errorBright,
+    'PNG' || 'JPG' || 'JPEG' => AppColors.info,
+    'DOC' || 'DOCX' => AppColors.primaryDark,
+    _ => context.textSecondary,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -235,9 +244,11 @@ class _FileCard extends StatelessWidget {
       width: 80,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.isDark ? context.navyCard : context.surfaceElevated,
         borderRadius: .circular(10),
-        border: Border.all(color: context.border),
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
       ),
       child: Column(
         mainAxisSize: .min,
@@ -246,9 +257,11 @@ class _FileCard extends StatelessWidget {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.08),
+              color: color.withValues(alpha: context.isDark ? 0.14 : 0.08),
               borderRadius: .circular(8),
-              border: Border.all(color: color.withValues(alpha: 0.25)),
+              border: Border.all(
+                color: color.withValues(alpha: context.isDark ? 0.4 : 0.25),
+              ),
             ),
             child: Column(
               mainAxisAlignment: .center,

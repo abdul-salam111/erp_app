@@ -5,35 +5,37 @@ enum OvertimeType { preApproved, emergency, weekend }
 
 extension OvertimeTypeX on OvertimeType {
   String get label => switch (this) {
-        OvertimeType.preApproved => 'Pre-Approved',
-        OvertimeType.emergency   => 'Emergency',
-        OvertimeType.weekend     => 'Weekend',
-      };
+    OvertimeType.preApproved => 'Pre-Approved',
+    OvertimeType.emergency => 'Emergency',
+    OvertimeType.weekend => 'Weekend',
+  };
 }
 
 enum OvertimeStatus { pending, approved, rejected, paid }
 
 extension OvertimeStatusX on OvertimeStatus {
   String get label => switch (this) {
-        OvertimeStatus.pending  => 'Pending',
-        OvertimeStatus.approved => 'Approved',
-        OvertimeStatus.rejected => 'Rejected',
-        OvertimeStatus.paid     => 'Paid',
-      };
+    OvertimeStatus.pending => 'Pending',
+    OvertimeStatus.approved => 'Approved',
+    OvertimeStatus.rejected => 'Rejected',
+    OvertimeStatus.paid => 'Paid',
+  };
 
-  Color get color => switch (this) {
-        OvertimeStatus.pending  => AppColors.amber,
-        OvertimeStatus.approved => AppColors.creditGreen,
-        OvertimeStatus.rejected => AppColors.debitRed,
-        OvertimeStatus.paid     => AppColors.accentBlue,
-      };
+  // Theme-aware: dark mode swaps to brighter variants so status text
+  // stays legible on navy card backgrounds.
+  Color textColor(BuildContext context) => switch (this) {
+    OvertimeStatus.pending => AppColors.amber,
+    OvertimeStatus.approved => context.creditColor,
+    OvertimeStatus.rejected => context.debitColor,
+    OvertimeStatus.paid => AppColors.accentBlue,
+  };
 
   Color bgColor(BuildContext context) => switch (this) {
-        OvertimeStatus.pending  => AppColors.yellow.withValues(alpha: 0.15),
-        OvertimeStatus.approved => context.creditContainer,
-        OvertimeStatus.rejected => context.debitContainer,
-        OvertimeStatus.paid     => AppColors.primaryLight.withValues(alpha: 0.15),
-      };
+    OvertimeStatus.pending => AppColors.yellow.withValues(alpha: 0.15),
+    OvertimeStatus.approved => context.creditContainer,
+    OvertimeStatus.rejected => context.debitContainer,
+    OvertimeStatus.paid => AppColors.primaryLight.withValues(alpha: 0.15),
+  };
 }
 
 class OvertimeRecord {

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
@@ -88,9 +88,9 @@ class _SalaryContentState extends State<_SalaryContent>
   }
 
   Animation<double> _fade(double start, double end) => CurvedAnimation(
-        parent: _ctrl,
-        curve: Interval(start, end, curve: Curves.easeOut),
-      );
+    parent: _ctrl,
+    curve: Interval(start, end, curve: Curves.easeOut),
+  );
 
   Animation<Offset> _slide(double start, double end) =>
       Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
@@ -130,17 +130,22 @@ class _SalaryContentState extends State<_SalaryContent>
   @override
   Widget build(BuildContext context) {
     return Container(
+      clipBehavior: .antiAlias,
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.isDark ? context.navyCard : context.surfaceElevated,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadow,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.shadow,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: .start,
@@ -149,20 +154,7 @@ class _SalaryContentState extends State<_SalaryContent>
             opacity: _fades[0],
             child: SlideTransition(
               position: _slides[0],
-              child: Column(
-                crossAxisAlignment: .start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Text(
-                      'Recent salary & payments',
-                      style: context.titleSmall.copyWith(fontWeight: .w600),
-                    ),
-                  ),
-                  const Divider(height: 1, thickness: 1),
-                  const _TableHeader(),
-                ],
-              ),
+              child: const _TableHeader(),
             ),
           ),
           ...List.generate(widget.records.length, (i) {
@@ -170,7 +162,11 @@ class _SalaryContentState extends State<_SalaryContent>
               opacity: _fades[i + 1],
               child: SlideTransition(
                 position: _slides[i + 1],
-                child: _TableRow(record: widget.records[i], isAlt: i.isOdd),
+                child: _TableRow(
+                  record: widget.records[i],
+                  isAlt: i.isOdd,
+                  isLast: i == widget.records.length - 1,
+                ),
               ),
             );
           }),
@@ -186,13 +182,9 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: context.surfaceHeader,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(0),
-          topRight: Radius.circular(0),
-        ),
-      ),
+      color: context.isDark
+          ? AppColors.surfaceElevatedDark
+          : context.surfaceHeader,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
@@ -229,13 +221,25 @@ class _TableHeader extends StatelessWidget {
 class _TableRow extends StatelessWidget {
   final SalaryRecord record;
   final bool isAlt;
+  final bool isLast;
 
-  const _TableRow({required this.record, required this.isAlt});
+  const _TableRow({
+    required this.record,
+    required this.isAlt,
+    required this.isLast,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isAlt ? context.tableRowAlt : context.surfaceElevated,
+      decoration: BoxDecoration(
+        color: context.isDark
+            ? context.transparent
+            : (isAlt ? context.tableRowAlt : context.surfaceElevated),
+        border: context.isDark && !isLast
+            ? Border(bottom: BorderSide(color: context.navyBorder))
+            : null,
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
@@ -243,7 +247,7 @@ class _TableRow extends StatelessWidget {
             flex: 3,
             child: Text(
               record.month.shortMonthYear,
-              style: context.bodySmall.copyWith(color: AppColors.accentBlue),
+              style: context.bodySmall.copyWith(color: context.accentBlue),
             ),
           ),
           Expanded(
@@ -265,7 +269,8 @@ class _TableRow extends StatelessWidget {
           SizedBox(
             width: 40,
             child: IconButton(
-              onPressed: () => context.pushNamed(RouteNames.salary_detail, extra: record),
+              onPressed: () =>
+                  context.pushNamed(RouteNames.salary_detail, extra: record),
               icon: const Icon(Iconsax.eye, size: 18),
               padding: EdgeInsets.zero,
               visualDensity: VisualDensity.compact,
@@ -277,5 +282,3 @@ class _TableRow extends StatelessWidget {
     );
   }
 }
-
-

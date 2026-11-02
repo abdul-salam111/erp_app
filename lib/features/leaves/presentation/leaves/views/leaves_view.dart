@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
@@ -46,128 +45,72 @@ class _LeavesBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final heroColor = context.isDark
-        ? AppColors.navyHeaderDark
-        : context.primary;
-
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarBrightness: .dark,
-        statusBarIconBrightness: .light,
-      ),
-      child: Scaffold(
-        backgroundColor: heroColor,
-        bottomNavigationBar: ColoredBox(
-          color: context.background,
-          child: SafeArea(
-            child: Padding(
-              padding: context.pagePadding.copyWith(top: 12, bottom: 15),
-              child: CustomButton(
-                text: 'Leave Application',
-                onPressed: () => context.pushNamed(RouteNames.apply_leave),
-                icon: Icons.add_rounded,
-                iconSize: 18,
-                isOutlined: true,
-                radius: 12,
-                elevation: 0,
-                fontsize: 14,
-                size: const Size(double.infinity, 48),
-              ),
-            ),
+    return Scaffold(
+      backgroundColor: context.background,
+      appBar: CustomAppBar(title: 'Leave Requests'),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: context.pagePadding.copyWith(top: 12, bottom: 15),
+          child: CustomButton(
+            text: 'Leave Application',
+            onPressed: () => context.pushNamed(RouteNames.apply_leave),
+            icon: Icons.add_rounded,
+            iconSize: 18,
+            isOutlined: true,
+            radius: 12,
+            elevation: 0,
+            fontsize: 14,
+            size: const Size(double.infinity, 48),
           ),
         ),
-        body: Column(
-          children: [
-            // ── Hero header — back button + title on the brand color ──
-            SafeArea(
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 16, 16),
-                child: Row(
-                  children: [
-                    const GlassBackButton(),
-                    Expanded(
-                      child: Text(
-                        'Leave Requests',
-                        textAlign: .center,
-                        style: context.titleLarge.copyWith(
-                          color: AppColors.white,
-                          fontWeight: .w700,
-                          fontSize: 20,
+      ),
+      body: BlocBuilder<LeavesBloc, LeavesState>(
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: .stretch,
+            children: [
+              ColoredBox(
+                color: context.isDark ? context.background : context.surface,
+                child: Padding(
+                  padding: context.pagePadding.copyWith(top: 16, bottom: 0),
+                  child: MonthNavigator(
+                    month: state.selectedMonth,
+                    isNextDisabled: state.isCurrentMonth,
+                    onPrev: () => context.read<LeavesBloc>().add(
+                      LeavesMonthChanged(
+                        DateTime(
+                          state.selectedMonth.year,
+                          state.selectedMonth.month - 1,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 46),
-                  ],
-                ),
-              ),
-            ),
-            // ── Rounded sheet — rest of the page rises over the header ──
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: context.background,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(28),
+                    onNext: () => context.read<LeavesBloc>().add(
+                      LeavesMonthChanged(
+                        DateTime(
+                          state.selectedMonth.year,
+                          state.selectedMonth.month + 1,
+                        ),
+                      ),
+                    ),
+                    onPick: () => _pickMonth(context, state.selectedMonth),
                   ),
                 ),
-                child: BlocBuilder<LeavesBloc, LeavesState>(
-                  builder: (context, state) {
-                    return Column(
-                      crossAxisAlignment: .stretch,
-                      children: [
-                        Padding(
-                          padding: context.pagePadding.copyWith(
-                            top: 16,
-                            bottom: 0,
-                          ),
-                          child: MonthNavigator(
-                            month: state.selectedMonth,
-                            isNextDisabled: state.isCurrentMonth,
-                            onPrev: () => context.read<LeavesBloc>().add(
-                              LeavesMonthChanged(
-                                DateTime(
-                                  state.selectedMonth.year,
-                                  state.selectedMonth.month - 1,
-                                ),
-                              ),
-                            ),
-                            onNext: () => context.read<LeavesBloc>().add(
-                              LeavesMonthChanged(
-                                DateTime(
-                                  state.selectedMonth.year,
-                                  state.selectedMonth.month + 1,
-                                ),
-                              ),
-                            ),
-                            onPick: () =>
-                                _pickMonth(context, state.selectedMonth),
-                          ),
-                        ),
-                        SizedBox(height: context.gridSpacing + 6),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            padding: context.pagePadding.copyWith(
-                              top: 0,
-                              bottom: 24,
-                            ),
-                            child: _LeavesContent(
-                              leaves: state.leaves,
-                              total: state.totalDays,
-                              sick: state.sickDays,
-                              urgent: state.urgentDays,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+              ),
+              SizedBox(height: context.gridSpacing + 6),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: context.pagePadding.copyWith(top: 0, bottom: 24),
+                  child: _LeavesContent(
+                    leaves: state.leaves,
+                    total: state.totalDays,
+                    sick: state.sickDays,
+                    urgent: state.urgentDays,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        },
       ),
     );
   }
