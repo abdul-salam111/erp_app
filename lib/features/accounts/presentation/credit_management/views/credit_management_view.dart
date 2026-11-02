@@ -218,17 +218,17 @@ class _StatCardsShimmer extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(child: const ShimmerBox(height: 58, radius: 10)),
+              Expanded(child: const ShimmerBox(height: 56, radius: 10)),
               const SizedBox(width: 6),
-              Expanded(child: const ShimmerBox(height: 58, radius: 10)),
+              Expanded(child: const ShimmerBox(height: 56, radius: 10)),
             ],
           ),
           const SizedBox(height: 6),
           Row(
             children: [
-              Expanded(child: const ShimmerBox(height: 58, radius: 10)),
+              Expanded(child: const ShimmerBox(height: 56, radius: 10)),
               const SizedBox(width: 6),
-              Expanded(child: const ShimmerBox(height: 58, radius: 10)),
+              Expanded(child: const ShimmerBox(height: 56, radius: 10)),
             ],
           ),
         ],

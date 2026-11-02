@@ -363,6 +363,7 @@ class _AdminSliverAppBar extends StatelessWidget {
                         style: context.titleSmall.copyWith(
                           color: AppColors.white,
                           fontWeight: .w600,
+                          fontSize: 18,
                           letterSpacing: 0.3,
                         ),
                       ),

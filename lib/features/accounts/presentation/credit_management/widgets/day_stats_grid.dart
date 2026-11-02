@@ -29,7 +29,7 @@ class DayStatsGrid extends StatelessWidget {
                 accentColor: AppColors.grey400,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
               child: _DayStatCard(
                 label: '60 Days',
@@ -39,7 +39,7 @@ class DayStatsGrid extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Row(
           children: [
             Expanded(
@@ -49,7 +49,7 @@ class DayStatsGrid extends StatelessWidget {
                 accentColor: AppColors.orange,
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 8),
             Expanded(
               child: _DayStatCard(
                 label: '90+ Days',
@@ -77,7 +77,7 @@ class _DayStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 68,
+      height: 56,
       child: GlassSurface(
         radius: 10,
         clipBehavior: .hardEdge,
@@ -87,7 +87,7 @@ class _DayStatCard extends StatelessWidget {
             Container(width: 4, color: accentColor),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
+                padding: const EdgeInsets.fromLTRB(12, 8, 10, 8),
                 child: Column(
                   crossAxisAlignment: .start,
                   mainAxisAlignment: .center,
@@ -97,20 +97,20 @@ class _DayStatCard extends StatelessWidget {
                       style: context.bodyMedium.copyWith(
                         fontWeight: .w800,
                         color: context.textPrimary,
-                        fontSize: 17,
+                        fontSize: 15,
                         height: 1,
                       ),
                       maxLines: 1,
                       overflow: .ellipsis,
                     ),
-                    const SizedBox(height: 7),
+                    const SizedBox(height: 4),
                     Text(
                       label.toUpperCase(),
                       style: context.labelSmall.copyWith(
                         color: context.textSecondary,
                         fontWeight: .w700,
-                        fontSize: 9.5,
-                        letterSpacing: 0.7,
+                        fontSize: 9,
+                        letterSpacing: 0.6,
                         height: 1.1,
                       ),
                       maxLines: 1,

@@ -34,8 +34,7 @@ class _SplashViewState extends State<SplashView> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [AppColors.midnightBlue, AppColors.primaryDark, AppColors.primary],
-                stops: [0.0, 0.55, 1.0],
+                colors: [AppColors.primaryDark, AppColors.primary],
               ),
             ),
           ),

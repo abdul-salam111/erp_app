@@ -155,9 +155,9 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
                   builder: (context) {
                     final ratio = Responsive.value<double>(
                       context,
-                      phone: 2.6,
-                      tablet: 2.8,
-                      ipad: 3.1,
+                      phone: 2.9,
+                      tablet: 3.1,
+                      ipad: 3.4,
                     );
                     return isLoading
                         ? _StatsShimmer(
@@ -503,7 +503,7 @@ class _MonthStatCardState extends State<_MonthStatCard> {
           Container(width: 4, color: widget.color),
           Expanded(
             child: Padding(
-              padding: .symmetric(horizontal: 10, vertical: 9),
+              padding: .symmetric(horizontal: 10, vertical: 7),
               child: Column(
                 crossAxisAlignment: .start,
                 mainAxisAlignment: .center,

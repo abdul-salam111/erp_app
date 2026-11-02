@@ -117,7 +117,7 @@ class _CurrentBalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 80,
+      height: 60,
       width: double.infinity,
       child: GlassSurface(
         radius: 10,
@@ -128,7 +128,7 @@ class _CurrentBalanceCard extends StatelessWidget {
             Container(width: 4, color: AppColors.primary),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
                 child: Column(
                   crossAxisAlignment: .start,
                   mainAxisAlignment: .center,
@@ -138,20 +138,20 @@ class _CurrentBalanceCard extends StatelessWidget {
                       style: context.titleMedium.copyWith(
                         fontWeight: .w800,
                         color: context.textPrimary,
-                        fontSize: 22,
+                        fontSize: 18,
                         height: 1,
                       ),
                       maxLines: 1,
                       overflow: .ellipsis,
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 5),
                     Text(
                       'CURRENT BALANCE',
                       style: context.labelSmall.copyWith(
                         color: context.textSecondary,
                         fontWeight: .w700,
-                        fontSize: 10,
-                        letterSpacing: 0.8,
+                        fontSize: 9,
+                        letterSpacing: 0.7,
                         height: 1.1,
                       ),
                     ),
