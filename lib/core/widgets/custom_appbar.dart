@@ -99,13 +99,29 @@ class GlassBackButton extends StatelessWidget {
       );
     }
 
-    return IconButton(
-      icon: const Icon(
-        Icons.arrow_back_ios_new_rounded,
-        color: AppColors.white,
-        size: 20,
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: Center(
+        child: Material(
+          color: AppColors.white.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(8),
+          child: InkWell(
+            onTap: handleTap,
+            borderRadius: BorderRadius.circular(8),
+            child: const SizedBox(
+              width: 30,
+              height: 30,
+              child: Center(
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: AppColors.white,
+                  size: 14,
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
-      onPressed: handleTap,
     );
   }
 }

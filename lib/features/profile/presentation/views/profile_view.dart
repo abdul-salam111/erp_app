@@ -207,12 +207,21 @@ class _ProfileHeader extends StatelessWidget {
     required this.hasMultiOrgs,
   });
 
-  static const double _barExtra = 150;
-  static const double _cardOverlap = 92;
+  // The gradient bar is Positioned (behind, zero influence on the Stack's
+  // own size) with a fixed height that always reserves its own space for
+  // the back button/title row. The card below is the Stack's only
+  // non-positioned child — the one that determines its total height — and
+  // its top padding (barHeight - overlap, always positive) is what pulls it
+  // up to overlap the bar. Because the padding is positive and fixed, the
+  // card can never climb high enough to cover the title above it,
+  // regardless of how tall its own content grows.
+  static const double _barContentHeight = 140;
+  static const double _cardOverlap = 70;
 
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
+    final barHeight = top + _barContentHeight;
 
     return Stack(
       children: [
@@ -221,7 +230,7 @@ class _ProfileHeader extends StatelessWidget {
           left: 0,
           right: 0,
           child: Container(
-            height: top + _barExtra,
+            height: barHeight,
             decoration: BoxDecoration(
               color: context.isDark ? AppColors.navyHeaderDark : null,
               gradient: context.isDark
@@ -245,8 +254,10 @@ class _ProfileHeader extends StatelessWidget {
                   bottom: -10,
                   child: const _Circle(size: 120, opacity: 0.06),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: top + 2),
+                Positioned(
+                  top: top + 2,
+                  left: 0,
+                  right: 0,
                   child: Row(
                     children: [
                       Padding(
@@ -262,6 +273,7 @@ class _ProfileHeader extends StatelessWidget {
                           style: context.titleMedium.copyWith(
                             color: AppColors.white,
                             fontWeight: .w700,
+                            fontSize: 18,
                           ),
                         ),
                       ),
@@ -276,7 +288,7 @@ class _ProfileHeader extends StatelessWidget {
         Padding(
           padding: EdgeInsets.fromLTRB(
             context.pagePadding.left,
-            top + (_barExtra - _cardOverlap),
+            barHeight - _cardOverlap,
             context.pagePadding.right,
             0,
           ),
