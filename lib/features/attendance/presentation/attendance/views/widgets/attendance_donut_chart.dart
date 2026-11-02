@@ -2,32 +2,30 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../core/theme/colors.dart';
 import '../../../../../../core/theme/theme_utils.dart';
+import 'attendance_types.dart';
 
-class AttendanceDonutChart extends StatefulWidget {
-  final double presentPct;
-  final double absentPct;
-  final String centerLabel;
-  final String centerValue;
+// Full circular donut split across present/absent/late/leave, with the
+// present percentage in the center and a count-per-status grid on the side.
+class AttendanceDonutCard extends StatefulWidget {
+  final int present;
+  final int absent;
+  final int late;
+  final int leave;
 
-  const AttendanceDonutChart({
+  const AttendanceDonutCard({
     super.key,
-    required this.presentPct,
-    required this.absentPct,
-    required this.centerLabel,
-    required this.centerValue,
+    required this.present,
+    required this.absent,
+    required this.late,
+    required this.leave,
   });
 
   @override
-  State<AttendanceDonutChart> createState() => _AttendanceDonutChartState();
+  State<AttendanceDonutCard> createState() => _AttendanceDonutCardState();
 }
 
-class _AttendanceDonutChartState extends State<AttendanceDonutChart>
+class _AttendanceDonutCardState extends State<AttendanceDonutCard>
     with SingleTickerProviderStateMixin {
-  static const _chartSize = 220.0;
-  static const _innerR = 60.0;
-  static const _sectionR = 28.0;
-  static const _absentColor = AppColors.iceBlue;
-
   late final AnimationController _controller;
   late final Animation<double> _progress;
 
@@ -38,17 +36,17 @@ class _AttendanceDonutChartState extends State<AttendanceDonutChart>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     );
-    _progress = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    );
+    _progress = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
     _controller.forward();
   }
 
   @override
-  void didUpdateWidget(AttendanceDonutChart old) {
+  void didUpdateWidget(AttendanceDonutCard old) {
     super.didUpdateWidget(old);
-    if (old.presentPct != widget.presentPct || old.absentPct != widget.absentPct) {
+    if (old.present != widget.present ||
+        old.absent != widget.absent ||
+        old.late != widget.late ||
+        old.leave != widget.leave) {
       _controller.reset();
       _controller.forward();
     }
@@ -62,157 +60,202 @@ class _AttendanceDonutChartState extends State<AttendanceDonutChart>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _progress,
-      builder: (context, _) {
-        final t = _progress.value;
-        final present = widget.presentPct * t;
-        final absent = widget.absentPct * t;
+    final total = widget.present + widget.absent + widget.late + widget.leave;
+    final presentPercent = total == 0
+        ? 0
+        : (widget.present / total * 100).round();
 
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-          child: Column(
-            children: [
-              Center(
-                child: SizedBox(
-                  width: _chartSize,
-                  child: Stack(
-                    alignment: .bottomCenter,
-                    children: [
-                      ClipRect(
-                        child: Align(
-                          alignment: .topCenter,
-                          heightFactor: 0.5,
-                          child: SizedBox.square(
-                            dimension: _chartSize,
-                            child: PieChart(
-                              PieChartData(
-                                startDegreeOffset: 180,
-                                sections: [
-                                  PieChartSectionData(
-                                    value: present,
-                                    color: AppColors.primary,
-                                    radius: _sectionR,
-                                    showTitle: false,
-                                  ),
-                                  PieChartSectionData(
-                                    value: absent,
-                                    color: _absentColor,
-                                    radius: _sectionR,
-                                    showTitle: false,
-                                  ),
-                                  PieChartSectionData(
-                                    value: present + absent,
-                                    color: context.transparent,
-                                    radius: _sectionR,
-                                    showTitle: false,
-                                  ),
-                                ],
-                                centerSpaceRadius: _innerR,
-                                sectionsSpace: 3,
-                                pieTouchData: PieTouchData(enabled: false),
-                              ),
-                              duration: Duration.zero,
-                            ),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.isDark ? context.navyCard : context.surfaceElevated,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.06),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 140,
+            height: 140,
+            child: AnimatedBuilder(
+              animation: _progress,
+              builder: (context, _) {
+                final t = _progress.value;
+                return Stack(
+                  alignment: .center,
+                  children: [
+                    PieChart(
+                      PieChartData(
+                        startDegreeOffset: -90,
+                        sectionsSpace: 3,
+                        centerSpaceRadius: 42,
+                        sections: total == 0
+                            ? [
+                                PieChartSectionData(
+                                  value: 1,
+                                  color: context.border,
+                                  radius: 20,
+                                  showTitle: false,
+                                ),
+                              ]
+                            : [
+                                PieChartSectionData(
+                                  value: widget.present * t,
+                                  color: AttendanceStatus.present.color,
+                                  radius: 20,
+                                  showTitle: false,
+                                ),
+                                PieChartSectionData(
+                                  value: widget.absent * t,
+                                  color: AttendanceStatus.absent.color,
+                                  radius: 20,
+                                  showTitle: false,
+                                ),
+                                PieChartSectionData(
+                                  value: widget.late * t,
+                                  color: AttendanceStatus.late.color,
+                                  radius: 20,
+                                  showTitle: false,
+                                ),
+                                PieChartSectionData(
+                                  value: widget.leave * t,
+                                  color: AttendanceStatus.leave.color,
+                                  radius: 20,
+                                  showTitle: false,
+                                ),
+                                PieChartSectionData(
+                                  value: total * (1 - t),
+                                  color: context.transparent,
+                                  radius: 20,
+                                  showTitle: false,
+                                ),
+                              ],
+                        pieTouchData: PieTouchData(enabled: false),
+                      ),
+                      duration: Duration.zero,
+                    ),
+                    Column(
+                      mainAxisSize: .min,
+                      children: [
+                        Text(
+                          '$presentPercent%',
+                          style: context.titleLarge.copyWith(
+                            fontWeight: .w800,
+                            fontSize: 24,
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: Column(
-                          mainAxisSize: .min,
-                          children: [
-                            Text(
-                              widget.centerLabel,
-                              textAlign: .center,
-                              style: context.labelSmall.copyWith(
-                                color: context.textSecondary,
-                                fontSize: 10,
-                              ),
-                            ),
-                            Text(
-                              widget.centerValue,
-                              textAlign: .center,
-                              style: context.titleMedium.copyWith(
-                                fontWeight: .w700,
-                                fontSize: 22,
-                                height: 1.1,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          AttendanceStatus.present.label,
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 10,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: .center,
-                children: [
-                  _LegendDot(
-                    color: AppColors.primary,
-                    label: 'Present',
-                    value: '${widget.presentPct ~/ 1}%',
-                  ),
-                  const SizedBox(width: 36),
-                  _LegendDot(
-                    color: _absentColor,
-                    label: 'Leave / Absent',
-                    value: '${widget.absentPct ~/ 1}%',
-                  ),
-                ],
-              ),
-            ],
+                      ],
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-        );
-      },
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: .spaceBetween,
+              crossAxisAlignment: .start,
+              children: [
+                Row(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Expanded(
+                      child: _StatGroup(
+                        status: AttendanceStatus.present,
+                        count: widget.present,
+                      ),
+                    ),
+                    Expanded(
+                      child: _StatGroup(
+                        status: AttendanceStatus.leave,
+                        count: widget.leave,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Expanded(
+                      child: _StatGroup(
+                        status: AttendanceStatus.late,
+                        count: widget.late,
+                      ),
+                    ),
+                    Expanded(
+                      child: _StatGroup(
+                        status: AttendanceStatus.absent,
+                        count: widget.absent,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _LegendDot extends StatelessWidget {
-  final Color color;
-  final String label;
-  final String value;
+class _StatGroup extends StatelessWidget {
+  final AttendanceStatus status;
+  final int count;
 
-  const _LegendDot({
-    required this.color,
-    required this.label,
-    required this.value,
-  });
+  const _StatGroup({required this.status, required this.count});
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: .start,
       mainAxisSize: .min,
       children: [
+        Text(
+          status.label,
+          style: context.labelSmall.copyWith(
+            color: context.textSecondary,
+            fontSize: 10.5,
+          ),
+        ),
+        const SizedBox(height: 4),
         Row(
-          mainAxisSize: .min,
           children: [
             Container(
-              width: 9,
-              height: 9,
-              decoration: BoxDecoration(color: color, shape: .circle),
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(shape: .circle, color: status.color),
             ),
-            const SizedBox(width: 5),
+            const SizedBox(width: 6),
             Text(
-              label,
-              style: context.labelSmall.copyWith(
-                color: context.textSecondary,
-                fontSize: 11,
+              '$count',
+              style: context.bodyMedium.copyWith(
+                fontWeight: .w700,
+                fontSize: 15,
               ),
             ),
           ],
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: context.bodySmall.copyWith(
-            fontWeight: .w700,
-            fontSize: 15,
-            color: context.textPrimary,
-          ),
         ),
       ],
     );

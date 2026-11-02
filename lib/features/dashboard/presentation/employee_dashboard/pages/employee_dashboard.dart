@@ -187,7 +187,9 @@ class _EmployeeSliverAppBar extends StatelessWidget {
             onTap: () => context.pushNamed(RouteNames.profile),
             child: CircleAvatar(
               radius: 19,
-              backgroundColor: AppColors.white.withValues(alpha: 0.15),
+              backgroundColor: AppColors.white.withValues(
+                alpha: context.isDark ? 0.06 : 0.15,
+              ),
               child: const Icon(
                 Iconsax.profile_circle,
                 color: AppColors.white,
@@ -215,13 +217,20 @@ class _EmployeeSliverAppBar extends StatelessWidget {
             clipBehavior: .hardEdge,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  context.primary,
-                  context.primary.withValues(alpha: 0.72),
-                ],
+                colors: context.isDark
+                    ? const [Color(0xFF14213A), Color(0xFF101A2D)]
+                    : [
+                        context.primary,
+                        context.primary.withValues(alpha: 0.72),
+                      ],
                 begin: .topLeft,
                 end: .bottomRight,
               ),
+              border: context.isDark
+                  ? const Border(
+                      bottom: BorderSide(color: Color(0xFF22304A)),
+                    )
+                  : null,
               // Corners flatten as the bar collapses into a regular app bar.
               borderRadius: BorderRadius.vertical(
                 bottom: Radius.circular(28 * t),
@@ -229,30 +238,53 @@ class _EmployeeSliverAppBar extends StatelessWidget {
             ),
             child: Stack(
               children: [
-                Positioned(
-                  right: -35,
-                  top: -20,
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      shape: .circle,
-                      color: AppColors.white.withValues(alpha: 0.07),
+                if (context.isDark)
+                  Positioned(
+                    top: -120,
+                    right: -90,
+                    child: IgnorePointer(
+                      child: Container(
+                        width: 300,
+                        height: 300,
+                        decoration: BoxDecoration(
+                          shape: .circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              context.accentBlue.withValues(alpha: 0.28),
+                              context.accentBlue.withValues(alpha: 0),
+                            ],
+                            stops: const [0, 0.68],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                else ...[
+                  Positioned(
+                    right: -35,
+                    top: -20,
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        shape: .circle,
+                        color: AppColors.white.withValues(alpha: 0.07),
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  left: -25,
-                  bottom: -15,
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: .circle,
-                      color: AppColors.white.withValues(alpha: 0.05),
+                  Positioned(
+                    left: -25,
+                    bottom: -15,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        shape: .circle,
+                        color: AppColors.white.withValues(alpha: 0.05),
+                      ),
                     ),
                   ),
-                ),
+                ],
 
                 // ── Toolbar title — expanded state ──
                 Positioned(
@@ -375,10 +407,14 @@ class _EmployeeSliverAppBar extends StatelessWidget {
                         Container(
                           padding: .symmetric(horizontal: 12, vertical: 10),
                           decoration: BoxDecoration(
-                            color: AppColors.white.withValues(alpha: 0.12),
+                            color: AppColors.white.withValues(
+                              alpha: context.isDark ? 0.06 : 0.12,
+                            ),
                             borderRadius: .circular(10),
                             border: Border.all(
-                              color: AppColors.white.withValues(alpha: 0.14),
+                              color: AppColors.white.withValues(
+                                alpha: context.isDark ? 0.10 : 0.14,
+                              ),
                             ),
                           ),
                           child: const Row(
@@ -488,22 +524,30 @@ class _HeaderChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.isDark;
     return Container(
       padding: .symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.15),
+        color: AppColors.white.withValues(alpha: isDark ? 0.06 : 0.15),
         borderRadius: .circular(20),
+        border: isDark
+            ? Border.all(color: AppColors.white.withValues(alpha: 0.10))
+            : null,
       ),
       child: Row(
         mainAxisSize: .min,
         children: [
-          Icon(icon, color: AppColors.white.withValues(alpha: 0.85), size: 11),
+          Icon(
+            icon,
+            color: AppColors.white.withValues(alpha: isDark ? 0.75 : 0.85),
+            size: 11,
+          ),
           const SizedBox(width: 4),
           Flexible(
             child: Text(
               label,
               style: context.labelSmall.copyWith(
-                color: AppColors.white.withValues(alpha: 0.90),
+                color: AppColors.white.withValues(alpha: isDark ? 0.92 : 0.90),
                 fontWeight: .w500,
                 fontSize: 10.5,
               ),
@@ -525,6 +569,24 @@ class _HeaderIconBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (context.isDark) {
+      return Material(
+        color: AppColors.white.withValues(alpha: 0.06),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: AppColors.white.withValues(alpha: 0.10)),
+        ),
+        clipBehavior: .antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: SizedBox(
+            width: 38,
+            height: 38,
+            child: Icon(icon, color: AppColors.white, size: 20),
+          ),
+        ),
+      );
+    }
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -582,15 +644,20 @@ class _MonthlySnapshotSection extends StatelessWidget {
         const SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
-            color: context.surfaceElevated,
+            color: context.isDark ? context.navyCard : context.surfaceElevated,
             borderRadius: .circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.06),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            border: context.isDark
+                ? Border.all(color: context.navyBorder)
+                : null,
+            boxShadow: context.isDark
+                ? null
+                : [
+                    BoxShadow(
+                      color: AppColors.black.withValues(alpha: 0.06),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
           ),
           child: Column(
             children: List.generate((_stats.length / 2).ceil(), (row) {
@@ -816,15 +883,20 @@ class _WorkspaceCard extends StatelessWidget {
       child: Container(
         clipBehavior: .hardEdge,
         decoration: BoxDecoration(
-          color: context.surfaceElevated,
+          color: context.isDark ? context.navyCard : context.surfaceElevated,
           borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.black.withValues(alpha: 0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          border: context.isDark
+              ? Border.all(color: context.navyBorder)
+              : null,
+          boxShadow: context.isDark
+              ? null
+              : [
+                  BoxShadow(
+                    color: AppColors.black.withValues(alpha: 0.06),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -973,15 +1045,20 @@ class _NoticeTile extends StatelessWidget {
     return Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.isDark ? context.navyCard : context.surfaceElevated,
         borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: context.isDark
+            ? Border.all(color: context.navyBorder)
+            : null,
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: IntrinsicHeight(
         child: Row(

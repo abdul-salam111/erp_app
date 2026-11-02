@@ -5,22 +5,24 @@ enum LoanStatus { active, closed, overdue }
 
 extension LoanStatusX on LoanStatus {
   String get label => switch (this) {
-        LoanStatus.active => 'Active',
-        LoanStatus.closed => 'Closed',
-        LoanStatus.overdue => 'Overdue',
-      };
+    LoanStatus.active => 'Active',
+    LoanStatus.closed => 'Closed',
+    LoanStatus.overdue => 'Overdue',
+  };
 
-  Color get color => switch (this) {
-        LoanStatus.active => AppColors.creditGreen,
-        LoanStatus.closed => AppColors.grey500,
-        LoanStatus.overdue => AppColors.debitRed,
-      };
+  // Theme-aware: dark mode swaps to brighter variants so status text
+  // stays legible on navy card backgrounds.
+  Color textColor(BuildContext context) => switch (this) {
+    LoanStatus.active => context.creditColor,
+    LoanStatus.closed => context.isDark ? AppColors.grey300 : AppColors.grey500,
+    LoanStatus.overdue => context.debitColor,
+  };
 
   Color bgColor(BuildContext context) => switch (this) {
-        LoanStatus.active => context.creditContainer,
-        LoanStatus.closed => context.surface,
-        LoanStatus.overdue => context.debitContainer,
-      };
+    LoanStatus.active => context.creditContainer,
+    LoanStatus.closed => context.surface,
+    LoanStatus.overdue => context.debitContainer,
+  };
 }
 
 class LoanRecord {
@@ -79,5 +81,4 @@ final List<LoanRecord> dummyLoanRecords = [
     monthlyInstallment: 3334,
     totalPaid: 10000,
   ),
- 
 ];

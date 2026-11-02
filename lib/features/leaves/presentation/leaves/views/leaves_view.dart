@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
@@ -8,6 +9,7 @@ import '../../../../../core/theme/theme_utils.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/custom_appbar.dart';
 import '../../../../../core/widgets/custom_button.dart';
+import '../../../../../core/widgets/glass_surface.dart';
 import '../../../../../core/widgets/month_navigator.dart';
 import '../../../../../routes/route_exports.dart';
 import '../../../leaves_exports.dart';
@@ -44,68 +46,128 @@ class _LeavesBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: context.pagePadding.copyWith(top: 12, bottom: 15),
-          child: CustomButton(
-            text: 'Leave Application',
-            onPressed: () => context.pushNamed(RouteNames.apply_leave),
-            icon: Icons.add_rounded,
-            iconSize: 18,
-            isOutlined: true,
-            radius: 12,
-            elevation: 0,
-            fontsize: 14,
-            size: const Size(double.infinity, 48),
+    final heroColor = context.isDark
+        ? AppColors.navyHeaderDark
+        : context.primary;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarBrightness: .dark,
+        statusBarIconBrightness: .light,
+      ),
+      child: Scaffold(
+        backgroundColor: heroColor,
+        bottomNavigationBar: ColoredBox(
+          color: context.background,
+          child: SafeArea(
+            child: Padding(
+              padding: context.pagePadding.copyWith(top: 12, bottom: 15),
+              child: CustomButton(
+                text: 'Leave Application',
+                onPressed: () => context.pushNamed(RouteNames.apply_leave),
+                icon: Icons.add_rounded,
+                iconSize: 18,
+                isOutlined: true,
+                radius: 12,
+                elevation: 0,
+                fontsize: 14,
+                size: const Size(double.infinity, 48),
+              ),
+            ),
           ),
         ),
-      ),
-   
-      appBar: CustomAppBar(title: 'Leave Requests'),
-      body: BlocBuilder<LeavesBloc, LeavesState>(
-        builder: (context, state) {
-          return Column(
-            crossAxisAlignment: .stretch,
-            children: [
-              ColoredBox(
-                color: context.surface,
-                child: Padding(
-                  padding: context.pagePadding.copyWith(top: 16, bottom: 16),
-                  child: MonthNavigator(
-                    month: state.selectedMonth,
-                    isNextDisabled: state.isCurrentMonth,
-                    onPrev: () => context.read<LeavesBloc>().add(
-                      LeavesMonthChanged(DateTime(
-                        state.selectedMonth.year,
-                        state.selectedMonth.month - 1,
-                      )),
+        body: Column(
+          children: [
+            // ── Hero header — back button + title on the brand color ──
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 16, 16),
+                child: Row(
+                  children: [
+                    const GlassBackButton(),
+                    Expanded(
+                      child: Text(
+                        'Leave Requests',
+                        textAlign: .center,
+                        style: context.titleLarge.copyWith(
+                          color: AppColors.white,
+                          fontWeight: .w700,
+                          fontSize: 20,
+                        ),
+                      ),
                     ),
-                    onNext: () => context.read<LeavesBloc>().add(
-                      LeavesMonthChanged(DateTime(
-                        state.selectedMonth.year,
-                        state.selectedMonth.month + 1,
-                      )),
-                    ),
-                    onPick: () => _pickMonth(context, state.selectedMonth),
-                  ),
+                    const SizedBox(width: 46),
+                  ],
                 ),
               ),
-              SizedBox(height: context.gridSpacing),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: context.pagePadding.copyWith(top: 0, bottom: 24),
-                  child: _LeavesContent(
-                    leaves: state.leaves,
-                    total: state.totalDays,
-                    sick: state.sickDays,
-                    urgent: state.urgentDays,
+            ),
+            // ── Rounded sheet — rest of the page rises over the header ──
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: context.background,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(28),
                   ),
                 ),
+                child: BlocBuilder<LeavesBloc, LeavesState>(
+                  builder: (context, state) {
+                    return Column(
+                      crossAxisAlignment: .stretch,
+                      children: [
+                        Padding(
+                          padding: context.pagePadding.copyWith(
+                            top: 16,
+                            bottom: 0,
+                          ),
+                          child: MonthNavigator(
+                            month: state.selectedMonth,
+                            isNextDisabled: state.isCurrentMonth,
+                            onPrev: () => context.read<LeavesBloc>().add(
+                              LeavesMonthChanged(
+                                DateTime(
+                                  state.selectedMonth.year,
+                                  state.selectedMonth.month - 1,
+                                ),
+                              ),
+                            ),
+                            onNext: () => context.read<LeavesBloc>().add(
+                              LeavesMonthChanged(
+                                DateTime(
+                                  state.selectedMonth.year,
+                                  state.selectedMonth.month + 1,
+                                ),
+                              ),
+                            ),
+                            onPick: () =>
+                                _pickMonth(context, state.selectedMonth),
+                          ),
+                        ),
+                        SizedBox(height: context.gridSpacing + 6),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            padding: context.pagePadding.copyWith(
+                              top: 0,
+                              bottom: 24,
+                            ),
+                            child: _LeavesContent(
+                              leaves: state.leaves,
+                              total: state.totalDays,
+                              sick: state.sickDays,
+                              urgent: state.urgentDays,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ],
-          );
-        },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -143,20 +205,18 @@ class _LeavesContentState extends State<_LeavesContent>
     // index 0 = stats card, 1..N = leave tiles
     _fades = [
       _fade(0.00, 0.45),
-      for (int i = 0; i < count; i++)
-        _fade(0.20 + i * 0.07, 0.55 + i * 0.07),
+      for (int i = 0; i < count; i++) _fade(0.20 + i * 0.07, 0.55 + i * 0.07),
     ];
     _slides = [
       _slide(0.00, 0.45),
-      for (int i = 0; i < count; i++)
-        _slide(0.20 + i * 0.07, 0.55 + i * 0.07),
+      for (int i = 0; i < count; i++) _slide(0.20 + i * 0.07, 0.55 + i * 0.07),
     ];
   }
 
   Animation<double> _fade(double start, double end) => CurvedAnimation(
-        parent: _ctrl,
-        curve: Interval(start, end, curve: Curves.easeOut),
-      );
+    parent: _ctrl,
+    curve: Interval(start, end, curve: Curves.easeOut),
+  );
 
   Animation<Offset> _slide(double start, double end) =>
       Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
@@ -226,7 +286,11 @@ class _StatsCard extends StatefulWidget {
   final int sick;
   final int urgent;
 
-  const _StatsCard({required this.total, required this.sick, required this.urgent});
+  const _StatsCard({
+    required this.total,
+    required this.sick,
+    required this.urgent,
+  });
 
   @override
   State<_StatsCard> createState() => _StatsCardState();
@@ -245,16 +309,20 @@ class _StatsCardState extends State<_StatsCard> {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.isDark ? context.navyCard : context.surfaceElevated,
         borderRadius: .circular(12),
-        border: Border.all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: ClipRRect(
         borderRadius: .circular(12),
@@ -275,7 +343,11 @@ class _StatsCardState extends State<_StatsCard> {
                     border: Border(
                       right: isLast
                           ? BorderSide.none
-                          : BorderSide(color: context.border),
+                          : BorderSide(
+                              color: context.isDark
+                                  ? context.navyBorder
+                                  : context.border,
+                            ),
                       bottom: isSelected
                           ? BorderSide(color: context.primary, width: 2)
                           : BorderSide.none,
@@ -302,15 +374,23 @@ class _StatsCardState extends State<_StatsCard> {
                       const SizedBox(width: 5),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? context.accentBlue
-                              : context.surface,
+                              : (context.isDark
+                                    ? context.navyIconBg
+                                    : context.surface),
                           borderRadius: .circular(10),
                           border: isSelected
                               ? null
-                              : Border.all(color: context.border),
+                              : Border.all(
+                                  color: context.isDark
+                                      ? context.navyBorder
+                                      : context.border,
+                                ),
                         ),
                         child: Text(
                           '$count',
@@ -350,23 +430,34 @@ class _LeaveList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(leaves.length, (i) {
-        final isLast = i == leaves.length - 1;
-        // fades/slides index 0 is the stats card, tiles start at 1
-        return FadeTransition(
-          opacity: fades[i + 1],
-          child: SlideTransition(
-            position: slides[i + 1],
-            child: Column(
-              children: [
-                _LeaveTile(leave: leaves[i]),
-                if (!isLast) Divider(height: 1, thickness: 1, color: context.border),
-              ],
+    return GlassSurface(
+      radius: 14,
+      padding: EdgeInsets.zero,
+      child: Column(
+        children: List.generate(leaves.length, (i) {
+          final isLast = i == leaves.length - 1;
+          // fades/slides index 0 is the stats card, tiles start at 1
+          return FadeTransition(
+            opacity: fades[i + 1],
+            child: SlideTransition(
+              position: slides[i + 1],
+              child: Column(
+                children: [
+                  _LeaveTile(leave: leaves[i]),
+                  if (!isLast)
+                    Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: context.isDark
+                          ? context.navyBorder
+                          : context.border,
+                    ),
+                ],
+              ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }
@@ -392,7 +483,7 @@ class _LeaveTile extends StatelessWidget {
         ),
       ),
       child: Container(
-        color: context.surfaceElevated,
+        color: context.transparent,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
         child: Row(
           children: [
@@ -411,7 +502,11 @@ class _LeaveTile extends StatelessWidget {
                   const SizedBox(height: 5),
                   Row(
                     children: [
-                      Icon(Iconsax.calendar_1, size: 13, color: context.textSecondary),
+                      Icon(
+                        Iconsax.calendar_1,
+                        size: 13,
+                        color: context.textSecondary,
+                      ),
                       const SizedBox(width: 5),
                       Text(
                         'Date(s): ${leave.dateLabel}',
@@ -440,7 +535,11 @@ class _LeaveTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Icon(Icons.chevron_right_rounded, size: 18, color: context.textSecondary),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 18,
+                  color: context.textSecondary,
+                ),
               ],
             ),
           ],
@@ -459,14 +558,20 @@ class _EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.surfaceElevated,
+        color: context.isDark ? context.navyCard : context.surfaceElevated,
         borderRadius: .circular(14),
-        border: Border.all(color: context.border),
+        border: Border.all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
       ),
       padding: const EdgeInsets.symmetric(vertical: 48),
       child: Column(
         children: [
-          Icon(Iconsax.calendar_remove, size: 40, color: context.border),
+          Icon(
+            Iconsax.calendar_remove,
+            size: 40,
+            color: context.textSecondary.withValues(alpha: 0.5),
+          ),
           const SizedBox(height: 12),
           Text(
             'No leave requests this month',

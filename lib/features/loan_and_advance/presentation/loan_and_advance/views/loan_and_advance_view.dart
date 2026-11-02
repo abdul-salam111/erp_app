@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../../core/constants/const_exports.dart';
@@ -28,6 +29,10 @@ class _LoanAndAdvanceBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final heroColor = context.isDark
+        ? AppColors.navyHeaderDark
+        : context.primary;
+
     return BlocListener<LoanAndAdvanceBloc, LoanAndAdvanceState>(
       listener: (context, state) {
         if (state.apiStatus == ApiStatus.SUCCESS) {
@@ -37,27 +42,76 @@ class _LoanAndAdvanceBody extends StatelessWidget {
           AppToastsUtils.showErrorTop(context, state.message.toString());
         }
       },
-      child: Scaffold(
-        appBar: const CustomAppBar(title: 'Loans & Advances'),
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: context.pagePadding.copyWith(top: 12, bottom: 15),
-            child: CustomButton(
-              text: 'Loan Request',
-              onPressed: () => context.pushNamed(RouteNames.apply_loan),
-              icon: Icons.add_rounded,
-              iconSize: 18,
-              isOutlined: true,
-              radius: 12,
-              elevation: 0,
-              fontsize: 14,
-              size: const Size(double.infinity, 48),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarBrightness: .dark,
+          statusBarIconBrightness: .light,
+        ),
+        child: Scaffold(
+          backgroundColor: heroColor,
+          bottomNavigationBar: ColoredBox(
+            color: context.background,
+            child: SafeArea(
+              child: Padding(
+                padding: context.pagePadding.copyWith(top: 12, bottom: 15),
+                child: CustomButton(
+                  text: 'Loan Request',
+                  onPressed: () => context.pushNamed(RouteNames.apply_loan),
+                  icon: Icons.add_rounded,
+                  iconSize: 18,
+                  isOutlined: true,
+                  radius: 12,
+                  elevation: 0,
+                  fontsize: 14,
+                  size: const Size(double.infinity, 48),
+                ),
+              ),
             ),
           ),
-        ),
-        body: SingleChildScrollView(
-          padding: context.pagePadding,
-          child: const _LoanTable(),
+          body: Column(
+            children: [
+              // ── Hero header — back button + title on the brand color ──
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 8, 16, 16),
+                  child: Row(
+                    children: [
+                      const GlassBackButton(),
+                      Expanded(
+                        child: Text(
+                          'Loans & Advances',
+                          textAlign: .center,
+                          style: context.titleLarge.copyWith(
+                            color: AppColors.white,
+                            fontWeight: .w700,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 46),
+                    ],
+                  ),
+                ),
+              ),
+              // ── Rounded sheet — rest of the page rises over the header ──
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: context.background,
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(28),
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    padding: context.pagePadding.copyWith(top: 16, bottom: 24),
+                    child: const _LoanTable(),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -96,20 +150,18 @@ class _LoanContentState extends State<_LoanContent>
     final count = widget.records.length;
     _fades = [
       _fade(0.00, 0.45),
-      for (int i = 0; i < count; i++)
-        _fade(0.10 + i * 0.07, 0.55 + i * 0.07),
+      for (int i = 0; i < count; i++) _fade(0.10 + i * 0.07, 0.55 + i * 0.07),
     ];
     _slides = [
       _slide(0.00, 0.45),
-      for (int i = 0; i < count; i++)
-        _slide(0.10 + i * 0.07, 0.55 + i * 0.07),
+      for (int i = 0; i < count; i++) _slide(0.10 + i * 0.07, 0.55 + i * 0.07),
     ];
   }
 
   Animation<double> _fade(double start, double end) => CurvedAnimation(
-        parent: _ctrl,
-        curve: Interval(start, end, curve: Curves.easeOut),
-      );
+    parent: _ctrl,
+    curve: Interval(start, end, curve: Curves.easeOut),
+  );
 
   Animation<Offset> _slide(double start, double end) =>
       Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
@@ -149,17 +201,22 @@ class _LoanContentState extends State<_LoanContent>
   @override
   Widget build(BuildContext context) {
     return Container(
+      clipBehavior: .antiAlias,
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.isDark ? context.navyCard : context.surfaceElevated,
         borderRadius: .circular(12),
-        border: .all(color: context.border),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.shadow,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        border: .all(
+          color: context.isDark ? context.navyBorder : context.border,
+        ),
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.shadow,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: .start,
@@ -168,20 +225,7 @@ class _LoanContentState extends State<_LoanContent>
             opacity: _fades[0],
             child: SlideTransition(
               position: _slides[0],
-              child: Column(
-                crossAxisAlignment: .start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: Text(
-                      'Loan & advance history',
-                      style: context.titleSmall.copyWith(fontWeight: .w600),
-                    ),
-                  ),
-                  const Divider(height: 1, thickness: 1),
-                  const _TableHeader(),
-                ],
-              ),
+              child: const _TableHeader(),
             ),
           ),
           ...List.generate(widget.records.length, (i) {
@@ -189,7 +233,11 @@ class _LoanContentState extends State<_LoanContent>
               opacity: _fades[i + 1],
               child: SlideTransition(
                 position: _slides[i + 1],
-                child: _TableRow(record: widget.records[i], isAlt: i.isOdd),
+                child: _TableRow(
+                  record: widget.records[i],
+                  isAlt: i.isOdd,
+                  isLast: i == widget.records.length - 1,
+                ),
               ),
             );
           }),
@@ -205,7 +253,7 @@ class _TableHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.surfaceHeader,
+      color: context.isDark ? context.navyIconBg : context.surfaceHeader,
       padding: const .symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
@@ -250,13 +298,25 @@ class _TableHeader extends StatelessWidget {
 class _TableRow extends StatelessWidget {
   final LoanRecord record;
   final bool isAlt;
+  final bool isLast;
 
-  const _TableRow({required this.record, required this.isAlt});
+  const _TableRow({
+    required this.record,
+    required this.isAlt,
+    required this.isLast,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isAlt ? context.tableRowAlt : context.surfaceElevated,
+      decoration: BoxDecoration(
+        color: context.isDark
+            ? context.transparent
+            : (isAlt ? context.tableRowAlt : context.surfaceElevated),
+        border: context.isDark && !isLast
+            ? Border(bottom: BorderSide(color: context.navyBorder))
+            : null,
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Row(
         children: [
@@ -332,7 +392,7 @@ class _StatusBadge extends StatelessWidget {
       child: Text(
         status.label,
         style: context.labelSmall.copyWith(
-          color: status.color,
+          color: status.textColor(context),
           fontWeight: .w600,
           fontSize: 11,
         ),
@@ -352,7 +412,7 @@ class _LoanDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.white,
+        color: context.isDark ? context.navyCard : context.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
@@ -366,7 +426,9 @@ class _LoanDetailSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: context.border,
+                color: context.isDark
+                    ? AppColors.white.withValues(alpha: 0.18)
+                    : context.border,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -411,14 +473,14 @@ class _LoanDetailSheet extends StatelessWidget {
               _AmountCard(
                 label: 'Total Paid',
                 amount: record.totalPaid,
-                color: AppColors.creditGreen,
+                color: context.creditColor,
               ),
               const SizedBox(width: 10),
               _AmountCard(
                 label: 'Remaining',
                 amount: record.remaining,
                 color: record.status == LoanStatus.overdue
-                    ? AppColors.debitRed
+                    ? context.debitColor
                     : context.textSecondary,
               ),
             ],
@@ -436,11 +498,13 @@ class _LoanDetailSheet extends StatelessWidget {
             child: LinearProgressIndicator(
               value: record.repaidFraction,
               minHeight: 10,
-              backgroundColor: context.divider,
+              backgroundColor: context.isDark
+                  ? AppColors.white.withValues(alpha: 0.12)
+                  : context.divider,
               valueColor: AlwaysStoppedAnimation(
                 record.status == LoanStatus.overdue
-                    ? AppColors.debitRed
-                    : AppColors.creditGreen,
+                    ? context.debitColor
+                    : context.creditColor,
               ),
             ),
           ),
@@ -450,11 +514,15 @@ class _LoanDetailSheet extends StatelessWidget {
             children: [
               Text(
                 '${(record.repaidFraction * 100).toStringAsFixed(0)}% repaid',
-                style: context.labelSmall.copyWith(color: context.textSecondary),
+                style: context.labelSmall.copyWith(
+                  color: context.textSecondary,
+                ),
               ),
               Text(
                 '${record.tenureMonths} months tenure',
-                style: context.labelSmall.copyWith(color: context.textSecondary),
+                style: context.labelSmall.copyWith(
+                  color: context.textSecondary,
+                ),
               ),
             ],
           ),
@@ -510,9 +578,11 @@ class _AmountCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
+          color: color.withValues(alpha: context.isDark ? 0.14 : 0.08),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
+          border: Border.all(
+            color: color.withValues(alpha: context.isDark ? 0.4 : 0.2),
+          ),
         ),
         child: Column(
           crossAxisAlignment: .start,
@@ -555,10 +625,16 @@ class _DetailRow extends StatelessWidget {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: context.accentBlue.withValues(alpha: 0.08),
+            color: context.isDark
+                ? context.navyIconBg
+                : context.accentBlue.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, size: 18, color: context.accentBlue),
+          child: Icon(
+            icon,
+            size: 18,
+            color: context.isDark ? context.navyIconColor : context.accentBlue,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -567,10 +643,7 @@ class _DetailRow extends StatelessWidget {
             style: context.bodySmall.copyWith(color: context.textSecondary),
           ),
         ),
-        Text(
-          value,
-          style: context.bodySmall.copyWith(fontWeight: .w600),
-        ),
+        Text(value, style: context.bodySmall.copyWith(fontWeight: .w600)),
       ],
     );
   }
