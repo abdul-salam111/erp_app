@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/services/current_user.dart';
 import '../../../../core/theme/colors.dart';
@@ -736,23 +735,17 @@ class _MonthPill extends StatelessWidget {
       ),
     );
 
-    if (context.isDark) {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: GlassContainer(
-          shape: const LiquidRoundedSuperellipse(borderRadius: 20),
-          child: row,
-        ),
-      );
-    }
+    final isDark = context.isDark;
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: context.accentBlue.withValues(alpha: 0.07),
+          color: context.accentBlue.withValues(alpha: isDark ? 0.10 : 0.07),
           borderRadius: .circular(20),
-          border: Border.all(color: context.accentBlue.withValues(alpha: 0.25)),
+          border: Border.all(
+            color: context.accentBlue.withValues(alpha: isDark ? 0.22 : 0.25),
+          ),
         ),
         child: row,
       ),

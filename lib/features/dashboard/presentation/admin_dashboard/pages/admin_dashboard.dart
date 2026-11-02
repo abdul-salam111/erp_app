@@ -501,13 +501,16 @@ class _AdminHeaderChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = AppColors.white.withValues(alpha: 0.9);
+    final isDark = context.isDark;
+    final iconColor = AppColors.white.withValues(alpha: isDark ? 0.75 : 0.9);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: AppColors.white.withValues(alpha: 0.16),
+        color: AppColors.white.withValues(alpha: isDark ? 0.06 : 0.16),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.white.withValues(alpha: 0.25)),
+        border: Border.all(
+          color: AppColors.white.withValues(alpha: isDark ? 0.10 : 0.25),
+        ),
       ),
       child: Row(
         mainAxisSize: .min,
@@ -520,7 +523,7 @@ class _AdminHeaderChip extends StatelessWidget {
             child: Text(
               label,
               style: context.labelSmall.copyWith(
-                color: AppColors.white,
+                color: AppColors.white.withValues(alpha: isDark ? 0.92 : 1),
                 fontWeight: .w600,
                 fontSize: 13,
               ),
@@ -532,7 +535,7 @@ class _AdminHeaderChip extends StatelessWidget {
             const SizedBox(width: 2),
             Icon(
               Icons.keyboard_arrow_down_rounded,
-              color: AppColors.white.withValues(alpha: 0.85),
+              color: AppColors.white.withValues(alpha: isDark ? 0.7 : 0.85),
               size: 15,
             ),
           ],
