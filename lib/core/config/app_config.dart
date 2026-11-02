@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -17,6 +18,13 @@ class AppConfig {
 
   AppEnvironment _environment = AppEnvironment.production;
   AppEnvironment get environment => _environment;
+  bool get isStaging => _environment == AppEnvironment.staging;
+
+  // Lets any widget react live to an environment switch (e.g. a staging
+  // banner) without needing to be the screen that triggered the switch.
+  final ValueNotifier<AppEnvironment> environmentNotifier = ValueNotifier(
+    AppEnvironment.production,
+  );
 
   String _stagingUrl = _defaultStagingUrl;
   String _productionUrl = _defaultProductionUrl;
@@ -29,6 +37,7 @@ class AppConfig {
     _environment = saved == AppEnvironment.staging.name
         ? AppEnvironment.staging
         : AppEnvironment.production;
+    environmentNotifier.value = _environment;
 
     final rc = FirebaseRemoteConfig.instance;
     await rc.setDefaults({
@@ -36,7 +45,7 @@ class AppConfig {
       _rcKeyProductionUrl: _defaultProductionUrl,
     });
     try {
-      
+
       await rc.fetchAndActivate();
     } catch (_) {}
 
@@ -51,6 +60,7 @@ class AppConfig {
     _environment = _environment == AppEnvironment.staging
         ? AppEnvironment.production
         : AppEnvironment.staging;
+    environmentNotifier.value = _environment;
     await _storage.write(key: _envStorageKey, value: _environment.name);
   }
 }

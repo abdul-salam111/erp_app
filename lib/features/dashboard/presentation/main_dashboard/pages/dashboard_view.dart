@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/constants/app_enums.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/services/current_user.dart';
+import '../../../../../core/widgets/widgets.dart';
 import '../../../../doc_upload_request/doc_upload_request_exports.dart';
 import '../../../dashboard_exports.dart';
 
@@ -44,14 +45,16 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
     if (_adminBloc != null) {
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: _adminBloc!),
-          BlocProvider.value(value: _docUploadRequestBloc!),
-        ],
-        child: const AdminDashboard(),
+      return StagingBannerScope(
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: _adminBloc!),
+            BlocProvider.value(value: _docUploadRequestBloc!),
+          ],
+          child: const AdminDashboard(),
+        ),
       );
     }
-    return const EmployeeDashboard();
+    return const StagingBannerScope(child: EmployeeDashboard());
   }
 }

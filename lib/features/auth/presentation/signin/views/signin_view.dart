@@ -225,7 +225,9 @@ class _LoginCardState extends State<_LoginCard> {
                 'Sign in to your account',
                 style: TextStyle(fontSize: 13, color: context.textSecondary),
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 12),
+              const StagingEnvironmentNotice(),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(child: Container(height: 1, color: context.divider)),
