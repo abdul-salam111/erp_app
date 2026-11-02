@@ -466,14 +466,9 @@ class _EmptyItemsHint extends StatelessWidget {
               ),
             ),
             style: OutlinedButton.styleFrom(
-              side: BorderSide(
-                color: context.primary.withValues(alpha: 0.45),
-              ),
+              side: BorderSide(color: context.primary.withValues(alpha: 0.45)),
               shape: RoundedRectangleBorder(borderRadius: .circular(8)),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
           ),
         ],
@@ -521,7 +516,7 @@ class _OrderRemarksSection extends StatelessWidget {
             color: context.isDark ? context.navyBorder : context.border,
           ),
           Container(
-            color: context.isDark ? AppColors.navyIconBgDark : AppColors.white,
+            color: context.isDark ? context.transparent : AppColors.white,
             padding: .all(12),
             child: CustomTextFormField(
               controller: controller,
@@ -529,8 +524,10 @@ class _OrderRemarksSection extends StatelessWidget {
               maxLines: 6,
               fieldHeight: null,
               contentPadding: .all(12),
-              fillColor: context.isDark ? context.navyIconBg : AppColors.white,
-              borderColor: Colors.transparent,
+              fillColor: context.isDark ? context.navyCard : AppColors.white,
+              borderColor: context.isDark
+                  ? context.navyBorder
+                  : Colors.transparent,
             ),
           ),
         ],
@@ -589,7 +586,7 @@ class _OrderSummarySection extends StatelessWidget {
             color: context.isDark ? context.navyBorder : context.border,
           ),
           Container(
-            color: context.isDark ? AppColors.navyIconBgDark : AppColors.white,
+            color: context.isDark ? context.transparent : AppColors.white,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Column(
               children: [
@@ -601,7 +598,11 @@ class _OrderSummarySection extends StatelessWidget {
                 _SummaryRow(
                   label: 'Discounts',
                   value: totalDiscount.asPrice,
-                  valueColor: totalDiscount > 0 ? Colors.green.shade600 : null,
+                  valueColor: totalDiscount > 0
+                      ? (context.isDark
+                            ? context.creditColor
+                            : Colors.green.shade600)
+                      : null,
                 ),
                 heightBox(8),
                 _SummaryRow(label: 'Sub Total', value: subTotal.asPrice),
@@ -614,7 +615,7 @@ class _OrderSummarySection extends StatelessWidget {
             color: context.isDark ? context.navyBorder : context.border,
           ),
           Container(
-            color: context.isDark ? AppColors.navyIconBgDark : AppColors.white,
+            color: context.isDark ? context.transparent : AppColors.white,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: _SummaryRow(label: 'Total Tax', value: totalTax.asPrice),
           ),
@@ -627,7 +628,7 @@ class _OrderSummarySection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
               color: context.isDark
-                  ? AppColors.navyIconBgDark
+                  ? AppColors.surfaceElevatedDark
                   : context.grey50,
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(8),

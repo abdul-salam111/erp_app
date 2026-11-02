@@ -187,7 +187,7 @@ class _ItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.isDark ? AppColors.navyIconBgDark : AppColors.white,
+      color: context.isDark ? context.transparent : AppColors.white,
       child: InkWell(
         onTap: () => _openDetails(context),
         child: Padding(
@@ -431,9 +431,7 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                       children: [
                         Text(
                           _isEdit ? 'Edit Row' : 'Add Row',
-                          style: context.titleSmall.copyWith(
-                            fontWeight: .w700,
-                          ),
+                          style: context.titleSmall.copyWith(fontWeight: .w700),
                         ),
                         const SizedBox(height: 2),
                         Text(
@@ -452,11 +450,7 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                         Navigator.of(context).pop();
                         widget.onDelete!();
                       },
-                      icon: Icon(
-                        Iconsax.trash,
-                        size: 20,
-                        color: context.error,
-                      ),
+                      icon: Icon(Iconsax.trash, size: 20, color: context.error),
                       splashRadius: 20,
                       tooltip: 'Remove Row',
                     ),
@@ -592,10 +586,7 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                   _TotalCard(total: _total),
 
                   const SizedBox(height: 22),
-                  const _SectionHeader(
-                    icon: Iconsax.note_text,
-                    label: 'Notes',
-                  ),
+                  const _SectionHeader(icon: Iconsax.note_text, label: 'Notes'),
                   const SizedBox(height: 10),
                   _SheetField(
                     label: 'Remarks',
@@ -745,11 +736,7 @@ class _TotalCard extends StatelessWidget {
               color: context.accentBlue.withValues(alpha: 0.18),
               shape: .circle,
             ),
-            child: Icon(
-              Iconsax.wallet_3,
-              size: 16,
-              color: context.accentBlue,
-            ),
+            child: Icon(Iconsax.wallet_3, size: 16, color: context.accentBlue),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -827,8 +814,8 @@ class _SheetField extends StatelessWidget {
           onChanged: onChanged,
           maxLines: maxLines ?? 1,
           contentPadding: contentPadding,
-          fillColor: context.isDark ? AppColors.navyIconBgDark : null,
-          borderColor: Colors.transparent,
+          fillColor: context.isDark ? context.navyCard : null,
+          borderColor: context.isDark ? context.navyBorder : Colors.transparent,
         ),
       ],
     );
@@ -868,10 +855,11 @@ class _ReadOnlyField extends StatelessWidget {
           height: 44,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: context.isDark
-                ? AppColors.navyIconBgDark.withValues(alpha: 0.55)
-                : context.surface,
+            color: context.isDark ? context.navyCard : context.surface,
             borderRadius: .circular(8),
+            border: Border.all(
+              color: context.isDark ? context.navyBorder : context.transparent,
+            ),
           ),
           alignment: .centerLeft,
           child: Text(

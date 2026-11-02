@@ -239,8 +239,10 @@ class _TopFields extends StatelessWidget {
                 readOnly: true,
                 onTap: onDateTap,
                 labelFontSize: 12,
-                fillColor: context.isDark ? context.navyIconBg : null,
-                borderColor: Colors.transparent,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
             const SizedBox(width: 10),
@@ -251,8 +253,10 @@ class _TopFields extends StatelessWidget {
                 fieldHeight: 37,
                 hintText: 'Ref Doc Nbr',
                 labelFontSize: 12,
-                fillColor: context.isDark ? context.navyIconBg : null,
-                borderColor: Colors.transparent,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
           ],
@@ -271,7 +275,10 @@ class _TopFields extends StatelessWidget {
                 onChanged: (value) => onSupplierChanged?.call(value),
                 fieldHeight: 40,
                 isShowIcon: false,
-                borderColor: Colors.transparent,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
             const SizedBox(width: 10),
@@ -284,7 +291,10 @@ class _TopFields extends StatelessWidget {
                 onChanged: (value) => onBrokerChanged?.call(value),
                 fieldHeight: 40,
                 isShowIcon: false,
-                borderColor: Colors.transparent,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
           ],
@@ -332,7 +342,10 @@ class _ExtraFields extends StatelessWidget {
                 onChanged: (value) {},
                 fieldHeight: 40,
                 isShowIcon: false,
-                borderColor: Colors.transparent,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
             const SizedBox(width: 10),
@@ -345,7 +358,10 @@ class _ExtraFields extends StatelessWidget {
                 onChanged: (value) {},
                 fieldHeight: 40,
                 isShowIcon: false,
-                borderColor: Colors.transparent,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
           ],
@@ -363,7 +379,10 @@ class _ExtraFields extends StatelessWidget {
                 onChanged: (value) {},
                 fieldHeight: 40,
                 isShowIcon: false,
-                borderColor: Colors.transparent,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
             const SizedBox(width: 10),
@@ -376,7 +395,10 @@ class _ExtraFields extends StatelessWidget {
                 onChanged: (value) {},
                 fieldHeight: 40,
                 isShowIcon: false,
-                borderColor: Colors.transparent,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
           ],
@@ -390,6 +412,8 @@ class _ExtraFields extends StatelessWidget {
           onChanged: (value) {},
           fieldHeight: 40,
           isShowIcon: false,
+          fillColor: context.isDark ? context.navyCard : null,
+          borderColor: context.isDark ? context.navyBorder : Colors.transparent,
         ),
         heightBox(10),
         Row(
@@ -402,7 +426,10 @@ class _ExtraFields extends StatelessWidget {
                 fieldHeight: 37,
                 hintText: AppConstants.currencyRateLabel,
                 labelFontSize: 12,
-                fillColor: context.isDark ? context.navyIconBg : null,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
             const SizedBox(width: 10),
@@ -414,7 +441,10 @@ class _ExtraFields extends StatelessWidget {
                 fieldHeight: 37,
                 hintText: AppConstants.currencyRate,
                 labelFontSize: 12,
-                fillColor: context.isDark ? context.navyIconBg : null,
+                fillColor: context.isDark ? context.navyCard : null,
+                borderColor: context.isDark
+                    ? context.navyBorder
+                    : Colors.transparent,
               ),
             ),
           ],
@@ -479,9 +509,7 @@ class _MoreFieldsSheet extends StatelessWidget {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: context.isDark
-                    ? context.navyBorder
-                    : AppColors.grey300,
+                color: context.isDark ? context.navyBorder : AppColors.grey300,
                 borderRadius: .circular(2),
               ),
             ),

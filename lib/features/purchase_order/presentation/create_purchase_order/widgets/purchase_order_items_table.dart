@@ -74,7 +74,9 @@ class PurchaseOrderItemsTable extends StatelessWidget {
                   index: e.key,
                   item: e.value,
                   onDelete: onDelete != null ? () => onDelete!(e.key) : null,
-                  onEdit: onEdit != null ? (updated) => onEdit!(e.key, updated) : null,
+                  onEdit: onEdit != null
+                      ? (updated) => onEdit!(e.key, updated)
+                      : null,
                 ),
                 Divider(height: 1, thickness: 1, color: dividerColor),
               ],
@@ -166,7 +168,12 @@ class _ItemRow extends StatelessWidget {
   final PurchaseOrderRowItem item;
   final VoidCallback? onDelete;
   final void Function(PurchaseOrderRowItem updated)? onEdit;
-  const _ItemRow({required this.index, required this.item, this.onDelete, this.onEdit});
+  const _ItemRow({
+    required this.index,
+    required this.item,
+    this.onDelete,
+    this.onEdit,
+  });
 
   Future<void> _openDetails(BuildContext context) async {
     final updated = await showAddRowBottomSheet(
@@ -180,7 +187,7 @@ class _ItemRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: context.isDark ? AppColors.navyIconBgDark : AppColors.white,
+      color: context.isDark ? context.transparent : AppColors.white,
       child: InkWell(
         onTap: () => _openDetails(context),
         child: Padding(
@@ -191,65 +198,65 @@ class _ItemRow extends StatelessWidget {
                 width: 22,
                 child: Text(
                   '${index + 1}',
-                style: context.labelSmall.copyWith(
+                  style: context.labelSmall.copyWith(
+                    color: context.textSecondary,
+                    fontSize: 11,
+                    fontWeight: .w600,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Text(
+                  item.item,
+                  style: context.bodySmall.copyWith(
+                    fontWeight: .w600,
+                    fontSize: 12,
+                    color: context.textPrimary,
+                  ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  item.mode,
+                  style: context.bodySmall.copyWith(
+                    color: context.textPrimary,
+                    fontWeight: .w600,
+                    fontSize: 12,
+                  ),
+                  textAlign: .center,
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  item.contractQty.toStringAsFixed(2),
+                  style: context.bodySmall.copyWith(
+                    fontWeight: .w600,
+                    fontSize: 12,
+                    color: context.textPrimary,
+                  ),
+                  textAlign: .end,
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
+              ),
+              SizedBox(
+                width: 20,
+                child: Icon(
+                  Icons.chevron_right_rounded,
+                  size: 18,
                   color: context.textSecondary,
-                  fontSize: 11,
-                  fontWeight: .w600,
                 ),
               ),
-            ),
-            Expanded(
-              flex: 5,
-              child: Text(
-                item.item,
-                style: context.bodySmall.copyWith(
-                  fontWeight: .w600,
-                  fontSize: 12,
-                  color: context.textPrimary,
-                ),
-                maxLines: 1,
-                overflow: .ellipsis,
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Text(
-                item.mode,
-                style: context.bodySmall.copyWith(
-                  color: context.textPrimary,
-                  fontWeight: .w600,
-                  fontSize: 12,
-                ),
-                textAlign: .center,
-                maxLines: 1,
-                overflow: .ellipsis,
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Text(
-                item.contractQty.toStringAsFixed(2),
-                style: context.bodySmall.copyWith(
-                  fontWeight: .w600,
-                  fontSize: 12,
-                  color: context.textPrimary,
-                ),
-                textAlign: .end,
-                maxLines: 1,
-                overflow: .ellipsis,
-              ),
-            ),
-            SizedBox(
-              width: 20,
-              child: Icon(
-                Icons.chevron_right_rounded,
-                size: 18,
-                color: context.textSecondary,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -781,11 +788,17 @@ class _AddRowSheetState extends State<_AddRowSheet> {
     if (i != null) {
       _itemController.text = i.item;
       _modeController.text = i.mode;
-      _qtyController.text = i.contractQty == 0 ? '' : i.contractQty.toStringAsFixed(2);
+      _qtyController.text = i.contractQty == 0
+          ? ''
+          : i.contractQty.toStringAsFixed(2);
       _priceController.text = i.price == 0 ? '' : i.price.toStringAsFixed(2);
       _rateUnitController.text = i.rateUnit;
-      _discPercentController.text = i.discPercent == 0 ? '' : i.discPercent.toStringAsFixed(2);
-      _vatPercentController.text = i.vatPercent == 0 ? '' : i.vatPercent.toStringAsFixed(2);
+      _discPercentController.text = i.discPercent == 0
+          ? ''
+          : i.discPercent.toStringAsFixed(2);
+      _vatPercentController.text = i.vatPercent == 0
+          ? ''
+          : i.vatPercent.toStringAsFixed(2);
       _remarksController.text = i.remarks ?? '';
       _discValue = i.discValue;
       _vatAmount = i.vatAmount;
@@ -897,9 +910,7 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                       children: [
                         Text(
                           _isEdit ? 'Edit Row' : 'Add Row',
-                          style: context.titleSmall.copyWith(
-                            fontWeight: .w700,
-                          ),
+                          style: context.titleSmall.copyWith(fontWeight: .w700),
                         ),
                         const SizedBox(height: 2),
                         Text(
@@ -918,11 +929,7 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                         Navigator.of(context).pop();
                         widget.onDelete!();
                       },
-                      icon: Icon(
-                        Iconsax.trash,
-                        size: 20,
-                        color: context.error,
-                      ),
+                      icon: Icon(Iconsax.trash, size: 20, color: context.error),
                       splashRadius: 20,
                       tooltip: 'Remove Row',
                     ),
@@ -1058,10 +1065,7 @@ class _AddRowSheetState extends State<_AddRowSheet> {
                   _TotalCard(total: _total),
 
                   const SizedBox(height: 22),
-                  const _SectionHeader(
-                    icon: Iconsax.note_text,
-                    label: 'Notes',
-                  ),
+                  const _SectionHeader(icon: Iconsax.note_text, label: 'Notes'),
                   const SizedBox(height: 10),
                   _SheetField(
                     label: 'Remarks',
@@ -1211,11 +1215,7 @@ class _TotalCard extends StatelessWidget {
               color: context.primary.withValues(alpha: 0.18),
               shape: .circle,
             ),
-            child: Icon(
-              Iconsax.wallet_3,
-              size: 16,
-              color: context.accentBlue,
-            ),
+            child: Icon(Iconsax.wallet_3, size: 16, color: context.accentBlue),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -1293,8 +1293,8 @@ class _SheetField extends StatelessWidget {
           onChanged: onChanged,
           maxLines: maxLines ?? 1,
           contentPadding: contentPadding,
-          fillColor: context.isDark ? AppColors.navyIconBgDark : null,
-          borderColor: Colors.transparent,
+          fillColor: context.isDark ? context.navyCard : null,
+          borderColor: context.isDark ? context.navyBorder : Colors.transparent,
         ),
       ],
     );
@@ -1334,10 +1334,11 @@ class _ReadOnlyField extends StatelessWidget {
           height: 44,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
-            color: context.isDark
-                ? AppColors.navyIconBgDark.withValues(alpha: 0.55)
-                : context.surface,
+            color: context.isDark ? context.navyCard : context.surface,
             borderRadius: .circular(8),
+            border: Border.all(
+              color: context.isDark ? context.navyBorder : context.transparent,
+            ),
           ),
           alignment: .centerLeft,
           child: Text(
