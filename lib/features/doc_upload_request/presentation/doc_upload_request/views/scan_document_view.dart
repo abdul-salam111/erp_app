@@ -26,8 +26,41 @@ class ScanDocumentView extends StatelessWidget {
   }
 }
 
-class _ScanDocumentBody extends StatelessWidget {
+class _ScanDocumentBody extends StatefulWidget {
   const _ScanDocumentBody();
+
+  @override
+  State<_ScanDocumentBody> createState() => _ScanDocumentBodyState();
+}
+
+class _ScanDocumentBodyState extends State<_ScanDocumentBody>
+    with SingleTickerProviderStateMixin {
+  late final _tabController = TabController(length: 2, vsync: this);
+  bool _showCompleted = false;
+  int _lastIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController.addListener(_onTabChanged);
+  }
+
+  void _onTabChanged() {
+    if (_tabController.index == _lastIndex) return;
+    _lastIndex = _tabController.index;
+    final completed = _lastIndex == 1;
+    setState(() => _showCompleted = completed);
+    context.read<DocUploadRequestBloc>().add(
+      DocUploadRequestsFetched(flgCompleted: completed),
+    );
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +85,11 @@ class _ScanDocumentBody extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: context.surface,
-        appBar: CustomAppBar(title: 'Documents'),
-        body: const PendingDocRequestsSection(),
+        appBar: CustomAppBar(
+          title: 'Documents',
+          bottom: DocRequestTabBar(controller: _tabController),
+        ),
+        body: PendingDocRequestsSection(showCompleted: _showCompleted),
       ),
     );
   }

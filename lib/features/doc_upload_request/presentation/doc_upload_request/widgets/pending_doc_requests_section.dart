@@ -9,7 +9,9 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../doc_upload_request_exports.dart';
 
 class PendingDocRequestsSection extends StatefulWidget {
-  const PendingDocRequestsSection({super.key});
+  final bool showCompleted;
+
+  const PendingDocRequestsSection({super.key, required this.showCompleted});
 
   @override
   State<PendingDocRequestsSection> createState() =>
@@ -18,7 +20,6 @@ class PendingDocRequestsSection extends StatefulWidget {
 
 class _PendingDocRequestsSectionState extends State<PendingDocRequestsSection> {
   int? _pickingId;
-  bool _showCompleted = false;
 
   @override
   void initState() {
@@ -34,18 +35,10 @@ class _PendingDocRequestsSectionState extends State<PendingDocRequestsSection> {
     }
   }
 
-  void _switchTab(bool completed) {
-    if (_showCompleted == completed) return;
-    setState(() => _showCompleted = completed);
-    context.read<DocUploadRequestBloc>().add(
-      DocUploadRequestsFetched(flgCompleted: completed),
-    );
-  }
-
   Future<void> _onRefresh() {
     final bloc = context.read<DocUploadRequestBloc>();
     final done = bloc.stream.firstWhere((s) => s.apiStatus != .LOADING);
-    bloc.add(DocUploadRequestsFetched(flgCompleted: _showCompleted));
+    bloc.add(DocUploadRequestsFetched(flgCompleted: widget.showCompleted));
     return done;
   }
 
@@ -116,157 +109,141 @@ class _PendingDocRequestsSectionState extends State<PendingDocRequestsSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: .start,
-      children: [
-        Padding(
-          padding: context.pagePadding.copyWith(bottom: 4),
-          child: _RequestTabBar(
-            showCompleted: _showCompleted,
-            onChanged: _switchTab,
-          ),
-        ),
-        SizedBox(height: context.gridSpacing),
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: _onRefresh,
-            color: context.accentBlue,
-            child: BlocBuilder<DocUploadRequestBloc, DocUploadRequestState>(
-              builder: (context, state) {
-                if (state.apiStatus == .LOADING && state.requests.isEmpty) {
-                  return _FillerPanel(
-                    child: Center(
-                      child: Row(
-                        mainAxisSize: .min,
-                        children: [
-                          SizedBox(
-                            width: 14,
-                            height: 14,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: context.accentBlue,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            'Loading requests…',
-                            style: context.bodySmall.copyWith(
-                              color: context.textSecondary,
-                            ),
-                          ),
-                        ],
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      color: context.accentBlue,
+      child: BlocBuilder<DocUploadRequestBloc, DocUploadRequestState>(
+        builder: (context, state) {
+          if (state.apiStatus == .LOADING && state.requests.isEmpty) {
+            return _FillerPanel(
+              child: Center(
+                child: Row(
+                  mainAxisSize: .min,
+                  children: [
+                    SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: context.accentBlue,
                       ),
                     ),
-                  );
-                }
+                    const SizedBox(width: 10),
+                    Text(
+                      'Loading requests…',
+                      style: context.bodySmall.copyWith(
+                        color: context.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
 
-                if (state.apiStatus == .FAILURE && state.requests.isEmpty) {
-                  return _FillerPanel(
-                    child: Center(
-                      child: InkWell(
-                        onTap: () => context.read<DocUploadRequestBloc>().add(
-                          DocUploadRequestsFetched(
-                            flgCompleted: _showCompleted,
+          if (state.apiStatus == .FAILURE && state.requests.isEmpty) {
+            return _FillerPanel(
+              child: Center(
+                child: InkWell(
+                  onTap: () => context.read<DocUploadRequestBloc>().add(
+                    DocUploadRequestsFetched(
+                      flgCompleted: widget.showCompleted,
+                    ),
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisSize: .min,
+                      children: [
+                        Icon(
+                          Iconsax.warning_2,
+                          size: 16,
+                          color: context.textSecondary,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          "Couldn't load requests · Tap to retry",
+                          style: context.bodySmall.copyWith(
+                            color: context.textSecondary,
                           ),
                         ),
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Row(
-                            mainAxisSize: .min,
-                            children: [
-                              Icon(
-                                Iconsax.warning_2,
-                                size: 16,
-                                color: context.textSecondary,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+
+          if (state.requests.isEmpty) {
+            return _FillerPanel(
+              child: Center(
+                child: Column(
+                  mainAxisSize: .min,
+                  children: [
+                    Container(
+                      width: 88,
+                      height: 88,
+                      decoration: BoxDecoration(
+                        color: context.navyIconBg,
+                        shape: .circle,
+                      ),
+                      child: widget.showCompleted
+                          ? Icon(
+                              Iconsax.tick_circle,
+                              color: context.navyIconColor,
+                              size: 38,
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.all(22),
+                              child: Image.asset(
+                                AppIcons.documentIcon,
+                                color: context.navyIconColor,
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Couldn't load requests · Tap to retry",
-                                style: context.bodySmall.copyWith(
-                                  color: context.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      widget.showCompleted
+                          ? 'No completed requests'
+                          : 'No pending requests',
+                      style: context.titleMedium.copyWith(
+                        color: context.textPrimary,
+                        fontWeight: .w600,
                       ),
                     ),
-                  );
-                }
-
-                if (state.requests.isEmpty) {
-                  return _FillerPanel(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: .min,
-                        children: [
-                          Container(
-                            width: 88,
-                            height: 88,
-                            decoration: BoxDecoration(
-                              color: context.navyIconBg,
-                              shape: .circle,
-                            ),
-                            child: _showCompleted
-                                ? Icon(
-                                    Iconsax.tick_circle,
-                                    color: context.navyIconColor,
-                                    size: 38,
-                                  )
-                                : Padding(
-                                    padding: const EdgeInsets.all(22),
-                                    child: Image.asset(
-                                      AppIcons.documentIcon,
-                                      color: context.navyIconColor,
-                                    ),
-                                  ),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            _showCompleted
-                                ? 'No completed requests'
-                                : 'No pending requests',
-                            style: context.titleMedium.copyWith(
-                              color: context.textPrimary,
-                              fontWeight: .w600,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            _showCompleted
-                                ? 'Completed uploads will show up here'
-                                : "You're all caught up — nothing to upload",
-                            style: context.bodySmall.copyWith(
-                              color: context.textSecondary,
-                            ),
-                          ),
-                        ],
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.showCompleted
+                          ? 'Completed uploads will show up here'
+                          : "You're all caught up — nothing to upload",
+                      style: context.bodySmall.copyWith(
+                        color: context.textSecondary,
                       ),
                     ),
-                  );
-                }
+                  ],
+                ),
+              ),
+            );
+          }
 
-                return ListView.separated(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: context.pagePadding.copyWith(top: 0),
-                  itemCount: state.requests.length,
-                  separatorBuilder: (_, __) =>
-                      SizedBox(height: context.gridSpacing),
-                  itemBuilder: (context, index) {
-                    final request = state.requests[index];
-                    return _PendingRequestCard(
-                      request: request,
-                      isUploading: _pickingId == request.id,
-                      onUpload: () => _startUpload(request),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ),
-      ],
+          return ListView.separated(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: context.pagePadding,
+            itemCount: state.requests.length,
+            separatorBuilder: (_, __) => SizedBox(height: context.gridSpacing),
+            itemBuilder: (context, index) {
+              final request = state.requests[index];
+              return _PendingRequestCard(
+                request: request,
+                isUploading: _pickingId == request.id,
+                onUpload: () => _startUpload(request),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -282,92 +259,47 @@ class _FillerPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      slivers: [SliverFillRemaining(hasScrollBody: false, child: child)],
-    );
-  }
-}
-
-class _RequestTabBar extends StatelessWidget {
-  final bool showCompleted;
-  final ValueChanged<bool> onChanged;
-
-  const _RequestTabBar({required this.showCompleted, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: context.navyCard,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: context.navyBorder),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _TabChip(
-              label: 'Pending',
-              icon: Iconsax.timer_1,
-              selected: !showCompleted,
-              onTap: () => onChanged(false),
-            ),
-          ),
-          Expanded(
-            child: _TabChip(
-              label: 'Completed',
-              icon: Iconsax.tick_circle,
-              selected: showCompleted,
-              onTap: () => onChanged(true),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TabChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _TabChip({
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: selected ? context.accentBlue : AppColors.transparent,
-      borderRadius: BorderRadius.circular(8),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 9),
-          child: Row(
-            mainAxisAlignment: .center,
-            children: [
-              Icon(
-                icon,
-                size: 15,
-                color: selected ? context.white : context.textSecondary,
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: context.labelSmall.copyWith(
-                  color: selected ? context.white : context.textSecondary,
-                  fontWeight: .w700,
-                ),
-              ),
-            ],
-          ),
+      slivers: [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Padding(padding: context.pagePadding, child: child),
         ),
+      ],
+    );
+  }
+}
+
+/// Pending/Completed switcher for [CustomAppBar]'s `bottom` slot — same
+/// TabBar styling as [CreditDetailsAppBar]'s Home/A/C Statement tabs.
+class DocRequestTabBar extends StatelessWidget implements PreferredSizeWidget {
+  final TabController controller;
+
+  const DocRequestTabBar({super.key, required this.controller});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kTextTabBarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: context.isDark ? context.background : AppColors.primaryDark,
+      child: TabBar(
+        controller: controller,
+        indicatorColor: context.isDark ? context.white : context.primary,
+        indicatorWeight: 3,
+        indicatorSize: .tab,
+        labelColor: context.white,
+        unselectedLabelColor: context.white.withValues(alpha: 0.55),
+        labelStyle: context.bodySmall.copyWith(fontSize: 12, fontWeight: .w600),
+        unselectedLabelStyle: context.bodySmall.copyWith(
+          fontSize: 12,
+          fontWeight: .w400,
+        ),
+        dividerColor: context.transparent,
+        tabs: const [
+          Tab(text: 'Pending'),
+          Tab(text: 'Completed'),
+        ],
       ),
     );
   }

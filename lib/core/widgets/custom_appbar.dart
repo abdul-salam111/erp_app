@@ -11,12 +11,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
   final Widget? leading;
+  final PreferredSizeWidget? bottom;
 
   const CustomAppBar({
     super.key,
     required this.title,
     this.actions,
     this.leading,
+    this.bottom,
   });
 
   static String _orgInitials(String name) {
@@ -49,6 +51,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       backgroundColor: context.isDark ? AppColors.navyHeaderDark : context.primary,
+      bottom: bottom,
       actions: [
         if (currentUser.isAdmin && initials.isNotEmpty)
           Padding(
@@ -64,7 +67,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(
+    kToolbarHeight + (bottom?.preferredSize.height ?? 0),
+  );
 }
 
 class GlassBackButton extends StatelessWidget {
