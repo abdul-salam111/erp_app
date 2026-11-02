@@ -143,16 +143,20 @@ class _SearchBar extends StatelessWidget {
       child: Container(
         height: 42,
         decoration: BoxDecoration(
-          color: context.surfaceElevated,
+          color: context.navyCard,
           borderRadius: .circular(8),
-          border: Border.all(color: context.border),
-          boxShadow: [
-            BoxShadow(
-              color: context.shadow,
-              blurRadius: 6,
-              offset: const Offset(0, 2),
-            ),
-          ],
+          border: Border.all(
+            color: context.isDark ? context.navyBorder : context.border,
+          ),
+          boxShadow: context.isDark
+              ? null
+              : [
+                  BoxShadow(
+                    color: context.shadow,
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
         ),
         child: TextField(
           controller: controller,
@@ -161,6 +165,7 @@ class _SearchBar extends StatelessWidget {
           style: context.bodySmall.copyWith(fontSize: 13),
           decoration: InputDecoration(
             filled: false,
+            fillColor: Colors.transparent,
             hintText: AppConstants.searchByDocRefNo,
             hintStyle: context.bodySmall.copyWith(
               color: context.textSecondary,
@@ -172,6 +177,11 @@ class _SearchBar extends StatelessWidget {
               color: context.textSecondary,
             ),
             border: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            focusedErrorBorder: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 12),
             isDense: true,
           ),

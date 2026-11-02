@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 import '../../../../core/constants/const_exports.dart';
 import '../../../../core/services/current_user.dart';
+import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/theme_utils.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -172,21 +174,37 @@ class _EmptyOrders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassSurface(
-      radius: 12,
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      radius: 16,
+      padding: const EdgeInsets.symmetric(vertical: 18),
       child: SizedBox(
         width: double.infinity,
         child: Column(
           mainAxisSize: .min,
           children: [
-            Image.asset('assets/icons/empty.png', width: 32, height: 32),
-            const SizedBox(height: 4),
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: context.isDark
+                    ? AppColors.white.withValues(alpha: 0.04)
+                    : context.grey100,
+                borderRadius: .circular(12),
+              ),
+              alignment: .center,
+              child: Icon(
+                Iconsax.box,
+                size: 20,
+                color: context.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 10),
             Text(
               AppConstants.noOrdersToday,
               textAlign: .center,
-              style: context.bodySmall.copyWith(
+              style: context.bodyMedium.copyWith(
                 color: context.textSecondary,
-                fontWeight: .w500,
+                fontWeight: .w600,
+                fontSize: 14,
               ),
             ),
           ],
