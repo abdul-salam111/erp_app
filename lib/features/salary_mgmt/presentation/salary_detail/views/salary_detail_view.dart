@@ -26,9 +26,9 @@ class _SalaryDetailViewState extends State<SalaryDetailView>
   late final List<Animation<Offset>> _slides;
 
   Animation<double> _fade(double start, double end) => CurvedAnimation(
-        parent: _ctrl,
-        curve: Interval(start, end, curve: Curves.easeOut),
-      );
+    parent: _ctrl,
+    curve: Interval(start, end, curve: Curves.easeOut),
+  );
 
   Animation<Offset> _slide(double start, double end) =>
       Tween<Offset>(begin: _offscreen, end: Offset.zero).animate(
@@ -45,8 +45,12 @@ class _SalaryDetailViewState extends State<SalaryDetailView>
       vsync: this,
       duration: const Duration(milliseconds: 750),
     );
-    _fades = [for (int i = 0; i < _itemCount; i++) _fade(i * 0.08, 0.45 + i * 0.08)];
-    _slides = [for (int i = 0; i < _itemCount; i++) _slide(i * 0.08, 0.45 + i * 0.08)];
+    _fades = [
+      for (int i = 0; i < _itemCount; i++) _fade(i * 0.08, 0.45 + i * 0.08),
+    ];
+    _slides = [
+      for (int i = 0; i < _itemCount; i++) _slide(i * 0.08, 0.45 + i * 0.08),
+    ];
     _ctrl.forward();
   }
 
@@ -59,7 +63,7 @@ class _SalaryDetailViewState extends State<SalaryDetailView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.surface,
+      backgroundColor: context.background,
       appBar: const CustomAppBar(title: 'Payslip'),
       body: SingleChildScrollView(
         padding: context.pagePadding.copyWith(top: 20, bottom: 32),
@@ -106,10 +110,15 @@ class _ReceiptCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
       child: Container(
-        color: context.surfaceElevated,
+        decoration: BoxDecoration(
+          color: context.isDark ? context.navyCard : context.surfaceElevated,
+          border: Border.all(
+            color: context.isDark ? context.navyBorder : context.border,
+          ),
+        ),
         child: Column(
           children: [
-            _TornEdge(bgColor: context.surface),
+            _TornEdge(bgColor: context.background),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 22),
               child: Column(
@@ -131,7 +140,9 @@ class _ReceiptCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     record.month.monthYear,
-                    style: context.labelMedium.copyWith(color: context.textSecondary),
+                    style: context.labelMedium.copyWith(
+                      color: context.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: 14),
                   const _DashDivider(),
@@ -140,32 +151,38 @@ class _ReceiptCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   const _DashDivider(),
                   const SizedBox(height: 14),
-                  _SectionLabel('EARNINGS', AppColors.creditGreen),
+                  _SectionLabel('EARNINGS', context.creditColor),
                   const SizedBox(height: 8),
                   ...record.earnings.map(
-                    (e) => _ReceiptRow(label: e.label, amount: e.amount.withCommas),
+                    (e) => _ReceiptRow(
+                      label: e.label,
+                      amount: e.amount.withCommas,
+                    ),
                   ),
                   const _DashDivider(),
                   const SizedBox(height: 6),
                   _TotalRow(
                     label: 'Gross Pay',
                     amount: record.grossPay.asPKR,
-                    color: AppColors.creditGreen,
+                    color: context.creditColor,
                   ),
                   const SizedBox(height: 14),
                   const _DashDivider(),
                   const SizedBox(height: 14),
-                  _SectionLabel('DEDUCTIONS', AppColors.debitRed),
+                  _SectionLabel('DEDUCTIONS', context.debitColor),
                   const SizedBox(height: 8),
                   ...record.deductions.map(
-                    (d) => _ReceiptRow(label: d.label, amount: d.amount.withCommas),
+                    (d) => _ReceiptRow(
+                      label: d.label,
+                      amount: d.amount.withCommas,
+                    ),
                   ),
                   const _DashDivider(),
                   const SizedBox(height: 6),
                   _TotalRow(
                     label: 'Total Deductions',
                     amount: record.totalDeductions.asPKR,
-                    color: AppColors.debitRed,
+                    color: context.debitColor,
                   ),
                   const SizedBox(height: 18),
                 ],
@@ -209,7 +226,7 @@ class _ReceiptCard extends StatelessWidget {
                   _ReceiptRow(
                     label: 'Status',
                     amount: 'PAID',
-                    amountColor: AppColors.creditGreen,
+                    amountColor: context.creditColor,
                     amountBold: true,
                   ),
                   const SizedBox(height: 12),
@@ -235,7 +252,7 @@ class _ReceiptCard extends StatelessWidget {
                 ],
               ),
             ),
-            _TornEdge(bgColor: context.surface, flipVertical: true),
+            _TornEdge(bgColor: context.background, flipVertical: true),
           ],
         ),
       ),
@@ -263,7 +280,10 @@ class _CompanyHeader extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           'Human Resources Department',
-          style: context.labelSmall.copyWith(color: context.textSecondary, fontSize: 11),
+          style: context.labelSmall.copyWith(
+            color: context.textSecondary,
+            fontSize: 11,
+          ),
         ),
       ],
     );
@@ -361,7 +381,11 @@ class _TotalRow extends StatelessWidget {
   final String amount;
   final Color color;
 
-  const _TotalRow({required this.label, required this.amount, required this.color});
+  const _TotalRow({
+    required this.label,
+    required this.amount,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -370,8 +394,22 @@ class _TotalRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: .spaceBetween,
         children: [
-          Text(label, style: context.bodySmall.copyWith(color: color, fontWeight: .w700, fontSize: 14)),
-          Text(amount, style: context.bodySmall.copyWith(color: color, fontWeight: .w700, fontSize: 14)),
+          Text(
+            label,
+            style: context.bodySmall.copyWith(
+              color: color,
+              fontWeight: .w700,
+              fontSize: 14,
+            ),
+          ),
+          Text(
+            amount,
+            style: context.bodySmall.copyWith(
+              color: color,
+              fontWeight: .w700,
+              fontSize: 14,
+            ),
+          ),
         ],
       ),
     );
@@ -385,11 +423,14 @@ class _DoubleRule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = context.isDark
+        ? AppColors.white.withValues(alpha: 0.16)
+        : context.divider;
     return Column(
       children: [
-        Container(height: 1.5, color: context.divider),
+        Container(height: 1.5, color: color),
         const SizedBox(height: 3),
-        Container(height: 1.5, color: context.divider),
+        Container(height: 1.5, color: color),
       ],
     );
   }
@@ -405,7 +446,13 @@ class _DashDivider extends StatelessWidget {
     return SizedBox(
       height: 1,
       width: double.infinity,
-      child: CustomPaint(painter: _DashPainter(color: context.divider)),
+      child: CustomPaint(
+        painter: _DashPainter(
+          color: context.isDark
+              ? AppColors.white.withValues(alpha: 0.16)
+              : context.divider,
+        ),
+      ),
     );
   }
 }
