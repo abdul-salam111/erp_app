@@ -65,6 +65,44 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
     context.read<PurchaseOrderBloc>().add(const PurchaseOrderFetched());
   }
 
+  void _showGifLoader() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: AppColors.black.withValues(alpha: 0.6),
+      builder: (_) => PopScope(
+        canPop: false,
+        child: Center(
+          child: Image.asset(
+            AppIcons.manticContinuousWave,
+            width: 140,
+            height: 140,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _hideGifLoader() {
+    final navigator = Navigator.of(context, rootNavigator: true);
+    if (navigator.canPop()) navigator.pop();
+  }
+
+  Future<void> _onEditOrder(PurchaseOrderEntity order) async {
+    _showGifLoader();
+    final bloc = sl<CreatePurchaseOrderBloc>();
+    bloc.add(const PurchaseOrderPartiesRequested());
+    bloc.add(PurchaseOrderDetailRequested(order.id));
+    await bloc.stream.firstWhere(
+      (s) =>
+          s.detailStatus == ApiStatus.SUCCESS ||
+          s.detailStatus == ApiStatus.FAILURE,
+    );
+    if (!mounted) return;
+    _hideGifLoader();
+    context.pushNamed(RouteNames.create_purchase_order, extra: bloc);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,9 +119,9 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
         children: [
           _SearchBar(
             controller: _searchController,
-            onChanged: (query) => context
-                .read<PurchaseOrderBloc>()
-                .add(PurchaseOrderSearchChanged(query)),
+            onChanged: (query) => context.read<PurchaseOrderBloc>().add(
+              PurchaseOrderSearchChanged(query),
+            ),
           ),
           Expanded(
             child: BlocBuilder<PurchaseOrderBloc, PurchaseOrderState>(
@@ -109,10 +147,7 @@ class _PurchaseOrderBodyState extends State<_PurchaseOrderBody> {
                 return PurchaseOrderTable(
                   orders: state.pagedOrders,
                   scrollController: _scrollController,
-                  onView: (order) => context.pushNamed(
-                    RouteNames.create_purchase_order,
-                    extra: order.id,
-                  ),
+                  onView: _onEditOrder,
                 );
               },
             ),
@@ -190,4 +225,3 @@ class _SearchBar extends StatelessWidget {
     );
   }
 }
-

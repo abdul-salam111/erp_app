@@ -65,6 +65,44 @@ class _SaleOrderBodyState extends State<_SaleOrderBody> {
     context.read<SaleOrderBloc>().add(const SaleOrderFetched());
   }
 
+  void _showGifLoader() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: AppColors.black.withValues(alpha: 0.6),
+      builder: (_) => PopScope(
+        canPop: false,
+        child: Center(
+          child: Image.asset(
+            AppIcons.manticContinuousWave,
+            width: 140,
+            height: 140,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _hideGifLoader() {
+    final navigator = Navigator.of(context, rootNavigator: true);
+    if (navigator.canPop()) navigator.pop();
+  }
+
+  Future<void> _onEditOrder(SaleOrderEntity order) async {
+    _showGifLoader();
+    final bloc = sl<CreateSaleOrderBloc>();
+    bloc.add(const SaleOrderPartiesRequested());
+    bloc.add(SaleOrderDetailRequested(order.id));
+    await bloc.stream.firstWhere(
+      (s) =>
+          s.detailStatus == ApiStatus.SUCCESS ||
+          s.detailStatus == ApiStatus.FAILURE,
+    );
+    if (!mounted) return;
+    _hideGifLoader();
+    context.pushNamed(RouteNames.create_sale_order, extra: bloc);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,9 +119,9 @@ class _SaleOrderBodyState extends State<_SaleOrderBody> {
         children: [
           _SearchBar(
             controller: _searchController,
-            onChanged: (query) => context
-                .read<SaleOrderBloc>()
-                .add(SaleOrderSearchChanged(query)),
+            onChanged: (query) => context.read<SaleOrderBloc>().add(
+              SaleOrderSearchChanged(query),
+            ),
           ),
           Expanded(
             child: BlocBuilder<SaleOrderBloc, SaleOrderState>(
@@ -109,10 +147,7 @@ class _SaleOrderBodyState extends State<_SaleOrderBody> {
                 return SaleOrderTable(
                   orders: state.pagedOrders,
                   scrollController: _scrollController,
-                  onView: (order) => context.pushNamed(
-                    RouteNames.create_sale_order,
-                    extra: order.id,
-                  ),
+                  onView: _onEditOrder,
                 );
               },
             ),

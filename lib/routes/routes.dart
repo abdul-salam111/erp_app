@@ -327,14 +327,24 @@ class AppRoutes {
       GoRoute(
         path: RoutePaths.create_purchase_order,
         name: RouteNames.create_purchase_order,
-        builder: (context, state) =>
-            CreatePurchaseOrderView(orderId: state.extra as int?),
+        builder: (context, state) {
+          final extra = state.extra;
+          if (extra is CreatePurchaseOrderBloc) {
+            return CreatePurchaseOrderView(preloadedBloc: extra);
+          }
+          return CreatePurchaseOrderView(orderId: extra as int?);
+        },
       ),
       GoRoute(
         path: RoutePaths.create_sale_order,
         name: RouteNames.create_sale_order,
-        builder: (context, state) =>
-            CreateSaleOrderView(orderId: state.extra as int?),
+        builder: (context, state) {
+          final extra = state.extra;
+          if (extra is CreateSaleOrderBloc) {
+            return CreateSaleOrderView(preloadedBloc: extra);
+          }
+          return CreateSaleOrderView(orderId: extra as int?);
+        },
       ),
       GoRoute(
         path: RoutePaths.system,

@@ -23,6 +23,29 @@ class SignInView extends StatefulWidget {
 class _SignInViewState extends State<SignInView> {
   final _formKey = GlobalKey<FormState>();
 
+  void _showGifLoader() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: AppColors.black.withValues(alpha: 0.6),
+      builder: (_) => PopScope(
+        canPop: false,
+        child: Center(
+          child: Image.asset(
+            AppIcons.manticContinuousWave,
+            width: 140,
+            height: 140,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _hideGifLoader() {
+    final navigator = Navigator.of(context, rootNavigator: true);
+    if (navigator.canPop()) navigator.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -34,6 +57,11 @@ class _SignInViewState extends State<SignInView> {
             listenWhen: (previous, current) =>
                 previous.apiStatus != current.apiStatus,
             listener: (context, state) {
+              if (state.apiStatus == ApiStatus.LOADING) {
+                _showGifLoader();
+                return;
+              }
+              _hideGifLoader();
               if (state.apiStatus == ApiStatus.SUCCESS) {
                 TextInput.finishAutofillContext();
                 if (state.message != null) {

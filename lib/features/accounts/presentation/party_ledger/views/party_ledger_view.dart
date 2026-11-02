@@ -126,21 +126,58 @@ class _PartyLedgerBodyState extends State<_PartyLedgerBody> {
     AppToastsUtils.showInfoTop(context, AppConstants.featureComingSoonMsg);
   }
 
+  void _showGifLoader() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: AppColors.black.withValues(alpha: 0.6),
+      builder: (_) => PopScope(
+        canPop: false,
+        child: Center(
+          child: Image.asset(
+            AppIcons.manticContinuousWave,
+            width: 140,
+            height: 140,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _hideGifLoader() {
+    final navigator = Navigator.of(context, rootNavigator: true);
+    if (navigator.canPop()) navigator.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PartyLedgerBloc, PartyLedgerState>(
-      listenWhen: (p, c) => p.pdfStatus != c.pdfStatus,
-      listener: (context, state) {
-        if (state.pdfStatus == ApiStatus.FAILURE) {
-          AppToastsUtils.showErrorTop(context, state.message.toString());
-        }
-        if (state.pdfStatus == ApiStatus.SUCCESS && state.pdfUrl != null) {
-          AppToastsUtils.showSuccessTop(
-            context,
-            AppConstants.invoiceReadySuccessMsg,
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PartyLedgerBloc, PartyLedgerState>(
+          listenWhen: (p, c) => p.pdfStatus != c.pdfStatus,
+          listener: (context, state) {
+            if (state.pdfStatus == ApiStatus.FAILURE) {
+              AppToastsUtils.showErrorTop(context, state.message.toString());
+            }
+            if (state.pdfStatus == ApiStatus.SUCCESS && state.pdfUrl != null) {
+              AppToastsUtils.showSuccessTop(
+                context,
+                AppConstants.invoiceReadySuccessMsg,
+              );
+            }
+          },
+        ),
+        BlocListener<PartyLedgerBloc, PartyLedgerState>(
+          listenWhen: (p, c) => p.apiStatus != c.apiStatus,
+          listener: (context, state) {
+            if (state.apiStatus == ApiStatus.LOADING) {
+              _showGifLoader();
+            } else {
+              _hideGifLoader();
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: context.isDark ? context.background : context.surface,
         appBar: CustomAppBar(title: AppConstants.partyLedgerLabel),

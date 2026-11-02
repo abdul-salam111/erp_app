@@ -11,13 +11,15 @@ import '../widgets/purchase_order_items_table.dart';
 
 class CreatePurchaseOrderView extends StatelessWidget {
   final int? orderId;
+  final CreatePurchaseOrderBloc? preloadedBloc;
 
-  const CreatePurchaseOrderView({super.key, this.orderId});
+  const CreatePurchaseOrderView({super.key, this.orderId, this.preloadedBloc});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
+        if (preloadedBloc != null) return preloadedBloc!;
         final bloc = sl<CreatePurchaseOrderBloc>()
           ..add(const PurchaseOrderPartiesRequested());
         if (orderId != null) {
