@@ -7,6 +7,7 @@ class GlassSurface extends StatelessWidget {
   final double radius;
   final EdgeInsetsGeometry? padding;
   final Clip clipBehavior;
+  final bool shadow;
 
   const GlassSurface({
     super.key,
@@ -14,6 +15,7 @@ class GlassSurface extends StatelessWidget {
     this.radius = 16,
     this.padding,
     this.clipBehavior = Clip.antiAlias,
+    this.shadow = true,
   });
 
   @override
@@ -30,15 +32,15 @@ class GlassSurface extends StatelessWidget {
         color: context.navyCard,
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(color: context.navyBorder),
-        boxShadow: context.isDark
-            ? null
-            : [
+        boxShadow: shadow && !context.isDark
+            ? [
                 BoxShadow(
                   color: AppColors.black.withValues(alpha: 0.06),
                   blurRadius: 14,
                   offset: const Offset(0, 4),
                 ),
-              ],
+              ]
+            : null,
       ),
       child: body,
     );

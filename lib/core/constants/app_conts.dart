@@ -200,6 +200,11 @@ class AppConstants {
   static const String appearanceSystem = 'System';
   static const String appearanceLight = 'Light';
   static const String appearanceDark = 'Dark';
+  static const String appearanceMatchesDeviceSetting =
+      'Matches your device setting';
+  static const String accountSectionLabel = 'Account';
+  static const String preferencesSectionLabel = 'Preferences';
+  static const String switchLabel = 'Switch';
   // ─── PurchaseOrder ─────────────────────────────────────
   static const String purchaseOrderTitle = 'Purchase Order';
   static const String purchaseOrderView = 'PurchaseOrder View';

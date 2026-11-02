@@ -55,6 +55,15 @@ const _meta = <_CardMeta>[
   ),
 ];
 
+// Fixed per-breakpoint card height — see the mainAxisExtent note below for
+// why this isn't an aspect ratio.
+double _cardHeight(BuildContext context) => Responsive.value<double>(
+      context,
+      phone: 60,
+      tablet: 64,
+      ipad: 70,
+    );
+
 List<double> _valuesFor(DailyStatsEntity? stats) => [
   stats?.ttlRecovery ?? 0,
   stats?.ttlReceived ?? 0,
@@ -193,12 +202,12 @@ class TodayOverviewSection extends StatelessWidget {
                 crossAxisCount: context.gridColumnCount,
                 mainAxisSpacing: context.gridSpacing,
                 crossAxisSpacing: context.gridSpacing,
-                childAspectRatio: Responsive.value<double>(
-                  context,
-                  phone: 2.5,
-                  tablet: 2.7,
-                  ipad: 3.1,
-                ),
+                // Fixed height (not an aspect ratio) so the card always has
+                // room for its two text lines regardless of screen width or
+                // the device's system font scale — an aspect ratio shrinks
+                // the card on narrower phones even though the text inside
+                // doesn't shrink with it, which overflowed on some devices.
+                mainAxisExtent: _cardHeight(context),
               ),
               itemBuilder: (context, i) {
                 if (isLoading) {
@@ -332,7 +341,7 @@ class _AllOverviewSheet extends StatelessWidget {
               crossAxisCount: context.gridColumnCount,
               mainAxisSpacing: context.gridSpacing,
               crossAxisSpacing: context.gridSpacing,
-              childAspectRatio: context.overviewCardRatio,
+              mainAxisExtent: _cardHeight(context),
             ),
             itemBuilder: (context, i) {
               return OverviewStatCard(

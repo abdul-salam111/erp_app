@@ -274,7 +274,7 @@ class _DrawerTile extends StatelessWidget {
                 item.label!,
                 style: context.bodySmall.copyWith(
                   fontWeight: .w600,
-                  fontSize: 13,
+                  fontSize: 14,
                   color: context.textPrimary,
                 ),
               ),
@@ -436,7 +436,7 @@ class _ExpandableTileState extends State<_ExpandableTile>
                       widget.item.label!,
                       style: context.bodySmall.copyWith(
                         fontWeight: .w600,
-                        fontSize: 13,
+                        fontSize: 14,
                         color: _expanded
                             ? context.accentBlue
                             : context.textPrimary,
@@ -549,7 +549,7 @@ class _ChildTile extends StatelessWidget {
                 style: context.bodySmall.copyWith(
                   fontWeight: .w400,
                   color: context.textPrimary,
-                  fontSize: 13,
+                  fontSize: 14,
                 ),
               ),
             ),

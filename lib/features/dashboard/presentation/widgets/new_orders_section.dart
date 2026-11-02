@@ -181,13 +181,14 @@ class _EmptyOrders extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassSurface(
       radius: 12,
-      padding: const EdgeInsets.symmetric(vertical: 36),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: SizedBox(
         width: double.infinity,
         child: Column(
           mainAxisSize: .min,
           children: [
-            Image.asset('assets/icons/empty.png', width: 72, height: 72),
+            Image.asset('assets/icons/empty.png', width: 32, height: 32),
+            const SizedBox(height: 4),
             Text(
               AppConstants.noOrdersToday,
               textAlign: .center,

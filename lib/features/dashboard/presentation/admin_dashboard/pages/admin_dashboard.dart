@@ -216,14 +216,13 @@ class AdminDashboard extends StatelessWidget {
 class _AdminSliverAppBar extends StatelessWidget {
   const _AdminSliverAppBar();
 
-  static const double _expandedHeight = 161;
+  static const double _expandedHeight = 180;
 
-  String get _initials {
-    final parts = currentUser.fullName.trim().split(' ');
-    if (parts.length >= 2) {
-      return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
-    }
-    return parts.first.isNotEmpty ? parts.first[0].toUpperCase() : '?';
+  String get _greeting {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return AppConstants.goodMorning;
+    if (hour < 17) return AppConstants.goodAfternoon;
+    return AppConstants.goodEveningMsg;
   }
 
   String get _financialYearLabel {
@@ -288,31 +287,10 @@ class _AdminSliverAppBar extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Center(
-          child: context.isDark
-              ? SizedBox(
-                  width: 38,
-                  height: 38,
-                  child: GlassIconButton(
-                    onPressed: () => context.pushNamed(RouteNames.profile),
-                    icon: Icon(
-                      Iconsax.profile_circle,
-                      color: AppColors.white,
-                      size: 20,
-                    ),
-                  ),
-                )
-              : GestureDetector(
-                  onTap: () => context.pushNamed(RouteNames.profile),
-                  child: CircleAvatar(
-                    radius: 19,
-                    backgroundColor: AppColors.white.withValues(alpha: 0.15),
-                    child: Icon(
-                      Iconsax.profile_circle,
-                      color: AppColors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
+          child: _AdminHeaderIconBtn(
+            icon: Iconsax.profile_circle,
+            onTap: () => context.pushNamed(RouteNames.profile),
+          ),
         ),
         SizedBox(width: hPad),
       ],
@@ -422,55 +400,44 @@ class _AdminSliverAppBar extends StatelessWidget {
                   bottom: 18,
                   child: Opacity(
                     opacity: expandedOpacity,
-                    child: Row(
-                      crossAxisAlignment: .center,
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      mainAxisSize: .min,
                       children: [
-                        CircleAvatar(
-                          radius: 26,
-                          backgroundColor: AppColors.white.withValues(
-                            alpha: 0.20,
-                          ),
-                          child: Text(
-                            _initials,
-                            style: context.titleSmall.copyWith(
-                              color: AppColors.white,
-                              fontWeight: .w700,
-                              fontSize: 18,
-                            ),
+                        Text(
+                          '$_greeting,',
+                          style: context.labelMedium.copyWith(
+                            color: AppColors.white.withValues(alpha: 0.82),
+                            fontWeight: .w400,
+                            fontSize: 14,
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: .start,
-                            children: [
-                              Text(
-                                currentUser.fullName,
-                                style: context.titleLarge.copyWith(
-                                  color: AppColors.white,
-                                  fontWeight: .w700,
-                                  height: 1.1,
-                                ),
-                                maxLines: 1,
-                                overflow: .ellipsis,
-                              ),
-                              const SizedBox(height: 6),
-                              Row(
-                                children: [
-                                  _AdminHeaderChip(
-                                    icon: Iconsax.buildings,
-                                    label: currentUser.org.name,
-                                    fontSize: 13.5,
-                                  ),
-                                  const Spacer(),
-                                  _AdminHeaderChip(
-                                    icon: Iconsax.calendar,
-                                    label: _financialYearLabel,
-                                  ),
-                                ],
-                              ),
-                            ],
+                        const SizedBox(height: 4),
+                        Text(
+                          currentUser.fullName,
+                          style: context.titleLarge.copyWith(
+                            color: AppColors.white,
+                            fontWeight: .w800,
+                            fontSize: 28,
+                            height: 1.05,
                           ),
+                          maxLines: 1,
+                          overflow: .ellipsis,
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            _AdminHeaderChip(
+                              iconAsset: AppIcons.dashboardIcon,
+                              label: currentUser.org.name,
+                              showChevron: true,
+                            ),
+                            const SizedBox(width: 10),
+                            _AdminHeaderChip(
+                              icon: Iconsax.calendar,
+                              label: _financialYearLabel,
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -519,36 +486,57 @@ class _AdminHeaderIconBtn extends StatelessWidget {
 }
 
 class _AdminHeaderChip extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? iconAsset;
   final String label;
-  final double fontSize;
+  final bool showChevron;
 
   const _AdminHeaderChip({
-    required this.icon,
+    this.icon,
+    this.iconAsset,
     required this.label,
-    this.fontSize = 10.5,
-  });
+    this.showChevron = false,
+  }) : assert(icon != null || iconAsset != null);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: .min,
-      children: [
-        Icon(icon, color: AppColors.white.withValues(alpha: 0.85), size: 11),
-        const SizedBox(width: 4),
-        Flexible(
-          child: Text(
-            label,
-            style: context.labelSmall.copyWith(
-              color: AppColors.white.withValues(alpha: 0.90),
-              fontWeight: .w500,
-              fontSize: fontSize,
+    final iconColor = AppColors.white.withValues(alpha: 0.9);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: AppColors.white.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.white.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        mainAxisSize: .min,
+        children: [
+          iconAsset != null
+              ? Image.asset(iconAsset!, width: 13, height: 13, color: iconColor)
+              : Icon(icon, color: iconColor, size: 13),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              label,
+              style: context.labelSmall.copyWith(
+                color: AppColors.white,
+                fontWeight: .w600,
+                fontSize: 13,
+              ),
+              maxLines: 1,
+              overflow: .ellipsis,
             ),
-            maxLines: 1,
-            overflow: .ellipsis,
           ),
-        ),
-      ],
+          if (showChevron) ...[
+            const SizedBox(width: 2),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: AppColors.white.withValues(alpha: 0.85),
+              size: 15,
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

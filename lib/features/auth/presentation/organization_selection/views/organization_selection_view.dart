@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../core/constants/app_enums.dart';
+import '../../../../../core/constants/app_icons.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/services/session_manager.dart';
 import '../../../../../core/theme/colors.dart';
@@ -194,10 +195,11 @@ class _Header extends StatelessWidget {
                         color: AppColors.white.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(
-                        Iconsax.buildings,
+                      child: Image.asset(
+                        AppIcons.dashboardIcon,
                         color: context.textPrimary,
-                        size: 28,
+                        width: 28,
+                        height: 28,
                       ),
                     ),
                     const SizedBox(width: 16),

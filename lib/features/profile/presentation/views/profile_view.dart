@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../core/constants/app_enums.dart';
+import '../../../../core/constants/app_icons.dart';
 import '../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../core/debug/cubit/api_debug_state.dart';
 import '../../../../core/di/di_exports.dart';
@@ -28,18 +29,18 @@ class ProfileView extends StatelessWidget {
   }
 }
 
+String get _roleDisplay {
+  if (currentUser.isAdmin) return 'Administrator';
+  final roles = currentUser.roles
+      .map((r) => r.trim())
+      .where((r) => r.isNotEmpty)
+      .map((r) => r[0].toUpperCase() + r.substring(1))
+      .toList();
+  return roles.isEmpty ? 'Employee' : roles.join(', ');
+}
+
 class _ProfileBody extends StatelessWidget {
   const _ProfileBody();
-
-  static String get _roleDisplay {
-    if (currentUser.isAdmin) return 'Administrator';
-    final roles = currentUser.roles
-        .map((r) => r.trim())
-        .where((r) => r.isNotEmpty)
-        .map((r) => r[0].toUpperCase() + r.substring(1))
-        .toList();
-    return roles.isEmpty ? 'Employee' : roles.join(', ');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,92 +58,50 @@ class _ProfileBody extends StatelessWidget {
         backgroundColor: context.background,
         body: CustomScrollView(
           slivers: [
-            _ProfileHeader(roleDisplay: _roleDisplay),
+            SliverToBoxAdapter(
+              child: _ProfileHeader(
+                roleDisplay: _roleDisplay,
+                hasOrganization: hasOrganization,
+                hasMultiOrgs: hasMultiOrgs,
+              ),
+            ),
             SliverPadding(
-              padding: context.pagePadding.copyWith(top: 28, bottom: 48),
+              padding: context.pagePadding.copyWith(top: 24, bottom: 40),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  // ── Personal Info ───────────────────────────────────
-                  _SectionCard(
-                        title: AppConstants.personalInformationTitle,
-                        iconData: Iconsax.profile_circle,
-                        children: [
-                          _InfoRow(
-                            icon: Iconsax.user,
-                            label: AppConstants.fullNameLabel,
-                            value: currentUser.fullName,
-                          ),
-                          _InfoRow(
-                            icon: Iconsax.shield_tick,
-                            label: AppConstants.roleLabel,
-                            value: _roleDisplay,
-                            isLast: true,
-                          ),
-                        ],
-                      )
+                  _SectionLabel(
+                    AppConstants.accountSectionLabel,
+                  ).animate().fadeIn(delay: 80.ms, duration: 280.ms),
+                  const SizedBox(height: 8),
+                  _AccountCard()
                       .animate()
                       .slideY(
-                        begin: 0.25,
+                        begin: 0.2,
                         end: 0,
-                        delay: 60.ms,
-                        duration: 420.ms,
+                        delay: 100.ms,
+                        duration: 380.ms,
                         curve: Curves.easeOutCubic,
                       )
-                      .fadeIn(delay: 60.ms, duration: 320.ms),
+                      .fadeIn(delay: 100.ms, duration: 300.ms),
 
-                  if (hasOrganization) ...[
-                    const SizedBox(height: 14),
+                  const SizedBox(height: 22),
 
-                    // ── Organization ───────────────────────────────────
-                    _CardContainer(
-                          padding: EdgeInsets.zero,
-                          child: _InfoRow(
-                            icon: Iconsax.buildings,
-                            label: AppConstants.organizationTitle,
-                            value: currentUser.org.name,
-                            isLast: true,
-                          ),
-                        )
-                        .animate()
-                        .slideY(
-                          begin: 0.25,
-                          end: 0,
-                          delay: 100.ms,
-                          duration: 420.ms,
-                          curve: Curves.easeOutCubic,
-                        )
-                        .fadeIn(delay: 100.ms, duration: 320.ms),
-                  ],
-
-                  const SizedBox(height: 14),
-
-                  // ── Appearance ───────────────────────────────────────
+                  _SectionLabel(
+                    AppConstants.preferencesSectionLabel,
+                  ).animate().fadeIn(delay: 140.ms, duration: 280.ms),
+                  const SizedBox(height: 8),
                   const _AppearanceCard()
                       .animate()
                       .slideY(
-                        begin: 0.25,
+                        begin: 0.2,
                         end: 0,
-                        delay: 120.ms,
-                        duration: 420.ms,
+                        delay: 160.ms,
+                        duration: 380.ms,
                         curve: Curves.easeOutCubic,
                       )
-                      .fadeIn(delay: 120.ms, duration: 320.ms),
+                      .fadeIn(delay: 160.ms, duration: 300.ms),
 
-                  const SizedBox(height: 14),
-
-                  // ── Actions (Switch Org + Logout) ───────────────────
-                  _ActionsCard(hasMultiOrgs: hasMultiOrgs)
-                      .animate()
-                      .slideY(
-                        begin: 0.25,
-                        end: 0,
-                        delay: 140.ms,
-                        duration: 420.ms,
-                        curve: Curves.easeOutCubic,
-                      )
-                      .fadeIn(delay: 140.ms, duration: 320.ms),
-
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 22),
 
                   BlocBuilder<ApiDebugCubit, ApiDebugState>(
                     buildWhen: (previous, current) =>
@@ -151,8 +110,8 @@ class _ProfileBody extends StatelessWidget {
                       if (!dbgState.isEnabled) return const SizedBox.shrink();
                       return Column(
                         children: [
-                          _CardContainer(
-                            padding: EdgeInsets.zero,
+                          GlassSurface(
+                            radius: 18,
                             child: SwitchListTile(
                               title: const Text('API Debugger'),
                               value: dbgState.isEnabled,
@@ -162,7 +121,7 @@ class _ProfileBody extends StatelessWidget {
                                 horizontal: 16,
                               ),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: BorderRadius.circular(18),
                               ),
                             ),
                           ),
@@ -172,9 +131,36 @@ class _ProfileBody extends StatelessWidget {
                     },
                   ),
 
-                  _CardContainer(
-                    child: const _AppVersion(),
-                  ).animate().fadeIn(delay: 260.ms, duration: 400.ms),
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                    buildWhen: (p, c) => p.logoutStatus != c.logoutStatus,
+                    builder: (context, state) {
+                      final isLoggingOut =
+                          state.logoutStatus == ApiStatus.LOADING;
+                      return GlassSurface(
+                        radius: 18,
+                        padding: EdgeInsets.zero,
+                        child: _ActionRow(
+                          icon: Iconsax.logout,
+                          label: AppConstants.logOut,
+                          iconColor: context.error,
+                          iconBg: context.isDark
+                              ? AppColors.navyIconBgDark
+                              : context.error.withValues(alpha: 0.10),
+                          isLoading: isLoggingOut,
+                          onTap: isLoggingOut
+                              ? null
+                              : () => _confirmLogout(context),
+                        ),
+                      );
+                    },
+                  ).animate().fadeIn(delay: 200.ms, duration: 320.ms),
+
+                  const SizedBox(height: 28),
+
+                  const _AppVersion().animate().fadeIn(
+                    delay: 260.ms,
+                    duration: 400.ms,
+                  ),
                 ]),
               ),
             ),
@@ -185,214 +171,138 @@ class _ProfileBody extends StatelessWidget {
   }
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
+// ─── Section label (small uppercase caption above a card group) ──────────────
 
-class _ProfileHeader extends StatelessWidget {
-  final String roleDisplay;
-  const _ProfileHeader({required this.roleDisplay});
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel(this.text);
 
   @override
   Widget build(BuildContext context) {
-    final top = MediaQuery.paddingOf(context).top;
-    final initials = _initials(currentUser.fullName);
-
-    return SliverToBoxAdapter(
-      child: ClipPath(
-        clipper: _BottomWaveClipper(),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: context.isDark ? AppColors.navyHeaderDark : null,
-            gradient: context.isDark
-                ? null
-                : const LinearGradient(
-                    colors: [AppColors.primaryDark, AppColors.primary],
-                    begin: .topLeft,
-                    end: .bottomRight,
-                  ),
-          ),
-          child: Stack(
-            children: [
-              // Decorative circles
-              Positioned(
-                right: -50,
-                top: top,
-                child: _Circle(size: 160, opacity: 0.07),
-              ),
-              Positioned(
-                right: 80,
-                top: top + 24,
-                child: _Circle(size: 60, opacity: 0.05),
-              ),
-              Positioned(
-                left: -40,
-                bottom: 10,
-                child: _Circle(size: 120, opacity: 0.06),
-              ),
-
-              // Content
-              Padding(
-                padding: EdgeInsets.only(
-                  top: top + 2,
-                  bottom: 26,
-                  left: context.pagePadding.left,
-                  right: context.pagePadding.right,
-                ),
-                child: Column(
-                  crossAxisAlignment: .center,
-                  children: [
-                    // Top bar: back
-                    Row(
-                      children: const [GlassBackButton()],
-                    ).animate().fadeIn(delay: 0.ms, duration: 300.ms),
-
-                    const SizedBox(height: 10),
-
-                    // Avatar — tap 5× to switch environment
-                    EnvSwitchDetector(
-                          child: Container(
-                            width: 68,
-                            height: 68,
-                            decoration: BoxDecoration(
-                              shape: .circle,
-                              gradient: RadialGradient(
-                                colors: [
-                                  AppColors.white.withValues(alpha: 0.30),
-                                  AppColors.white.withValues(alpha: 0.12),
-                                ],
-                              ),
-                              border: Border.all(
-                                color: AppColors.white.withValues(alpha: 0.50),
-                                width: 2.5,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.primary.withValues(
-                                    alpha: 0.35,
-                                  ),
-                                  blurRadius: 24,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                initials,
-                                style: const TextStyle(
-                                  color: AppColors.white,
-                                  fontSize: 22,
-                                  fontWeight: .w700,
-                                  height: 1,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                        .animate()
-                        .scale(
-                          begin: const Offset(0.7, 0.7),
-                          end: const Offset(1.0, 1.0),
-                          delay: 0.ms,
-                          duration: 450.ms,
-                          curve: Curves.easeOutBack,
-                        )
-                        .fadeIn(delay: 0.ms, duration: 300.ms),
-
-                    const SizedBox(height: 8),
-
-                    // Name
-                    Text(
-                          currentUser.fullName,
-                          style: context.titleMedium.copyWith(
-                            color: AppColors.white,
-                            fontWeight: .w700,
-                            fontSize: Responsive.value(
-                              context,
-                              phone: 16,
-                              tablet: 18,
-                              ipad: 20,
-                            ),
-                          ),
-                          textAlign: .center,
-                        )
-                        .animate()
-                        .slideY(
-                          begin: 0.3,
-                          end: 0,
-                          delay: 100.ms,
-                          duration: 380.ms,
-                          curve: Curves.easeOutCubic,
-                        )
-                        .fadeIn(delay: 100.ms, duration: 280.ms),
-
-                    const SizedBox(height: 6),
-
-                    // Role badge
-                    Container(
-                          padding: .symmetric(horizontal: 12, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: AppColors.white.withValues(alpha: 0.18),
-                            borderRadius: .circular(20),
-                          ),
-                          child: Row(
-                            mainAxisSize: .min,
-                            children: [
-                              Icon(
-                                Iconsax.shield_tick,
-                                color: AppColors.white.withValues(alpha: 0.95),
-                                size: 12,
-                              ),
-                              const SizedBox(width: 5),
-                              Text(
-                                roleDisplay,
-                                style: context.labelSmall.copyWith(
-                                  color: AppColors.white,
-                                  fontWeight: .w600,
-                                  fontSize: 11,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                        .animate()
-                        .slideY(
-                          begin: 0.3,
-                          end: 0,
-                          delay: 130.ms,
-                          duration: 380.ms,
-                          curve: Curves.easeOutCubic,
-                        )
-                        .fadeIn(delay: 130.ms, duration: 280.ms),
-
-                    const SizedBox(height: 6),
-
-                    // Email
-                    Text(
-                          currentUser.email,
-                          style: context.bodySmall.copyWith(
-                            color: AppColors.white.withValues(alpha: 0.75),
-                            fontSize: 13,
-                          ),
-                          textAlign: .center,
-                        )
-                        .animate()
-                        .slideY(
-                          begin: 0.3,
-                          end: 0,
-                          delay: 160.ms,
-                          duration: 380.ms,
-                          curve: Curves.easeOutCubic,
-                        )
-                        .fadeIn(delay: 160.ms, duration: 280.ms),
-                  ],
-                ),
-              ),
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.only(left: 4),
+      child: Text(
+        text.toUpperCase(),
+        style: context.labelSmall.copyWith(
+          color: context.textSecondary,
+          fontWeight: .w700,
+          fontSize: 11.5,
+          letterSpacing: 0.8,
         ),
       ),
     );
   }
+}
+
+// ─── Header: gradient bar + overlapping profile card ──────────────────────────
+
+class _ProfileHeader extends StatelessWidget {
+  final String roleDisplay;
+  final bool hasOrganization;
+  final bool hasMultiOrgs;
+
+  const _ProfileHeader({
+    required this.roleDisplay,
+    required this.hasOrganization,
+    required this.hasMultiOrgs,
+  });
+
+  static const double _barExtra = 150;
+  static const double _cardOverlap = 92;
+
+  @override
+  Widget build(BuildContext context) {
+    final top = MediaQuery.paddingOf(context).top;
+
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            height: top + _barExtra,
+            decoration: BoxDecoration(
+              color: context.isDark ? AppColors.navyHeaderDark : null,
+              gradient: context.isDark
+                  ? null
+                  : const LinearGradient(
+                      colors: [AppColors.primaryDark, AppColors.primary],
+                      begin: .topLeft,
+                      end: .bottomRight,
+                    ),
+            ),
+            child: Stack(
+              clipBehavior: .none,
+              children: [
+                Positioned(
+                  right: -50,
+                  top: top,
+                  child: const _Circle(size: 160, opacity: 0.07),
+                ),
+                Positioned(
+                  left: -40,
+                  bottom: -10,
+                  child: const _Circle(size: 120, opacity: 0.06),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: top + 2),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: context.pagePadding.left,
+                        ),
+                        child: const GlassBackButton(),
+                      ),
+                      Expanded(
+                        child: Text(
+                          AppConstants.profileLabel,
+                          textAlign: .center,
+                          style: context.titleMedium.copyWith(
+                            color: AppColors.white,
+                            fontWeight: .w700,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: context.pagePadding.left + 38),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(
+            context.pagePadding.left,
+            top + (_barExtra - _cardOverlap),
+            context.pagePadding.right,
+            0,
+          ),
+          child: _ProfileCard(
+            roleDisplay: roleDisplay,
+            hasOrganization: hasOrganization,
+            hasMultiOrgs: hasMultiOrgs,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Profile card: avatar, name, role badge, organization row ────────────────
+
+class _ProfileCard extends StatelessWidget {
+  final String roleDisplay;
+  final bool hasOrganization;
+  final bool hasMultiOrgs;
+
+  const _ProfileCard({
+    required this.roleDisplay,
+    required this.hasOrganization,
+    required this.hasMultiOrgs,
+  });
 
   static String _initials(String name) {
     final parts = name.trim().split(RegExp(r'\s+'));
@@ -401,6 +311,193 @@ class _ProfileHeader extends StatelessWidget {
     }
     if (name.isNotEmpty) return name[0].toUpperCase();
     return '?';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GlassSurface(
+          radius: 22,
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              Row(
+                crossAxisAlignment: .start,
+                children: [
+                  // Avatar — tap 5× to switch environment
+                  EnvSwitchDetector(
+                    child: Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        gradient: const LinearGradient(
+                          colors: [AppColors.primary, AppColors.accentBlue],
+                          begin: .topLeft,
+                          end: .bottomRight,
+                        ),
+                      ),
+                      alignment: .center,
+                      child: Text(
+                        _initials(currentUser.fullName),
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 18,
+                          fontWeight: .w700,
+                          height: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        Text(
+                          currentUser.fullName,
+                          style: context.titleLarge.copyWith(
+                            color: context.textPrimary,
+                            fontWeight: .w800,
+                            fontSize: 20,
+                          ),
+                          maxLines: 1,
+                          overflow: .ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: context.isDark
+                                ? AppColors.navyIconBgDark
+                                : context.primary.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: .min,
+                            children: [
+                              Icon(
+                                Iconsax.shield_tick,
+                                size: 13,
+                                color: context.isDark
+                                    ? AppColors.navyIconColorDark
+                                    : context.primary,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                roleDisplay,
+                                style: context.labelSmall.copyWith(
+                                  color: context.isDark
+                                      ? AppColors.navyIconColorDark
+                                      : context.primary,
+                                  fontWeight: .w700,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (hasOrganization) ...[
+                const SizedBox(height: 16),
+                Divider(height: 1, thickness: 1, color: context.navyBorder),
+                const SizedBox(height: 14),
+                Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: context.isDark
+                            ? AppColors.navyIconBgDark
+                            : context.surface,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.all(9),
+                      child: Image.asset(
+                        AppIcons.dashboardIcon,
+                        color: context.isDark
+                            ? AppColors.navyIconColorDark
+                            : context.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: .start,
+                        children: [
+                          Text(
+                            AppConstants.organizationTitle,
+                            style: context.labelSmall.copyWith(
+                              color: context.textSecondary,
+                              fontSize: 11,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            currentUser.org.name,
+                            style: context.bodyMedium.copyWith(
+                              fontWeight: .w700,
+                              color: context.textPrimary,
+                              fontSize: 14,
+                            ),
+                            maxLines: 1,
+                            overflow: .ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (hasMultiOrgs)
+                      InkWell(
+                        onTap: () =>
+                            context.pushNamed(RouteNames.organizationSelection),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 4,
+                          ),
+                          child: Row(
+                            mainAxisSize: .min,
+                            children: [
+                              Text(
+                                AppConstants.switchLabel,
+                                style: context.labelMedium.copyWith(
+                                  color: context.accentBlue,
+                                  fontWeight: .w700,
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                size: 18,
+                                color: context.accentBlue,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        )
+        .animate()
+        .slideY(
+          begin: 0.15,
+          end: 0,
+          delay: 40.ms,
+          duration: 380.ms,
+          curve: Curves.easeOutCubic,
+        )
+        .fadeIn(delay: 40.ms, duration: 300.ms);
   }
 }
 
@@ -534,120 +631,66 @@ class _LogoutConfirmDialog extends StatelessWidget {
   }
 }
 
-// ─── Wave clip ────────────────────────────────────────────────────────────────
+// ─── Account card: full name + role rows ──────────────────────────────────────
 
-class _BottomWaveClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path()
-      ..lineTo(0, size.height - 28)
-      ..quadraticBezierTo(
-        size.width * 0.5,
-        size.height + 18,
-        size.width,
-        size.height - 28,
-      )
-      ..lineTo(size.width, 0)
-      ..close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(_BottomWaveClipper oldClipper) => false;
-}
-
-// ─── Section card ─────────────────────────────────────────────────────────────
-
-class _SectionCard extends StatelessWidget {
-  final String title;
-  final IconData iconData;
-  final List<Widget> children;
-
-  const _SectionCard({
-    required this.title,
-    required this.iconData,
-    required this.children,
-  });
+class _AccountCard extends StatelessWidget {
+  const _AccountCard();
 
   @override
   Widget build(BuildContext context) {
     return GlassSurface(
-      radius: 16,
+      radius: 18,
+      padding: EdgeInsets.zero,
+      shadow: false,
       child: Column(
-        crossAxisAlignment: .start,
         children: [
-          Padding(
-            padding: .fromLTRB(16, 14, 16, 10),
-            child: Row(
-              children: [
-                Container(
-                  padding: .all(7),
-                  decoration: BoxDecoration(
-                    color: context.isDark
-                        ? AppColors.navyIconBgDark
-                        : context.accentBlue.withValues(alpha: 0.10),
-                    borderRadius: .circular(8),
-                  ),
-                  child: Icon(
-                    iconData,
-                    size: 15,
-                    color: context.isDark
-                        ? AppColors.navyIconColorDark
-                        : context.accentBlue,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  title,
-                  style: context.titleSmall.copyWith(
-                    fontWeight: .w700,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
+          _AccountRow(
+            icon: Iconsax.user,
+            iconColor: context.isDark
+                ? AppColors.navyIconColorDark
+                : context.accentBlue,
+            iconBg: context.isDark
+                ? AppColors.navyIconBgDark
+                : context.accentBlue.withValues(alpha: 0.10),
+            label: AppConstants.fullNameLabel,
+            value: currentUser.fullName,
           ),
-          Divider(height: 1, thickness: 1, color: context.navyBorder),
-          ...children,
+          Divider(
+            height: 1,
+            thickness: 1,
+            indent: 62,
+            color: context.navyBorder,
+          ),
+          _AccountRow(
+            icon: Iconsax.shield_tick,
+            iconColor: context.isDark
+                ? AppColors.successLight
+                : AppColors.success,
+            iconBg: context.isDark
+                ? AppColors.navyIconBgDark
+                : AppColors.success.withValues(alpha: 0.10),
+            label: AppConstants.roleLabel,
+            value: _roleDisplay,
+            isLast: true,
+          ),
         ],
       ),
     );
   }
 }
 
-// ─── Plain card container (for content without a section header) ─────────────
-
-class _CardContainer extends StatelessWidget {
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-
-  const _CardContainer({
-    required this.child,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassSurface(
-      radius: 16,
-      child: Material(
-        color: AppColors.transparent,
-        child: Padding(padding: padding, child: child),
-      ),
-    );
-  }
-}
-
-// ─── Info row ─────────────────────────────────────────────────────────────────
-
-class _InfoRow extends StatelessWidget {
+class _AccountRow extends StatelessWidget {
   final IconData icon;
+  final Color iconColor;
+  final Color iconBg;
   final String label;
   final String value;
   final bool isLast;
 
-  const _InfoRow({
+  const _AccountRow({
     required this.icon,
+    required this.iconColor,
+    required this.iconBg,
     required this.label,
     required this.value,
     this.isLast = false,
@@ -655,65 +698,38 @@ class _InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: .symmetric(horizontal: 16, vertical: 13),
-          child: Row(
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: context.isDark
-                      ? AppColors.navyIconBgDark
-                      : context.surface,
-                  borderRadius: .circular(9),
-                ),
-                child: Icon(
-                  icon,
-                  size: 15,
-                  color: context.isDark
-                      ? AppColors.navyIconColorDark
-                      : context.textSecondary,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      label,
-                      style: context.labelSmall.copyWith(
-                        color: context.textSecondary,
-                        fontSize: 10,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      value.isEmpty ? '—' : value,
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w600,
-                        color: context.textPrimary,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: iconBg,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 15, color: iconColor),
           ),
-        ),
-        if (!isLast)
-          Divider(
-            height: 1,
-            thickness: 1,
-            indent: 62,
-            color: context.navyBorder,
+          const SizedBox(width: 12),
+          Text(
+            label,
+            style: context.bodyMedium.copyWith(color: context.textSecondary),
           ),
-      ],
+          Expanded(
+            child: Text(
+              value.isEmpty ? '—' : value,
+              style: context.bodyMedium.copyWith(
+                fontWeight: .w700,
+                color: context.textPrimary,
+              ),
+              textAlign: .end,
+              maxLines: 1,
+              overflow: .ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -723,69 +739,69 @@ class _InfoRow extends StatelessWidget {
 class _AppearanceCard extends StatelessWidget {
   const _AppearanceCard();
 
-  static IconData _iconFor(ThemeMode mode) => switch (mode) {
-    ThemeMode.light => Icons.light_mode_rounded,
-    ThemeMode.dark => Icons.dark_mode_rounded,
-    ThemeMode.system => Icons.brightness_auto_rounded,
-  };
-
-  static String _labelFor(ThemeMode mode) => switch (mode) {
+  static String _subtitleFor(ThemeMode mode) => switch (mode) {
+    ThemeMode.system => AppConstants.appearanceMatchesDeviceSetting,
     ThemeMode.light => AppConstants.appearanceLight,
     ThemeMode.dark => AppConstants.appearanceDark,
-    ThemeMode.system => AppConstants.appearanceSystem,
   };
 
   @override
   Widget build(BuildContext context) {
-    return _CardContainer(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    return GlassSurface(
+      radius: 18,
+      padding: const EdgeInsets.all(16),
+      shadow: false,
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, themeState) {
           final mode = themeState.themeMode;
-          return Row(
+          return Column(
+            crossAxisAlignment: .start,
             children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: context.isDark
-                      ? AppColors.navyIconBgDark
-                      : context.accentBlue.withValues(alpha: 0.10),
-                  borderRadius: .circular(12),
-                ),
-                child: Icon(
-                  _iconFor(mode),
-                  size: 18,
-                  color: context.isDark
-                      ? AppColors.navyIconColorDark
-                      : context.accentBlue,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      AppConstants.appearanceLabel,
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w700,
-                        color: context.textPrimary,
-                        fontSize: 13,
-                      ),
+              Row(
+                children: [
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: context.isDark
+                          ? AppColors.navyIconBgDark
+                          : AppColors.violet.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      _labelFor(mode),
-                      style: context.labelSmall.copyWith(
-                        color: context.textSecondary,
-                        fontSize: 11,
-                      ),
+                    child: Icon(
+                      Icons.contrast_rounded,
+                      size: 18,
+                      color: context.isDark
+                          ? AppColors.navyIconColorDark
+                          : AppColors.violet,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: .start,
+                      children: [
+                        Text(
+                          AppConstants.appearanceLabel,
+                          style: context.bodyMedium.copyWith(
+                            fontWeight: .w700,
+                            color: context.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          _subtitleFor(mode),
+                          style: context.labelSmall.copyWith(
+                            color: context.textSecondary,
+                            fontSize: 11.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
+              const SizedBox(height: 14),
               _AppearanceSegmentedControl(mode: mode),
             ],
           );
@@ -801,9 +817,13 @@ class _AppearanceSegmentedControl extends StatelessWidget {
   const _AppearanceSegmentedControl({required this.mode});
 
   static const _options = [
-    (ThemeMode.system, Icons.brightness_auto_rounded),
-    (ThemeMode.light, Icons.light_mode_rounded),
-    (ThemeMode.dark, Icons.dark_mode_rounded),
+    (
+      ThemeMode.system,
+      Icons.desktop_windows_outlined,
+      AppConstants.appearanceSystem,
+    ),
+    (ThemeMode.light, Icons.light_mode_rounded, AppConstants.appearanceLight),
+    (ThemeMode.dark, Icons.dark_mode_rounded, AppConstants.appearanceDark),
   ];
 
   @override
@@ -812,16 +832,18 @@ class _AppearanceSegmentedControl extends StatelessWidget {
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         color: context.isDark ? AppColors.navyIconBgDark : context.grey100,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
-        mainAxisSize: .min,
         children: [
           for (final option in _options)
-            _SegmentButton(
-              icon: option.$2,
-              selected: mode == option.$1,
-              onTap: () => context.read<ThemeBloc>().add(SetTheme(option.$1)),
+            Expanded(
+              child: _SegmentButton(
+                icon: option.$2,
+                label: option.$3,
+                selected: mode == option.$1,
+                onTap: () => context.read<ThemeBloc>().add(SetTheme(option.$1)),
+              ),
             ),
         ],
       ),
@@ -831,98 +853,68 @@ class _AppearanceSegmentedControl extends StatelessWidget {
 
 class _SegmentButton extends StatelessWidget {
   final IconData icon;
+  final String label;
   final bool selected;
   final VoidCallback onTap;
 
   const _SegmentButton({
     required this.icon,
+    required this.label,
     required this.selected,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      behavior: .opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        width: 32,
-        height: 32,
-        alignment: .center,
+        padding: const EdgeInsets.symmetric(vertical: 9),
         decoration: BoxDecoration(
-          color: selected ? context.primary : AppColors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          color: selected ? context.navyCard : AppColors.transparent,
+          borderRadius: BorderRadius.circular(9),
+          boxShadow: selected && !context.isDark
+              ? [
+                  BoxShadow(
+                    color: AppColors.black.withValues(alpha: 0.10),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
-        child: Icon(
-          icon,
-          size: 16,
-          color: selected ? AppColors.white : context.textSecondary,
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Actions card ─────────────────────────────────────────────────────────────
-
-class _ActionsCard extends StatelessWidget {
-  final bool hasMultiOrgs;
-  const _ActionsCard({required this.hasMultiOrgs});
-
-  @override
-  Widget build(BuildContext context) {
-    return GlassSurface(
-      radius: 16,
-      child: Column(
-        children: [
-          if (hasMultiOrgs) ...[
-            _ActionRow(
-              icon: Iconsax.refresh_circle,
-              label: AppConstants.switchOrganization,
-              subtitle: AppConstants.changeToADifferentOrganization,
-              iconColor: context.isDark
-                  ? AppColors.navyIconColorDark
-                  : context.accentBlue,
-              iconBg: context.isDark
-                  ? AppColors.navyIconBgDark
-                  : context.accentBlue.withValues(alpha: 0.10),
-              onTap: () => context.pushNamed(RouteNames.organizationSelection),
+        child: Row(
+          mainAxisAlignment: .center,
+          mainAxisSize: .min,
+          children: [
+            Icon(
+              icon,
+              size: 15,
+              color: selected ? context.textPrimary : context.textSecondary,
             ),
-            Divider(
-              height: 1,
-              thickness: 1,
-              indent: 70,
-              color: context.navyBorder,
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: context.labelSmall.copyWith(
+                fontSize: 12,
+                fontWeight: selected ? .w700 : .w500,
+                color: selected ? context.textPrimary : context.textSecondary,
+              ),
             ),
           ],
-          BlocBuilder<ProfileBloc, ProfileState>(
-            buildWhen: (p, c) => p.logoutStatus != c.logoutStatus,
-            builder: (context, state) {
-              final isLoggingOut = state.logoutStatus == ApiStatus.LOADING;
-              return _ActionRow(
-                icon: Iconsax.logout,
-                label: AppConstants.logOut,
-                subtitle: AppConstants.signOutOfYourAccount,
-                iconColor: context.error,
-                iconBg: context.isDark
-                    ? AppColors.navyIconBgDark
-                    : context.error.withValues(alpha: 0.10),
-                isLoading: isLoggingOut,
-                onTap: isLoggingOut ? null : () => _confirmLogout(context),
-              );
-            },
-          ),
-        ],
+        ),
       ),
     );
   }
 }
+
+// ─── Generic action row (used for Log out) ─────────────────────────────────────
 
 class _ActionRow extends StatelessWidget {
   final IconData icon;
   final String label;
-  final String subtitle;
   final Color iconColor;
   final Color iconBg;
   final VoidCallback? onTap;
@@ -931,7 +923,6 @@ class _ActionRow extends StatelessWidget {
   const _ActionRow({
     required this.icon,
     required this.label,
-    required this.subtitle,
     required this.iconColor,
     required this.iconBg,
     required this.onTap,
@@ -942,47 +933,33 @@ class _ActionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: context.transparent,
-      borderRadius: .circular(16),
+      borderRadius: .circular(18),
       child: InkWell(
         onTap: onTap,
-        borderRadius: .circular(16),
+        borderRadius: .circular(18),
         splashColor: iconColor.withValues(alpha: 0.08),
         highlightColor: iconColor.withValues(alpha: 0.04),
         child: Padding(
-          padding: .symmetric(horizontal: 16, vertical: 15),
+          padding: .symmetric(horizontal: 16, vertical: 14),
           child: Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 38,
+                height: 38,
                 decoration: BoxDecoration(
                   color: iconBg,
                   borderRadius: .circular(12),
                 ),
-                child: Icon(icon, size: 18, color: iconColor),
+                child: Icon(icon, size: 17, color: iconColor),
               ),
               const SizedBox(width: 14),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Text(
-                      label,
-                      style: context.bodySmall.copyWith(
-                        fontWeight: .w700,
-                        color: context.textPrimary,
-                        fontSize: 13,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: context.labelSmall.copyWith(
-                        color: context.textSecondary,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  label,
+                  style: context.bodyMedium.copyWith(
+                    fontWeight: .w700,
+                    color: iconColor,
+                  ),
                 ),
               ),
               if (isLoading)
@@ -1043,28 +1020,23 @@ class _AppVersion extends StatelessWidget {
             : 'Version —';
         return Column(
           children: [
-            Icon(
-              Iconsax.info_circle,
-              size: 18,
-              color: context.textSecondary.withValues(alpha: 0.50),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              version,
-              textAlign: .center,
-              style: context.labelSmall.copyWith(
-                color: context.textSecondary.withValues(alpha: 0.55),
-                fontSize: 12,
-                letterSpacing: 0.3,
-              ),
-            ),
-            const SizedBox(height: 4),
             Text(
               'Mantic ERP',
               textAlign: .center,
               style: context.labelSmall.copyWith(
-                color: context.textSecondary.withValues(alpha: 0.35),
+                color: context.textSecondary.withValues(alpha: 0.55),
+                fontWeight: .w600,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              version,
+              textAlign: .center,
+              style: context.labelSmall.copyWith(
+                color: context.textSecondary.withValues(alpha: 0.40),
                 fontSize: 11,
+                letterSpacing: 0.2,
               ),
             ),
           ],

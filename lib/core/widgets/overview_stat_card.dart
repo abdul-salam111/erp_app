@@ -120,7 +120,7 @@ class _OverviewStatCardState extends State<OverviewStatCard> {
           children: [
             Expanded(
               child: Padding(
-                padding: .symmetric(horizontal: 10, vertical: 14),
+                padding: .symmetric(horizontal: 10, vertical: 10),
                 child: Row(
                   crossAxisAlignment: .center,
                   children: [
