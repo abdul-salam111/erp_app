@@ -1,6 +1,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import '../../../../core/constants/app_enums.dart';
 import '../../../../core/services/current_user.dart';
 import '../../../../core/theme/colors.dart';
@@ -330,8 +332,12 @@ class _MonthOverviewSectionState extends State<MonthOverviewSection>
               show: true,
               drawVerticalLine: false,
               horizontalInterval: interval,
-              getDrawingHorizontalLine: (_) =>
-                  FlLine(color: context.border, strokeWidth: 0.8),
+              getDrawingHorizontalLine: (_) => FlLine(
+                color: context.isDark
+                    ? AppColors.white.withValues(alpha: 0.02)
+                    : context.border,
+                strokeWidth: 0.8,
+              ),
             ),
             titlesData: FlTitlesData(
               leftTitles: AxisTitles(
@@ -478,23 +484,23 @@ class _MonthStatCardState extends State<_MonthStatCard> {
     final card = Container(
       clipBehavior: .hardEdge,
       decoration: BoxDecoration(
-        color: context.isDark
-            ? AppColors.navyIconBgDark
-            : context.surfaceElevated,
+        color: context.isDark ? context.navyCard : context.surfaceElevated,
         borderRadius: .circular(10),
         border: Border.all(
           color: context.isDark
-              ? AppColors.white.withValues(alpha: 0.06)
+              ? context.navyBorder
               : AppColors.black.withValues(alpha: 0.06),
-          width: 0.5,
+          width: context.isDark ? 1 : 0.5,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.07),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: context.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.07),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
       ),
       child: Row(
         crossAxisAlignment: .stretch,
@@ -631,72 +637,212 @@ class _MonthPickerDialogState extends State<_MonthPickerDialog> {
     _year = widget.initial.year;
   }
 
+  Widget _yearNavBtn(BuildContext context, IconData icon, VoidCallback onTap) {
+    final iconWidget = Icon(icon, size: 18, color: context.navyIconColor);
+    if (context.isDark) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: GlassContainer(
+          shape: const LiquidRoundedSuperellipse(borderRadius: 10),
+          child: SizedBox(width: 34, height: 34, child: Center(child: iconWidget)),
+        ),
+      );
+    }
+    return Material(
+      color: context.navyIconBg,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: context.navyBorder),
+      ),
+      clipBehavior: .antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: SizedBox(width: 34, height: 34, child: iconWidget),
+      ),
+    );
+  }
+
+  Widget _monthCell(BuildContext context, int i) {
+    final isSelected =
+        (i + 1) == widget.initial.month && _year == widget.initial.year;
+    final label = Text(
+      _months[i],
+      style: context.labelSmall.copyWith(
+        color: isSelected ? AppColors.white : context.textPrimary,
+        fontWeight: isSelected ? .w700 : .w600,
+        fontSize: 12,
+      ),
+    );
+
+    if (context.isDark) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => Navigator.pop(context, DateTime(_year, i + 1)),
+        child: GlassContainer(
+          shape: const LiquidRoundedSuperellipse(borderRadius: 10),
+          settings: isSelected
+              ? LiquidGlassSettings(
+                  glassColor: context.primary.withValues(alpha: 0.45),
+                )
+              : null,
+          alignment: .center,
+          child: label,
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () => Navigator.pop(context, DateTime(_year, i + 1)),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        alignment: .center,
+        decoration: BoxDecoration(
+          color: isSelected ? context.primary : context.navyIconBg,
+          borderRadius: .circular(10),
+          border: Border.all(
+            color: isSelected ? context.primary : context.navyBorder,
+          ),
+        ),
+        child: label,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: .circular(16)),
-      child: Padding(
-        padding: .all(20),
-        child: Column(
-          mainAxisSize: .min,
-          children: [
-            Row(
-              mainAxisAlignment: .center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.chevron_left),
-                  onPressed: () => setState(() => _year--),
-                ),
-                Text(
-                  '$_year',
-                  style: context.titleSmall.copyWith(fontWeight: .w700),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.chevron_right),
-                  onPressed: () => setState(() => _year++),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 12,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 2.2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemBuilder: (_, i) {
-                final isSelected =
-                    (i + 1) == widget.initial.month &&
-                    _year == widget.initial.year;
-                return GestureDetector(
-                  onTap: () => Navigator.pop(context, DateTime(_year, i + 1)),
-                  child: Container(
-                    alignment: .center,
-                    decoration: BoxDecoration(
-                      color: isSelected ? context.primary : context.surface,
-                      borderRadius: .circular(8),
-                      border: Border.all(
-                        color: isSelected ? context.primary : context.border,
+    final content = Padding(
+      padding: .all(18),
+      child: Column(
+        mainAxisSize: .min,
+        children: [
+          Row(
+            children: [
+              context.isDark
+                  ? GlassContainer(
+                      shape: const LiquidRoundedSuperellipse(borderRadius: 8),
+                      child: Padding(
+                        padding: .all(8),
+                        child: Icon(
+                          Iconsax.calendar_1,
+                          color: context.accentBlue,
+                          size: 18,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      padding: .all(8),
+                      decoration: BoxDecoration(
+                        color: context.navyIconBg,
+                        borderRadius: .circular(8),
+                      ),
+                      child: Icon(
+                        Iconsax.calendar_1,
+                        color: context.navyIconColor,
+                        size: 18,
                       ),
                     ),
-                    child: Text(
-                      _months[i],
-                      style: context.labelSmall.copyWith(
-                        color: isSelected ? context.white : context.textPrimary,
-                        fontWeight: isSelected ? .w700 : .w500,
-                      ),
-                    ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  AppConstants.selectMonthLabel,
+                  style: context.titleSmall.copyWith(
+                    fontWeight: .w700,
+                    fontSize: 17,
                   ),
-                );
-              },
+                ),
+              ),
+              context.isDark
+                  ? GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => Navigator.pop(context),
+                      child: GlassContainer(
+                        shape: const LiquidOval(),
+                        child: Padding(
+                          padding: .all(7),
+                          child: Icon(
+                            Icons.close_rounded,
+                            size: 18,
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Material(
+                      color: AppColors.transparent,
+                      shape: const CircleBorder(),
+                      child: InkWell(
+                        customBorder: const CircleBorder(),
+                        onTap: () => Navigator.pop(context),
+                        child: Padding(
+                          padding: .all(4),
+                          child: Icon(
+                            Icons.close_rounded,
+                            size: 18,
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Row(
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              _yearNavBtn(
+                context,
+                Icons.chevron_left_rounded,
+                () => setState(() => _year--),
+              ),
+              Text(
+                '$_year',
+                style: context.titleMedium.copyWith(
+                  fontWeight: .w800,
+                  fontSize: 18,
+                ),
+              ),
+              _yearNavBtn(
+                context,
+                Icons.chevron_right_rounded,
+                () => setState(() => _year++),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 12,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 2.0,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 12,
             ),
-          ],
-        ),
+            itemBuilder: (_, i) => _monthCell(context, i),
+          ),
+        ],
       ),
+    );
+
+    return Dialog(
+      backgroundColor: AppColors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 64),
+      child: context.isDark
+          ? GlassContainer(
+              shape: const LiquidRoundedSuperellipse(borderRadius: 20),
+              child: content,
+            )
+          : Material(
+              color: context.navyCard,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide(color: context.navyBorder),
+              ),
+              clipBehavior: .antiAlias,
+              child: content,
+            ),
     );
   }
 }

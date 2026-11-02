@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:mantic_erp_app/core/utils/utils_exports.dart';
 import 'package:mantic_erp_app/routes/route_exports.dart';
 import '../../../../../core/constants/const_exports.dart';
@@ -308,45 +307,72 @@ class _AdminSliverAppBar extends StatelessWidget {
           return Container(
             clipBehavior: .hardEdge,
             decoration: BoxDecoration(
-              color: context.isDark ? AppColors.navyHeaderDark : null,
-              gradient: context.isDark
-                  ? null
-                  : LinearGradient(
-                      colors: [
+              gradient: LinearGradient(
+                colors: context.isDark
+                    ? const [Color(0xFF14213A), Color(0xFF101A2D)]
+                    : [
                         context.primary,
                         context.primary.withValues(alpha: 0.72),
                       ],
-                      begin: .topLeft,
-                      end: .bottomRight,
-                    ),
+                begin: .topLeft,
+                end: .bottomRight,
+              ),
+              border: context.isDark
+                  ? const Border(
+                      bottom: BorderSide(color: Color(0xFF22304A)),
+                    )
+                  : null,
               borderRadius: .vertical(bottom: .circular(28 * t)),
             ),
             child: Stack(
               children: [
-                Positioned(
-                  right: -35,
-                  top: -20,
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      shape: .circle,
-                      color: AppColors.white.withValues(alpha: 0.07),
+                if (context.isDark)
+                  Positioned(
+                    top: -120,
+                    right: -90,
+                    child: IgnorePointer(
+                      child: Container(
+                        width: 300,
+                        height: 300,
+                        decoration: BoxDecoration(
+                          shape: .circle,
+                          gradient: RadialGradient(
+                            colors: [
+                              context.accentBlue.withValues(alpha: 0.28),
+                              context.accentBlue.withValues(alpha: 0),
+                            ],
+                            stops: const [0, 0.68],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                else ...[
+                  Positioned(
+                    right: -35,
+                    top: -20,
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        shape: .circle,
+                        color: AppColors.white.withValues(alpha: 0.07),
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  left: -25,
-                  bottom: -15,
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: .circle,
-                      color: AppColors.white.withValues(alpha: 0.05),
+                  Positioned(
+                    left: -25,
+                    bottom: -15,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        shape: .circle,
+                        color: AppColors.white.withValues(alpha: 0.05),
+                      ),
                     ),
                   ),
-                ),
+                ],
 
                 // ── Toolbar title — expanded state ──
                 Positioned(
@@ -462,12 +488,20 @@ class _AdminHeaderIconBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (context.isDark) {
-      return SizedBox(
-        width: 38,
-        height: 38,
-        child: GlassIconButton(
-          onPressed: onTap,
-          icon: Icon(icon, color: AppColors.white, size: 20),
+      return Material(
+        color: AppColors.white.withValues(alpha: 0.06),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(13),
+          side: BorderSide(color: AppColors.white.withValues(alpha: 0.10)),
+        ),
+        clipBehavior: .antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: SizedBox(
+            width: 38,
+            height: 38,
+            child: Icon(icon, color: AppColors.white, size: 20),
+          ),
         ),
       );
     }

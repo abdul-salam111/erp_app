@@ -142,6 +142,9 @@ class AppConstants {
   static const String toLabel = 'To';
   static const String status = 'Status';
   static const String noOrdersInThisPeriod = 'No orders in this period';
+  static const String pickFromToDateSubtitle =
+      'Pick a from and to date to see sales orders';
+  static const String selectMonthLabel = 'Select Month';
   static const String orderDetails = 'Order Details';
   static const String orderLabel = 'Order #';
   static const String totalQtyLabel = 'Total Qty';

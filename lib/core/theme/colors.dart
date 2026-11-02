@@ -86,7 +86,7 @@ class AppColors {
   // ============================================
 
   static const Color backgroundLight = white;
-  static const Color backgroundDark = Color(0xFF020914);
+  static const Color backgroundDark = Color(0xFF0B111C);
 
   /// Surface colors for cards, sheets
   static const Color surfaceLight = grey50;
@@ -224,12 +224,10 @@ class AppColors {
   /// headers, cards, icon chips and their borders (opt-in accent, not
   /// the app-wide surfaceElevated/border default).
   static const Color navyHeaderDark = Color(0xFF0E1F3E);
-  // Kept close to [backgroundDark] (0xFF020914) so cards read as a subtle
-  // lift off the page, not a separate bright slab.
-  static const Color navyCardDark = Color(0xFF0A1526);
+  static const Color navyCardDark = Color(0xFF131B29);
   static const Color navyIconBgDark = Color(0xFF0F172A);
   static const Color navyIconColorDark = Color(0xFF3F7DC8);
-  static Color navyBorderDark = Color(0xFF28394F).withAlpha(60); // ~24% opacity
+  static const Color navyBorderDark = Color(0xFF1E2940);
 
   static const Color surfaceHeader = Color(0xFFF5F5F5);
   static const Color surfaceHeaderDark = Color(0xFF2A3B54);

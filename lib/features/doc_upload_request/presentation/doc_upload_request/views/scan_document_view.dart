@@ -36,29 +36,19 @@ class _ScanDocumentBody extends StatefulWidget {
 class _ScanDocumentBodyState extends State<_ScanDocumentBody>
     with SingleTickerProviderStateMixin {
   late final _tabController = TabController(length: 2, vsync: this);
-  bool _showCompleted = false;
-  int _lastIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController.addListener(_onTabChanged);
-  }
-
-  void _onTabChanged() {
-    if (_tabController.index == _lastIndex) return;
-    _lastIndex = _tabController.index;
-    final completed = _lastIndex == 1;
-    setState(() => _showCompleted = completed);
-    context.read<DocUploadRequestBloc>().add(
-      DocUploadRequestsFetched(flgCompleted: completed),
-    );
-  }
+  // Separate bloc instance for the Completed tab — TabBarView keeps both
+  // tabs' sections alive at once (so they can be swiped between), and the
+  // shared singleton bloc can only hold one `requests` list at a time. The
+  // Pending tab keeps using the shared singleton (reused from the dashboard
+  // badge fetch); Completed gets its own so the two don't clobber each other.
+  late final _completedBloc = DocUploadRequestBloc(
+    getDocUploadRequestsUsecase: sl(),
+  );
 
   @override
   void dispose() {
-    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
+    _completedBloc.close();
     super.dispose();
   }
 
@@ -84,12 +74,21 @@ class _ScanDocumentBodyState extends State<_ScanDocumentBody>
         }
       },
       child: Scaffold(
-        backgroundColor: context.surface,
+        backgroundColor: context.isDark ? context.background : context.surface,
         appBar: CustomAppBar(
           title: 'Documents',
           bottom: DocRequestTabBar(controller: _tabController),
         ),
-        body: PendingDocRequestsSection(showCompleted: _showCompleted),
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            const PendingDocRequestsSection(showCompleted: false),
+            BlocProvider.value(
+              value: _completedBloc,
+              child: const PendingDocRequestsSection(showCompleted: true),
+            ),
+          ],
+        ),
       ),
     );
   }

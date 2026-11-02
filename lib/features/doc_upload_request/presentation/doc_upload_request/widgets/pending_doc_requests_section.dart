@@ -24,14 +24,15 @@ class _PendingDocRequestsSectionState extends State<PendingDocRequestsSection> {
   @override
   void initState() {
     super.initState();
-    // The bloc is a shared singleton — if it's already holding a pending
-    // list (e.g. fetched by the dashboard badge), reuse it instead of
-    // firing a redundant request.
+    // The Pending tab's bloc is a shared singleton — if it's already
+    // holding a matching list (e.g. fetched by the dashboard badge), reuse
+    // it instead of firing a redundant request.
     final bloc = context.read<DocUploadRequestBloc>();
-    final alreadyHasPending =
-        bloc.state.apiStatus != .INITIAL && !bloc.state.flgCompleted;
-    if (!alreadyHasPending) {
-      bloc.add(const DocUploadRequestsFetched(flgCompleted: false));
+    final alreadyLoaded =
+        bloc.state.apiStatus != .INITIAL &&
+        bloc.state.flgCompleted == widget.showCompleted;
+    if (!alreadyLoaded) {
+      bloc.add(DocUploadRequestsFetched(flgCompleted: widget.showCompleted));
     }
   }
 
@@ -282,7 +283,7 @@ class DocRequestTabBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: context.isDark ? context.background : AppColors.primaryDark,
+      color: context.isDark ? AppColors.navyHeaderDark : AppColors.primaryDark,
       child: TabBar(
         controller: controller,
         indicatorColor: context.isDark ? context.white : context.primary,

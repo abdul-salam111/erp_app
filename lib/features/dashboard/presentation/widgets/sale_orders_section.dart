@@ -345,44 +345,60 @@ class _DateButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final row = Padding(
+      padding: .symmetric(horizontal: 12, vertical: 10),
+      child: Row(
+        children: [
+          Icon(Iconsax.calendar_1, size: 16, color: context.accentBlue),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: .start,
+            mainAxisSize: .min,
+            children: [
+              Text(
+                label,
+                style: context.labelSmall.copyWith(
+                  color: context.textSecondary,
+                  fontWeight: .w600,
+                  fontSize: 12,
+                  height: 1,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                date.format('dd-MMM-yyyy'),
+                style: context.labelSmall.copyWith(
+                  color: context.textPrimary,
+                  fontWeight: .w700,
+                  fontSize: 14,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    if (context.isDark) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: GlassContainer(
+          shape: const LiquidRoundedSuperellipse(borderRadius: 10),
+          child: row,
+        ),
+      );
+    }
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: .symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
-          color: context.isDark ? AppColors.navyIconBgDark : context.surface,
-          borderRadius: .circular(8),
+          color: context.surface,
+          borderRadius: .circular(10),
           border: Border.all(color: context.navyBorder),
         ),
-        child: Row(
-          children: [
-            Icon(Iconsax.calendar_1, size: 14, color: context.accentBlue),
-            const SizedBox(width: 6),
-            Column(
-              crossAxisAlignment: .start,
-              mainAxisSize: .min,
-              children: [
-                Text(
-                  label,
-                  style: context.labelSmall.copyWith(
-                    color: context.textSecondary,
-                    fontSize: 9,
-                    height: 1,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  date.format('dd-MMM-yyyy'),
-                  style: context.labelSmall.copyWith(
-                    fontWeight: .w600,
-                    fontSize: 11,
-                    height: 1,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+        child: row,
       ),
     );
   }
@@ -451,26 +467,49 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
         children: [
           Row(
             children: [
-              Container(
-                padding: .all(7),
-                decoration: BoxDecoration(
-                  color: context.navyIconBg,
-                  borderRadius: .circular(8),
-                ),
-                child: Icon(
-                  Iconsax.calendar_1,
-                  color: context.navyIconColor,
-                  size: 16,
-                ),
-              ),
+              context.isDark
+                  ? GlassContainer(
+                      shape: const LiquidRoundedSuperellipse(borderRadius: 8),
+                      child: Padding(
+                        padding: .all(8),
+                        child: Icon(
+                          Iconsax.calendar_1,
+                          color: context.accentBlue,
+                          size: 18,
+                        ),
+                      ),
+                    )
+                  : Container(
+                      padding: .all(8),
+                      decoration: BoxDecoration(
+                        color: context.navyIconBg,
+                        borderRadius: .circular(8),
+                      ),
+                      child: Icon(
+                        Iconsax.calendar_1,
+                        color: context.navyIconColor,
+                        size: 18,
+                      ),
+                    ),
               const SizedBox(width: 10),
               Text(
                 AppConstants.dateLabel,
-                style: context.titleSmall.copyWith(fontWeight: .w700),
+                style: context.titleSmall.copyWith(
+                  fontWeight: .w700,
+                  fontSize: 17,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 6),
+          Text(
+            AppConstants.pickFromToDateSubtitle,
+            style: context.labelSmall.copyWith(
+              color: context.textSecondary,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 18),
           _DateButton(
             label: AppConstants.fromLabel,
             date: _from,
@@ -493,6 +532,7 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                   style: context.labelSmall.copyWith(
                     color: context.textSecondary,
                     fontWeight: .w600,
+                    fontSize: 14,
                   ),
                 ),
               ),
@@ -506,14 +546,15 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                         shape: const LiquidRoundedSuperellipse(borderRadius: 8),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                            horizontal: 18,
+                            vertical: 10,
                           ),
                           child: Text(
                             AppConstants.applyBtn,
                             style: context.labelSmall.copyWith(
                               color: context.accentBlue,
                               fontWeight: .w700,
+                              fontSize: 14,
                             ),
                           ),
                         ),
@@ -523,7 +564,7 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                       onTap: () =>
                           Navigator.pop(context, _DateRange(_from, _to)),
                       child: Container(
-                        padding: .symmetric(horizontal: 16, vertical: 8),
+                        padding: .symmetric(horizontal: 18, vertical: 10),
                         decoration: BoxDecoration(
                           color: context.primary,
                           borderRadius: .circular(8),
@@ -533,6 +574,7 @@ class _DateRangePickerDialogState extends State<_DateRangePickerDialog> {
                           style: context.labelSmall.copyWith(
                             color: AppColors.white,
                             fontWeight: .w700,
+                            fontSize: 14,
                           ),
                         ),
                       ),
