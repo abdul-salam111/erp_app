@@ -51,14 +51,25 @@ class ChooseDashboardView extends StatelessWidget {
                     ),
                   )
                 : SliverList.separated(
-                    itemCount: roles.length,
+                    itemCount: roles.length + 1,
                     separatorBuilder: (_, __) =>
                         SizedBox(height: context.gridSpacing + 4),
-                    itemBuilder: (context, i) => _RoleCard(
-                      roleName: roles[i],
-                      color: _roleColors[i % _roleColors.length],
-                      icon: _roleIcons[i % _roleIcons.length],
-                    ),
+                    itemBuilder: (context, i) {
+                      if (i == roles.length) {
+                        return _RoleCard(
+                          roleName: 'Employee Portal',
+                          color: AppColors.creditGreen,
+                          icon: Iconsax.user_octagon,
+                          routeName: RouteNames.employee_dashboard,
+                        );
+                      }
+                      return _RoleCard(
+                        roleName: roles[i],
+                        color: _roleColors[i % _roleColors.length],
+                        icon: _roleIcons[i % _roleIcons.length],
+                        routeName: RouteNames.dashboard,
+                      );
+                    },
                   ),
           ),
         ],
@@ -158,11 +169,13 @@ class _RoleCard extends StatelessWidget {
   final String roleName;
   final Color color;
   final IconData icon;
+  final String routeName;
 
   const _RoleCard({
     required this.roleName,
     required this.color,
     required this.icon,
+    required this.routeName,
   });
 
   @override
@@ -187,7 +200,7 @@ class _RoleCard extends StatelessWidget {
         color: context.surface,
         borderRadius: .circular(16),
         child: InkWell(
-          onTap: () => context.goNamed(RouteNames.dashboard),
+          onTap: () => context.goNamed(routeName),
           borderRadius: .circular(16),
           child: ClipRRect(
             borderRadius: .circular(16),
