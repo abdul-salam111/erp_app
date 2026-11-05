@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -1343,127 +1344,131 @@ class _OrdersVsDispatchedCardState extends State<_OrdersVsDispatchedCard> {
         children: [
           SizedBox(
             height: 220,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              scrollDirection: .horizontal,
-              child: SizedBox(
-                width: chartWidth,
-                // Extra top padding so the topmost y-axis label has room to
-                // render without being clipped against the chart's hard
-                // height bound.
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: BarChart(
-                    BarChartData(
-                      maxY: maxY,
-                      minY: 0,
-                      barTouchData: BarTouchData(
-                        enabled: false,
-                        touchTooltipData: BarTouchTooltipData(
-                          getTooltipColor: (_) => Colors.transparent,
-                          tooltipPadding: EdgeInsets.zero,
-                          tooltipMargin: 4,
-                          fitInsideVertically: true,
-                          getTooltipItem: (group, groupIndex, rod, rodIndex) =>
-                              BarTooltipItem(
-                                rod.toY.toStringAsFixed(0),
-                                TextStyle(
-                                  color: rod.color,
-                                  fontWeight: .w700,
-                                  fontSize: 9,
-                                ),
-                              ),
-                        ),
-                      ),
-                      gridData: FlGridData(
-                        drawVerticalLine: false,
-                        getDrawingHorizontalLine: (_) => FlLine(
-                          color: context.isDark
-                              ? context.navyBorder
-                              : context.divider,
-                          strokeWidth: 1,
-                        ),
-                      ),
-                      borderData: FlBorderData(show: false),
-                      titlesData: FlTitlesData(
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 28,
-                            getTitlesWidget: (v, _) => Text(
-                              v.toStringAsFixed(0),
-                              style: TextStyle(
-                                fontSize: 9,
-                                fontWeight: .w600,
-                                color: context.textSecondary,
-                              ),
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  controller: _scrollController,
+                  scrollDirection: .horizontal,
+                  child: SizedBox(
+                    width: chartWidth,
+                    // Extra top padding so the topmost y-axis label has room
+                    // to render without being clipped against the chart's
+                    // hard height bound.
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: BarChart(
+                        BarChartData(
+                          maxY: maxY,
+                          minY: 0,
+                          barTouchData: BarTouchData(
+                            enabled: false,
+                            touchTooltipData: BarTouchTooltipData(
+                              getTooltipColor: (_) => Colors.transparent,
+                              tooltipPadding: EdgeInsets.zero,
+                              tooltipMargin: 4,
+                              fitInsideVertically: true,
+                              getTooltipItem:
+                                  (group, groupIndex, rod, rodIndex) =>
+                                      BarTooltipItem(
+                                        rod.toY.toStringAsFixed(0),
+                                        TextStyle(
+                                          color: rod.color,
+                                          fontWeight: .w700,
+                                          fontSize: 9,
+                                        ),
+                                      ),
                             ),
                           ),
-                        ),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 32,
-                            getTitlesWidget: (v, _) {
-                              final i = v.toInt();
-                              if (i < 0 || i >= weeks.length) {
-                                return const SizedBox.shrink();
-                              }
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 6),
-                                child: Text(
-                                  weeks[i].format('MMM dd'),
+                          gridData: FlGridData(
+                            drawVerticalLine: false,
+                            getDrawingHorizontalLine: (_) => FlLine(
+                              color: context.isDark
+                                  ? context.navyBorder
+                                  : context.divider,
+                              strokeWidth: 1,
+                            ),
+                          ),
+                          borderData: FlBorderData(show: false),
+                          titlesData: FlTitlesData(
+                            rightTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            topTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                reservedSize: 28,
+                                getTitlesWidget: (v, _) => Text(
+                                  v.toStringAsFixed(0),
                                   style: TextStyle(
-                                    fontSize: 8.5,
+                                    fontSize: 9,
                                     fontWeight: .w600,
                                     color: context.textSecondary,
                                   ),
                                 ),
-                              );
-                            },
+                              ),
+                            ),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                reservedSize: 32,
+                                getTitlesWidget: (v, _) {
+                                  final i = v.toInt();
+                                  if (i < 0 || i >= weeks.length) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 6),
+                                    child: Text(
+                                      weeks[i].format('MMM dd'),
+                                      style: TextStyle(
+                                        fontSize: 8.5,
+                                        fontWeight: .w600,
+                                        color: context.textSecondary,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
+                          barGroups: [
+                            for (var i = 0; i < weeks.length; i++)
+                              BarChartGroupData(
+                                x: i,
+                                barsSpace: 4,
+                                showingTooltipIndicators: const [0, 1],
+                                barRods: [
+                                  BarChartRodData(
+                                    toY: orders[i],
+                                    color: context.accentBlue,
+                                    width: _barWidth,
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(3),
+                                    ),
+                                  ),
+                                  BarChartRodData(
+                                    toY: dispatched[i],
+                                    color: AppColors.greenDark,
+                                    width: _barWidth,
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(3),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
                         ),
                       ),
-                      barGroups: [
-                        for (var i = 0; i < weeks.length; i++)
-                          BarChartGroupData(
-                            x: i,
-                            barsSpace: 4,
-                            showingTooltipIndicators: const [0, 1],
-                            barRods: [
-                              BarChartRodData(
-                                toY: orders[i],
-                                color: context.accentBlue,
-                                width: _barWidth,
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(3),
-                                ),
-                              ),
-                              BarChartRodData(
-                                toY: dispatched[i],
-                                color: AppColors.greenDark,
-                                width: _barWidth,
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(3),
-                                ),
-                              ),
-                            ],
-                          ),
-                      ],
                     ),
                   ),
                 ),
-              ),
+                Positioned(right: 10, top: 8, child: _ScrollHintChip()),
+              ],
             ),
           ),
-          heightBox(8),
-          _ScrollHint(controller: _scrollController),
           heightBox(10),
           Row(
             mainAxisAlignment: .center,
@@ -1479,68 +1484,45 @@ class _OrdersVsDispatchedCardState extends State<_OrdersVsDispatchedCard> {
   }
 }
 
-// A custom scroll-position track/thumb — the stock Material [Scrollbar]
-// rendered as a flat line flush under the x-axis and read as part of the
-// chart rather than a control, so this draws a clearly separate, rounded
-// pill indicator instead.
-class _ScrollHint extends StatelessWidget {
-  final ScrollController controller;
-
-  const _ScrollHint({required this.controller});
+// Same "Swipe" hint chip used on the Bank & Cash Position hero chart
+// (bank_and_cash_position/widgets/hero_card.dart) — kept local since that
+// one is private to its own file.
+class _ScrollHintChip extends StatelessWidget {
+  const _ScrollHintChip();
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final trackWidth = constraints.maxWidth;
-        return AnimatedBuilder(
-          animation: controller,
-          builder: (context, _) {
-            var thumbWidth = trackWidth;
-            var thumbLeft = 0.0;
-            if (controller.hasClients &&
-                controller.position.hasContentDimensions) {
-              final viewport = controller.position.viewportDimension;
-              final maxExtent = controller.position.maxScrollExtent;
-              final total = viewport + maxExtent;
-              if (total > 0) {
-                thumbWidth = ((viewport / total) * trackWidth).clamp(
-                  32.0,
-                  trackWidth,
-                );
-                final travel = trackWidth - thumbWidth;
-                thumbLeft = maxExtent == 0
-                    ? 0
-                    : (controller.offset / maxExtent) * travel;
-              }
-            }
-            return Container(
-              height: 5,
-              decoration: BoxDecoration(
-                color: context.navyBorder,
-                borderRadius: BorderRadius.circular(6),
+    final accent = context.accentBlue;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: accent.withValues(alpha: 0.30)),
+      ),
+      child: Row(
+        mainAxisSize: .min,
+        children: [
+          Icon(Icons.swipe_left_alt_outlined, size: 14, color: accent)
+              .animate(onPlay: (c) => c.repeat(reverse: true))
+              .moveX(
+                begin: 4,
+                end: -4,
+                duration: 900.ms,
+                curve: Curves.easeInOut,
               ),
-              child: Stack(
-                children: [
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 80),
-                    left: thumbLeft,
-                    width: thumbWidth,
-                    top: 0,
-                    bottom: 0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: context.accentBlue,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+          widthBox(5),
+          Text(
+            'Scroll',
+            style: context.labelSmall.copyWith(
+              color: accent,
+              fontSize: 10.5,
+              fontWeight: .w700,
+              letterSpacing: 0.4,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
