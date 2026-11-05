@@ -24,6 +24,7 @@ class CustomTextFormField extends StatefulWidget {
   final double? fieldHeight;
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? hintStyle;
+  final TextStyle? textStyle;
   final Iterable<String>? autofillHints;
   final TextInputAction? textInputAction;
   final void Function(String)? onFieldSubmitted;
@@ -50,6 +51,7 @@ class CustomTextFormField extends StatefulWidget {
     this.fieldHeight = 56,
     this.contentPadding,
     this.hintStyle,
+    this.textStyle,
     this.autofillHints,
     this.textInputAction,
     this.onFieldSubmitted,
@@ -117,7 +119,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
             autofocus: false,
             textCapitalization: TextCapitalization.words,
             readOnly: widget.readOnly,
-            style: context.bodySmall.copyWith(color: context.textPrimary),
+            style:
+                widget.textStyle ??
+                context.bodySmall.copyWith(color: context.textPrimary),
             controller: widget.controller,
             obscureText: isObscure,
             keyboardType: widget.keyboardType,

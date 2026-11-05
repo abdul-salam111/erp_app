@@ -280,8 +280,15 @@ class _LoginCardState extends State<_LoginCard> {
                   return CustomTextFormField(
                     prefixIcon: Iconsax.sms,
                     label: AppConstants.emailLabel,
+                    labelFontSize: 14,
                     keyboardType: TextInputType.emailAddress,
                     hintText: AppConstants.enterYourEmailHint,
+                    textStyle: context.bodyMedium.copyWith(
+                      color: context.textPrimary,
+                    ),
+                    hintStyle: context.bodyMedium.copyWith(
+                      color: context.textSecondary,
+                    ),
                     validator: Validator.validateEmail,
                     autofillHints: const [
                       AutofillHints.username,
@@ -307,7 +314,14 @@ class _LoginCardState extends State<_LoginCard> {
                     obscureText: true,
                     prefixIcon: Iconsax.lock,
                     label: AppConstants.passwordLabel,
+                    labelFontSize: 14,
                     hintText: AppConstants.enterYourPasswordHint,
+                    textStyle: context.bodyMedium.copyWith(
+                      color: context.textPrimary,
+                    ),
+                    hintStyle: context.bodyMedium.copyWith(
+                      color: context.textSecondary,
+                    ),
                     keyboardType: TextInputType.visiblePassword,
                     validator: Validator.validatePassword,
                     autofillHints: const [AutofillHints.password],
