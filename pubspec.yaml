@@ -63,6 +63,7 @@ dependencies:
   youtube_player_flutter: ^10.0.1
   liquid_glass_widgets: ^1.6.1
   reorderable_grid_view: ^2.2.8
+  syncfusion_flutter_charts: ^35.1.43
 
 
   

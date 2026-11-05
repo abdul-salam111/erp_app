@@ -218,6 +218,11 @@ class AppRoutes {
         builder: (context, state) => const AnalyticsView(),
       ),
       GoRoute(
+        path: RoutePaths.sales_analytics,
+        name: RouteNames.sales_analytics,
+        builder: (context, state) => const SalesAnalyticsView(),
+      ),
+      GoRoute(
         path: RoutePaths.users,
         name: RouteNames.users,
         builder: (context, state) => const UsersView(),

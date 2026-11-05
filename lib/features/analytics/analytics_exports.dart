@@ -11,3 +11,6 @@ export 'presentation/analytics/blocs/analytics_bloc.dart';
 export 'presentation/analytics/blocs/analytics_event.dart';
 export 'presentation/analytics/blocs/analytics_state.dart';
 export 'presentation/analytics/views/analytics_view.dart';
+
+// Presentation — sales analytics screen
+export 'presentation/sales_analytics/views/sales_analytics_view.dart';
