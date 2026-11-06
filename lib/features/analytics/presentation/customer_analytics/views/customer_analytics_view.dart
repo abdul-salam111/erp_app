@@ -76,9 +76,51 @@ class _CustomerAnalyticsViewState extends State<CustomerAnalyticsView> {
               child: _CustomerLifecycleCard(),
             ),
             heightBox(context.gridSpacing * 2),
+            const _TopCustomersCard(),
+            heightBox(context.gridSpacing * 2),
             _ScrollReveal(
               placeholderHeight: 360,
               child: _CustomerTrendCard(from: _fromDate, to: _toDate),
+            ),
+            heightBox(context.gridSpacing * 2),
+            const _LtvCard(),
+            heightBox(context.gridSpacing * 2),
+            _ScrollReveal(
+              placeholderHeight: 300,
+              child: _MonthlyBarCard(
+                title: 'Month-wise New Customers Achieved',
+                tag: 'Selected period',
+                icon: Iconsax.user_add,
+                barColor: AppColors.accentBlue,
+                captionPrefix: 'Count of first-ever purchasers by month',
+                from: _fromDate,
+                to: _toDate,
+                valueFor: (i) => const <double>[0, 1, 0, 2, 1, 1, 0][i % 7],
+              ),
+            ),
+            heightBox(context.gridSpacing * 2),
+            _ScrollReveal(
+              placeholderHeight: 300,
+              child: _MonthlyBarCard(
+                title: 'Month-wise New Customer Sales',
+                tag: 'Period sales',
+                icon: Iconsax.money_recive,
+                barColor: AppColors.greenDark,
+                captionPrefix:
+                    'Net sales from customers whose first invoice falls in that month',
+                from: _fromDate,
+                to: _toDate,
+                compactAxis: true,
+                valueFor: (i) => const <double>[
+                  0,
+                  8450000,
+                  0,
+                  22018989,
+                  6300000,
+                  14750000,
+                  0,
+                ][i % 7],
+              ),
             ),
             heightBox(40),
           ],
@@ -303,7 +345,10 @@ class _StatCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Column(
         crossAxisAlignment: .start,
-        mainAxisSize: .min,
+        // Fill the fixed card height and push the label to the bottom, so
+        // the leftover space becomes a gap under the value instead of dead
+        // space below the label.
+        mainAxisAlignment: .spaceBetween,
         children: [
           Row(
             crossAxisAlignment: .center,
@@ -337,7 +382,6 @@ class _StatCard extends StatelessWidget {
               _DeltaBadge(pct: meta.deltaPct),
             ],
           ),
-          heightBox(4),
           Text(
             meta.label,
             style: context.labelSmall.copyWith(
@@ -1095,6 +1139,461 @@ class _LegendDot extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ─── Month-wise bar charts (fl_chart — dummy data) ─────────────────────────
+
+class _MonthlyBarCard extends StatelessWidget {
+  final String title;
+  final String tag;
+  final IconData icon;
+  final Color barColor;
+  final String captionPrefix;
+  final DateTime from;
+  final DateTime to;
+  final double Function(int index) valueFor;
+
+  /// Money axes need compacting ("22M") — raw rupee values eat the chart
+  /// width on a phone. Counts stay as plain whole numbers.
+  final bool compactAxis;
+
+  const _MonthlyBarCard({
+    required this.title,
+    required this.tag,
+    required this.icon,
+    required this.barColor,
+    required this.captionPrefix,
+    required this.from,
+    required this.to,
+    required this.valueFor,
+    this.compactAxis = false,
+  });
+
+  List<DateTime> _months() {
+    final months = <DateTime>[];
+    var d = DateTime(from.year, from.month);
+    final last = DateTime(to.year, to.month);
+    while (!d.isAfter(last)) {
+      months.add(d);
+      d = DateTime(d.year, d.month + 1);
+    }
+    return months.isEmpty ? [DateTime(from.year, from.month)] : months;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final months = _months();
+    final values = List.generate(months.length, valueFor);
+    final total = values.fold(0.0, (a, b) => a + b);
+
+    final maxVal = values.fold(0.0, (a, b) => a > b ? a : b);
+    final maxY = maxVal <= 0 ? 4.0 : (maxVal * 1.25).ceilToDouble();
+    // Whole-number ticks for counts — a "0.5 customers" gridline reads wrong.
+    final step = compactAxis ? maxY / 4 : (maxY / 4).ceilToDouble();
+
+    return _SectionCard(
+      title: title,
+      icon: icon,
+      trailing: _TagChip(label: tag),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 200,
+            child: Padding(
+              // Headroom so the topmost y-axis label isn't clipped.
+              padding: const EdgeInsets.only(top: 12),
+              child: BarChart(
+                BarChartData(
+                  maxY: maxY,
+                  minY: 0,
+                  alignment: .spaceAround,
+                  barTouchData: BarTouchData(
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipColor: (_) =>
+                          context.accentBlue.withValues(alpha: 0.85),
+                      getTooltipItem: (group, _, rod, _) => BarTooltipItem(
+                        rod.toY.withCommas,
+                        const TextStyle(
+                          color: Colors.white,
+                          fontWeight: .w700,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ),
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    horizontalInterval: step,
+                    getDrawingHorizontalLine: (_) => FlLine(
+                      color: context.isDark
+                          ? AppColors.white.withValues(alpha: 0.05)
+                          : context.border,
+                      strokeWidth: 0.8,
+                    ),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  titlesData: FlTitlesData(
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: compactAxis ? 36 : 24,
+                        interval: step,
+                        getTitlesWidget: (v, _) => Text(
+                          compactAxis
+                              ? v.toCompact(decimals: 0)
+                              : v.toStringAsFixed(0),
+                          style: TextStyle(
+                            fontSize: 9,
+                            fontWeight: .w600,
+                            color: context.textSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 26,
+                        interval: 1,
+                        getTitlesWidget: (v, _) {
+                          final i = v.round();
+                          if (i < 0 || i >= months.length) {
+                            return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: Text(
+                              months[i].format('MMM yy'),
+                              style: TextStyle(
+                                fontSize: 8.5,
+                                fontWeight: .w600,
+                                color: context.textSecondary,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  barGroups: [
+                    for (var i = 0; i < months.length; i++)
+                      BarChartGroupData(
+                        x: i,
+                        barRods: [
+                          BarChartRodData(
+                            toY: values[i],
+                            color: barColor,
+                            width: 16,
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(3),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          heightBox(10),
+          Text(
+            '$captionPrefix · Total ${total.withCommas}',
+            textAlign: .center,
+            style: context.labelSmall.copyWith(
+              color: context.textSecondary,
+              fontSize: 10.5,
+              height: 1.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Top 5 customers (dummy data) ──────────────────────────────────────────
+
+class _CustomerRow {
+  final String name;
+  final String sales;
+  final String pct;
+
+  const _CustomerRow(this.name, this.sales, this.pct);
+}
+
+const _topCustomers = <_CustomerRow>[
+  _CustomerRow('Pepsico Int', '73,172,581', '37.6%'),
+  _CustomerRow('HR Trader & Comission', '48,762,870', '25.1%'),
+  _CustomerRow(
+    'King Choice General Trading L.L.C Dubai Uae',
+    '22,014,889',
+    '11.3%',
+  ),
+  _CustomerRow('Herat Import & Export Inc Canada', '11,922,864', '6.1%'),
+  _CustomerRow('Usman Nagori Karachi', '10,510,360', '5.4%'),
+];
+
+class _TopCustomersCard extends StatelessWidget {
+  const _TopCustomersCard();
+
+  static const _salesColWidth = 90.0;
+  static const _pctColWidth = 42.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final headerStyle = context.labelSmall.copyWith(
+      color: context.textSecondary,
+      fontSize: 11,
+      fontWeight: .w600,
+    );
+
+    return _SectionCard(
+      title: 'Top 5 Customers by Sales',
+      icon: Iconsax.profile_2user,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text('Customer', style: headerStyle)),
+              SizedBox(
+                width: _salesColWidth,
+                child: Text('Sales (Rs)', textAlign: .end, style: headerStyle),
+              ),
+              widthBox(8),
+              SizedBox(
+                width: _pctColWidth,
+                child: Text('%', textAlign: .end, style: headerStyle),
+              ),
+            ],
+          ),
+          heightBox(8),
+          Divider(height: 1, color: context.navyBorder),
+          for (final c in _topCustomers) ...[
+            heightBox(10),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    c.name,
+                    style: context.bodySmall.copyWith(
+                      color: context.textPrimary,
+                      fontWeight: .w600,
+                    ),
+                    maxLines: 1,
+                    overflow: .ellipsis,
+                  ),
+                ),
+                SizedBox(
+                  width: _salesColWidth,
+                  child: Text(
+                    c.sales,
+                    textAlign: .end,
+                    style: context.bodySmall.copyWith(
+                      color: context.textPrimary,
+                      fontWeight: .w700,
+                    ),
+                    maxLines: 1,
+                    overflow: .ellipsis,
+                  ),
+                ),
+                widthBox(8),
+                SizedBox(
+                  width: _pctColWidth,
+                  child: Text(
+                    c.pct,
+                    textAlign: .end,
+                    style: context.labelSmall.copyWith(
+                      color: context.textSecondary,
+                      fontSize: 11,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (c != _topCustomers.last) ...[
+              heightBox(10),
+              Divider(height: 1, color: context.navyBorder),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Customer lifetime value (dummy data) ──────────────────────────────────
+
+class _LtvRow {
+  final String name;
+  final double value;
+
+  const _LtvRow(this.name, this.value);
+}
+
+const _ltvTotal = 1781412326.0;
+const _ltvAverage = 84829158.0;
+const _ltvHighest = 811106116.0;
+
+const _topByLtv = <_LtvRow>[
+  _LtvRow('Pepsico Int', 811106116),
+  _LtvRow('HR Trader & Comission', 556241345),
+  _LtvRow('Usman Nagori Karachi', 81898064),
+  _LtvRow('Akhtar & Ibrar Nagori', 75611869),
+  _LtvRow('Herat Import & Export Inc Canada', 42266170),
+];
+
+class _LtvCard extends StatelessWidget {
+  const _LtvCard();
+
+  static const _valueColWidth = 96.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SectionCard(
+      title: 'Customer Lifetime Value (LTV)',
+      icon: Iconsax.wallet_money,
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: _LtvTile(
+                  label: 'Total LTV',
+                  value: _ltvTotal,
+                  color: AppColors.accentBlue,
+                ),
+              ),
+              widthBox(8),
+              Expanded(
+                child: _LtvTile(
+                  label: 'Avg. LTV',
+                  value: _ltvAverage,
+                  color: AppColors.greenDark,
+                ),
+              ),
+              widthBox(8),
+              Expanded(
+                child: _LtvTile(
+                  label: 'Highest',
+                  value: _ltvHighest,
+                  color: AppColors.marigold,
+                ),
+              ),
+            ],
+          ),
+          heightBox(16),
+          Text(
+            'Top 5 by LTV',
+            style: context.labelSmall.copyWith(
+              color: context.textSecondary,
+              fontSize: 11,
+              fontWeight: .w600,
+            ),
+          ),
+          heightBox(8),
+          Divider(height: 1, color: context.navyBorder),
+          for (final r in _topByLtv) ...[
+            heightBox(10),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    r.name,
+                    style: context.bodySmall.copyWith(
+                      color: context.textPrimary,
+                      fontWeight: .w600,
+                    ),
+                    maxLines: 1,
+                    overflow: .ellipsis,
+                  ),
+                ),
+                widthBox(8),
+                SizedBox(
+                  width: _valueColWidth,
+                  child: Text(
+                    r.value.withCommas,
+                    textAlign: .end,
+                    style: context.bodySmall.copyWith(
+                      color: context.textPrimary,
+                      fontWeight: .w700,
+                    ),
+                    maxLines: 1,
+                    overflow: .ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            if (r != _topByLtv.last) ...[
+              heightBox(10),
+              Divider(height: 1, color: context.navyBorder),
+            ],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _LtvTile extends StatelessWidget {
+  final String label;
+  final double value;
+  final Color color;
+
+  const _LtvTile({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: context.isDark ? 0.16 : 0.10),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: .start,
+        mainAxisSize: .min,
+        children: [
+          Text(
+            label,
+            style: context.labelSmall.copyWith(
+              color: color,
+              fontSize: 10,
+              fontWeight: .w600,
+            ),
+            maxLines: 1,
+            overflow: .ellipsis,
+          ),
+          heightBox(5),
+          // Compacted because the full figure (1,781,412,326) can't fit in a
+          // third of a phone's width — the Top 5 rows below carry the exact
+          // numbers.
+          Text(
+            value.toCompact(decimals: 1),
+            style: context.bodyMedium.copyWith(
+              color: context.textPrimary,
+              fontWeight: .w700,
+              fontSize: 14,
+              height: 1,
+            ),
+            maxLines: 1,
+            overflow: .ellipsis,
+          ),
+        ],
       ),
     );
   }

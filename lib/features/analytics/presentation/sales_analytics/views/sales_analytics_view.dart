@@ -388,7 +388,10 @@ class _StatCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Column(
         crossAxisAlignment: .start,
-        mainAxisSize: .min,
+        // Fill the fixed card height and push the label to the bottom, so
+        // the leftover space becomes a gap under the value instead of dead
+        // space below the label.
+        mainAxisAlignment: .spaceBetween,
         children: [
           Row(
             crossAxisAlignment: .center,
@@ -426,7 +429,6 @@ class _StatCard extends StatelessWidget {
               ],
             ],
           ),
-          heightBox(4),
           Text(
             meta.label,
             style: context.labelSmall.copyWith(
