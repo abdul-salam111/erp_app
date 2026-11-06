@@ -352,7 +352,7 @@ class _StatsGrid extends StatelessWidget {
   // aspect ratio left a lot of empty space once the delta badge moved out
   // of the text column.
   static double _cardHeight(BuildContext context) =>
-      Responsive.value<double>(context, phone: 60, tablet: 64, ipad: 68);
+      Responsive.value<double>(context, phone: 78, tablet: 82, ipad: 86);
 
   @override
   Widget build(BuildContext context) {
@@ -385,67 +385,58 @@ class _StatCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.navyBorder),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Stack(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: Column(
+        crossAxisAlignment: .start,
+        mainAxisSize: .min,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 44),
-            child: Row(
-              crossAxisAlignment: .center,
-              children: [
-                Container(
-                  width: 34,
-                  height: 34,
-                  decoration: BoxDecoration(
-                    color: meta.color.withValues(
-                      alpha: context.isDark ? 0.22 : 0.12,
-                    ),
-                    borderRadius: BorderRadius.circular(9),
+          Row(
+            crossAxisAlignment: .center,
+            children: [
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: meta.color.withValues(
+                    alpha: context.isDark ? 0.22 : 0.12,
                   ),
-                  child: Icon(meta.icon, color: meta.color, size: 17),
+                  borderRadius: BorderRadius.circular(7),
                 ),
-                widthBox(9),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    mainAxisSize: .min,
-                    children: [
-                      Text(
-                        meta.isCurrency
-                            ? 'Rs ${meta.value.toCompact(decimals: 1)}'
-                            : meta.value.toCompact(decimals: 1),
-                        style: context.bodyMedium.copyWith(
-                          fontWeight: .w700,
-                          color: context.textPrimary,
-                          fontSize: 14,
-                          height: 1,
-                        ),
-                        maxLines: 1,
-                        overflow: .ellipsis,
-                      ),
-                      heightBox(4),
-                      Text(
-                        meta.label,
-                        style: context.labelSmall.copyWith(
-                          color: context.textSecondary,
-                          fontSize: 10,
-                          height: 1.1,
-                        ),
-                        maxLines: 1,
-                        overflow: .ellipsis,
-                      ),
-                    ],
+                child: Icon(meta.icon, color: meta.color, size: 12),
+              ),
+              widthBox(8),
+              Expanded(
+                child: Text(
+                  meta.isCurrency
+                      ? 'Rs ${meta.value.toCompact(decimals: 1)}'
+                      : meta.value.toCompact(decimals: 1),
+                  style: context.bodyMedium.copyWith(
+                    fontWeight: .w700,
+                    color: context.textPrimary,
+                    fontSize: 16,
+                    height: 1,
                   ),
+                  maxLines: 1,
+                  overflow: .ellipsis,
                 ),
+              ),
+              if (meta.deltaPct != null) ...[
+                widthBox(6),
+                _DeltaBadge(pct: meta.deltaPct!),
               ],
-            ),
+            ],
           ),
-          if (meta.deltaPct != null)
-            Positioned(
-              top: 0,
-              right: 0,
-              child: _DeltaBadge(pct: meta.deltaPct!),
+          heightBox(4),
+          Text(
+            meta.label,
+            style: context.labelSmall.copyWith(
+              color: context.textSecondary,
+              fontSize: 13,
+              height: 1.1,
             ),
+            maxLines: 2,
+            overflow: .ellipsis,
+          ),
         ],
       ),
     );
@@ -1316,7 +1307,6 @@ class _OrdersVsDispatchedCardState extends State<_OrdersVsDispatchedCard> {
   Widget build(BuildContext context) {
     final weeks = _weeks();
     // Dummy data: every week gets a visible bar (no all-zero stretch), so
-    // nothing looks "missing" before the user scrolls.
     final orders = List.generate(
       weeks.length,
       (i) => (4 + (i * 7) % 14).toDouble(),
@@ -1328,7 +1318,6 @@ class _OrdersVsDispatchedCardState extends State<_OrdersVsDispatchedCard> {
 
     final maxVal = [
       ...orders,
-      ...dispatched,
     ].fold(0.0, (a, b) => a > b ? a : b);
     final maxY = maxVal <= 0 ? 10.0 : (maxVal * 1.3).ceilToDouble();
 

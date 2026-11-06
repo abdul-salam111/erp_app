@@ -3,7 +3,7 @@
 class RoutePaths {
   static const String signin = '/signin';
   static const String splash = '/splash';
-  static const String dashboard= '/dashboard';
+  static const String dashboard = '/dashboard';
   static const String employee_dashboard = '/employee_dashboard';
   static const String profile = '/profile';
   static const String alert_panel = '/alert_panel';
@@ -15,6 +15,7 @@ class RoutePaths {
   static const String production = '/production';
   static const String analytics = '/analytics';
   static const String sales_analytics = '/sales_analytics';
+  static const String customer_analytics = '/customer_analytics';
   static const String users = '/users';
   static const String new_user = '/users/new';
   static const String user_details = '/users/:id';

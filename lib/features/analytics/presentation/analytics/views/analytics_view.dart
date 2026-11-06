@@ -22,10 +22,10 @@ class AnalyticsView extends StatelessWidget {
     ),
     _InsightItem(
       title: 'Customer Dashboard',
-      description:
-          'Customer KPIs, segmentation, lifecycle, retention, and LTV',
+      description: 'Customer KPIs, segmentation, lifecycle, retention, and LTV',
       icon: Iconsax.profile_2user,
       color: AppColors.errorBright,
+      routeName: RouteNames.customer_analytics,
     ),
     _InsightItem(
       title: 'Product Dashboard',
@@ -82,7 +82,9 @@ class _InsightCard extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: item.color.withValues(alpha: context.isDark ? 0.22 : 0.12),
+                color: item.color.withValues(
+                  alpha: context.isDark ? 0.22 : 0.12,
+                ),
                 borderRadius: BorderRadius.circular(13),
               ),
               child: Icon(item.icon, color: item.color, size: 24),
