@@ -33,6 +33,7 @@ class AnalyticsView extends StatelessWidget {
           'ABC/XYZ, lifecycle, velocity, margin, basket, and stock risk',
       icon: Iconsax.box,
       color: AppColors.marigold,
+      routeName: RouteNames.product_analytics,
     ),
   ];
 

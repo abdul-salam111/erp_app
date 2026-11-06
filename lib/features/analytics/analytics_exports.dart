@@ -17,3 +17,6 @@ export 'presentation/sales_analytics/views/sales_analytics_view.dart';
 
 // Presentation — customer analytics screen
 export 'presentation/customer_analytics/views/customer_analytics_view.dart';
+
+// Presentation — product analytics screen
+export 'presentation/product_analytics/views/product_analytics_view.dart';

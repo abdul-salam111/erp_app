@@ -11,8 +11,6 @@ class AnalyticsRepositoryImpl extends BaseRepository
 
   @override
   Future<Result<dynamic>> performAction() {
-    return execute(
-      call: () => dataSource.performAction(),
-    );
+    return execute(call: () => dataSource.performAction());
   }
 }
