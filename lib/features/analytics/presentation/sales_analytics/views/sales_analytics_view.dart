@@ -1307,6 +1307,7 @@ class _OrdersVsDispatchedCardState extends State<_OrdersVsDispatchedCard> {
   Widget build(BuildContext context) {
     final weeks = _weeks();
     // Dummy data: every week gets a visible bar (no all-zero stretch), so
+    // nothing looks "missing" before the user scrolls.
     final orders = List.generate(
       weeks.length,
       (i) => (4 + (i * 7) % 14).toDouble(),
@@ -1318,6 +1319,7 @@ class _OrdersVsDispatchedCardState extends State<_OrdersVsDispatchedCard> {
 
     final maxVal = [
       ...orders,
+      ...dispatched,
     ].fold(0.0, (a, b) => a > b ? a : b);
     final maxY = maxVal <= 0 ? 10.0 : (maxVal * 1.3).ceilToDouble();
 

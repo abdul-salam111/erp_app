@@ -75,6 +75,11 @@ class _CustomerAnalyticsViewState extends State<CustomerAnalyticsView> {
               placeholderHeight: 340,
               child: _CustomerLifecycleCard(),
             ),
+            heightBox(context.gridSpacing * 2),
+            _ScrollReveal(
+              placeholderHeight: 360,
+              child: _CustomerTrendCard(from: _fromDate, to: _toDate),
+            ),
             heightBox(40),
           ],
         ),
@@ -733,6 +738,13 @@ class _LifecycleStage {
   final Color color;
 
   const _LifecycleStage(this.caption, this.value, this.color);
+
+  // A literal 0 collapses to a zero-height band in the funnel chart, which
+  // pushes Syncfusion to draw the label outside with a connector line
+  // instead of showing a thin stage like the others. Floor the value used
+  // for the chart's own proportions only — the displayed caption still
+  // reads the real count.
+  double get renderValue => value <= 0 ? 1 : value;
 }
 
 const _lifecycleStages = <_LifecycleStage>[
@@ -766,7 +778,7 @@ class _CustomerLifecycleCard extends StatelessWidget {
                 // land Total Customers at the top.
                 dataSource: _lifecycleStages.reversed.toList(),
                 xValueMapper: (d, _) => d.caption,
-                yValueMapper: (d, _) => d.value,
+                yValueMapper: (d, _) => d.renderValue,
                 textFieldMapper: (d, _) => d.caption,
                 pointColorMapper: (d, _) => d.color,
                 gapRatio: 0.03,
@@ -792,6 +804,297 @@ class _CustomerLifecycleCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ─── New vs Returning vs Renewed (fl_chart — dummy data) ───────────────────
+
+class _CustomerTrendCard extends StatefulWidget {
+  final DateTime from;
+  final DateTime to;
+
+  const _CustomerTrendCard({required this.from, required this.to});
+
+  @override
+  State<_CustomerTrendCard> createState() => _CustomerTrendCardState();
+}
+
+class _CustomerTrendCardState extends State<_CustomerTrendCard> {
+  static const _newCustomers = <double>[0, 0, 1, 2, 1, 0, 0];
+  static const _returning = <double>[0, 0, 0, 0, 0, 0, 0];
+  static const _renewed = <double>[0, 3, 7, 5, 8, 2, 0];
+
+  bool _showNew = true;
+  bool _showReturning = true;
+  bool _showRenewed = true;
+
+  List<String> _xLabels() {
+    final totalDays = widget.to.difference(widget.from).inDays;
+    return List.generate(_newCustomers.length, (i) {
+      final d = widget.from.add(
+        Duration(days: (totalDays * i / (_newCustomers.length - 1)).round()),
+      );
+      return d.format('MMM dd');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final labels = _xLabels();
+
+    return _SectionCard(
+      title: 'New vs Returning vs Renewed',
+      icon: Iconsax.trend_up,
+      trailing: const _TagChip(label: 'Renewed ≥ 90d'),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              _TrendSummaryItem(
+                label: 'New',
+                value: '2',
+                color: AppColors.deepPurple,
+              ),
+              widthBox(14),
+              _TrendSummaryItem(
+                label: 'Returning',
+                value: '0',
+                color: context.textSecondary,
+              ),
+              widthBox(14),
+              Expanded(
+                child: _TrendSummaryItem(
+                  label: 'Renewed',
+                  value: '10 (gap ≥ 90d)',
+                  color: AppColors.orange,
+                ),
+              ),
+            ],
+          ),
+          heightBox(14),
+          SizedBox(
+            height: 220,
+            child: LineChart(
+              LineChartData(
+                gridData: FlGridData(
+                  show: true,
+                  drawVerticalLine: false,
+                  getDrawingHorizontalLine: (_) => FlLine(
+                    color: context.isDark
+                        ? AppColors.white.withValues(alpha: 0.05)
+                        : context.border,
+                    strokeWidth: 0.8,
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 24,
+                      getTitlesWidget: (v, _) => Text(
+                        v.toStringAsFixed(0),
+                        style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: .w600,
+                          color: context.textSecondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 24,
+                      interval: 1,
+                      getTitlesWidget: (v, _) {
+                        final i = v.round();
+                        if (i < 0 || i >= labels.length) {
+                          return const SizedBox.shrink();
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Text(
+                            labels[i],
+                            style: TextStyle(
+                              fontSize: 8.5,
+                              fontWeight: .w600,
+                              color: context.textSecondary,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                ),
+                borderData: FlBorderData(show: false),
+                minY: 0,
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    getTooltipColor: (_) =>
+                        context.accentBlue.withValues(alpha: 0.85),
+                  ),
+                ),
+                lineBarsData: [
+                  if (_showNew)
+                    LineChartBarData(
+                      spots: [
+                        for (var i = 0; i < _newCustomers.length; i++)
+                          FlSpot(i.toDouble(), _newCustomers[i]),
+                      ],
+                      isCurved: false,
+                      color: AppColors.deepPurple,
+                      barWidth: 2,
+                      dotData: const FlDotData(show: true),
+                    ),
+                  if (_showReturning)
+                    LineChartBarData(
+                      spots: [
+                        for (var i = 0; i < _returning.length; i++)
+                          FlSpot(i.toDouble(), _returning[i]),
+                      ],
+                      isCurved: false,
+                      color: AppColors.greenDark,
+                      barWidth: 2,
+                      dotData: const FlDotData(show: true),
+                    ),
+                  if (_showRenewed)
+                    LineChartBarData(
+                      spots: [
+                        for (var i = 0; i < _renewed.length; i++)
+                          FlSpot(i.toDouble(), _renewed[i]),
+                      ],
+                      isCurved: true,
+                      color: AppColors.orange,
+                      barWidth: 2.6,
+                      dotData: const FlDotData(show: true),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: AppColors.orange.withValues(alpha: 0.08),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          heightBox(10),
+          Row(
+            mainAxisAlignment: .center,
+            children: [
+              _LegendDot(
+                color: AppColors.deepPurple,
+                label: 'New',
+                selected: _showNew,
+                onTap: () => setState(() => _showNew = !_showNew),
+              ),
+              widthBox(16),
+              _LegendDot(
+                color: AppColors.greenDark,
+                label: 'Returning',
+                selected: _showReturning,
+                onTap: () => setState(() => _showReturning = !_showReturning),
+              ),
+              widthBox(16),
+              _LegendDot(
+                color: AppColors.orange,
+                label: 'Renewed',
+                selected: _showRenewed,
+                onTap: () => setState(() => _showRenewed = !_showRenewed),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrendSummaryItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _TrendSummaryItem({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      maxLines: 1,
+      overflow: .ellipsis,
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '$label ',
+            style: context.labelSmall.copyWith(color: color, fontSize: 11),
+          ),
+          TextSpan(
+            text: value,
+            style: context.labelSmall.copyWith(
+              color: context.textPrimary,
+              fontWeight: .w700,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  final Color color;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _LegendDot({
+    required this.color,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final fade = selected ? 1.0 : 0.35;
+    return InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: Row(
+          mainAxisSize: .min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: fade),
+                shape: .circle,
+              ),
+            ),
+            widthBox(6),
+            Text(
+              label,
+              style: context.labelSmall.copyWith(
+                color: context.textSecondary.withValues(alpha: fade),
+                fontSize: 11,
+                fontWeight: selected ? .w600 : .w400,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
