@@ -9,14 +9,12 @@ class PurchaseOrderTable extends StatelessWidget {
   final List<PurchaseOrderEntity> orders;
   final ScrollController? scrollController;
   final void Function(PurchaseOrderEntity order)? onView;
-  final void Function(PurchaseOrderEntity order)? onDelete;
 
   const PurchaseOrderTable({
     super.key,
     required this.orders,
     this.scrollController,
     this.onView,
-    this.onDelete,
   });
 
   @override
@@ -44,7 +42,6 @@ class PurchaseOrderTable extends StatelessWidget {
                 index: i,
                 order: orders[i],
                 onView: onView != null ? () => onView!(orders[i]) : null,
-                onDelete: onDelete != null ? () => onDelete!(orders[i]) : null,
               ),
             ),
           ),
@@ -123,12 +120,10 @@ class _OrderRow extends StatefulWidget {
   final int index;
   final PurchaseOrderEntity order;
   final VoidCallback? onView;
-  final VoidCallback? onDelete;
   const _OrderRow({
     required this.index,
     required this.order,
     this.onView,
-    this.onDelete,
   });
 
   @override

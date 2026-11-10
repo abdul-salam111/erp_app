@@ -51,7 +51,7 @@ class AppConstants {
   static const String productionLabel = 'Production';
   static const String analyticsLabel = 'Insights';
   static const String securityLabel = 'Security';
-  static const String systemLabel = 'System';
+  static const String systemLabel = 'User Mgmt';
   static const String assetsLabel = 'Assets';
   static const String partahLabel = 'Mantic Partah';
   static const String logout = 'Logout';

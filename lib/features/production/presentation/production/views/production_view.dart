@@ -102,7 +102,6 @@ class _ProductionBodyState extends State<_ProductionBody> {
                   orders: state.pagedOrders,
                   scrollController: _scrollController,
                   onView: (_) {},
-                  onDelete: (_) {},
                 );
               },
             ),

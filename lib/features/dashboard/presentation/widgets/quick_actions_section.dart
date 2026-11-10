@@ -85,13 +85,14 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
       color: AppColors.brown,
       routeName: RouteNames.system,
     ),
-    _MenuItem(
-      label: AppConstants.assetsLabel,
-      icon: Iconsax.convert_3d_cube,
-      iconAsset: AppIcons.systemAssets,
-      color: AppColors.tealDark,
-      routeName: null,
-    ),
+    // Assets — hidden for now, uncomment to bring the tile back.
+    // _MenuItem(
+    //   label: AppConstants.assetsLabel,
+    //   icon: Iconsax.convert_3d_cube,
+    //   iconAsset: AppIcons.systemAssets,
+    //   color: AppColors.tealDark,
+    //   routeName: null,
+    // ),
   ];
 
   static const _itemsPerPage = 6;

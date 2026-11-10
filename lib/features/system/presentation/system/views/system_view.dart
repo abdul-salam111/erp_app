@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../../routes/route_exports.dart';
+import '../../../../../core/constants/const_exports.dart';
 import '../../../../../core/di/di_exports.dart';
 import '../../../../../core/theme/colors.dart';
 import '../../../../../core/theme/theme_utils.dart';
@@ -108,7 +109,7 @@ class _SystemBodyState extends State<_SystemBody>
 
     return Scaffold(
       backgroundColor: context.background,
-      appBar: CustomAppBar(title: 'System'),
+      appBar: CustomAppBar(title: AppConstants.systemLabel),
       body: ListView.separated(
         padding: context.pagePadding.copyWith(top: 16, bottom: 24),
         itemCount: entries.length,

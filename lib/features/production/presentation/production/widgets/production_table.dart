@@ -7,14 +7,12 @@ class ProductionTable extends StatelessWidget {
   final List<ProductionEntity> orders;
   final ScrollController? scrollController;
   final void Function(ProductionEntity order)? onView;
-  final void Function(ProductionEntity order)? onDelete;
 
   const ProductionTable({
     super.key,
     required this.orders,
     this.scrollController,
     this.onView,
-    this.onDelete,
   });
 
   @override
@@ -42,7 +40,6 @@ class ProductionTable extends StatelessWidget {
                 index: i,
                 order: orders[i],
                 onView: onView != null ? () => onView!(orders[i]) : null,
-                onDelete: onDelete != null ? () => onDelete!(orders[i]) : null,
               ),
             ),
           ),
@@ -101,12 +98,10 @@ class _OrderRow extends StatefulWidget {
   final int index;
   final ProductionEntity order;
   final VoidCallback? onView;
-  final VoidCallback? onDelete;
   const _OrderRow({
     required this.index,
     required this.order,
     this.onView,
-    this.onDelete,
   });
 
   @override
@@ -252,18 +247,6 @@ class _OrderRowState extends State<_OrderRow> {
                                     : '—',
                               ),
                             ),
-                            if (widget.onDelete != null)
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: GestureDetector(
-                                  onTap: widget.onDelete,
-                                  child: Icon(
-                                    Iconsax.trash,
-                                    size: 20,
-                                    color: AppColors.errorBright,
-                                  ),
-                                ),
-                              ),
                             if (widget.onView != null)
                               Padding(
                                 padding: const EdgeInsets.only(left: 14),
