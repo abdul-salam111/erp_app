@@ -40,37 +40,29 @@ class ChooseDashboardView extends StatelessWidget {
           _Header(userName: currentUser.firstName),
           SliverPadding(
             padding: context.pagePadding.copyWith(top: 24, bottom: 32),
-            sliver: roles.isEmpty
-                ? SliverFillRemaining(
-                    child: Center(
-                      child: Text(
-                        'No roles assigned',
-                        style: context.bodyMedium
-                            .copyWith(color: context.textSecondary),
-                      ),
-                    ),
-                  )
-                : SliverList.separated(
-                    itemCount: roles.length + 1,
-                    separatorBuilder: (_, __) =>
-                        SizedBox(height: context.gridSpacing + 4),
-                    itemBuilder: (context, i) {
-                      if (i == roles.length) {
-                        return _RoleCard(
-                          roleName: 'Employee Portal',
-                          color: AppColors.creditGreen,
-                          icon: Iconsax.user_octagon,
-                          routeName: RouteNames.employee_dashboard,
-                        );
-                      }
-                      return _RoleCard(
-                        roleName: roles[i],
-                        color: _roleColors[i % _roleColors.length],
-                        icon: _roleIcons[i % _roleIcons.length],
-                        routeName: RouteNames.dashboard,
-                      );
-                    },
-                  ),
+            // No empty state: the Employee Portal card is always listed, so
+            // even a user with no assigned roles has a workspace to open.
+            sliver: SliverList.separated(
+              itemCount: roles.length + 1,
+              separatorBuilder: (_, __) =>
+                  SizedBox(height: context.gridSpacing + 4),
+              itemBuilder: (context, i) {
+                if (i == roles.length) {
+                  return _RoleCard(
+                    roleName: 'Employee Portal',
+                    color: AppColors.creditGreen,
+                    icon: Iconsax.user_octagon,
+                    routeName: RouteNames.employee_dashboard,
+                  );
+                }
+                return _RoleCard(
+                  roleName: roles[i],
+                  color: _roleColors[i % _roleColors.length],
+                  icon: _roleIcons[i % _roleIcons.length],
+                  routeName: RouteNames.dashboard,
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -84,6 +76,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canGoBack = context.canPop();
     return SliverToBoxAdapter(
       child: Container(
         width: double.infinity,
@@ -106,6 +99,27 @@ class _Header extends StatelessWidget {
             child: Column(
               crossAxisAlignment: .start,
               children: [
+                // Only when pushed (e.g. switching role from profile) — on the
+                // post-login path this screen is the root, with nothing to
+                // go back to.
+                if (canGoBack)
+                  GestureDetector(
+                    onTap: () => context.pop(),
+                    child: Container(
+                      width: 38,
+                      height: 38,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: AppColors.white.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: context.whiteText,
+                        size: 18,
+                      ),
+                    ),
+                  ),
                 Row(
                   children: [
                     Container(
@@ -200,7 +214,15 @@ class _RoleCard extends StatelessWidget {
         color: context.surface,
         borderRadius: .circular(16),
         child: InkWell(
-          onTap: () => context.goNamed(routeName),
+          onTap: () async {
+            // Remembered so the next launch skips this screen and reopens
+            // the workspace the user picked.
+            await SessionController.instance.saveSelectedRole(
+              roleName,
+              routeName,
+            );
+            if (context.mounted) context.goNamed(routeName);
+          },
           borderRadius: .circular(16),
           child: ClipRRect(
             borderRadius: .circular(16),

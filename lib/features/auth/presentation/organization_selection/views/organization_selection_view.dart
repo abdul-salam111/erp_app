@@ -60,17 +60,10 @@ class _OrganizationSelectionBodyState
               'Roles fetch failed: ${state.message}',
             );
           }
-          final roles = SessionController.instance.userRoles;
-          final isAdmin = roles.any(
-            (r) => AppConstants.adminRoles.contains(r.toLowerCase().trim()),
-          );
-          if (isAdmin) {
-            context.pushNamed(RouteNames.dashboard);
-          } else if (roles.length <= 1) {
-            context.pushNamed(RouteNames.dashboard);
-          } else {
-            context.pushNamed(RouteNames.choose_dashboard);
-          }
+          // Always land on role selection — the Employee Portal card is listed
+          // alongside the assigned roles, so there is always more than one
+          // workspace to pick from.
+          context.pushNamed(RouteNames.choose_dashboard);
         }
         if (state.status == ApiStatus.FAILURE) {
           AppToastsUtils.showErrorTop(

@@ -63,6 +63,9 @@ class BranchSelectionBloc extends Bloc<BranchSelectionEvent, BranchSelectionStat
         }
         await SessionController.instance.saveSelectedOrganization(event.org);
         await SessionController.instance.updateActiveSession(authToken);
+        // Roles are granted per organization, so a role remembered for the
+        // previous branch no longer applies.
+        await SessionController.instance.clearSelectedRole();
 
         String? rolesErrorMsg;
         final rolesResult = await getUserRolesUsecase(finalToken);

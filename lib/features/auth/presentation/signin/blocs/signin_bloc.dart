@@ -45,6 +45,9 @@ class SignInBloc extends Bloc<SignInEvent, SignInState>
           state.password,
         );
         await SessionController.instance.saveUserInStorage(user);
+        // A fresh login must not inherit the role remembered for whoever was
+        // signed in before.
+        await SessionController.instance.clearSelectedRole();
 
         if (user.organizations.length == 1) {
           // Single org — auto-select and call SelectBranch before navigating.

@@ -42,11 +42,20 @@ class SplashServices {
           }
         }
 
-        final isAdmin = session.isAdmin;
-        final roles = session.userRoles;
-        if (isAdmin || roles.length <= 1) {
-          context.goNamed(RouteNames.dashboard);
+        // Reopen the workspace the user last picked. The role is re-checked
+        // against the current grants, so a revoked role falls back to the
+        // picker instead of opening a dashboard the user no longer has.
+        final savedRoute = session.selectedRoleRoute;
+        final savedRole = session.selectedRole;
+        final stillGranted =
+            savedRoute == RouteNames.employee_dashboard ||
+            (savedRole != null && session.userRoles.contains(savedRole));
+
+        if (savedRoute != null && stillGranted) {
+          context.goNamed(savedRoute);
         } else {
+          // The Employee Portal card is listed alongside the assigned roles,
+          // so there is always more than one workspace to pick from.
           context.goNamed(RouteNames.choose_dashboard);
         }
       } else {

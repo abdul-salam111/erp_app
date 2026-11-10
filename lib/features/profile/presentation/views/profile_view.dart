@@ -10,6 +10,7 @@ import '../../../../core/debug/cubit/api_debug_cubit.dart';
 import '../../../../core/debug/cubit/api_debug_state.dart';
 import '../../../../core/di/di_exports.dart';
 import '../../../../core/services/current_user.dart';
+import '../../../../core/services/session_manager.dart';
 import '../../../../core/theme/theme_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -46,6 +47,10 @@ class _ProfileBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasMultiOrgs = (currentUser.organizations?.length ?? 0) > 1;
     final hasOrganization = currentUser.org.name.isNotEmpty;
+    // The workspace actually open right now, as picked on the choose-dashboard
+    // screen — falls back to the granted roles if nothing is remembered yet.
+    final currentRole =
+        SessionController.instance.selectedRole ?? _roleDisplay;
 
     return BlocListener<ProfileBloc, ProfileState>(
       listenWhen: (p, c) => p.logoutStatus != c.logoutStatus,
@@ -60,7 +65,7 @@ class _ProfileBody extends StatelessWidget {
           slivers: [
             SliverToBoxAdapter(
               child: _ProfileHeader(
-                roleDisplay: _roleDisplay,
+                currentRole: currentRole,
                 hasOrganization: hasOrganization,
                 hasMultiOrgs: hasMultiOrgs,
               ),
@@ -197,12 +202,12 @@ class _SectionLabel extends StatelessWidget {
 // ─── Header: gradient bar + overlapping profile card ──────────────────────────
 
 class _ProfileHeader extends StatelessWidget {
-  final String roleDisplay;
+  final String currentRole;
   final bool hasOrganization;
   final bool hasMultiOrgs;
 
   const _ProfileHeader({
-    required this.roleDisplay,
+    required this.currentRole,
     required this.hasOrganization,
     required this.hasMultiOrgs,
   });
@@ -293,7 +298,7 @@ class _ProfileHeader extends StatelessWidget {
             0,
           ),
           child: _ProfileCard(
-            roleDisplay: roleDisplay,
+            currentRole: currentRole,
             hasOrganization: hasOrganization,
             hasMultiOrgs: hasMultiOrgs,
           ),
@@ -306,12 +311,12 @@ class _ProfileHeader extends StatelessWidget {
 // ─── Profile card: avatar, name, role badge, organization row ────────────────
 
 class _ProfileCard extends StatelessWidget {
-  final String roleDisplay;
+  final String currentRole;
   final bool hasOrganization;
   final bool hasMultiOrgs;
 
   const _ProfileCard({
-    required this.roleDisplay,
+    required this.currentRole,
     required this.hasOrganization,
     required this.hasMultiOrgs,
   });
@@ -399,14 +404,18 @@ class _ProfileCard extends StatelessWidget {
                                     : context.primary,
                               ),
                               const SizedBox(width: 5),
-                              Text(
-                                roleDisplay,
-                                style: context.labelSmall.copyWith(
-                                  color: context.isDark
-                                      ? AppColors.navyIconColorDark
-                                      : context.primary,
-                                  fontWeight: .w700,
-                                  fontSize: 12,
+                              Flexible(
+                                child: Text(
+                                  currentRole,
+                                  style: context.labelSmall.copyWith(
+                                    color: context.isDark
+                                        ? AppColors.navyIconColorDark
+                                        : context.primary,
+                                    fontWeight: .w700,
+                                    fontSize: 12,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: .ellipsis,
                                 ),
                               ),
                             ],
@@ -421,81 +430,19 @@ class _ProfileCard extends StatelessWidget {
                 const SizedBox(height: 16),
                 Divider(height: 1, thickness: 1, color: context.navyBorder),
                 const SizedBox(height: 14),
-                Row(
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        color: context.isDark
-                            ? AppColors.navyIconBgDark
-                            : context.surface,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.all(9),
-                      child: Image.asset(
-                        AppIcons.dashboardIcon,
-                        color: context.isDark
-                            ? AppColors.navyIconColorDark
-                            : context.textSecondary,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: .start,
-                        children: [
-                          Text(
-                            AppConstants.organizationTitle,
-                            style: context.labelSmall.copyWith(
-                              color: context.textSecondary,
-                              fontSize: 11,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            currentUser.org.name,
-                            style: context.bodyMedium.copyWith(
-                              fontWeight: .w700,
-                              color: context.textPrimary,
-                              fontSize: 14,
-                            ),
-                            maxLines: 1,
-                            overflow: .ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (hasMultiOrgs)
-                      InkWell(
-                        onTap: () =>
-                            context.pushNamed(RouteNames.organizationSelection),
-                        borderRadius: BorderRadius.circular(8),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 4,
-                            vertical: 4,
-                          ),
-                          child: Row(
-                            mainAxisSize: .min,
-                            children: [
-                              Text(
-                                AppConstants.switchLabel,
-                                style: context.labelMedium.copyWith(
-                                  color: context.accentBlue,
-                                  fontWeight: .w700,
-                                ),
-                              ),
-                              Icon(
-                                Icons.chevron_right_rounded,
-                                size: 18,
-                                color: context.accentBlue,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
+                _DetailRow(
+                  icon: Image.asset(
+                    AppIcons.dashboardIcon,
+                    color: context.isDark
+                        ? AppColors.navyIconColorDark
+                        : context.textSecondary,
+                  ),
+                  label: AppConstants.organizationTitle,
+                  value: currentUser.org.name,
+                  onSwitch: hasMultiOrgs
+                      ? () =>
+                            context.pushNamed(RouteNames.organizationSelection)
+                      : null,
                 ),
               ],
             ],
@@ -510,6 +457,92 @@ class _ProfileCard extends StatelessWidget {
           curve: Curves.easeOutCubic,
         )
         .fadeIn(delay: 40.ms, duration: 300.ms);
+  }
+}
+
+// ─── Shared detail row: icon, label, value, optional Switch action ──────────
+
+class _DetailRow extends StatelessWidget {
+  final Widget icon;
+  final String label;
+  final String value;
+  final VoidCallback? onSwitch;
+
+  const _DetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.onSwitch,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: context.isDark ? AppColors.navyIconBgDark : context.surface,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: const EdgeInsets.all(9),
+          alignment: .center,
+          child: icon,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              Text(
+                label,
+                style: context.labelSmall.copyWith(
+                  color: context.textSecondary,
+                  fontSize: 11,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                style: context.bodyMedium.copyWith(
+                  fontWeight: .w700,
+                  color: context.textPrimary,
+                  fontSize: 14,
+                ),
+                maxLines: 1,
+                overflow: .ellipsis,
+              ),
+            ],
+          ),
+        ),
+        if (onSwitch != null)
+          InkWell(
+            onTap: onSwitch,
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+              child: Row(
+                mainAxisSize: .min,
+                children: [
+                  Text(
+                    AppConstants.switchLabel,
+                    style: context.labelMedium.copyWith(
+                      color: context.accentBlue,
+                      fontWeight: .w700,
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 18,
+                    color: context.accentBlue,
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }
 
@@ -682,8 +715,11 @@ class _AccountCard extends StatelessWidget {
                 ? AppColors.navyIconBgDark
                 : AppColors.success.withValues(alpha: 0.10),
             label: AppConstants.roleLabel,
-            value: _roleDisplay,
+            value: SessionController.instance.selectedRole ?? _roleDisplay,
             isLast: true,
+            // The choose-dashboard screen always lists the Employee Portal
+            // alongside the assigned roles, so switching is always possible.
+            onSwitch: () => context.pushNamed(RouteNames.choose_dashboard),
           ),
         ],
       ),
@@ -698,6 +734,7 @@ class _AccountRow extends StatelessWidget {
   final String label;
   final String value;
   final bool isLast;
+  final VoidCallback? onSwitch;
 
   const _AccountRow({
     required this.icon,
@@ -706,6 +743,7 @@ class _AccountRow extends StatelessWidget {
     required this.label,
     required this.value,
     this.isLast = false,
+    this.onSwitch,
   });
 
   @override
@@ -740,6 +778,19 @@ class _AccountRow extends StatelessWidget {
               overflow: .ellipsis,
             ),
           ),
+          if (onSwitch != null)
+            InkWell(
+              onTap: onSwitch,
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 6, top: 4, bottom: 4),
+                child: Icon(
+                  Icons.chevron_right_rounded,
+                  size: 20,
+                  color: context.accentBlue,
+                ),
+              ),
+            ),
         ],
       ),
     );

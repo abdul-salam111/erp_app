@@ -18,6 +18,13 @@ class SessionController {
   UserOrganizationEntity? selectedOrganization;
   List<String> userFeatures = [];
   List<String> userRoles = [];
+
+  /// The role the user picked on the choose-dashboard screen, and the route
+  /// its card opens. Persisted so a returning user is taken straight back to
+  /// that workspace instead of being asked to pick again.
+  String? selectedRole;
+  String? selectedRoleRoute;
+
   bool islogin = false;
   bool isAdmin = false;
 
@@ -109,6 +116,22 @@ class SessionController {
     await storage.setValues(StorageKeys.userRoles, jsonEncode(roles));
   }
 
+  Future<void> saveSelectedRole(String role, String routeName) async {
+    selectedRole = role;
+    selectedRoleRoute = routeName;
+    await storage.setValues(StorageKeys.selectedRole, role);
+    await storage.setValues(StorageKeys.selectedRoleRoute, routeName);
+  }
+
+  /// Drops the remembered role so the next launch asks again — used when the
+  /// user switches branch, since roles are granted per organization.
+  Future<void> clearSelectedRole() async {
+    selectedRole = null;
+    selectedRoleRoute = null;
+    await storage.clearValues(StorageKeys.selectedRole);
+    await storage.clearValues(StorageKeys.selectedRoleRoute);
+  }
+
   Future<void> getUserFromStorage() async {
     try {
       final userData = await storage.readValues(StorageKeys.userDetails);
@@ -137,6 +160,11 @@ class SessionController {
         userFeatures = List<String>.from(jsonDecode(featuresJson) as List);
       }
 
+      selectedRole = await storage.readValues(StorageKeys.selectedRole);
+      selectedRoleRoute = await storage.readValues(
+        StorageKeys.selectedRoleRoute,
+      );
+
       final rolesJson = await storage.readValues(StorageKeys.userRoles);
       if (rolesJson != null) {
         userRoles = List<String>.from(jsonDecode(rolesJson) as List);
@@ -154,6 +182,8 @@ class SessionController {
     selectedOrganization = null;
     userFeatures = [];
     userRoles = [];
+    selectedRole = null;
+    selectedRoleRoute = null;
     _sessionToken = null;
     savedEmail = null;
     savedPassword = null;
@@ -165,6 +195,8 @@ class SessionController {
     await storage.clearValues(StorageKeys.token);
     await storage.clearValues(StorageKeys.userFeatures);
     await storage.clearValues(StorageKeys.userRoles);
+    await storage.clearValues(StorageKeys.selectedRole);
+    await storage.clearValues(StorageKeys.selectedRoleRoute);
     await storage.clearValues(StorageKeys.userEmail);
     await storage.clearValues(StorageKeys.userPassword);
   }
