@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
 import '../../../../../core/theme/theme_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../../core/widgets/widgets.dart';
