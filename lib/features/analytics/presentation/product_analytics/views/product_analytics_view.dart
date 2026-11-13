@@ -66,27 +66,13 @@ class _ProductAnalyticsViewState extends State<ProductAnalyticsView> {
             const _StatsPanel(),
             heightBox(context.gridSpacing * 2),
             const _ScrollReveal(
-              placeholderHeight: 260,
-              child: _ConcentrationCard(
-                title: 'Sales concentration',
-                icon: Iconsax.chart_21,
-                centerValue: '194.68M',
-                centerLabel: 'Sales',
-                rows: _salesConcentration,
-                sideBySide: true,
-              ),
+              placeholderHeight: 300,
+              child: _SalesConcentrationCard(),
             ),
             heightBox(context.gridSpacing * 2),
             const _ScrollReveal(
               placeholderHeight: 260,
-              child: _ConcentrationCard(
-                title: 'Profit concentration',
-                icon: Iconsax.money_recive,
-                centerValue: '24.19M',
-                centerLabel: 'Profit',
-                rows: _profitConcentration,
-                sideBySide: true,
-              ),
+              child: _ProfitConcentrationCard(),
             ),
             heightBox(context.gridSpacing * 2),
             const _ScrollReveal(
@@ -776,25 +762,12 @@ const _profitConcentration = <_ConcentrationRow>[
   ),
 ];
 
-class _ConcentrationCard extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final String centerValue;
-  final String centerLabel;
+// ─── Concentration table (shared by the two cards below) ───────────────────
+
+class _ConcentrationTable extends StatelessWidget {
   final List<_ConcentrationRow> rows;
 
-  const _ConcentrationCard({
-    required this.title,
-    required this.icon,
-    required this.centerValue,
-    required this.centerLabel,
-    required this.rows,
-    this.sideBySide = false,
-  });
-
-  /// Sits the donut beside the table. Five columns plus a chart is a squeeze
-  /// on a phone, so this layout drops the donut and the text down a size.
-  final bool sideBySide;
+  const _ConcentrationTable({required this.rows});
 
   // Every column flexes, so the row always spans the full width instead of
   // the label cell hoarding the slack and leaving a gap before the numbers.
@@ -806,12 +779,9 @@ class _ConcentrationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gap = sideBySide ? 4.0 : 6.0;
-    final numberSize = sideBySide ? 10.0 : 11.0;
-
     final headerStyle = context.labelSmall.copyWith(
       color: context.textSecondary,
-      fontSize: sideBySide ? 9 : 10.5,
+      fontSize: 10.5,
       fontWeight: .w600,
     );
 
@@ -826,7 +796,7 @@ class _ConcentrationCard extends StatelessWidget {
       ),
     );
 
-    final table = Column(
+    return Column(
       mainAxisSize: .min,
       children: [
         Row(
@@ -836,11 +806,11 @@ class _ConcentrationCard extends StatelessWidget {
               child: Text('Group', style: headerStyle),
             ),
             header('Sales', _salesFlex),
-            widthBox(gap),
+            widthBox(6),
             header('Profit', _profitFlex),
-            widthBox(gap),
+            widthBox(6),
             header('Count', _countFlex),
-            widthBox(gap),
+            widthBox(6),
             header('Share', _shareFlex),
           ],
         ),
@@ -862,14 +832,13 @@ class _ConcentrationCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(3),
                       ),
                     ),
-                    widthBox(sideBySide ? 5 : 8),
+                    widthBox(8),
                     Expanded(
                       child: Text(
                         r.group,
                         style: context.bodySmall.copyWith(
                           color: context.textPrimary,
                           fontWeight: .w600,
-                          fontSize: sideBySide ? 11.5 : null,
                         ),
                         maxLines: 1,
                         overflow: .ellipsis,
@@ -885,13 +854,13 @@ class _ConcentrationCard extends StatelessWidget {
                   textAlign: .end,
                   style: context.labelSmall.copyWith(
                     color: context.textSecondary,
-                    fontSize: numberSize,
+                    fontSize: 11,
                   ),
                   maxLines: 1,
                   overflow: .ellipsis,
                 ),
               ),
-              widthBox(gap),
+              widthBox(6),
               Expanded(
                 flex: _profitFlex,
                 child: Text(
@@ -899,13 +868,13 @@ class _ConcentrationCard extends StatelessWidget {
                   textAlign: .end,
                   style: context.labelSmall.copyWith(
                     color: context.textSecondary,
-                    fontSize: numberSize,
+                    fontSize: 11,
                   ),
                   maxLines: 1,
                   overflow: .ellipsis,
                 ),
               ),
-              widthBox(gap),
+              widthBox(6),
               Expanded(
                 flex: _countFlex,
                 child: Text(
@@ -913,13 +882,13 @@ class _ConcentrationCard extends StatelessWidget {
                   textAlign: .end,
                   style: context.labelSmall.copyWith(
                     color: context.textSecondary,
-                    fontSize: numberSize,
+                    fontSize: 11,
                   ),
                   maxLines: 1,
                   overflow: .ellipsis,
                 ),
               ),
-              widthBox(gap),
+              widthBox(6),
               Expanded(
                 flex: _shareFlex,
                 child: Text(
@@ -928,7 +897,6 @@ class _ConcentrationCard extends StatelessWidget {
                   style: context.bodySmall.copyWith(
                     color: context.textPrimary,
                     fontWeight: .w700,
-                    fontSize: sideBySide ? 11 : null,
                   ),
                   maxLines: 1,
                   overflow: .ellipsis,
@@ -943,26 +911,132 @@ class _ConcentrationCard extends StatelessWidget {
         ],
       ],
     );
+  }
+}
 
-    final donut = _Donut(
-      slices: [for (final r in rows) (color: r.color, value: r.share)],
-      centerValue: centerValue,
-      centerLabel: centerLabel,
-      size: sideBySide ? 112 : 180,
+// ─── Sales concentration: Pareto chart (bars + cumulative line) ────────────
+//
+// A concentration question — "do a few groups dominate the total?" — is what
+// a Pareto chart is for: bars for each group's own share, plus a line
+// tracking the running total across them. A donut can't show that
+// accumulation, which is the whole point of a concentration analysis.
+
+class _SalesConcentrationCard extends StatelessWidget {
+  const _SalesConcentrationCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return _SectionCard(
+      title: 'Sales concentration',
+      icon: Iconsax.chart_21,
+      child: Row(
+        children: [
+          _Donut(
+            slices: [
+              for (final r in _salesConcentration)
+                (color: r.color, value: r.share),
+            ],
+            centerValue: '194.68M',
+            centerLabel: 'Sales',
+            size: 112,
+          ),
+          widthBox(10),
+          Expanded(child: _ConcentrationTable(rows: _salesConcentration)),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfitConcentrationCard extends StatelessWidget {
+  const _ProfitConcentrationCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final maxShare = _profitConcentration.fold(
+      0.0,
+      (a, b) => a > b.share ? a : b.share,
     );
 
     return _SectionCard(
-      title: title,
-      icon: icon,
-      child: sideBySide
-          ? Row(
-              children: [
-                donut,
-                widthBox(10),
-                Expanded(child: table),
-              ],
-            )
-          : Column(children: [donut, heightBox(16), table]),
+      title: 'Profit concentration',
+      icon: Iconsax.money_recive,
+      child: Column(
+        children: [
+          for (final r in _profitConcentration) ...[
+            _RankedBar(row: r, maxShare: maxShare),
+            if (r != _profitConcentration.last) heightBox(12),
+          ],
+          heightBox(18),
+          Divider(height: 1, color: context.navyBorder),
+          heightBox(14),
+          _ConcentrationTable(rows: _profitConcentration),
+        ],
+      ),
+    );
+  }
+}
+
+class _RankedBar extends StatelessWidget {
+  final _ConcentrationRow row;
+  final double maxShare;
+
+  const _RankedBar({required this.row, required this.maxShare});
+
+  static const _labelWidth = 64.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: _labelWidth,
+          child: Text(
+            row.group,
+            style: context.bodySmall.copyWith(
+              color: context.textPrimary,
+              fontWeight: .w600,
+            ),
+            maxLines: 1,
+            overflow: .ellipsis,
+          ),
+        ),
+        widthBox(8),
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Container(
+              height: 24,
+              // A low-alpha tint disappears on the dark navy card, so the
+              // track is a translucent white there instead.
+              color: context.isDark
+                  ? AppColors.white.withValues(alpha: 0.08)
+                  : context.grey100,
+              child: FractionallySizedBox(
+                alignment: .centerLeft,
+                widthFactor: maxShare <= 0
+                    ? 0.03
+                    : (row.share / maxShare).clamp(0.03, 1.0),
+                child: ColoredBox(color: row.color),
+              ),
+            ),
+          ),
+        ),
+        widthBox(8),
+        SizedBox(
+          width: 48,
+          child: Text(
+            '${row.share.toStringAsFixed(1)}%',
+            textAlign: .end,
+            style: context.bodySmall.copyWith(
+              color: context.textPrimary,
+              fontWeight: .w700,
+            ),
+            maxLines: 1,
+            overflow: .ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }
