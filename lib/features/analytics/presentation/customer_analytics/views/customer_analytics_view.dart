@@ -50,7 +50,7 @@ class _CustomerAnalyticsViewState extends State<CustomerAnalyticsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.background,
+      backgroundColor: _screenColor(context),
       appBar: CustomAppBar(title: 'Customer Analytics'),
       body: SingleChildScrollView(
         padding: context.pagePadding,
@@ -64,7 +64,7 @@ class _CustomerAnalyticsViewState extends State<CustomerAnalyticsView> {
               onToTap: _pickTo,
             ),
             heightBox(context.gridSpacing * 2),
-            const _StatsGrid(),
+            const _StatsPanel(),
             heightBox(context.gridSpacing * 2),
             const _ScrollReveal(
               placeholderHeight: 420,
@@ -132,6 +132,20 @@ class _CustomerAnalyticsViewState extends State<CustomerAnalyticsView> {
 
 // ─── Date range filter ──────────────────────────────────────────────────────
 
+/// Light grey page, so the white cards and tiles above it read as surfaces
+/// rather than merging into the background.
+Color _screenColor(BuildContext context) =>
+    context.isDark ? context.background : AppColors.grey50;
+
+/// Panel surface the stat tiles sit on — a step back from the tiles so the
+/// group reads as one region instead of loose cards on the page.
+Color _panelColor(BuildContext context) =>
+    context.isDark ? AppColors.navyCardDark : context.surface;
+
+/// Tile surface, a step forward from the panel.
+Color _tileColor(BuildContext context) =>
+    context.isDark ? AppColors.surfaceDark : AppColors.white;
+
 class _DateRangeFilter extends StatelessWidget {
   final DateTime from;
   final DateTime to;
@@ -148,32 +162,28 @@ class _DateRangeFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // Kept as a raised white surface while the rest of the page is grey.
       decoration: BoxDecoration(
-        color: context.accentBlue.withValues(
-          alpha: context.isDark ? 0.12 : 0.07,
-        ),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: context.accentBlue.withValues(
-            alpha: context.isDark ? 0.3 : 0.22,
-          ),
-        ),
+        color: _tileColor(context),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: context.navyBorder),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      padding: const EdgeInsets.all(12),
       child: Row(
         children: [
           Expanded(
-            child: _DateField(label: 'From', date: from, onTap: onFromTap),
+            child: _DatePill(label: 'From', date: from, onTap: onFromTap),
           ),
-          Container(
-            width: 1,
-            height: 30,
-            color: context.accentBlue.withValues(
-              alpha: context.isDark ? 0.3 : 0.2,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Icon(
+              Icons.arrow_forward_rounded,
+              size: 16,
+              color: context.textSecondary,
             ),
           ),
           Expanded(
-            child: _DateField(label: 'To', date: to, onTap: onToTap),
+            child: _DatePill(label: 'To', date: to, onTap: onToTap),
           ),
         ],
       ),
@@ -181,12 +191,29 @@ class _DateRangeFilter extends StatelessWidget {
   }
 }
 
-class _DateField extends StatelessWidget {
+class _StatsPanel extends StatelessWidget {
+  const _StatsPanel();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: _tileColor(context),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: context.navyBorder),
+      ),
+      padding: const EdgeInsets.all(12),
+      child: const _StatsGrid(),
+    );
+  }
+}
+
+class _DatePill extends StatelessWidget {
   final String label;
   final DateTime date;
   final VoidCallback onTap;
 
-  const _DateField({
+  const _DatePill({
     required this.label,
     required this.date,
     required this.onTap,
@@ -195,13 +222,33 @@ class _DateField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(12),
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: Container(
+        // Inset against the filter's white card, rather than white on white.
+        decoration: BoxDecoration(
+          color: _panelColor(context),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: context.navyBorder),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
         child: Row(
           children: [
-            Icon(Iconsax.calendar_1, size: 16, color: context.accentBlue),
+            Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: context.accentBlue.withValues(
+                  alpha: context.isDark ? 0.22 : 0.10,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(
+                Iconsax.calendar_1,
+                size: 14,
+                color: context.accentBlue,
+              ),
+            ),
             widthBox(8),
             Expanded(
               child: Column(
@@ -211,13 +258,13 @@ class _DateField extends StatelessWidget {
                   Text(
                     label,
                     style: context.labelSmall.copyWith(
-                      color: context.accentBlue,
+                      color: context.textSecondary,
                       fontWeight: .w600,
-                      fontSize: 11,
+                      fontSize: 10,
                       height: 1,
                     ),
                   ),
-                  heightBox(3),
+                  heightBox(4),
                   Text(
                     date.format('dd-MMM-yyyy'),
                     style: context.labelSmall.copyWith(
@@ -338,7 +385,7 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: context.navyCard,
+        color: _panelColor(context),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: context.navyBorder),
       ),
