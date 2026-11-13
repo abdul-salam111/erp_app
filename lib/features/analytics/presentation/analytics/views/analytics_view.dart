@@ -93,113 +93,116 @@ class _InsightsHeader extends StatelessWidget {
       ipad: 280,
     );
 
-    return SizedBox(
-      height: height,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: context.isDark ? AppColors.navyHeaderDark : null,
-                gradient: context.isDark
-                    ? null
-                    : LinearGradient(
-                        colors: [
-                          context.primary,
-                          context.primary.withValues(alpha: 0.80),
-                        ],
-                        begin: .topLeft,
-                        end: .bottomRight,
-                      ),
+    return ClipRRect(
+      borderRadius: const BorderRadius.vertical(bottom: .circular(28)),
+      child: SizedBox(
+        height: height,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: context.isDark ? AppColors.navyHeaderDark : null,
+                  gradient: context.isDark
+                      ? null
+                      : LinearGradient(
+                          colors: [
+                            context.primary,
+                            context.primary.withValues(alpha: 0.80),
+                          ],
+                          begin: .topLeft,
+                          end: .bottomRight,
+                        ),
+                ),
               ),
             ),
-          ),
-          // Sat low in the header so the bars clear the title row above.
-          Positioned(right: 20, bottom: 18, child: const _HeaderBars()),
-          SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: .fromLTRB(
-                context.pagePadding.left,
-                8,
-                context.pagePadding.right,
-                0,
-              ),
-              child: Column(
-                crossAxisAlignment: .start,
-                children: [
-                  Row(
-                    children: [
-                      if (context.canPop())
-                        GestureDetector(
-                          onTap: () => context.pop(),
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: AppColors.white.withValues(alpha: 0.18),
-                              borderRadius: BorderRadius.circular(12),
+            // Sat low in the header so the bars clear the title row above.
+            Positioned(right: 20, bottom: 18, child: const _HeaderBars()),
+            SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: .fromLTRB(
+                  context.pagePadding.left,
+                  8,
+                  context.pagePadding.right,
+                  0,
+                ),
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Row(
+                      children: [
+                        if (context.canPop())
+                          GestureDetector(
+                            onTap: () => context.pop(),
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: AppColors.white.withValues(alpha: 0.18),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                Icons.arrow_back_ios_new_rounded,
+                                color: context.whiteText,
+                                size: 18,
+                              ),
                             ),
-                            child: Icon(
-                              Icons.arrow_back_ios_new_rounded,
+                          ),
+                        const Spacer(),
+                        Container(
+                          width: 42,
+                          height: 42,
+                          alignment: .center,
+                          decoration: BoxDecoration(
+                            shape: .circle,
+                            color: AppColors.white.withValues(alpha: 0.18),
+                            border: Border.all(
+                              color: AppColors.white.withValues(alpha: 0.55),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Text(
+                            _initials(currentUser.fullName),
+                            style: context.labelMedium.copyWith(
                               color: context.whiteText,
-                              size: 18,
+                              fontWeight: .w700,
                             ),
                           ),
                         ),
-                      const Spacer(),
-                      Container(
-                        width: 42,
-                        height: 42,
-                        alignment: .center,
-                        decoration: BoxDecoration(
-                          shape: .circle,
-                          color: AppColors.white.withValues(alpha: 0.18),
-                          border: Border.all(
-                            color: AppColors.white.withValues(alpha: 0.55),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Text(
-                          _initials(currentUser.fullName),
-                          style: context.labelMedium.copyWith(
-                            color: context.whiteText,
-                            fontWeight: .w700,
-                          ),
+                      ],
+                    ),
+                    heightBox(14),
+                    Text(
+                      AppConstants.analyticsLabel,
+                      style: context.headlineMedium.copyWith(
+                        color: context.whiteText,
+                        fontWeight: .w800,
+                        fontSize: Responsive.value<double>(
+                          context,
+                          phone: 32,
+                          tablet: 36,
+                          ipad: 40,
                         ),
                       ),
-                    ],
-                  ),
-                  heightBox(14),
-                  Text(
-                    AppConstants.analyticsLabel,
-                    style: context.headlineMedium.copyWith(
-                      color: context.whiteText,
-                      fontWeight: .w800,
-                      fontSize: Responsive.value<double>(
-                        context,
-                        phone: 32,
-                        tablet: 36,
-                        ipad: 40,
+                    ),
+                    heightBox(6),
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width * 0.6,
+                      child: Text(
+                        'Explore dashboards and get business insights',
+                        style: context.bodyLarge.copyWith(
+                          color: context.whiteText.withValues(alpha: 0.88),
+                          height: 1.35,
+                        ),
                       ),
                     ),
-                  ),
-                  heightBox(6),
-                  SizedBox(
-                    width: MediaQuery.sizeOf(context).width * 0.6,
-                    child: Text(
-                      'Explore dashboards and get business insights',
-                      style: context.bodyLarge.copyWith(
-                        color: context.whiteText.withValues(alpha: 0.88),
-                        height: 1.35,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -260,12 +263,12 @@ class _InsightCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(_radius),
             border: Border.all(
-              color: item.color.withValues(alpha: dark ? 0.26 : 0.12),
+              color: item.color.withValues(alpha: dark ? 0.26 : 0.07),
             ),
             gradient: LinearGradient(
               colors: [
-                item.color.withValues(alpha: dark ? 0.14 : 0.05),
-                item.color.withValues(alpha: dark ? 0.24 : 0.12),
+                item.color.withValues(alpha: dark ? 0.14 : 0.02),
+                item.color.withValues(alpha: dark ? 0.24 : 0.05),
               ],
               begin: .topLeft,
               end: .bottomRight,
@@ -295,7 +298,7 @@ class _InsightCard extends StatelessWidget {
                         height: 62,
                         decoration: BoxDecoration(
                           color: item.color.withValues(
-                            alpha: dark ? 0.26 : 0.14,
+                            alpha: dark ? 0.26 : 0.10,
                           ),
                           borderRadius: BorderRadius.circular(18),
                         ),
@@ -340,7 +343,7 @@ class _InsightCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: .circle,
                             color: item.color.withValues(
-                              alpha: dark ? 0.26 : 0.12,
+                              alpha: dark ? 0.26 : 0.09,
                             ),
                           ),
                           child: Icon(
@@ -385,8 +388,8 @@ class _CardWavePainter extends CustomPainter {
       canvas.drawPath(path, Paint()..color = color.withValues(alpha: alpha));
     }
 
-    wave(h * 0.90, h * 0.22, isDark ? 0.12 : 0.09);
-    wave(h * 1.02, h * 0.52, isDark ? 0.20 : 0.16);
+    wave(h * 0.90, h * 0.22, isDark ? 0.12 : 0.04);
+    wave(h * 1.02, h * 0.52, isDark ? 0.20 : 0.07);
   }
 
   @override
@@ -430,7 +433,7 @@ class _MotifArt extends StatelessWidget {
             width: 14,
             height: heights[i],
             decoration: BoxDecoration(
-              color: _shade(0.40 + i * 0.07),
+              color: _shade(0.20 + i * 0.05),
               borderRadius: const BorderRadius.vertical(top: .circular(4)),
             ),
           ),
@@ -473,9 +476,9 @@ class _MotifArt extends StatelessWidget {
       mainAxisAlignment: .end,
       crossAxisAlignment: .end,
       children: [
-        _person(18, 30, 24, 0.38),
+        _person(18, 30, 24, 0.20),
         const SizedBox(width: 4),
-        _person(26, 42, 32, 0.52),
+        _person(26, 42, 32, 0.30),
       ],
     );
   }
@@ -496,11 +499,11 @@ class _MotifArt extends StatelessWidget {
       mainAxisAlignment: .end,
       crossAxisAlignment: .end,
       children: [
-        _box(26, 0.36),
+        _box(26, 0.18),
         const SizedBox(width: 5),
-        _box(34, 0.44),
+        _box(34, 0.24),
         const SizedBox(width: 5),
-        _box(46, 0.55),
+        _box(46, 0.32),
       ],
     );
   }

@@ -12,6 +12,7 @@ import 'core/utils/utils_exports.dart';
 import 'firebase_options.dart';
 import 'routes/route_exports.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
